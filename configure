@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.33 2004/03/16 13:38:28 dleijen Exp $
+# $Id: configure,v 1.34 2004/03/17 21:32:18 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -305,7 +305,7 @@ if test "$withmsc" != "yes"; then
   # initialize options for wxc
   cxx="`$wxconfig --cxx`"
   wxwincxxflags="`$wxconfig --cxxflags`"
-  wxwinlibs="`$wxconfig --libs --gl-libs`"
+  wxwinlibs="`$wxconfig --libs  | tr '\n' ' '`"
 
   # extract the wxWindows wxtoolkit: MSW, MAC, GTK etc.
   if test -z "$wxtoolkit"; then
@@ -476,7 +476,7 @@ if test "$wxwinlib"; then
       echo " Or maybe you are trying to compile with Microsoft Visual C++?"
       echo " For example: ./configure --with-msc"
     fi
-    exit 2
+#    exit 2
   fi
 fi
 
@@ -661,11 +661,18 @@ Package
   }
 EOF
 
+updateversion () {
+  sed -e "s|wxc-[\\.0-9]\+\\.|wxc-${version}.|g" -e "s|wxcd-[\\.0-9]\+\\.|wxcd-${version}.|g" -e "s|\$|\\r|g" $1 > $1.out
+  mv -f $1.out $1
+}
+
 # set version in msc project file
 if test "$withmsc" = "yes"; then
   echo "update version number in visual c++ project file"
-  sed -e "s|wxc-[\\.0-9]\+\\.|wxc-${version}.|g" -e "s|wxcd-[\\.0-9]\+\\.|wxcd-${version}.|g" -e "s|\$|\\r|g" wxc/wxc.dsp > wxc/wxc.dsp.out
-  mv -f wxc/wxc.dsp.out wxc/wxc.dsp
+  for dsp in wxc/*.dsp
+  do
+    updateversion $dsp
+  done
 fi
 
 # create utility scripts

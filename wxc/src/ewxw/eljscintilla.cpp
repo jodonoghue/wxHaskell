@@ -38,7 +38,8 @@ bool wxScintilla::Create(wxWindow *parent,
 
     m_hWnd = (WXHWND)CreateWindowEx
                      (
-                      MakeExtendedStyle(m_windowStyle),
+                      m_windowStyle,
+                      /* MakeExtendedStyle(m_windowStyle), */
                       wxT("Scintilla"),
                       wxT(""),
                       msStyle,

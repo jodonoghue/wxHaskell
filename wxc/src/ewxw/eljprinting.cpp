@@ -230,7 +230,7 @@ EWXWEXPORT(void, wxPrintPreview_SetFrame)(void* _obj, void* frame)
 	
 EWXWEXPORT(void, wxPrintPreview_SetCanvas)(void* _obj, void* canvas)
 {
-	((wxPrintPreview*)_obj)->SetCanvas((wxWindow*)canvas);
+	((wxPrintPreview*)_obj)->SetCanvas((wxPreviewCanvas*)canvas);
 }
 	
 EWXWEXPORT(void*, wxPrintPreview_GetFrame)(void* _obj)
@@ -245,12 +245,12 @@ EWXWEXPORT(void*, wxPrintPreview_GetCanvas)(void* _obj)
 	
 EWXWEXPORT(int, wxPrintPreview_PaintPage)(void* _obj, void* canvas, void* dc)
 {
-	return (int)((wxPrintPreview*)_obj)->PaintPage((wxWindow*)canvas, *((wxDC*)dc));
+	return (int)((wxPrintPreview*)_obj)->PaintPage((wxPreviewCanvas*)canvas, *((wxDC*)dc));
 }
 	
 EWXWEXPORT(int, wxPrintPreview_DrawBlankPage)(void* _obj, void* canvas, void* dc)
 {
-	return (int)((wxPrintPreview*)_obj)->DrawBlankPage((wxWindow*)canvas, *((wxDC*)dc));
+	return (int)((wxPrintPreview*)_obj)->DrawBlankPage((wxPreviewCanvas*)canvas, *((wxDC*)dc));
 }
 	
 EWXWEXPORT(int, wxPrintPreview_RenderPage)(void* _obj, int pageNum)

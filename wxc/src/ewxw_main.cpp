@@ -18,10 +18,11 @@ extern int APPTerminating;
 
 extern "C"
 {
-
 EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _argv)
 {
   WXHINSTANCE wxhInstance = GetModuleHandle(NULL);
+
+  
 
 /* check memory leaks with visual C++ */
 #if (defined(__WXDEBUG__) && defined(_MSC_VER))
@@ -37,13 +38,12 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
 
   initClosure = closure;
   APPTerminating = 0;
-  wxEntry(wxhInstance, NULL, (_argc > 0 ? _argv[0] : NULL), SW_SHOWNORMAL, true);
+  wxEntry(wxhInstance, NULL, (_argc > 0 ? _argv[0] : NULL), SW_SHOWNORMAL);
+  wxEntryCleanup();
   APPTerminating = 1;
 
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
-  /* wxPendingEvents = NULL; */
-
-#if defined(_MSC_VER)
+#if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
   wxPendingEvents = NULL; 
 #endif
 
@@ -70,7 +70,7 @@ EWXWEXPORT(void, ELJApp_initialize)(void* _obj, AppInitFunc _func, char* _cmd, v
 {
   WXHINSTANCE wxhInstance = _inst;
   APPTerminating = 0;
-  wxEntry(wxhInstance, NULL, _cmd, SW_SHOWNORMAL, true);
+//  wxEntry(wxhInstance, NULL, _cmd, SW_SHOWNORMAL);
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
   /* wxPendingEvents = NULL; */
