@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.9 2003/09/09 14:49:08 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.10 2003/09/09 15:10:23 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4414,7 +4414,7 @@ void       wxTreeCompanionWindow_SetTreeCtrl( TSelf(wxTreeCompanionWindow) _obj,
 /* wxTreeCtrl */
 TClassDefExtend(wxTreeCtrl,wxControl)
 void       wxTreeCtrl_AddRoot( TSelf(wxTreeCtrl) _obj, TStringVoid text, int image, int selectedImage, TClass(wxTreeItemData) data, TClassRef(wxTreeItemId) _item );
-void       wxTreeCtrl_AppendItem( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TStringVoid text, int image, int selectedImage, TClass(wxTreeItemData)  data, TClassRef(wxTreeItemId) _item );
+void       wxTreeCtrl_AppendItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) parent, TStringVoid text, int image, int selectedImage, TClass(wxTreeItemData)  data, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_Collapse( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void       wxTreeCtrl_CollapseAndReset( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 TClass(wxTreeCtrl) wxTreeCtrl_Create( void* _obj, void* _cmp, TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
@@ -4449,15 +4449,15 @@ TArrayLen  wxTreeCtrl_GetSelections( TSelf(wxTreeCtrl) _obj, TArrayIntOutVoid se
 int        wxTreeCtrl_GetSpacing( TSelf(wxTreeCtrl) _obj );
 TClass(wxImageList)  wxTreeCtrl_GetStateImageList( TSelf(wxTreeCtrl) _obj );
 void       wxTreeCtrl_HitTest( TSelf(wxTreeCtrl) _obj, TPoint(_x,_y), int* flags, TClassRef(wxTreeItemId) _item );
-void       wxTreeCtrl_InsertItem( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
-void       wxTreeCtrl_InsertItemByIndex( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
+void       wxTreeCtrl_InsertItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
+void       wxTreeCtrl_InsertItemByIndex( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) parent, int index, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
 TBool      wxTreeCtrl_IsBold( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 TBool      wxTreeCtrl_IsExpanded( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 TBool      wxTreeCtrl_IsSelected( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 TBool      wxTreeCtrl_IsVisible( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 int        wxTreeCtrl_ItemHasChildren( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 int        wxTreeCtrl_OnCompareItems( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item1, TClass(wxTreeItemId) item2 );
-void       wxTreeCtrl_PrependItem( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
+void       wxTreeCtrl_PrependItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) parent, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_ScrollTo( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void       wxTreeCtrl_SelectItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void       wxTreeCtrl_SetImageList( TSelf(wxTreeCtrl) _obj, TClass(wxImageList) imageList );
