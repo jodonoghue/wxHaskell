@@ -12,7 +12,7 @@
 module Main where
 
 import System.CPUTime
-import Graphics.UI.WXCore (getTextExtent)
+import Graphics.UI.WXCore hiding (Time)-- (getTextExtent)
 import Graphics.UI.WX
 
 {-------------------------------------------------------------------------
@@ -124,7 +124,7 @@ showOptionDialog frame vtimeSpan vflowText status
                                              timeSpan <- get delay selection
                                              stop (Just (flowText,fromIntegral timeSpan))]
                    set can [on command := stop Nothing]
-
+                   
        -- set results
        case ret of
          Nothing -> return ()

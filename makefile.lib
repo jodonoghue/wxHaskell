@@ -115,7 +115,7 @@ install-filesx  =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),
 		 :
 install-files   =$(call install-filesx,$(patsubst %/,%,$(1)),$(DESTDIR)$(2),$(3))
 
-uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)" && $(RM) $(1); fi
+uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi
 uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)" && $(call run-silent,$(RMDIR) -p $(2)); fi
 
 # extremely baroque way of reversing a list of (at most 10) items

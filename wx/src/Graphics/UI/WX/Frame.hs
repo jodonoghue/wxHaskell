@@ -10,7 +10,7 @@
 
     Frames.
     
- * Instances: 'HasImage', 'Form', 'Closable' -- 
+ * Instances: 'HasImage', 'Form', 'Closeable', 'Framed' -- 
              'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
              
@@ -27,6 +27,8 @@ module Graphics.UI.WX.Frame
      -- ** Operations
     , activeChild, activateNext, activatePrevious, arrangeIcons
     , cascade, tile
+    -- * Internal
+    , resizeableFlags, maximizeableFlags, minimizeableFlags, closeableFlags
     ) where
 
 import Graphics.UI.WXCore
@@ -36,6 +38,7 @@ import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Window
+import Graphics.UI.WX.Events
 
 defaultStyle 
   = frameDefaultStyle .+. wxTAB_TRAVERSAL -- .+. wxNO_FULL_REPAINT_ON_RESIZE
@@ -64,6 +67,7 @@ frameEx style props parent
               $ maximizeableFlags props 
               $ clipChildrenFlags props 
               $ resizeableFlags props   
+              $ closeableFlags props
               $ fullRepaintOnResizeFlags props style)
        wxcAppSetTopWindow f
        let initProps = if (containsProp "visible" props)
@@ -89,6 +93,36 @@ instance Closeable (Frame a) where
   close f
     = unitIO (windowClose f True {- force? -})
 
+
+instance Framed (Frame a) where
+  resizeable
+    = windowResizeable
+
+  maximizeable
+    = windowMaximizeable
+
+  minimizeable
+    = windowMinimizeable
+
+  closeable
+    = windowCloseable
+
+
+instance Framed (Dialog a) where
+  resizeable
+    = windowResizeable
+
+  maximizeable
+    = windowMaximizeable
+
+  minimizeable
+    = windowMinimizeable
+
+  closeable
+    = windowCloseable
+  
+
+
 {--------------------------------------------------------------------------
   MDI frames
 --------------------------------------------------------------------------}
@@ -105,7 +139,8 @@ mdiParentFrameEx parent stl props
               ( minimizeableFlags props 
               $ maximizeableFlags props 
               $ clipChildrenFlags props 
-              $ resizeableFlags props   
+              $ resizeableFlags props
+              $ closeableFlags props
               $ fullRepaintOnResizeFlags props stl)
        wxcAppSetTopWindow f
        set f [visible := True, clientSize := sizeZero]
@@ -153,3 +188,97 @@ cascade = mdiParentFrameCascade
 -- | Tile the child frames
 tile :: MDIParentFrame a -> IO ()
 tile = mdiParentFrameTile
+
+
+{--------------------------------------------------------------------------
+  Framed instances
+--------------------------------------------------------------------------}
+-- | Display a resize border on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+windowResizeable :: Attr (Window a) Bool
+windowResizeable
+  = reflectiveAttr "resizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxRESIZE_BORDER s)
+    setFlag w resize
+      = set w [style :~ \stl -> if resize 
+                                 then stl .+. wxRESIZE_BORDER
+                                 else stl .-. wxRESIZE_BORDER]
+
+-- | Helper function that transforms the style accordding
+-- to the 'resizeable' flag out of the properties
+resizeableFlags :: [Prop (Window a)] -> Int -> Int
+resizeableFlags props stl
+  = case getPropValue windowResizeable props of
+      Just True  -> stl .+. wxRESIZE_BORDER
+      Just False -> stl .-. wxRESIZE_BORDER
+      Nothing    -> stl
+
+
+-- | Display a maximize box on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+windowMaximizeable :: Attr (Window a) Bool
+windowMaximizeable
+  = reflectiveAttr "maximizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxMAXIMIZE_BOX s)
+    setFlag w max
+      = set w [style :~ \stl -> if max then stl .+. wxMAXIMIZE_BOX else stl .-. wxMAXIMIZE_BOX]
+
+-- | Helper function that transforms the style accordding
+-- to the 'maximizable' flag out of the properties
+maximizeableFlags :: [Prop (Window a)] -> Int -> Int
+maximizeableFlags props stl
+  = case getPropValue windowMaximizeable props of
+      Just True  -> stl .+. wxMAXIMIZE_BOX
+      Just False -> stl .-. wxMAXIMIZE_BOX
+      Nothing    -> stl
+
+
+-- | Display a minimize box on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+windowMinimizeable :: Attr (Window a) Bool
+windowMinimizeable
+  = reflectiveAttr "minimizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxMINIMIZE_BOX s)
+    setFlag w min
+      = set w [style :~ \stl -> if min then stl .+. wxMINIMIZE_BOX else stl .-. wxMINIMIZE_BOX]
+
+-- | Helper function that transforms the style accordding
+-- to the 'minimizable' flag out of the properties
+minimizeableFlags :: [Prop (Window a)] -> Int -> Int
+minimizeableFlags props stl
+  = case getPropValue windowMinimizeable props of
+      Just True  -> stl .+. wxMINIMIZE_BOX
+      Just False -> stl .-. wxMINIMIZE_BOX
+      Nothing    -> stl
+
+
+-- | Display a close box on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+windowCloseable :: Attr (Window a) Bool
+windowCloseable
+  = reflectiveAttr "closeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxCLOSE_BOX s)
+    setFlag w min
+      = set w [style :~ \stl -> if min then stl .+. wxCLOSE_BOX else stl .-. wxCLOSE_BOX]
+
+-- | Helper function that transforms the style accordding
+-- to the 'closeable' flag out of the properties
+closeableFlags :: [Prop (Window a)] -> Int -> Int
+closeableFlags props stl
+  = case getPropValue windowCloseable props of
+      Just True  -> stl .+. wxCLOSE_BOX
+      Just False -> stl .-. wxCLOSE_BOX
+      Nothing    -> stl
+

@@ -10,7 +10,7 @@
 
     Defines common dialogs.
 
-    * Instances: 'Form' -- 
+    * Instances: 'Form', 'Framed' -- 
              'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 -}
@@ -42,6 +42,8 @@ import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Window
+import Graphics.UI.WX.Events  -- just for haddock
+import Graphics.UI.WX.Frame  
 
 instance Form (Dialog a) where
   layout
@@ -61,6 +63,7 @@ dialogEx parent style props
               $ maximizeableFlags props 
               $ clipChildrenFlags props 
               $ resizeableFlags props   
+              $ closeableFlags props
               $ fullRepaintOnResizeFlags props style)
        set d props
        return d

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.69 2004/03/25 13:46:54 dleijen Exp $
+# $Id: makefile,v 1.70 2004/03/29 09:10:24 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]		- build the libraries (in "lib").
@@ -412,12 +412,14 @@ wx-register:
 
 wx-install-files: wx wxcore-install-files
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
 wx-unregister:
 	-@$(call uninstall-pkg  ,$(WX))
 
 wx-uninstall-files: 
 	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+	-@$(call uninstall-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
 # build ghci object files
 $(WX-OBJ): $(WX-OBJS)
@@ -527,12 +529,14 @@ wxcore-register:
 
 wxcore-install-files: wxcore wxc-install-files 
 	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+	@$(call install-files,$(dir $(WXCORE-PKG)),$(LIBDIR),$(WXCORE-PKG))
 
 wxcore-unregister: 
 	-@$(call uninstall-pkg  ,$(WXCORE))
 
 wxcore-uninstall-files:	
 	-@$(call uninstall-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+	-@$(call uninstall-files,$(dir $(WXCORE-PKG)),$(LIBDIR),$(WXCORE-PKG))
 
 # build marshall modules
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)

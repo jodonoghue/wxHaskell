@@ -40,11 +40,12 @@ module Graphics.UI.WX.Classes
     , Items( itemCount, item, items, itemAppend, itemDelete, itemsDelete )
       -- * Misc.
     , Able( enabled ) -- , enable
-    , Checkable( checkable, checked )
     , Help( help )
     , Tipped( tooltip )
     , Identity( identity )
-    , Styled( style )   
+    , Styled( style )
+    , Framed( resizeable, maximizeable, minimizeable, closeable )
+    , Checkable( checkable, checked )
     , Dockable( dockable )
     , HasImage( image )
     ) where
@@ -169,11 +170,17 @@ class Visible w where
 
   -- | Should the widget be fully repainted on resize? This attribute only
   -- has effect when set at creation. If 'False', you will have to repaint
-  -- the new window area manually at a resize, but flickering can be prevented
-  -- in this way.
+  -- the new window area manually at a resize, but flickering caused by
+  -- background redraws can be prevented in this way. ('False' by default)
   fullRepaintOnResize :: Attr w Bool
   fullRepaintOnResize
     = nullAttr "fullRepaintOnResize"
+
+  -- | Reduce flicker by not redrawing the background under child controls.
+  -- This attribute has to be set at creation time. ('True' by default)
+  clipChildren :: Attr w Bool
+  clipChildren
+    = nullAttr "clipChildren"
 
   -- defaults
   visible
@@ -191,9 +198,29 @@ class Child w where
     = readAttr "parent" (\w -> return objectNull)
 
 
+-- | Widgets that can be closed.
 class Closeable w where
   -- | Close the widget.
   close  :: w -> IO ()
+
+-- | Widgets that have a system frame around them.
+class Framed w where
+  -- | Make the widget user resizeable? This attribute must be set at creation time.
+  resizeable :: Attr w Bool
+  resizeable  = nullAttr "resizeable"
+
+  -- | Can the widget be minimized? This attribute must be set at creation time.
+  minimizeable :: Attr w Bool
+  minimizeable  = nullAttr "minimizeable"
+
+  -- | Can the widget be maximized? This attribute must be set at creation time
+  -- and is normally used together with 'resizeable'.
+  maximizeable :: Attr w Bool
+  maximizeable  = nullAttr "maximizeable"
+
+  -- | Can the widget be closed by the user? This attribute must be set at creation time.
+  closeable :: Attr w Bool
+  closeable  = nullAttr "closeable"
 
 
 -- | Widgets that can be enabled or disabled.
