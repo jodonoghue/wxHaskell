@@ -327,6 +327,8 @@ haskellToCResult decl tp call
       Char  -> "withCharResult $" ++ nl ++ call
       Object obj | isManaged obj
             -> "withManaged" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
+      Object obj | obj == "wxTreeItemId"
+            -> "with" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
       String _ -> "withStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Vector _ -> "withVectorResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
@@ -354,6 +356,9 @@ haskellToCArgIO arg
                       ++ " $ \\" ++ haskellCStringName (argName arg) ++ " -> " ++ nl
       Object obj  | isManaged obj
                   -> "withManaged" ++ haskellTypeName obj ++ " " ++ haskellName (argName arg)
+                      ++ " $ \\" ++ haskellCManagedName (argName arg) ++ " -> " ++ nl
+      Object obj | obj == "wxTreeItemId"
+                  -> "with" ++ haskellTypeName obj ++ " " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCManagedName (argName arg) ++ " -> " ++ nl
       ArrayString _
                   -> "withArrayString " ++ haskellName (argName arg)
@@ -383,7 +388,7 @@ haskellToCArg decl arg
 
       String _   -> haskellCStringName (argName arg)
       Object obj | isManaged obj -> haskellCManagedName (argName arg)
-
+      Object obj | obj == "wxTreeItemId" -> haskellCManagedName (argName arg)
       Point _  -> pparens ("toCIntPointX " ++ name) ++ " " ++ pparens( "toCIntPointY " ++ name)
       Vector _ -> pparens ("toCIntVectorX " ++ name) ++ " " ++ pparens( "toCIntVectorY " ++ name)
       Size _   -> pparens ("toCIntSizeW " ++ name) ++ " " ++ pparens( "toCIntSizeH " ++ name)
@@ -484,6 +489,8 @@ haskellType i tp
       Rect _   -> "Rect"
       RefObject "wxColour"  -> "Color"
       Object    "wxColour"  -> "Color"
+      RefObject "wxTreeItemId"  -> "TreeItem"
+      Object    "wxTreeItemId"  -> "TreeItem"
       Fun f  -> "FunPtr " ++ pparens f
       RefObject name  -> haskellTypeName name ++ typeVar i
       Object name     -> haskellTypeName name ++ typeVar i

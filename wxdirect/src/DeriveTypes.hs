@@ -338,6 +338,7 @@ ignore
   -- basic types
     ,prefix "wxColour"                   "colour"
     ,prefix "wxPoint"                    "point"
+    ,prefix "wxTreeItemId"               "tree item id"
     ,classprefix "wxSize"                "size"
     ]
   where

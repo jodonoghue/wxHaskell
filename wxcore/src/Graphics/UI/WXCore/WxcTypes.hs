@@ -54,6 +54,9 @@ module Graphics.UI.WXCore.WxcTypes(
             , colourFromColor, colorFromColour
             , colourCreate, colourCreateRGB, colourDelete, colourRed, colourGreen, colourBlue
 
+            , TreeItem, treeItemInvalid, treeItemIsOk
+            , withRefTreeItemId, withTreeItemId, withTreeItemIdResult
+
             -- ** Managed object types
             , managedAddFinalizer
             , withRefColour, withManagedColourResult, withManagedColour
@@ -65,7 +68,6 @@ module Graphics.UI.WXCore.WxcTypes(
             , withRefFont
             , withRefDateTime
             , withRefListItem
-            , withRefTreeItemId
             , withRefFontData
             , withRefPrintData
             , withRefPageSetupDialogData
@@ -696,12 +698,6 @@ withRefListItem f
   = assignRef wxListItem_Create  f
 foreign import ccall "wxListItem_Create" wxListItem_Create :: IO (Object a)
 
-withRefTreeItemId :: (Object a -> IO ()) -> IO (Object a)
-withRefTreeItemId f
-  = assignRef wxTreeItemId_Create  f
-foreign import ccall "wxTreeItemId_Create" wxTreeItemId_Create :: IO (Object a)
-
-
 withRefFontData :: (Object a -> IO ()) -> IO (Object a)
 withRefFontData f
   = assignRef wxFontData_Create  f
@@ -726,6 +722,51 @@ withRefGridCellCoordsArray :: (Object a -> IO ()) -> IO (Object a)
 withRefGridCellCoordsArray f
   = assignRef wxGridCellCoordsArray_Create  f
 foreign import ccall "wxGridCellCoordsArray_Create" wxGridCellCoordsArray_Create :: IO (Object a)
+
+
+
+{-----------------------------------------------------------------------------------------
+  Tree items
+-----------------------------------------------------------------------------------------}
+-- | Identifies tree items. Note: Replaces the @TreeItemId@ object and takes automatically
+-- care of allocation issues.
+newtype TreeItem  = TreeItem Int
+                  deriving Eq
+
+-- | Invalid tree item.
+treeItemInvalid :: TreeItem
+treeItemInvalid   = TreeItem 0
+
+-- | Is a tree item ok? (i.e. not invalid).
+treeItemIsOk :: TreeItem -> Bool
+treeItemIsOk (TreeItem val)
+  = (val /= 0)
+
+withRefTreeItemId :: (Object a -> IO ()) -> IO TreeItem
+withRefTreeItemId f
+  = do item <- assignRef treeItemIdCreate f
+       val  <- treeItemIdGetValue item
+       treeItemIdDelete item
+       return (TreeItem val)
+
+withTreeItemId :: TreeItem -> (Object a -> IO b) -> IO b
+withTreeItemId (TreeItem val) f 
+  = do item <- treeItemIdCreateFromValue val
+       x    <- f item
+       treeItemIdDelete item
+       return x
+
+withTreeItemIdResult :: IO (Object a) -> IO TreeItem 
+withTreeItemIdResult io
+  = do item <- io
+       val  <- treeItemIdGetValue item
+       treeItemIdDelete item
+       return (TreeItem val)
+
+foreign import ccall "wxTreeItemId_Create" treeItemIdCreate :: IO (Object a)
+foreign import ccall "wxTreeItemId_GetValue" treeItemIdGetValue :: Object a -> IO Int
+foreign import ccall "wxTreeItemId_CreateFromValue" treeItemIdCreateFromValue :: Int -> IO (Object a)
+foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Object a -> IO ()
 
 {-----------------------------------------------------------------------------------------
   Color

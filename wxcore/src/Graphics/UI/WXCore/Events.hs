@@ -28,7 +28,8 @@ module Graphics.UI.WXCore.Events
         , radioBoxOnCommand
         , sliderOnCommand
         , textCtrlOnTextEnter
-        , listCtrlOnEvent
+        , listCtrlOnListEvent
+        , treeCtrlOnTreeEvent
 
         -- ** Windows
         , windowOnMouse
@@ -68,7 +69,8 @@ module Graphics.UI.WXCore.Events
         , radioBoxGetOnCommand
         , sliderGetOnCommand
         , textCtrlGetOnTextEnter
-        , listCtrlGetOnEvent
+        , listCtrlGetOnListEvent
+        , treeCtrlGetOnTreeEvent
 
         -- ** Windows
         , windowGetOnMouse
@@ -122,10 +124,12 @@ module Graphics.UI.WXCore.Events
         , EventScroll(..), Orientation(..)
         , scrollOrientation, scrollPos
 
+        -- ** Tree control events
+        , EventTree(..)
+        
         -- ** List control events
-        , EventList(..), ListItemInfo(..)
-        , listItemIndex, listItemImage, listItemText, listItemLabel, listItemData
-
+        , EventList(..), ListIndex
+        
         -- * Current event
         , skipCurrentEvent
         , withCurrentEvent
@@ -134,6 +138,8 @@ module Graphics.UI.WXCore.Events
         , appOnInit
 
         -- ** Client data
+        , treeCtrlSetItemClientData
+
         , evtHandlerWithClientData
         , evtHandlerSetClientData
 
@@ -157,6 +163,7 @@ module Graphics.UI.WXCore.Events
         , evtHandlerOnEventConnect
 
         -- ** Unsafe
+        , unsafeTreeCtrlGetItemClientData
         , unsafeEvtHandlerGetClientData
         , unsafeObjectGetClientData
         , unsafeGetHandlerState
@@ -391,7 +398,7 @@ windowOnScroll window eventHandler
       = do eventScroll <- fromScrollEvent (objectCast event)
            eventHandler eventScroll
 
--- | Get the current mouse event handler of a window.
+-- | Get the current scroll event handler of a window.
 windowGetOnScroll :: Window a -> IO (EventScroll -> IO ())
 windowGetOnScroll window
   = unsafeWindowGetHandlerState window wxEVT_SCROLLWIN_TOP (\scroll -> skipCurrentEvent)
@@ -1442,137 +1449,214 @@ showKey key
 
 
 {-----------------------------------------------------------------------------------------
+  TreeCtrl events
+-----------------------------------------------------------------------------------------}
+-- | Tree control events
+data EventTree  = TreeBeginRDrag      TreeItem  !Point  (IO ()) -- ^ Drag with right button. Call @IO@ action to continue dragging.
+                | TreeBeginDrag       TreeItem  !Point  (IO ())
+                | TreeEndDrag         TreeItem  !Point
+                | TreeBeginLabelEdit  TreeItem  String  (IO ())     -- ^ Edit a label. Call @IO@ argument to disallow the edit.
+                | TreeEndLabelEdit    TreeItem  String Bool  (IO ()) -- ^ End edit. @Bool@ is 'True' when the edit was cancelled. Call the @IO@ argument to veto the action.
+                | TreeDeleteItem      TreeItem  
+                | TreeItemActivated   TreeItem  
+                | TreeItemCollapsed   TreeItem  
+                | TreeItemCollapsing  TreeItem  (IO ())          -- ^ Call the @IO@ argument to veto.       
+                | TreeItemExpanding   TreeItem  (IO ())          -- ^ Call the @IO@ argument to veto.
+                | TreeItemExpanded    TreeItem  
+                | TreeItemRightClick  TreeItem  
+                | TreeItemMiddleClick TreeItem  
+                | TreeSelChanged      TreeItem  TreeItem  
+                | TreeSelChanging     TreeItem  TreeItem  (IO ()) -- ^ Call the @IO@ argument to veto.
+                | TreeKeyDown         TreeItem  EventKey
+                | TreeUnknown
+
+fromTreeEvent :: TreeEvent a -> IO EventTree
+fromTreeEvent treeEvent
+  = do tp   <- eventGetEventType treeEvent
+       item <- treeEventGetItem treeEvent
+       case lookup tp treeEvents of
+         Just make   -> make treeEvent item
+         Nothing     -> return TreeUnknown
+        
+treeEvents :: [(Int,TreeEvent a -> TreeItem -> IO EventTree)]
+treeEvents 
+  = [(wxEVT_COMMAND_TREE_DELETE_ITEM,       fromItemEvent TreeDeleteItem)
+    ,(wxEVT_COMMAND_TREE_ITEM_ACTIVATED,    fromItemEvent TreeItemActivated)
+    ,(wxEVT_COMMAND_TREE_ITEM_COLLAPSED,    fromItemEvent TreeItemCollapsed)
+    ,(wxEVT_COMMAND_TREE_ITEM_EXPANDED,     fromItemEvent TreeItemExpanded)
+    ,(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK,  fromItemEvent TreeItemRightClick)
+    ,(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, fromItemEvent TreeItemMiddleClick)
+    ,(wxEVT_COMMAND_TREE_ITEM_COLLAPSING,   withVeto (fromItemEvent TreeItemCollapsing))
+    ,(wxEVT_COMMAND_TREE_ITEM_EXPANDING,    withVeto (fromItemEvent TreeItemExpanding))
+    ,(wxEVT_COMMAND_TREE_KEY_DOWN,          fromKeyDownEvent )
+    ,(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT,  fromBeginLabelEditEvent )
+    ,(wxEVT_COMMAND_TREE_END_LABEL_EDIT,    fromEndLabelEditEvent )
+    ,(wxEVT_COMMAND_TREE_BEGIN_DRAG,        withAllow (fromDragEvent TreeBeginDrag))
+    ,(wxEVT_COMMAND_TREE_BEGIN_RDRAG,       withAllow (fromDragEvent TreeBeginRDrag))
+    ,(wxEVT_COMMAND_TREE_END_DRAG,          fromDragEvent TreeEndDrag)
+    ,(wxEVT_COMMAND_TREE_SEL_CHANGED,       fromChangeEvent TreeSelChanged)
+    ,(wxEVT_COMMAND_TREE_SEL_CHANGING,      withVeto (fromChangeEvent TreeSelChanging))
+    ]
+  where
+    fromKeyDownEvent treeEvent item
+      = do keyEvent <- treeEventGetKeyEvent treeEvent
+           eventKey <- eventKeyFromEvent keyEvent
+           return (TreeKeyDown item eventKey)
+
+    fromBeginLabelEditEvent treeEvent item
+      = do lab <- treeEventGetLabel treeEvent
+           return (TreeBeginLabelEdit item lab (notifyEventVeto treeEvent))
+                  
+    fromEndLabelEditEvent treeEvent item
+      = do lab <- treeEventGetLabel treeEvent
+           can <- treeEventIsEditCancelled treeEvent
+           return (TreeEndLabelEdit item lab can (notifyEventVeto treeEvent))
+
+    fromDragEvent make treeEvent item
+      = do pt <- treeEventGetPoint treeEvent
+           return (make item pt)
+
+    fromChangeEvent make treeEvent item
+      = do olditem <- treeEventGetOldItem treeEvent
+           return (make item olditem)
+    
+    withAllow make treeEvent item
+      = do f <- make treeEvent item
+           return (f (treeEventAllow treeEvent))
+
+    withVeto make treeEvent item
+      = do f <- make treeEvent item
+           return (f (notifyEventVeto treeEvent))
+
+    fromItemEvent make treeEvent item
+      = return (make item)
+
+
+
+-- | Set a tree event handler.
+treeCtrlOnTreeEvent :: TreeCtrl a -> (EventTree -> IO ()) -> IO ()
+treeCtrlOnTreeEvent treeCtrl eventHandler
+  = windowOnEvent treeCtrl (map fst treeEvents) eventHandler treeHandler
+  where
+    treeHandler event
+      = do eventTree <- fromTreeEvent (objectCast event)
+           eventHandler eventTree
+
+-- | Get the current tree event handler of a window.
+treeCtrlGetOnTreeEvent :: TreeCtrl a -> IO (EventTree -> IO ())
+treeCtrlGetOnTreeEvent treeCtrl
+  = unsafeWindowGetHandlerState treeCtrl wxEVT_COMMAND_TREE_ITEM_ACTIVATED (\event -> skipCurrentEvent)
+
+
+{-----------------------------------------------------------------------------------------
   ListCtrl events
 -----------------------------------------------------------------------------------------}
+-- | Type synonym for documentation purposes.
+type ListIndex  = Int
+
 -- | List control events.
-data EventList  = ListBeginDrag       !ListItemInfo !Point  -- ^ Drag with left mouse button
-                | ListBeginRDrag      !ListItemInfo !Point  -- ^ Drag with right mouse button
-                | ListBeginLabelEdit  !ListItemInfo         -- ^ Edit label (can be @veto@ed)
-                | ListEndLabelEdit    !ListItemInfo !Bool   -- ^ End editing label. @Bool@ argument is 'True' when cancelled.
-                | ListDeleteItem      !ListItemInfo
+data EventList  = ListBeginDrag       !ListIndex !Point (IO ()) -- ^ Drag with left mouse button. Call @IO@ argument to veto this action.
+                | ListBeginRDrag      !ListIndex !Point (IO ()) -- ^ Drag with right mouse button. @IO@ argument to veto this action.
+                | ListBeginLabelEdit  !ListIndex (IO ())        -- ^ Edit label. Call @IO@ argument to veto this action.
+                | ListEndLabelEdit    !ListIndex !Bool (IO ())  -- ^ End editing label. @Bool@ argument is 'True' when cancelled. Call @IO@ argument to veto this action.
+                | ListDeleteItem      !ListIndex
                 | ListDeleteAllItems
-                | ListItemSelected    !ListItemInfo 
-                | ListItemDeselected  !ListItemInfo 
-                | ListItemActivated   !ListItemInfo     -- ^ Activate (ENTER or double click)  
-                | ListItemFocused     !ListItemInfo 
-                | ListItemMiddleClick !ListItemInfo 
-                | ListItemRightClick  !ListItemInfo   
-                | ListInsertItem      !ListItemInfo   
+                | ListItemSelected    !ListIndex 
+                | ListItemDeselected  !ListIndex 
+                | ListItemActivated   !ListIndex        -- ^ Activate (ENTER or double click)  
+                | ListItemFocused     !ListIndex 
+                | ListItemMiddleClick !ListIndex 
+                | ListItemRightClick  !ListIndex   
+                | ListInsertItem      !ListIndex   
                 | ListColClick        !Int              -- ^ Column has been clicked. (-1 when clicked in control header outside any column)
                 | ListColRightClick   !Int                
-                | ListColBeginDrag    !Int              -- ^ Column is dragged. Index is of the column left of the divider that is being dragged. Can be veto\'ed.
+                | ListColBeginDrag    !Int (IO ())      -- ^ Column is dragged. Index is of the column left of the divider that is being dragged. Call @IO@ argument to veto this action.
                 | ListColDragging     !Int
-                | ListColEndDrag      !Int
-                | ListKeyDown         !Key              -- ^ (Unimplemented)
-                | ListCacheHint       !Int !Int         -- ^ (Unimplemented). (Inclusive) range of list items that are advised to be cached.
+                | ListColEndDrag      !Int (IO ())      -- ^ Column has been dragged. Call @IO@ argument to veto this action.
+                | ListKeyDown         !Key              
+                | ListCacheHint       !Int !Int         -- ^ (Inclusive) range of list items that are advised to be cached.
+                | ListUnknown
 
--- | List item info: index, label, text, image index, client data, and mask.
-data ListItemInfo  = ListItemInfo !Int !String !String !Int !Int !Int
-
-listItemIndex :: ListItemInfo -> Int
-listItemIndex (ListItemInfo index label text image client mask)   = index
-
-listItemImage :: ListItemInfo -> Int
-listItemImage (ListItemInfo index label text image client mask)   = image
-
-listItemText :: ListItemInfo -> String
-listItemText (ListItemInfo index label text image client mask)   = text
-
-listItemLabel :: ListItemInfo -> String
-listItemLabel (ListItemInfo index label text image client mask)   = label
-
-listItemData :: ListItemInfo -> Int
-listItemData (ListItemInfo index label text image client mask)   = client
 
 fromListEvent :: ListEvent a -> IO EventList
 fromListEvent listEvent
   = do tp <- eventGetEventType listEvent
-  {-
-       if (tp == wxEVT_LIST_CACHE_HINT)
-        then return ListCacheHint 0 0   -- TODO: unimplemented
-        else 
-  -} 
-       if (tp == wxEVT_COMMAND_LIST_KEY_DOWN)
-        then do code <- listEventGetCode listEvent
-                return (ListKeyDown (keyCodeToKey code))  
-        else if (tp == wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS)
-              then return (ListDeleteAllItems)
-              else case lookup tp listItemEvents of
-                     Just f  -> f listEvent tp
-                     Nothing -> case lookup tp listColEvents of
-                                  Just f  -> f listEvent
-                                  Nothing -> return (ListKeyDown KeySpace)  -- TODO: what could we return here?
+       case lookup tp listEvents of
+         Just f  -> f listEvent 
+         Nothing -> return ListUnknown
 
-listEvents :: [Int]
+listEvents :: [(Int, ListEvent a -> IO EventList)]
 listEvents
-  = map fst listItemEvents ++ map fst listColEvents 
-    ++ [wxEVT_COMMAND_LIST_KEY_DOWN,wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS]
-
-listItemEvents :: [(Int,ListEvent a -> Int -> IO EventList)]
-listItemEvents
-  = [(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,  fromListItemEvent ListBeginLabelEdit)
-    ,(wxEVT_COMMAND_LIST_DELETE_ITEM,       fromListItemEvent ListDeleteItem)
-    ,(wxEVT_COMMAND_LIST_INSERT_ITEM,       fromListItemEvent ListInsertItem)
-    ,(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,    fromListItemEvent ListItemActivated)
-    ,(wxEVT_COMMAND_LIST_ITEM_DESELECTED,   fromListItemEvent ListItemDeselected)
-    ,(wxEVT_COMMAND_LIST_ITEM_FOCUSED,      fromListItemEvent ListItemFocused)
-    ,(wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK ,fromListItemEvent ListItemMiddleClick)
-    ,(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,  fromListItemEvent ListItemRightClick)
-    ,(wxEVT_COMMAND_LIST_ITEM_SELECTED,     fromListItemEvent ListItemSelected)
-    ,(wxEVT_COMMAND_LIST_END_LABEL_EDIT,    fromListEndLabelEditEvent)
-    ,(wxEVT_COMMAND_LIST_BEGIN_RDRAG,       fromListDragEvent ListBeginRDrag)
-    ,(wxEVT_COMMAND_LIST_BEGIN_DRAG,        fromListDragEvent ListBeginDrag)
-    ] 
-  where
-    fromListDragEvent make listEvent tp
-      = do pt  <- listEventGetPoint listEvent
-           fromListItemEvent (\info -> make info pt) listEvent tp
-    
-    fromListEndLabelEditEvent listEvent tp
-      = do can <- listEventCancelled listEvent
-           fromListItemEvent (\info -> ListEndLabelEdit info can) listEvent tp
-
-    fromListItemEvent :: (ListItemInfo -> EventList) -> ListEvent a -> Int -> IO EventList
-    fromListItemEvent make listEvent tp
-      = do index <- listEventGetIndex listEvent
-           label <- listEventGetLabel listEvent
-           text  <- listEventGetText  listEvent
-           image <- listEventGetImage listEvent
-           client<- listEventGetData  listEvent
-           mask  <- listEventGetMask  listEvent
-           return (make (ListItemInfo index label text image client mask))
-
-listColEvents :: [(Int,ListEvent a -> IO EventList)]
-listColEvents
-  = [(wxEVT_COMMAND_LIST_COL_CLICK,      fromListColEvent ListColClick)
-  {- TODO: add event types.
-    ,(wxEVT_COMMAND_COL_BEGIN_DRAG, fromListColEvent ListColBeginDrag)
-    ,(wxEVT_COMMAND_COL_DRAGGING,   fromListColEvent ListColDragging)
-    ,(wxEVT_COMMAND_COL_END_DRAG,   fromListColEvent ListColEndDrag)
-    ,(wxEVT_COMMAND_COL_RIGHT_CLICK,fromListColEvent ListColRightClick)
-  -}
+  = [(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,  withVeto $ withItem ListBeginLabelEdit)
+    ,(wxEVT_COMMAND_LIST_DELETE_ITEM,       withItem ListDeleteItem)
+    ,(wxEVT_COMMAND_LIST_INSERT_ITEM,       withItem ListInsertItem)
+    ,(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,    withItem ListItemActivated)
+    ,(wxEVT_COMMAND_LIST_ITEM_DESELECTED,   withItem ListItemDeselected)
+    ,(wxEVT_COMMAND_LIST_ITEM_FOCUSED,      withItem ListItemFocused)
+    ,(wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK ,withItem ListItemMiddleClick)
+    ,(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,  withItem ListItemRightClick)
+    ,(wxEVT_COMMAND_LIST_ITEM_SELECTED,     withItem ListItemSelected)
+    ,(wxEVT_COMMAND_LIST_END_LABEL_EDIT,    withVeto $ withCancel $ withItem ListEndLabelEdit )
+    ,(wxEVT_COMMAND_LIST_BEGIN_RDRAG,       withVeto $ withPoint $ withItem ListBeginRDrag)
+    ,(wxEVT_COMMAND_LIST_BEGIN_DRAG,        withVeto $ withPoint $ withItem ListBeginDrag)
+    ,(wxEVT_COMMAND_LIST_COL_CLICK,         withColumn ListColClick)
+    ,(wxEVT_COMMAND_LIST_COL_BEGIN_DRAG,    withVeto $ withColumn ListColBeginDrag)
+    ,(wxEVT_COMMAND_LIST_COL_DRAGGING,      withColumn ListColDragging)
+    ,(wxEVT_COMMAND_LIST_COL_END_DRAG,      withVeto $ withColumn ListColEndDrag)
+    ,(wxEVT_COMMAND_LIST_COL_RIGHT_CLICK,   withColumn ListColRightClick)
+    ,(wxEVT_COMMAND_LIST_CACHE_HINT,        withCache  ListCacheHint )
+    ,(wxEVT_COMMAND_LIST_KEY_DOWN,          withKeyCode ListKeyDown )
+    ,(wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS,  \event -> return ListDeleteAllItems )
     ]
   where
-    fromListColEvent :: (Int -> EventList) -> ListEvent a -> IO EventList
-    fromListColEvent make listEvent
+    withPoint make listEvent
+      = do f   <- make listEvent
+           pt  <- listEventGetPoint listEvent
+           return (f pt)
+
+    withCancel make listEvent
+      = do f   <- make listEvent
+           can <- listEventCancelled listEvent
+           return (f can)
+
+    withVeto :: (ListEvent a -> IO (IO () -> EventList)) -> ListEvent a -> IO EventList
+    withVeto make listEvent
+      = do f <- make listEvent
+           return (f (notifyEventVeto listEvent))
+
+    withKeyCode make listEvent
+      = do code <- listEventGetCode listEvent
+           return (make (keyCodeToKey code))
+
+    withCache make listEvent
+      = do lo <- listEventGetCacheFrom listEvent
+           hi <- listEventGetCacheTo listEvent
+           return (make lo hi)
+                
+    withColumn make listEvent
       = do col <- listEventGetColumn listEvent
            return (make col)
 
+    withItem :: (ListIndex -> b) -> ListEvent a -> IO b
+    withItem make listEvent
+      = do item <- listEventGetIndex listEvent
+           return (make item)
+
          
 
--- | Set a scroll event handler.
-listCtrlOnEvent :: ListCtrl a -> (EventList -> IO ()) -> IO ()
-listCtrlOnEvent listCtrl eventHandler
-  = windowOnEvent listCtrl listEvents eventHandler listHandler
+-- | Set a list event handler.
+listCtrlOnListEvent :: ListCtrl a -> (EventList -> IO ()) -> IO ()
+listCtrlOnListEvent listCtrl eventHandler
+  = windowOnEvent listCtrl (map fst listEvents) eventHandler listHandler
   where
     listHandler event
       = do eventList <- fromListEvent (objectCast event)
            eventHandler eventList
 
--- | Get the current mouse event handler of a window.
-listCtrlGetOnEvent :: Window a -> IO (EventList -> IO ())
-listCtrlGetOnEvent window
-  = unsafeWindowGetHandlerState window wxEVT_COMMAND_LIST_ITEM_ACTIVATED (\event -> skipCurrentEvent)
+-- | Get the current list event handler of a window.
+listCtrlGetOnListEvent :: ListCtrl a -> IO (EventList -> IO ())
+listCtrlGetOnListEvent listCtrl
+  = unsafeWindowGetHandlerState listCtrl wxEVT_COMMAND_LIST_ITEM_ACTIVATED (\event -> skipCurrentEvent)
 
 
 
@@ -1681,6 +1765,22 @@ evtHandlerSetClientData evtHandler onDelete x
 unsafeEvtHandlerGetClientData :: EvtHandler a -> IO (Maybe b)
 unsafeEvtHandlerGetClientData evtHandler
   = do closure <- evtHandlerGetClientClosure evtHandler
+       unsafeClosureGetData closure
+
+
+
+-- | Attach a haskell value to tree item data. The 'IO' action
+-- executed when the object is deleted.
+treeCtrlSetItemClientData :: TreeCtrl a -> TreeItem -> IO () -> b -> IO ()
+treeCtrlSetItemClientData treeCtrl item onDelete x
+  = do closure <- createClosure x (const onDelete) (const (return ()))
+       treeCtrlSetItemClientClosure treeCtrl item closure
+       return ()
+
+-- | Retrieve an attached haskell value to a tree item, previously attached with 'treeCtrlSetItemClientData'.
+unsafeTreeCtrlGetItemClientData :: TreeCtrl a -> TreeItem  -> IO (Maybe b)
+unsafeTreeCtrlGetItemClientData treeCtrl item
+  = do closure <- treeCtrlGetItemClientClosure treeCtrl item
        unsafeClosureGetData closure
 
 

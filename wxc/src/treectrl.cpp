@@ -57,6 +57,39 @@ EWXWEXPORT(int, wxTreeItemId_IsOk) (void* _obj)
 	return (int)((wxTreeItemId*)_obj)->IsOk();
 }
 
+EWXWEXPORT(wxTreeItemId*, wxTreeItemId_Clone) (wxTreeItemId* _obj)
+{
+    wxTreeItemId* clone = new wxTreeItemId();
+    *clone = *_obj;
+    return clone;
+}
+
+EWXWEXPORT(wxTreeItemId*, wxTreeItemId_CreateFromValue) (int value)
+{
+    return new wxTreeItemId( value );
+}
+
+EWXWEXPORT(int, wxTreeItemId_GetValue) (wxTreeItemId* _obj)
+{
+    return (long)(_obj->m_pItem);
+}
+
+
+EWXWEXPORT(const wxKeyEvent*,wxTreeEvent_GetKeyEvent)(wxTreeEvent* _obj)
+{
+  return &(_obj->GetKeyEvent());
+}
+
+EWXWEXPORT(int,wxTreeEvent_IsEditCancelled)(wxTreeEvent* _obj)
+{
+  return _obj->IsEditCancelled();
+}
+
+EWXWEXPORT(void,wxTreeEvent_Allow)(wxTreeEvent* _obj)
+{
+  _obj->Allow();
+}
+
 
 EWXWEXPORT(void*, wxTreeCtrl_Create) (void* _obj, void* _cmp, void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
@@ -107,7 +140,34 @@ EWXWEXPORT(void*, wxTreeCtrl_GetStateImageList)(void* _obj)
 {
 	return (void*)((wxTreeCtrl*)_obj)->GetStateImageList();
 }
-	
+
+EWXWEXPORT(void, wxTreeCtrl_AssignImageList)(wxTreeCtrl* _obj, wxImageList* imageList )
+{
+  _obj->AssignImageList(imageList);
+}
+
+EWXWEXPORT(void, wxTreeCtrl_AssignStateImageList)(wxTreeCtrl* _obj, wxImageList* imageList )
+{
+  _obj->AssignStateImageList(imageList);
+}
+
+/*
+EWXWEXPORT(wxImageList*, wxTreeCtrl_GetButtonsImageList)(wxTreeCtrl* _obj)
+{
+  return _obj->GetButtonsImageList();
+}
+
+EWXWEXPORT(void, wxTreeCtrl_SetButtonsImageList)(wxTreeCtrl* _obj, wxImageList* imageList )
+{
+  _obj->SetButtonsImageList(imageList);
+}
+
+EWXWEXPORT(void, wxTreeCtrl_AssignButtonsImageList)(wxTreeCtrl* _obj, wxImageList* imageList )
+{
+  _obj->AssignButtonsImageList(imageList);
+}
+*/
+
 EWXWEXPORT(void, wxTreeCtrl_SetImageList)(void* _obj, void* imageList)
 {
 	((wxTreeCtrl*)_obj)->SetImageList((wxImageList*) imageList);

@@ -2,6 +2,7 @@
 #include "wx/process.h"
 #include "wx/textctrl.h"
 #include "wx/progdlg.h"
+#include "wx/listctrl.h"
 
 /*-----------------------------------------------------------------------------
   new events
@@ -68,6 +69,33 @@ EWXWEXPORT(int,expEVT_SORT)()
 {
   return (int)wxEVT_SORT;
 }
+
+/* list control */
+EWXWEXPORT(int,expEVT_COMMAND_LIST_CACHE_HINT)()
+{
+  return (int)wxEVT_COMMAND_LIST_CACHE_HINT;
+}
+
+EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_RIGHT_CLICK)()
+{
+  return (int)wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
+}
+
+EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_BEGIN_DRAG)()
+{
+  return (int)wxEVT_COMMAND_LIST_COL_BEGIN_DRAG;
+}
+
+EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_DRAGGING)()
+{
+  return (int)wxEVT_COMMAND_LIST_COL_DRAGGING;
+}
+
+EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_END_DRAG)()
+{
+  return (int)wxEVT_COMMAND_LIST_COL_END_DRAG;
+}
+
 
 } /* extern "C" */
 
@@ -1185,6 +1213,27 @@ EWXWEXPORT(wxFrame*,wxMenuBar_GetFrame)(wxMenuBar* _obj)
 {
   return _obj->GetFrame();
 }
+
+
+/*-----------------------------------------------------------------------------
+  listctrl
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(int, wxListEvent_GetCacheFrom)(wxListEvent* _obj)
+{
+  return _obj->GetCacheFrom();
+}
+
+EWXWEXPORT(int, wxListEvent_GetCacheTo)(wxListEvent* _obj)
+{
+  return _obj->GetCacheTo();
+}
+
+
+EWXWEXPORT(void, wxListCtrl_AssignImageList)(wxListCtrl* _obj, wxImageList* images, int which )
+{
+  _obj->AssignImageList(images,which);
+}
+
 
 
 EWXWEXPORT(void, wxListCtrl_GetColumn2)(wxListCtrl* _obj, int col, wxListItem* item)

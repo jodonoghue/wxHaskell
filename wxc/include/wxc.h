@@ -56,6 +56,16 @@ TClass(wxFrame)   wxMenuBar_GetFrame( TSelf(wxMenuBar) _obj );
 
 /* listctrl */
 int expEVT_SORT();
+int expEVT_COMMAND_LIST_CACHE_HINT();
+int expEVT_COMMAND_LIST_COL_RIGHT_CLICK();
+int expEVT_COMMAND_LIST_COL_BEGIN_DRAG();
+int expEVT_COMMAND_LIST_COL_DRAGGING();
+int expEVT_COMMAND_LIST_COL_END_DRAG();
+
+int wxListEvent_GetCacheFrom( TSelf(wxListEvent) _obj);
+int wxListEvent_GetCacheTo( TSelf(wxListEvent) _obj);
+
+void wxListCtrl_AssignImageList( TSelf(wxListCtrl) _obj, TClass(wxImageList) images, int which );
 void wxListCtrl_GetColumn2( TSelf(wxListCtrl) _obj, int col, TClassRef(wxListItem) item);
 void wxListCtrl_GetItem2( TSelf(wxListCtrl) _obj, TClassRef(wxListItem) info);
 void wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item, TPointOut(x,y));
@@ -63,11 +73,31 @@ void wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item, TPointOut(x,
 TBoolInt wxListCtrl_SortItems2(TSelf(wxListCtrl) _obj, TClass(wxClosure) closure );
 
 /* tree ctrl */
+TClassDefExtend(wxcTreeItemData,wxTreeItemData)
+
+/** Create tree item data with a closure. The closure data contains the data while the function is called on deletion. */
+TClass(wxcTreeItemData) wxcTreeItemData_Create( TClass(wxClosure) closure );
+/** Get the client data in the form of a closure. Use 'closureGetData' to get to the actual data.*/
+TClass(wxClosure) wxcTreeItemData_GetClientClosure( TSelf(wxcTreeItemData) self );
+/** Set the tree item data with a closure. The closure data contains the data while the function is called on deletion. */
+void  wxcTreeItemData_SetClientClosure( TSelf(wxcTreeItemData) self, TClass(wxClosure) closure );
+
+TClass(wxTreeItemId) wxTreeItemId_Clone( TSelf(wxTreeItemId) _obj);
+TClass(wxTreeItemId) wxTreeItemId_CreateFromValue(int value);
+int wxTreeItemId_GetValue( TSelf(wxTreeItemId) _obj);
+
+
+TClass(wxKeyEvent) wxTreeEvent_GetKeyEvent( TSelf(wxTreeEvent) _obj);
+int    wxTreeEvent_IsEditCancelled( TSelf(wxTreeEvent) _obj);
+void   wxTreeEvent_Allow( TSelf(wxTreeEvent) _obj);
+
 TClass(wxTreeCtrl) wxTreeCtrl_Create2( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
 void   wxTreeCtrl_InsertItem2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
 void   wxTreeCtrl_InsertItemByIndex2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
 TClass(wxClosure)  wxTreeCtrl_GetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void   wxTreeCtrl_SetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxClosure) closure );
+void   wxTreeCtrl_AssignImageList(TSelf(wxTreeCtrl) _obj, TClass(wxImageList) imageList );
+void   wxTreeCtrl_AssignStateImageList(TSelf(wxTreeCtrl) _obj, TClass(wxImageList) imageList );
 
 
 /* dc */

@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.7 2003/08/19 12:09:53 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.8 2003/09/09 13:15:41 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4422,14 +4422,14 @@ void       wxTreeCtrl_Delete( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item 
 void       wxTreeCtrl_DeleteAllItems( TSelf(wxTreeCtrl) _obj );
 void       wxTreeCtrl_DeleteChildren( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void       wxTreeCtrl_EditLabel( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
-void       wxTreeCtrl_EndEditLabel( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int discardChanges );
+void       wxTreeCtrl_EndEditLabel( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt discardChanges );
 void       wxTreeCtrl_EnsureVisible( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void       wxTreeCtrl_Expand( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
-int        wxTreeCtrl_GetBoundingRect( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int textOnly, TRectOutVoid(x,y,w,h) );
-int        wxTreeCtrl_GetChildrenCount( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int recursively );
+int        wxTreeCtrl_GetBoundingRect( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt textOnly, TRectOutVoid(x,y,w,h) );
+int        wxTreeCtrl_GetChildrenCount( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt recursively );
 int        wxTreeCtrl_GetCount( TSelf(wxTreeCtrl) _obj );
-void*      wxTreeCtrl_GetEditControl( TSelf(wxTreeCtrl) _obj );
-void       wxTreeCtrl_GetFirstChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, void* cookie, TClassRef(wxTreeItemId) _item );
+TClass(wxTextCtrl) wxTreeCtrl_GetEditControl( TSelf(wxTreeCtrl) _obj );
+void       wxTreeCtrl_GetFirstChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int* cookie, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_GetFirstVisibleItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
 TClass(wxImageList) wxTreeCtrl_GetImageList( TSelf(wxTreeCtrl) _obj );
 int        wxTreeCtrl_GetIndent( TSelf(wxTreeCtrl) _obj );
@@ -4437,7 +4437,7 @@ void*      wxTreeCtrl_GetItemData( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) 
 int        wxTreeCtrl_GetItemImage( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int which );
 TStringLen wxTreeCtrl_GetItemText( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TStringOutVoid _buf );
 void       wxTreeCtrl_GetLastChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
-void       wxTreeCtrl_GetNextChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, void* cookie, TClassRef(wxTreeItemId) _item );
+void       wxTreeCtrl_GetNextChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int* cookie, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_GetNextSibling( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_GetNextVisible( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_GetParent( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
@@ -4463,11 +4463,11 @@ void       wxTreeCtrl_SelectItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) i
 void       wxTreeCtrl_SetImageList( TSelf(wxTreeCtrl) _obj, TClass(wxImageList) imageList );
 void       wxTreeCtrl_SetIndent( TSelf(wxTreeCtrl) _obj, int indent );
 void       wxTreeCtrl_SetItemBackgroundColour( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxColour) col );
-void       wxTreeCtrl_SetItemBold( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int bold );
+void       wxTreeCtrl_SetItemBold( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt bold );
 void       wxTreeCtrl_SetItemData( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, void* data );
-void       wxTreeCtrl_SetItemDropHighlight( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int highlight );
+void       wxTreeCtrl_SetItemDropHighlight( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt highlight );
 void       wxTreeCtrl_SetItemFont( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxFont) font );
-void       wxTreeCtrl_SetItemHasChildren( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int has );
+void       wxTreeCtrl_SetItemHasChildren( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TBoolInt hasChildren );
 void       wxTreeCtrl_SetItemImage( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int image, int which );
 void       wxTreeCtrl_SetItemText( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TStringVoid text );
 void       wxTreeCtrl_SetItemTextColour( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxColour) col );
