@@ -4,7 +4,7 @@
 #elif defined(__WXMAC__)
 # ifdef __DARWIN__
 #  include <mach-o/dyld.h>
-    typedef int (*NSGetExecutablePathProcPtr)(char *buf, size_t *bufsize);
+   typedef int (*NSGetExecutablePathProcPtr)(char *buf, size_t *bufsize);
 # else
 #  include <Types.h>
 #  include <Files.h>
@@ -29,20 +29,22 @@ wxString GetApplicationPath()
 /* UNIX & MAC*/
 #else
     wxString argv0;
+
 # ifdef __WXMAC__		
-	if (NSIsSymbolNameDefined("__NSGetExecutablePath"))
+    if (NSIsSymbolNameDefined("__NSGetExecutablePath"))
     {
-		char buf[512];
-		size_t bufLen = 512;
-		buf[0] = 0;
-    	((NSGetExecutablePathProcPtr) NSAddressOfSymbol(NSLookupAndBindSymbol("__NSGetExecutablePath")))(buf, &bufLen);
-		if (strlen(buf) > 0) {
-		  path = buf;
-		  found=true;
-		  return path;
-		}
-	}
+      char buf[512];
+      size_t bufLen = 512;
+      buf[0] = 0;
+      ((NSGetExecutablePathProcPtr) NSAddressOfSymbol(NSLookupAndBindSymbol("__NSGetExecutablePath")))(buf, &bufLen);
+      if (strlen(buf) > 0) {
+        path = buf;
+        found=true;
+        return path;
+      }
+    }
 # endif
+
     argv0 = wxTheApp->argv[0];
 
     /* check absolute path */
