@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.42 2003/10/17 12:33:13 dleijen Exp $
+# $Id: makefile,v 1.43 2003/10/17 15:43:18 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -222,7 +222,7 @@ make-deps	=$(patsubst %,$(1)/%.d,$(2))
 make-his	=$(patsubst %,$(1)/%.hi,$(2))
 
 # usage: $(call run-silent,<command>)
-run-silent	=$(1) > /dev/null 2> /dev/null
+run-silent	=$(1) 1> /dev/null 2> /dev/null
 run-with-echo   =echo "$(1)" && $(1)
 
 # usage: $(call relative-to,<root-dir>,<relative files>)
@@ -311,10 +311,20 @@ install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),
 
 uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)" && $(RM) $(1); fi
 uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)" && $(call run-silent,$(RMDIR) -p $(2)); fi
+
+# extremely baroque way of reversing a list of (at most 10) items
+reverse10	=$(patsubst 9%,%,$(patsubst 8%,%,$(patsubst 7%,%,\
+		$(patsubst 6%,%,$(patsubst 5%,%,$(patsubst 4%,%,\
+		$(patsubst 3%,%,$(patsubst 2%,%,$(patsubst 1%,%,\
+		$(patsubst 0%,%,\
+		$(sort $(join $(wordlist 1,$(words $(1)),9 8 7 6 5 4 3 2 1 0),$(1)))\
+		))))))))))
+
 uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file)) &&) \
 		 $(CD) $(1) && \
-		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)) &&) \
+		 $(foreach dir,$(call reverse10,$(call dirs-of-files,$(call relative-to,$(1),$(2)))),$(call uninstall-dir,$(1),$(dir)) &&) \
 		 :
+
 uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
 
 # install packages
@@ -667,25 +677,19 @@ WXC-OUTDIR	=$(OUTDIR)/$(WXC)
 WXC-SRCDIR	=$(WXC)/src
 WXC-INCDIR	=$(WXC)/include
 
-ifeq ($(WITHMSC),yes)
-WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME).a
-WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)$(DLL)
-else
-WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC).a
-WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC)$(DLL)
-endif
+WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME)-$(VERSION).a
+WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)-$(VERSION)$(DLL)
 
+MSC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME).a
+MSC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)$(DLL)
 
 WXC-OBJS	=$(call make-objs, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-DEPS	=$(call make-deps, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-LIBS	=$(WXWIN-LIBS)
 WXC-CXXFLAGS	=$(WXWIN-CXXFLAGS) -I$(WXC-INCDIR)
 
-ifeq ($(WITHMSC),yes)
-wxc: 
-else
+
 wxc: wxc-dirs $(WXC-LIB)
-endif
 
 wxc-dirs:
 	@$(call ensure-dirs-of-files,$(WXC-OBJS))
@@ -726,9 +730,15 @@ wxc-uninstall:
 	-@$(call uninstall-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB) $(WXC-ARCHIVE))
 
 # dynamic link library on mingw32/cygwin: generates wxc.dll and a libwxc.a import library
+ifeq ($(WITHMSC),yes)
+$(basename $(WXC-LIB)).dll: $(MSC-LIB)
+	$(CP) $(MSC-LIB) $(WXC-LIB)
+	$(CP) $(MSC-ARCHIVE) $(WXC-ARCHIVE)
+else
 $(basename $(WXC-LIB)).dll: $(WXC-OBJS)
 	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl,--output-def,$(WXC-OUTDIR)/$(WXC).def,--out-implib,$(WXC-ARCHIVE)
-	
+endif
+
 # dynamic link library on unix: generates single .so file
 $(basename $(WXC-LIB)).so: $(WXC-OBJS)
 	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$@
