@@ -13,19 +13,19 @@
 module Graphics.UI.WX.Draw
     ( 
     -- * Classes
-      Drawn, penStyle, pen, penwidth, pencap, penjoin
-    , Brushed, brushStyle, brush
+      Drawn, pen, penKind, penWidth, penCap, penJoin, penColor
+    , Brushed, brush, brushKind
       -- * Types
     , DC
     -- ** Brushes
-    , BrushStyle(..), BrushKind(..), brushDefault
+    , BrushStyle(..), BrushKind(..), brushDefault, brushColor
     -- ** Pens
     , PenKind(..), penDefault, penColored, penTransparent
     -- ** Draw styles
     , HatchStyle(..), CapStyle(..), JoinStyle(..), DashStyle(..)
     -- ** Font
     -- , FontInfo(..)
-    , FontFamily(..), FontStyle(..), FontWeight(..)
+    , FontFamily(..), FontShape(..), FontWeight(..)
     , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
     -- * Drawing
     , circle, arc, ellipse, ellipticArc
@@ -56,62 +56,63 @@ import Graphics.UI.WX.Window
 
 --------------------------------------------------------------------------------}
 class Drawn w where
-  penStyle  :: Attr w PenStyle
-  pen       :: Attr w PenKind  
-  penwidth  :: Attr w Int
-  pencap    :: Attr w CapStyle
-  penjoin   :: Attr w JoinStyle
-  pencolor  :: Attr w Color
+  pen       :: Attr w PenStyle
+  penKind   :: Attr w PenKind  
+  penWidth  :: Attr w Int
+  penCap    :: Attr w CapStyle
+  penJoin   :: Attr w JoinStyle
+  penColor  :: Attr w Color
 
 class Brushed w where
-  brushStyle :: Attr w BrushStyle
-  brush      :: Attr w BrushKind
-  brushcolor :: Attr w Color
+  brush      :: Attr w BrushStyle
+  brushKind  :: Attr w BrushKind
+  brushColor :: Attr w Color
 
 instance Drawn (DC a) where
-  penStyle 
-    = newAttr "penStyle" dcGetPenStyle dcSetPenStyle
   pen
-      = mapAttr penKind (\pstyle x -> pstyle{ penKind = x }) penStyle
-
-  penwidth
-    = mapAttr penWidth (\pstyle x -> pstyle{ penWidth = x }) penStyle
-
-  pencap
-    = mapAttr penCap (\pstyle x -> pstyle{ penCap = x }) penStyle
+    = newAttr "pen" dcGetPenStyle dcSetPenStyle
   
-  penjoin
-    = mapAttr penJoin (\pstyle x -> pstyle{ penJoin = x }) penStyle
+  penKind
+      = mapAttr _penKind (\pstyle x -> pstyle{ _penKind = x }) pen
 
-  pencolor
-    = mapAttr penColor (\pstyle color -> pstyle{ penColor = color }) penStyle
+  penWidth
+    = mapAttr _penWidth (\pstyle x -> pstyle{ _penWidth = x }) pen
+
+  penCap
+    = mapAttr _penCap (\pstyle x -> pstyle{ _penCap = x }) pen
+  
+  penJoin
+    = mapAttr _penJoin (\pstyle x -> pstyle{ _penJoin = x }) pen
+
+  penColor
+    = mapAttr _penColor (\pstyle color -> pstyle{ _penColor = color }) pen
 
 instance Brushed (DC a) where
-  brushStyle
-    = newAttr "brushStyle" dcGetBrushStyle dcSetBrushStyle
-
   brush
-    = mapAttr brushKind (\bstyle x -> bstyle{ brushKind = x }) brushStyle
+    = newAttr "brush" dcGetBrushStyle dcSetBrushStyle
 
-  brushcolor
-    = mapAttr brushColor (\bstyle color -> bstyle{ brushColor = color }) brushStyle
+  brushKind
+    = mapAttr _brushKind (\bstyle x -> bstyle{ _brushKind = x }) brush
+
+  brushColor
+    = mapAttr _brushColor (\bstyle color -> bstyle{ _brushColor = color }) brush
 
 instance Literate (DC a) where
   font
-    = newAttr "font" dcGetFontInfo dcSetFontInfo
+    = newAttr "font" dcGetFontStyle dcSetFontStyle
 
-  textcolor
+  textColor
     = newAttr "textcolor" dcGetTextForeground dcSetTextForeground
 
-  textbgcolor
+  textBgcolor
     = newAttr "textbgcolor" dcGetTextBackground dcSetTextForeground
 
 instance Colored (DC a) where
   color
-    = newAttr "color" (\dc -> get dc pencolor) (\dc c -> set dc [pencolor := c, textcolor := c])
+    = newAttr "color" (\dc -> get dc penColor) (\dc c -> set dc [penColor := c, textColor := c])
 
   bgcolor
-    = newAttr "bgcolor" (\dc -> get dc brushcolor) (\dc c -> set dc [brushcolor := c, textbgcolor := c])
+    = newAttr "bgcolor" (\dc -> get dc brushColor) (\dc c -> set dc [brushColor := c, textBgcolor := c])
 
 
 -- Save pen/font/brush efficiently.
@@ -135,7 +136,7 @@ arc dc center radius start end props
   = ellipticArc dc bounds start end props
   where
     bounds 
-      = rect (pt (px center - radius) (py center - radius)) (sz (2*radius) (2*radius))
+      = rect (pt (pointX center - radius) (pointY center - radius)) (sz (2*radius) (2*radius))
 {-
   = dcWith dc props (dcDrawArc dc center (point start) (point end) )
   where

@@ -688,7 +688,7 @@ sizerFromLayout parent layout
            return container
 
     insert container (Grid goptions gap rows)
-      = do g <- flexGridSizerCreate (length rows) (maximum (map length rows)) (sh gap) (sw gap)
+      = do g <- flexGridSizerCreate (length rows) (maximum (map length rows)) (sizeH gap) (sizeW gap)
            mapM_ (stretchRow g) (zip [0..] (map (all (stretchV.options)) rows))
            mapM_ (stretchCol g) (zip [0..] (map (all (stretchH.options)) (transpose rows)))
            mapM_ (insert (downcastSizer g)) (concat rows)
@@ -710,7 +710,8 @@ sizerFromLayout parent layout
            return (downcastSizer sizer)
 
     insert container (Line options (Size w h))
-      = do l <- staticLineCreate parent idAny (rectNull{ width = w, height = h }) (if (w >= h) then wxHORIZONTAL else wxVERTICAL)
+      = do l <- staticLineCreate parent idAny (rectNull{ rectWidth = w, rectHeight = h }) 
+                  (if (w >= h) then wxHORIZONTAL else wxVERTICAL)
            sizerAddWindowWithOptions container l options
            return container
 

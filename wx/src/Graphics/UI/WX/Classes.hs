@@ -14,8 +14,8 @@ module Graphics.UI.WX.Classes
     ( 
       -- * Attributes
       Textual(text,appendText)
-    , Literate(font ,fontfamily, fontface, fontencoding,fontsize, fontweight, fontunderline, fontstyle
-              ,textcolor,textbgcolor)
+    , Literate(font ,fontFamily, fontFace, fontSize, fontWeight, fontUnderline, fontShape
+              ,textColor,textBgcolor)
     , Dimensions(..)
     , Colored(..)
     , Visible(..)
@@ -29,9 +29,9 @@ module Graphics.UI.WX.Classes
     , Tipped( tooltip )
     , Selection( selection )
     , Selections( selections )
-    , Items( itemcount, item, items, itemadd )
+    , Items( itemCount, item, items, itemAppend, itemDelete )
     -- * Types
-    , FontInfo(..)
+    , FontStyle(..)
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -59,49 +59,45 @@ class Textual w where
 -- | Widgets with a font.
 class Literate w where
   -- | The font of the widget.
-  font       :: Attr w FontInfo
+  font       :: Attr w FontStyle
 
   -- | The font size.
-  fontsize   :: Attr w Int
+  fontSize   :: Attr w Int
 
   -- | The font weight.
-  fontweight :: Attr w FontWeight
+  fontWeight :: Attr w FontWeight
 
   -- | The font family.
-  fontfamily :: Attr w FontFamily
+  fontFamily :: Attr w FontFamily
 
   -- | The font style.
-  fontstyle  :: Attr w FontStyle
+  fontShape  :: Attr w FontShape
 
   -- | The font /face/: determines a platform dependent font.
-  fontface   :: Attr w String
+  fontFace   :: Attr w String
 
   -- | Is the font underlined?
-  fontunderline :: Attr w Bool
-
-  -- | Font encoding.
-  fontencoding  :: Attr w Int
+  fontUnderline :: Attr w Bool
 
   -- | Text color.
-  textcolor  :: Attr w Color
+  textColor  :: Attr w Color
 
   -- | Text background color
-  textbgcolor:: Attr w Color 
+  textBgcolor:: Attr w Color 
 
-  fontsize      = mapAttr fontSize   (\finfo x -> finfo{ fontSize = x }) font
-  fontweight    = mapAttr fontWeight (\finfo x -> finfo{ fontWeight = x }) font
-  fontfamily    = mapAttr fontFamily (\finfo x -> finfo{ fontFamily = x }) font
-  fontstyle     = mapAttr fontStyle  (\finfo x -> finfo{ fontStyle = x }) font
-  fontface      = mapAttr fontFace   (\finfo x -> finfo{ fontFace = x }) font
-  fontunderline = mapAttr fontUnderline (\finfo x -> finfo{ fontUnderline = x }) font
-  fontencoding  = mapAttr fontEncoding  (\finfo x -> finfo{ fontEncoding = x }) font
+  fontSize      = mapAttr _fontSize   (\finfo x -> finfo{ _fontSize = x }) font
+  fontWeight    = mapAttr _fontWeight (\finfo x -> finfo{ _fontWeight = x }) font
+  fontFamily    = mapAttr _fontFamily (\finfo x -> finfo{ _fontFamily = x }) font
+  fontShape     = mapAttr _fontShape  (\finfo x -> finfo{ _fontShape  = x }) font
+  fontFace      = mapAttr _fontFace   (\finfo x -> finfo{ _fontFace = x }) font
+  fontUnderline = mapAttr _fontUnderline (\finfo x -> finfo{ _fontUnderline = x }) font
 
   
 
 -- | Widgets that have a size.
 class Dimensions w where
-  -- | The size of a widget (in pixels).
-  size      :: Attr w Size
+  -- | The outer size of a widget (in pixels).
+  outerSize :: Attr w Size
   -- | The (relative) position of a widget.
   position  :: Attr w Point
   -- | The occupied area.
@@ -110,26 +106,30 @@ class Dimensions w where
   bestSize  :: ReadAttr w Size
   -- | The area available for client use (i.e. without the border etc).
   clientSize :: Attr w Size
+  -- | The virtual size of a widget (ie. the total scrolling area)
+  virtualSize :: Attr w Size
 
   -- defaults
-  size
-    = mapAttr rectSize (\r sz -> rect (topLeft r) sz) area
+  outerSize
+    = mapAttr rectSize (\r sz -> rect (rectTopLeft r) sz) area
   position
-      = mapAttr topLeft (\r pt -> rect pt (rectSize r)) area
+      = mapAttr rectTopLeft (\r pt -> rect pt (rectSize r)) area
   area
     = newAttr "area" getArea setArea
     where
       getArea w
-        = do sz <- get w size
+        = do sz <- get w outerSize
              pt <- get w position
              return (rect pt sz)
       setArea w rect
-        = set w [size := rectSize rect, position := topLeft rect]
+        = set w [outerSize := rectSize rect, position := rectTopLeft rect]
 
   clientSize
-    = size
+    = outerSize
   bestSize
-    = size
+    = outerSize
+  virtualSize
+    = clientSize
 
 class Colored w where
   -- | The background color.
@@ -219,26 +219,30 @@ class Selections w where
 -- | Widgets containing certain items (like strings in a listbox)
 class Items w a | w -> a where
   -- | Number of items.
-  itemcount  :: ReadAttr w Int
+  itemCount  :: ReadAttr w Int
   -- | All the items as a list. This attribute might not be writable for some widgets (like radioboxes)
   items  :: Attr w [a]
   -- | An item by zero-based index.
   item   :: Int -> Attr w a
-  -- | Add an items. Only valid for writeable items.
-  itemadd :: w -> a -> IO ()
+  -- | Delete an item. Only valid for writeable items.
+  itemDelete :: w -> Int -> IO ()
+  -- | Append an item. Only valid for writeable items.
+  itemAppend :: w -> a -> IO ()
 
   items
     = newAttr "items" getter setter
     where
       getter :: w -> IO [a]
       getter w
-        = do n <- get w itemcount
+        = do n <- get w itemCount
              mapM (\i -> get w (item i)) [0..n-1]
 
       setter :: w -> [a] -> IO ()
       setter w xs
-        = mapM_ (\(i,x) -> set w [item i := x]) (zip [0..] xs)
+        = do n <- get w itemCount
+             sequence_ (replicate n (itemDelete w 0))
+             mapM_ (\x -> itemAppend w x) xs
 
-  itemadd w x
+  itemAppend w x
     = do xs <- get w items
          set w [items := xs ++ [x]]

@@ -42,25 +42,26 @@ module Graphics.UI.WX.Types
     , boolFromInt, intFromBool
 
     -- ** Colors
-    , Color, colorRGB, colorRed, colorGreen, colorBlue
+    , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue
     , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
     , red, green, blue
     , cyan, magenta, yellow
 
     -- ** Points
-    , Point(..), pt, pointFromVec, pointFromSize, pointZero, pointNull
+    , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
     , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
     -- ** Sizes
-    , Size(..), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+    , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+    , sizeMin, sizeMax
 
     -- ** Vectors
-    , Vector(..), vec, vecFromPoint, vecFromSize, vecZero, vecNull
+    , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
     , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecDistance
 
     -- ** Rectangles
-    , Rect(..)
-    , topLeft, topRight, bottomLeft, bottomRight, bottom, right
+    , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+    , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
     , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
     , rectContains, rectMoveTo, rectFromPoint, rectCentralPoint, rectCentralRect, rectStretchTo
     , rectMove, rectOverlaps, rectsDiff, rectUnion, rectOverlap, rectUnions

@@ -242,15 +242,17 @@ instance Selection (Choice ()) where
 
 
 instance Items (Choice a) String where
-  itemcount
-    = readAttr "itemcount" choiceGetCount
+  itemCount
+    = readAttr "itemCount" choiceGetCount
 
   item i
     = newAttr "item" (\w -> choiceGetString w i) (\w x -> choiceSetString w i x)
 
-  itemadd w x
+  itemAppend w x
     = choiceAppend w x
 
+  itemDelete w i
+    = choiceDelete w i
 
 
 -- | Create a choice item to select a one of a list of strings.
@@ -274,7 +276,21 @@ instance Selection (ComboBox a) where
     = newAttr "selection" comboBoxGetSelection comboBoxSetSelection
 
 
+-- implemented by choice
+{-
+instance Items (ComboBox a) String where
+  itemCount
+    = readAttr "itemCount" comboBoxGetCount
 
+  item i
+    = readAttr "item" (\w -> comboBoxGetString w i) -- (\w x -> comboBoxSetString w i x)
+
+  itemAppend w x
+    = comboBoxAppend w x
+
+  itemDelete w i
+    = comboBoxDelete w i
+-}
 
 -- | Create a new combo box with a list of initial entries and a boolean
 -- that is 'True' when the entries should be sorted.
@@ -293,15 +309,17 @@ instance Commanding (ListBox a) where
     = newEvent "command" listBoxGetOnCommand listBoxOnCommand
 
 instance Items (ListBox a) String where
-  itemcount
-    = readAttr "itemcount" listBoxGetCount
+  itemCount
+    = readAttr "itemCount" listBoxGetCount
 
   item i
     = newAttr "item" (\w -> listBoxGetString w i) (\w x -> listBoxSetString w i x)
 
-  itemadd w x
+  itemAppend w x
     = listBoxAppend w x
 
+  itemDelete w i
+    = listBoxDelete w i
 
 -- | Pointer to single selection list boxes, deriving from 'ListBox'.
 type SingleListBox a  = ListBox (CSingleListBox a)
@@ -359,12 +377,17 @@ instance Selection (RadioBox a) where
     = newAttr "selection" radioBoxGetSelection radioBoxSetSelection
 
 instance Items (RadioBox a) String where
-  itemcount
-    = readAttr "itemcount" radioBoxNumber
+  itemCount
+    = readAttr "itemCount" radioBoxNumber
 
   item i
     = newAttr "item" (\r -> radioBoxGetItemLabel r i) (\r s -> radioBoxSetItemLabel r i s)
 
+  itemAppend
+    = error "Controls.itemAppend: you can not append items to a radiobox"
+
+  itemDelete
+    = error "Controls.itemDelete: you can not delete items of a radiobox"
 
 
 -- | Create a new radio button group with an initial orientation and a list of

@@ -100,11 +100,11 @@ for x y f = sequence_ $ map f [x..y]
 
 drawField :: DC () -> Field -> Rect -> IO ()
 drawField dc f r@(Rect x y w h) =
-  do set dc [brush := BrushSolid, bgcolor := colorRGB 0x80 0x80 0x00] 
+  do set dc [brushKind := BrushSolid, brushColor := rgb 0x80 0x80 0x00] 
      case f of Full East -> do polygon dc (map (lin r) camel) []
-                               polygon dc (map (lin r) saddle) [bgcolor := red] 
+                               polygon dc (map (lin r) saddle) [brushColor := red] 
                Full West -> do polygon dc (map (lin r . mirror) camel) []
-                               polygon dc (map (lin r . mirror) saddle) [bgcolor := blue] 
+                               polygon dc (map (lin r . mirror) saddle) [brushColor := blue] 
                _         -> return ()
 
 camel :: [(Float, Float)]
@@ -124,7 +124,7 @@ lin (Rect x y w h) (px, py) = let nx = floor $ (fromInteger . toInteger) w * px
 klik :: Panel () -> Var Board -> Point -> IO ()
 klik pan desert (Point x y) =
   do board <- varGet desert
-     (Size w h) <- get pan size
+     (Size w h) <- get pan clientSize
      let l = length board
          s = min h $ w `div` l
          xd = (w - l * s) `div` 2

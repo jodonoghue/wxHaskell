@@ -48,10 +48,10 @@ imageViewer
 
        -- connect menu
        frameSetMenuBar f m
-       windowOnMenuCommand f wxID_OPEN  (onOpen f vbitmap fm s)
-       windowOnMenuCommand f wxID_CLOSE (onClose f vbitmap fm s)
-       windowOnMenuCommand f wxID_ABOUT (onAbout f)
-       windowOnMenuCommand f wxID_EXIT  (onQuit f)
+       evtHandlerOnMenuCommand f wxID_OPEN  (onOpen f vbitmap fm s)
+       evtHandlerOnMenuCommand f wxID_CLOSE (onClose f vbitmap fm s)
+       evtHandlerOnMenuCommand f wxID_ABOUT (onAbout f)
+       evtHandlerOnMenuCommand f wxID_EXIT  (onQuit f)
        windowAddOnDelete f (close f vbitmap)
        -- show it
        windowShow f
@@ -82,7 +82,7 @@ imageViewer
                      oldsz <- windowGetClientSize f
                      let newsz = (sizeMin (sz w h) oldsz)
                      windowSetClientSize f newsz
-                     scrolledWindowSetScrollbars s 1 1 w h 0 0 0
+                     scrolledWindowSetScrollbars s 1 1 w h 0 0 False
                      -- and repaint explicitly (to delete previous stuff)
                      withClientDC s (\dc -> onPaint vbitmap dc (rectFromSize newsz) [])
                   `catch` (\err -> return ())
@@ -102,7 +102,7 @@ imageViewer
            -- explicitly delete the old bitmap
            withClientDC s dcClear
            -- and than reset the scrollbars
-           scrolledWindowSetScrollbars s 1 1 0 0 0 0 0
+           scrolledWindowSetScrollbars s 1 1 0 0 0 0 False
 
     close f vbitmap
       = do mbBitmap <- varSwap vbitmap Nothing

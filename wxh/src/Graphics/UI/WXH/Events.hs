@@ -31,6 +31,7 @@ module Graphics.UI.WXH.Events
         , windowOnKeyChar
         , windowOnKeyDown
         , windowOnKeyUp
+        , windowAddOnClose
         , windowOnClose
         , windowOnDestroy
         , windowAddOnDelete
@@ -386,6 +387,12 @@ windowGetOnScroll window
 {-----------------------------------------------------------------------------------------
   Close, Destroy, Create
 -----------------------------------------------------------------------------------------}
+-- | Adds a close handler to the currently installed close handlers.
+windowAddOnClose :: Window a -> IO () -> IO ()
+windowAddOnClose window new
+  = do prev <- windowGetOnClose window
+       windowSetOnClose window (do{ new; prev })
+
 -- | Set an event handler that is called when the user tries to close a frame or dialog.
 -- Don't forget to call the previous handler or 'frameDestroy' explicitly or otherwise the
 -- frame won't be closed.
@@ -411,7 +418,7 @@ windowGetOnDestroy window
 
 -- | Add a delete-event handler to the current installed delete-event handlers.
 --
--- > windowAddOnDelete new window
+-- > windowAddOnDelete window new
 -- >   = do prev <- windowGetOnDelete window
 -- >        windowOnDelete window (do{ new; prev })
 

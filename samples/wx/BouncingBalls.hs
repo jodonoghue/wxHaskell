@@ -56,7 +56,7 @@ ballsFrame
     -- paint the balls
     paintBalls vballs dc viewRect updateAreas
       = do balls <- varGet vballs
-           set dc [bgcolor := red, brush := BrushSolid] 
+           set dc [brushColor := red, brushKind := BrushSolid] 
            mapM_ (drawBall dc) (map head (filter (not.null) balls))
 
     drawBall dc pt

@@ -30,8 +30,8 @@ helloWorld
 
        -- connect menu
        frameSetMenuBar f m
-       windowOnMenuCommand f wxID_ABOUT (onAbout f)
-       windowOnMenuCommand f wxID_EXIT  (onQuit f)
+       evtHandlerOnMenuCommand f wxID_ABOUT (onAbout f)
+       evtHandlerOnMenuCommand f wxID_EXIT  (onQuit f)
 
        -- show it
        windowShow f

@@ -15,7 +15,7 @@ module Graphics.UI.WX.Window
         ( -- * Window
           Window 
           -- * ScrolledWindow
-        , ScrolledWindow, scrolledWindow
+        , ScrolledWindow, scrolledWindow, scrollRate
         ) where
 
 import Graphics.UI.WXH
@@ -28,6 +28,8 @@ import Graphics.UI.WX.Events
 {--------------------------------------------------------------------------------
   ScrolledWindow
 --------------------------------------------------------------------------------}
+-- | A scrollable window. Use 'virtualSize' and 'scrollRate' to set the scrollbar
+-- behaviour.
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
   = do sw <- scrolledWindowCreate parent idAny rectNull 
@@ -36,6 +38,18 @@ scrolledWindow parent props
        return sw
 
 
+-- | The horizontal and vertical scroll rate of scrolled window. Use @0@ to disable 
+-- scrolling in that direction.
+scrollRate :: Attr (ScrolledWindow a) Size
+scrollRate
+  = newAttr "scrollRate" getter setter
+  where
+    getter sw
+      = do p <- scrolledWindowGetScrollPixelsPerUnit sw
+           return (sizeFromPoint p)
+     
+    setter sw size
+      = scrolledWindowSetScrollRate sw (sizeW size) (sizeH size)
 
 {--------------------------------------------------------------------------------
   Properties
@@ -74,7 +88,7 @@ instance Textual (Window a) where
 
 
 instance Dimensions (Window a) where
-  size
+  outerSize
     = newAttr "size" windowGetSize setSize
     where
       setSize w sz
@@ -94,6 +108,9 @@ instance Dimensions (Window a) where
 
   clientSize
     = newAttr "clientSize" windowGetClientSize windowSetClientSize
+
+  virtualSize
+    = newAttr "virtualSize" windowGetVirtualSize windowSetVirtualSize
 
 
 instance Colored (Window a) where
@@ -119,21 +136,21 @@ instance Literate (Window a) where
            (getFont (windowGetFont w))
         where
           getFont io
-            = bracket io fontDelete fontGetFontInfo 
+            = bracket io fontDelete fontGetFontStyle 
 
       setter w info
         = ifInstanceOf w classTextCtrl
            (\textCtrl -> bracket (textAttrCreateDefault)
                                  (textAttrDelete)
-                                 (\attr -> withFontInfo info $ \fnt ->
+                                 (\attr -> withFontStyle info $ \fnt ->
                                            do textAttrSetFont attr fnt
                                               textCtrlSetDefaultStyle textCtrl attr
                                               return ()))
-           (withFontInfo info $ \fnt ->
+           (withFontStyle info $ \fnt ->
             do windowSetFont w fnt
                return ())
 
-  textcolor
+  textColor
     = newAttr "textcolor" getter setter
     where
       getter w
@@ -154,7 +171,7 @@ instance Literate (Window a) where
                                               return ()))
            (set w [color := c])
 
-  textbgcolor
+  textBgcolor
     = newAttr "textbgcolor" getter setter
     where
       getter w

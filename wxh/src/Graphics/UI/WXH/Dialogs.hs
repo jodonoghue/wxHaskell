@@ -108,17 +108,16 @@ fileDialog parent processResult flags message wildcards directory filename
 
 
 -- | Show a font selection dialog with a given initial font. Returns 'Nothing' when cancel was pressed.
-fontDialog :: Window a -> FontInfo -> IO (Maybe FontInfo)
-fontDialog parent fontInfo
-  = withFontInfo fontInfo $ \font ->
-    do f <- getFontFromUser parent font
-       ok <- fontOk f
-       if ok
-        then do info <- fontGetFontInfo f
-                fontDelete f
-                return (Just info)
-        else do fontDelete f
-                return Nothing
+fontDialog :: Window a -> FontStyle -> IO (Maybe FontStyle)
+fontDialog parent fontStyle
+  = withFontStyle fontStyle $ \font ->
+    bracket (getFontFromUser parent font)
+            (fontDelete)
+            (\f -> do ok <- fontOk f
+                      if ok
+                       then do info <- fontGetFontStyle f
+                               return (Just info)
+                       else return Nothing)
 
 {-
   bracket (fontDataCreate) (fontDataDelete) $
@@ -135,7 +134,7 @@ fontDialog parent fontInfo
 colorDialog :: Window a -> Color -> IO (Maybe Color)
 colorDialog parent color
   = do c <- getColourFromUser parent color
-       if (isColorValid c)
+       if (colorOk c)
         then return (Just c)
         else return Nothing
 

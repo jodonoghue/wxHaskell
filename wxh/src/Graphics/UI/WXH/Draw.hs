@@ -24,11 +24,11 @@ module Graphics.UI.WXH.Draw
         -- * Scrolled windows
         , windowGetViewStart, windowGetViewRect, windowCalcUnscrolledPosition
         -- * Font
-        , FontInfo(..), FontFamily(..), FontStyle(..), FontWeight(..)
+        , FontStyle(..), FontFamily(..), FontShape(..), FontWeight(..)
         , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
-        , withFontInfo, dcWithFontInfo
-        , dcSetFontInfo, dcGetFontInfo
-        , fontCreateFromInfo, fontGetFontInfo
+        , withFontStyle, dcWithFontStyle
+        , dcSetFontStyle, dcGetFontStyle
+        , fontCreateFromStyle, fontGetFontStyle
         -- * Brush
         , BrushStyle(..), BrushKind(..)
         , HatchStyle(..)
@@ -117,42 +117,45 @@ windowCalcUnscrolledPosition window p
 
 
 -- | Font descriptor. The font is normally specified thru the 'FontFamily', giving
--- some degree of portability. The 'fontFace' can be used to specify the exact font.
-data FontInfo
-  = FontInfo { fontSize      :: !Int
-             , fontFamily    :: !FontFamily
-             , fontStyle     :: !FontStyle
-             , fontWeight    :: !FontWeight
-             , fontUnderline :: !Bool
-             , fontFace      :: !String       -- ^ normally @\"\"@
-             , fontEncoding  :: !Int          -- ^ normally @wxFONTENCODING_DEFAULT@
+-- some degree of portability. The '_fontFace' can be used to specify the exact (platform
+-- dependent) font. 
+--
+-- Note that the original wxWindows @FontStyle@ is renamed to @FontShape@.
+data FontStyle
+  = FontStyle{ _fontSize      :: !Int
+             , _fontFamily    :: !FontFamily
+             , _fontShape     :: !FontShape
+             , _fontWeight    :: !FontWeight
+             , _fontUnderline :: !Bool
+             , _fontFace      :: !String       -- ^ normally @\"\"@
+             , _fontEncoding  :: !Int          -- ^ normally @wxFONTENCODING_DEFAULT@
              }
   deriving (Eq,Show)
 
 -- | Default 10pt font.
-fontDefault :: FontInfo
+fontDefault :: FontStyle
 fontDefault
-  = FontInfo 10 FontDefault StyleNormal WeightNormal False "" wxFONTENCODING_DEFAULT
+  = FontStyle 10 FontDefault ShapeNormal WeightNormal False "" wxFONTENCODING_DEFAULT
 
 -- | Default 10pt sans-serif font.
-fontSwiss :: FontInfo
+fontSwiss :: FontStyle
 fontSwiss
-  = fontDefault{ fontFamily = FontSwiss }
+  = fontDefault{ _fontFamily = FontSwiss }
 
 -- | Default 8pt font.
-fontSmall :: FontInfo
+fontSmall :: FontStyle
 fontSmall
-  = fontDefault{ fontSize = 8 }
+  = fontDefault{ _fontSize = 8 }
 
 -- | Default 10pt italic.
-fontItalic :: FontInfo
+fontItalic :: FontStyle
 fontItalic
-  = fontDefault{ fontStyle = StyleItalic }
+  = fontDefault{ _fontShape = ShapeItalic }
 
 -- | Monospaced font, 10pt.
-fontFixed :: FontInfo
+fontFixed :: FontStyle
 fontFixed 
-  = fontDefault{ fontFamily = FontModern }
+  = fontDefault{ _fontFamily = FontModern }
 
 -- | Standard font families.
 data FontFamily
@@ -165,10 +168,10 @@ data FontFamily
   deriving (Eq,Show)
 
 -- | The font style.
-data FontStyle
-  = StyleNormal
-  | StyleItalic
-  | StyleSlant
+data FontShape
+  = ShapeNormal
+  | ShapeItalic
+  | ShapeSlant
   deriving (Eq,Show)
 
 -- | The font weight.
@@ -179,16 +182,16 @@ data FontWeight
   deriving (Eq,Show)
 
 -- | Use a font that is automatically deleted at the end of the computation.
-withFontInfo :: FontInfo -> (Font () -> IO a) -> IO a
-withFontInfo fontInfo f
-  = do (font,delete) <- fontCreateFromInfo fontInfo
+withFontStyle :: FontStyle -> (Font () -> IO a) -> IO a
+withFontStyle fontStyle f
+  = do (font,delete) <- fontCreateFromStyle fontStyle
        finally (f font) delete
 
 
 -- | Set a font that is automatically deleted at the end of the computation.
-dcWithFontInfo :: DC a -> FontInfo -> IO b -> IO b
-dcWithFontInfo dc fontInfo io
-  = withFontInfo fontInfo $ \font ->
+dcWithFontStyle :: DC a -> FontStyle -> IO b -> IO b
+dcWithFontStyle dc fontStyle io
+  = withFontStyle fontStyle $ \font ->
     bracket  (do oldFont <- dcGetFont dc
                  dcSetFont dc font
                  return oldFont)
@@ -198,23 +201,23 @@ dcWithFontInfo dc fontInfo io
              (const io)
 
 -- | Set the font info of a DC.
-dcSetFontInfo :: DC a -> FontInfo -> IO ()
-dcSetFontInfo dc info
-  = do (font,del) <- fontCreateFromInfo info
+dcSetFontStyle :: DC a -> FontStyle -> IO ()
+dcSetFontStyle dc info
+  = do (font,del) <- fontCreateFromStyle info
        finalize del $
         do dcSetFont dc font
 
 -- | Get the current font info.
-dcGetFontInfo :: DC a -> IO FontInfo
-dcGetFontInfo dc
+dcGetFontStyle :: DC a -> IO FontStyle
+dcGetFontStyle dc
   = do font <- dcGetFont dc
        finalize (fontDelete font) $
-        do fontGetFontInfo font
+        do fontGetFontStyle font
 
 
--- | Create a 'Font' from 'FontInfo'. Returns both the font and a deletion procedure.
-fontCreateFromInfo :: FontInfo -> IO (Font (),IO ())
-fontCreateFromInfo (FontInfo size family style weight underline face encoding)
+-- | Create a 'Font' from 'FontStyle'. Returns both the font and a deletion procedure.
+fontCreateFromStyle :: FontStyle -> IO (Font (),IO ())
+fontCreateFromStyle (FontStyle size family style weight underline face encoding)
   = do font <- fontCreate size cfamily cstyle cweight (intFromBool underline) face encoding
        return (font,when (font /= objectNull) (fontDelete font))
   where
@@ -229,9 +232,9 @@ fontCreateFromInfo (FontInfo size family style weight underline face encoding)
 
     cstyle
       = case style of
-          StyleNormal     -> wxNORMAL
-          StyleItalic     -> wxITALIC
-          StyleSlant      -> wxSLANT
+          ShapeNormal     -> wxNORMAL
+          ShapeItalic     -> wxITALIC
+          ShapeSlant      -> wxSLANT
 
     cweight
       = case weight of
@@ -240,19 +243,24 @@ fontCreateFromInfo (FontInfo size family style weight underline face encoding)
           WeightLight     -> wxLIGHT
 
 
--- | Get the 'FontInfo' from a 'Font' object.
-fontGetFontInfo :: Font () -> IO FontInfo
-fontGetFontInfo font
-  = if (objectIsNull font || font == nullFont)
+-- | Get the 'FontStyle' from a 'Font' object.
+fontGetFontStyle :: Font () -> IO FontStyle
+fontGetFontStyle font
+  = if (objectIsNull font)
      then return fontDefault
-     else do size    <- fontGetPointSize font
-             cfamily <- fontGetFamily font
-             cstyle  <- fontGetStyle font
-             cweight <- fontGetWeight font
-             cunderl <- fontGetUnderlined font
-             face    <- fontGetFaceName font
-             enc     <- fontGetEncoding font
-             return (FontInfo size (toFamily cfamily) (toStyle cstyle) (toWeight cweight) (cunderl /= 0) face enc)
+     else do ok <- fontOk font
+             if not ok
+               then return fontDefault
+               else do size    <- fontGetPointSize font
+                       cfamily <- fontGetFamily font
+                       cstyle  <- fontGetStyle font
+                       cweight <- fontGetWeight font
+                       cunderl <- fontGetUnderlined font
+                       face    <- fontGetFaceName font
+                       enc     <- fontGetEncoding font
+                       return (FontStyle size (toFamily cfamily) (toStyle cstyle) 
+                                (toWeight cweight) 
+                                (cunderl /= 0) face enc)
    where
     toFamily f
       | f == wxDECORATIVE   = FontDecorative
@@ -263,9 +271,9 @@ fontGetFontInfo font
       | otherwise           = FontDefault
 
     toStyle s
-      | s == wxITALIC       = StyleItalic
-      | s == wxSLANT        = StyleSlant
-      | otherwise           = StyleNormal
+      | s == wxITALIC       = ShapeItalic
+      | s == wxSLANT        = ShapeSlant
+      | otherwise           = ShapeNormal
 
     toWeight w
       | w == wxBOLD         = WeightBold
@@ -279,16 +287,21 @@ fontGetFontInfo font
 
 -- | Pen style.
 data PenStyle
-  = PenStyle { penKind :: !PenKind, penColor :: !Color, penWidth :: !Int, penCap :: !CapStyle, penJoin :: !JoinStyle }
+  = PenStyle { _penKind  :: !PenKind
+             , _penColor :: !Color
+             , _penWidth :: !Int
+             , _penCap   :: !CapStyle
+             , _penJoin  :: !JoinStyle 
+             }
   deriving (Eq,Show)
 
 -- | Pen kinds.
 data PenKind
   = PenTransparent    -- ^ No edge.
   | PenSolid
-  | PenDash   { penDash   :: !DashStyle  }
-  | PenHatch  { penHatch  :: !HatchStyle }
-  | PenStipple{ penBitmap :: !(Bitmap ())}    -- ^ @penColor@ is ignored
+  | PenDash   { _penDash   :: !DashStyle  }
+  | PenHatch  { _penHatch  :: !HatchStyle }
+  | PenStipple{ _penBitmap :: !(Bitmap ())}    -- ^ @_penColor@ is ignored
   deriving (Eq,Show)
 
 -- | Default pen (@PenStyle PenSolid black 1 CapRound JoinRound@)
@@ -299,12 +312,12 @@ penDefault
 -- | A solid pen with a certain color and width.
 penColored :: Color -> Int -> PenStyle
 penColored color width
-  = penDefault{ penColor = color, penWidth = width }
+  = penDefault{ _penColor = color, _penWidth = width }
 
 -- | A transparent pen.
 penTransparent :: PenStyle
 penTransparent
-  = penDefault{ penKind = PenTransparent }
+  = penDefault{ _penKind = PenTransparent }
 
 -- | Dash style
 data DashStyle
@@ -341,15 +354,15 @@ data HatchStyle
 
 -- | Brush style.
 data BrushStyle
-  = BrushStyle { brushKind :: !BrushKind, brushColor :: !Color }
+  = BrushStyle { _brushKind :: !BrushKind, _brushColor :: !Color }
   deriving (Eq,Show)
 
 -- | Brush kind.
 data BrushKind
   = BrushTransparent                            -- ^ No filling
   | BrushSolid                                  -- ^ Solid color
-  | BrushHatch  { brushHatch  :: !HatchStyle }  -- ^ Hatch pattern
-  | BrushStipple{ brushBitmap :: !(Bitmap ())}  -- ^ Bitmap pattern (on win95 only 8x8 bitmaps are supported)
+  | BrushHatch  { _brushHatch  :: !HatchStyle }  -- ^ Hatch pattern
+  | BrushStipple{ _brushBitmap :: !(Bitmap ())}  -- ^ Bitmap pattern (on win95 only 8x8 bitmaps are supported)
   deriving (Eq,Show)
 
 
@@ -425,13 +438,13 @@ penCreateFromStyle penStyle
            return (pen,penDelete pen)
 
     setCap pen
-      = case penCap penStyle of
+      = case _penCap penStyle of
           CapRound      -> return ()
           CapProjecting -> penSetCap pen wxCAP_PROJECTING
           CapButt       -> penSetCap pen wxCAP_BUTT
 
     setJoin pen
-      = case penJoin penStyle of
+      = case _penJoin penStyle of
           JoinRound     -> return ()
           JoinBevel     -> penSetJoin pen wxJOIN_BEVEL
           JoinMiter     -> penSetJoin pen wxJOIN_MITER
@@ -446,8 +459,13 @@ penCreateFromStyle penStyle
 -- | Create a 'PenStyle' from a 'Pen'.
 penGetPenStyle :: Pen a -> IO PenStyle
 penGetPenStyle pen
-  = do stl <- penGetStyle pen
-       toPenStyle stl
+  = if (objectIsNull pen)
+     then return penDefault
+     else do ok <- penOk pen
+             if not ok 
+              then return penDefault
+              else do stl <- penGetStyle pen
+                      toPenStyle stl
   where
     toPenStyle stl
       | stl == wxTRANSPARENT      = return penTransparent
@@ -566,10 +584,15 @@ brushCreateFromStyle brushStyle
 -- | Get the 'BrushStyle' of 'Brush'.
 brushGetBrushStyle :: Brush a -> IO BrushStyle
 brushGetBrushStyle brush
-  = do stl   <- brushGetStyle brush
-       kind  <- toBrushKind stl
-       color <- brushGetColour brush
-       return (BrushStyle kind color)
+  = if (objectIsNull brush)
+     then return brushDefault
+     else do ok <- brushOk brush
+             if not ok
+              then return brushDefault
+              else do stl   <- brushGetStyle brush
+                      kind  <- toBrushKind stl
+                      color <- brushGetColour brush
+                      return (BrushStyle kind color)
   where
     toBrushKind stl
       | stl == wxTRANSPARENT      = return BrushTransparent
@@ -640,8 +663,8 @@ drawLines dc ps
     dcDrawLines dc n pxs pys (pt 0 0)
   where
     n  = length ps
-    xs = map px ps
-    ys = map py ps
+    xs = map pointX ps
+    ys = map pointY ps
 
 
 -- | Draw a polygon. The polygon is filled with the odd-even rule.
@@ -653,8 +676,8 @@ drawPolygon dc ps
     dcDrawPolygon dc n pxs pys (pt 0 0) wxODDEVEN_RULE
   where
     n  = length ps
-    xs = map px ps
-    ys = map py ps
+    xs = map pointX ps
+    ys = map pointY ps
 
 -- | Gets the dimensions of the string using the currently selected font.
 getTextExtent :: DC a -> String -> IO Size
@@ -749,7 +772,7 @@ dcBufferWithRef dc mbVar r draw
 
      drawBuffered memdc
       = do -- set the device origin for scrolled windows
-           dcSetDeviceOrigin memdc (pointFromVec (vecNegate (vecFromPoint (topLeft r))))
+           dcSetDeviceOrigin memdc (pointFromVec (vecNegate (vecFromPoint (rectTopLeft r))))
            dcSetClippingRegion memdc r
            bracket (dcGetBackground dc)
                    (\brush -> do dcSetBrush memdc nullBrush
@@ -762,5 +785,5 @@ dcBufferWithRef dc mbVar r draw
                                  draw (objectCast memdc) -- down cast
                    )
            -- blit the memdc into the owner dc.
-           dcBlit dc r memdc (topLeft r) wxCOPY False
+           dcBlit dc r memdc (rectTopLeft r) wxCOPY False
            return ()

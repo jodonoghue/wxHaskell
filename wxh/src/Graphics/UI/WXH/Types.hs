@@ -41,26 +41,26 @@ module Graphics.UI.WXH.Types(
             , boolFromInt, intFromBool
 
             -- ** Colors
-            , Color, colorRGB, colorRed, colorGreen, colorBlue
+            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue
             , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
             , red, green, blue
             , cyan, magenta, yellow
 
             -- ** Points
-            , Point(..), pt, pointFromVec, pointFromSize, pointZero, pointNull
+            , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
             , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
             -- ** Sizes
-            , Size(..), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+            , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
             , sizeMin, sizeMax
 
             -- ** Vectors
-            , Vector(..), vec, vecFromPoint, vecFromSize, vecZero, vecNull
+            , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
             , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecDistance
 
             -- ** Rectangles
-            , Rect(..)
-            , topLeft, topRight, bottomLeft, bottomRight, bottom, right
+            , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+            , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
             , rectContains, rectMoveTo, rectFromPoint, rectCentralPoint, rectCentralRect, rectStretchTo
             , rectMove, rectOverlaps, rectsDiff, rectUnion, rectOverlap, rectUnions
@@ -232,6 +232,16 @@ pointScale v (Point x y) = Point (v*x) (v*y)
 {-----------------------------------------------------------------------------------------
   Size
 -----------------------------------------------------------------------------------------}
+-- | Return the width. (see also 'sizeW').
+sizeWidth :: Size -> Int
+sizeWidth (Size w h)
+  = w
+
+-- | Return the height. (see also 'sizeH').
+sizeHeight :: Size -> Int
+sizeHeight (Size w h)
+  = h
+
 -- | Returns 'True' if the first size totally encloses the second argument.
 sizeEncloses :: Size -> Size -> Bool
 sizeEncloses (Size w0 h0) (Size w1 h1)
@@ -291,7 +301,7 @@ rectCentralPoint (Rect l t w h)
 rectCentralRect :: Rect -> Size -> Rect
 rectCentralRect r@(Rect l t rw rh) (Size w h)
   = let c = rectCentralPoint r
-    in Rect (px c - (w - div w 2)) (py c - (h - div h 2)) w h
+    in Rect (pointX c - (w - div w 2)) (pointY c - (h - div h 2)) w h
 
 
 rectStretchTo :: Size -> Rect -> Rect
@@ -306,6 +316,8 @@ rectOverlaps :: Rect -> Rect -> Bool
 rectOverlaps (Rect x1 y1 w1 h1) (Rect x2 y2 w2 h2)
   = (x1+w1 >= x2 && x1 <= x2+w2) && (y1+h1 >= y2 && y1 <= y2+h2)
 
+
+-- | A list with rectangles that constitute the difference between two rectangles.
 rectsDiff :: Rect -> Rect -> [Rect]
 rectsDiff rect1 rect2
   = subtractFittingRect rect1 (rectOverlap rect1 rect2)
@@ -314,16 +326,16 @@ rectsDiff rect1 rect2
     subtractFittingRect :: Rect -> Rect -> [Rect]
     subtractFittingRect r1 r2 =
             filter (not . rectIsEmpty)
-                    [ rectBetween (topLeft r1) (topRight r2)
-                    , rectBetween (pt (left r1) (top r2)) (bottomLeft r2)
-                    , rectBetween (pt (left r1) (bottom r2)) (pt (right r2) (bottom r1))
-                    , rectBetween (topRight r2) (bottomRight r1)
+                    [ rectBetween (rectTopLeft r1) (rectTopRight r2)
+                    , rectBetween (pt (rectLeft r1) (rectTop r2)) (rectBottomLeft r2)
+                    , rectBetween (pt (rectLeft r1) (rectBottom r2)) (pt (rectRight r2) (rectBottom r1))
+                    , rectBetween (rectTopRight r2) (rectBottomRight r1)
                     ]
 
 rectUnion :: Rect -> Rect -> Rect
 rectUnion r1 r2
-  = rectBetween (pt (min (left r1) (left r2)) (min (top r1) (top r2)))
-         (pt (max (right r1) (right r2)) (max (bottom r1) (bottom r2)))
+  = rectBetween (pt (min (rectLeft r1) (rectLeft r2)) (min (rectTop r1) (rectTop r2)))
+         (pt (max (rectRight r1) (rectRight r2)) (max (rectBottom r1) (rectBottom r2)))
 
 rectUnions :: [Rect] -> Rect
 rectUnions []
@@ -331,10 +343,11 @@ rectUnions []
 rectUnions (r:rs)
   = foldr rectUnion r rs
 
+-- | The intersection between two rectangles.
 rectOverlap :: Rect -> Rect -> Rect
 rectOverlap r1 r2
-  | rectOverlaps r1 r2  = rectBetween (pt (max (left r1) (left r2)) (max (top r1) (top r2)))
-                               (pt (min (right r1) (right r2)) (min (bottom r1) (bottom r2)))
+  | rectOverlaps r1 r2  = rectBetween (pt (max (rectLeft r1) (rectLeft r2)) (max (rectTop r1) (rectTop r2)))
+                               (pt (min (rectRight r1) (rectRight r2)) (min (rectBottom r1) (rectBottom r2)))
   | otherwise           = rectZero
 
 

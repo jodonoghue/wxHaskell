@@ -20,7 +20,7 @@ gui
        s <- scrolledWindowCreate f idAny rectNull (wxHSCROLL + wxVSCROLL + wxNO_FULL_REPAINT_ON_RESIZE + wxCLIP_CHILDREN)
 
        -- virtual size is 20*40 = 800 pixels
-       scrolledWindowSetScrollbars s 20 20 40 40 0 0 0
+       scrolledWindowSetScrollbars s 20 20 40 40 0 0 False
 
        -- to show the effect of double-buffering, we track the mouse with a small disc.
        mouseXY <- varCreate (pt 0 0)
@@ -69,9 +69,9 @@ gui
            dcDrawRotatedText dc "Polygon" (pt 200 370) 45
 
            -- fonts
-           dcWithFontInfo dc fontSwiss{ fontSize = 12, fontWeight = WeightBold } $
+           dcWithFontStyle dc fontSwiss{ _fontSize = 12, _fontWeight = WeightBold } $
             do dcDrawText dc "Swiss 12pt bold" (pt 50 270)
-               dcWithFontInfo dc fontNormal{ fontFamily = FontScript, fontSize = 16} $
+               dcWithFontStyle dc fontDefault{ _fontFamily = FontScript, _fontSize = 16} $
                 dcDrawText dc "Hand writing 16pt" (pt 50 290)
                dcDrawText dc "Swiss 12pt bold" (pt 50 310)
 
@@ -80,13 +80,13 @@ gui
            dcDrawText dc "label" (pt 455 355)
 
            -- cap styles
-           dcWithPenStyle dc (penDefault{ penWidth = 20, penCap = CapRound }) $
+           dcWithPenStyle dc (penDefault{ _penWidth = 20, _penCap = CapRound }) $
             dcDrawLine dc (pt 400 100) (pt 500 100)
 
-           dcWithPenStyle dc (penDefault{ penWidth = 20, penCap = CapProjecting }) $
+           dcWithPenStyle dc (penDefault{ _penWidth = 20, _penCap = CapProjecting }) $
             dcDrawLine dc (pt 400 150) (pt 500 150)
 
-           dcWithPenStyle dc (penDefault{ penWidth = 20, penCap = CapButt }) $
+           dcWithPenStyle dc (penDefault{ _penWidth = 20, _penCap = CapButt }) $
             dcDrawLine dc (pt 400 200) (pt 500 200)
 
            dcSetBrush dc nullBrush

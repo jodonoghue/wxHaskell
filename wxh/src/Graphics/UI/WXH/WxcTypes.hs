@@ -25,21 +25,21 @@ module Graphics.UI.WXH.WxcTypes(
             , intFromBool, boolFromInt
 
             -- ** Point
-            , Point(..), pt, pointFromVec, pointFromSize, pointZero, pointNull
+            , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
 
             -- ** Size
-            , Size(..), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
+            , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
 
             -- ** Vector
-            , Vector(..), vec, vecFromPoint, vecFromSize, vecZero, vecNull
+            , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
 
             -- * Rectangle
-            , Rect(..)
-            , topLeft, topRight, bottomLeft, bottomRight, bottom, right
+            , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+            , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
             -- ** Color
-            , Color, colorRGB, colorRed, colorGreen, colorBlue, isColorValid
+            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, colorOk
 
             -- * Marshalling
             -- ** Basic types
@@ -155,12 +155,16 @@ objectCast obj
 -- upper-left corner of their view frame, where a positive x goes to the right and
 -- a positive y to the bottom of the view.
 data Point  = Point
-        { px :: !Int -- ^ x component of a point.
-        , py :: !Int -- ^ y component of a point.
+        { pointX :: !Int -- ^ x component of a point.
+        , pointY :: !Int -- ^ y component of a point.
         }
         deriving (Eq,Show)
 
--- | Short function to construct a point.
+-- | Construct a point.
+point :: Int -> Int -> Point
+point x y  = Point x y
+
+-- | Shorter function to construct a point.
 pt :: Int -> Int -> Point
 pt x y  = Point x y
 
@@ -172,6 +176,7 @@ pointFromSize :: Size -> Point
 pointFromSize (Size w h)
   = Point w h
 
+-- | Point at the origin.
 pointZero :: Point
 pointZero
   = Point 0 0
@@ -210,10 +215,15 @@ fromCPoint x y
 -----------------------------------------------------------------------------------------}
 -- | A @Size@ has a width and height.
 data Size   = Size
-        { sw :: !Int -- ^ the width  of a size
-        , sh :: !Int -- ^ the height of a size
+        { sizeW :: !Int -- ^ the width  of a size
+        , sizeH :: !Int -- ^ the height of a size
         }
         deriving (Eq,Show)
+
+-- | Construct a size from a width and height.
+size :: Int -> Int -> Size
+size w h
+  = Size w h
 
 -- | Short function to construct a size
 sz :: Int -> Int -> Size
@@ -265,11 +275,14 @@ toCIntSizeH (Size w h)  = toCInt h
 -----------------------------------------------------------------------------------------}
 -- | A vector with an x and y delta.
 data Vector = Vector
-        { vx :: !Int -- ^ delta-x component of a vector
-        , vy :: !Int -- ^ delta-y component of a vector
+        { vecX :: !Int -- ^ delta-x component of a vector
+        , vecY :: !Int -- ^ delta-y component of a vector
         }
         deriving (Eq,Show)
 
+-- | Construct a vector.
+vector :: Int -> Int -> Vector
+vector dx dy  = Vector dx dy
 
 -- | Short function to construct a vector.
 vec :: Int -> Int -> Vector
@@ -293,7 +306,6 @@ vecFromPoint (Point x y)
 vecFromSize :: Size -> Vector
 vecFromSize (Size w h)
   = Vector w h
-
 
 
 -- marshalling
@@ -325,23 +337,23 @@ fromCVector x y
 -- | A rectangle is defined by the left x coordinate, the top y coordinate,
 -- the width and the height.
 data Rect   = Rect
-        { left   :: !Int
-        , top    :: !Int
-        , width  :: !Int
-        , height :: !Int
+        { rectLeft   :: !Int
+        , rectTop    :: !Int
+        , rectWidth  :: !Int
+        , rectHeight :: !Int
         }
         deriving (Eq,Show)
 
 
-topLeft, topRight, bottomLeft, bottomRight :: Rect -> Point
-topLeft     (Rect l t w h)  = Point l t
-topRight    (Rect l t w h)  = Point (l+w) t
-bottomLeft  (Rect l t w h)  = Point l (t+h)
-bottomRight (Rect l t w h)  = Point (l+w) (t+h)
+rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight :: Rect -> Point
+rectTopLeft     (Rect l t w h)  = Point l t
+rectTopRight    (Rect l t w h)  = Point (l+w) t
+rectBottomLeft  (Rect l t w h)  = Point l (t+h)
+rectBottomRight (Rect l t w h)  = Point (l+w) (t+h)
 
-bottom, right :: Rect -> Int
-bottom (Rect x y w h)  = y + h
-right  (Rect x y w h)  = x + w
+rectBottom, rectRight :: Rect -> Int
+rectBottom (Rect x y w h)  = y + h
+rectRight  (Rect x y w h)  = x + w
 
 -- | Create a rectangle at a certain (upper-left) point with a certain size.
 rect :: Point -> Size -> Rect
@@ -721,9 +733,14 @@ colorGreen (Color r g b) = g
 colorBlue  :: Color -> Int
 colorBlue  (Color r g b) = b
 
+-- | This is an illegal color, corresponding to @nullColour@.
+colorNull :: Color
+colorNull
+  = rgb (-1) (-1) (-1)
+
 -- | Check of a color is valid (@Colour::Ok@)
-isColorValid :: Color -> Bool
-isColorValid (Color r g b)
+colorOk :: Color -> Bool
+colorOk (Color r g b)
   = bound r && bound g && bound b
   where
     bound x = (x >= 0) && (x <= 255)
@@ -744,7 +761,7 @@ withManagedColourResult io
   = do pcolour <- io
        color <- do ok <- colourOk pcolour
                    if (ok==0)
-                    then return (Color (-1) (-1) (-1))
+                    then return colorNull
                     else do r <- colourRed pcolour
                             g <- colourGreen pcolour
                             b <- colourBlue pcolour
@@ -760,16 +777,19 @@ withManagedColour (Color r g b) f
        return x
 
 colourFromColor :: Color -> IO (Colour ())
-colourFromColor (Color r g b)
-  = do pcolour <- colourCreateRGB (fromIntegral r) (fromIntegral g) (fromIntegral b)
-       newForeignPtr pcolour (colourDelete pcolour)
+colourFromColor color@(Color r g b)
+  = if (colorOk color)
+     then do pcolour <- colourCreateRGB (fromIntegral r) (fromIntegral g) (fromIntegral b)
+             newForeignPtr pcolour (colourDelete pcolour)
+     else do pcolour <- colourNull
+             newForeignPtr pcolour (return ())
 
 colorFromColour :: Colour a -> IO Color
 colorFromColour c
   = withManaged c $ \pcolour ->
     do ok <- colourOk pcolour
        if (ok==0)
-        then return (Color (-1) (-1) (-1))
+        then return colorNull
         else do r <- colourRed pcolour
                 g <- colourGreen pcolour
                 b <- colourBlue pcolour
@@ -783,3 +803,4 @@ foreign import ccall "wxColour_Red"   colourRed       :: ColourObject a -> IO CU
 foreign import ccall "wxColour_Green" colourGreen     :: ColourObject a -> IO CUChar
 foreign import ccall "wxColour_Blue"  colourBlue      :: ColourObject a -> IO CUChar
 foreign import ccall "wxColour_Ok"    colourOk        :: ColourObject a -> IO CInt
+foreign import ccall "Null_Colour"    colourNull      :: IO (ColourObject ())
