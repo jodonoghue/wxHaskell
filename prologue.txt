@@ -1,17 +1,18 @@
-wxHaskell is a Haskell binding to the portable wxWindows GUI library.
+wxHaskell is a Haskell binding to the portable wxWidgets GUI library.
 See <http://wxhaskell.sourceforge.net> for the latest information.
 
 The "Graphics.UI.WX" library is a /middle-level/ Haskell library for writing graphical
 user interfaces. It is build on top the "Graphics.UI.WXCore" library, the core interface
-to the wxWindows library. The wxWindows functions are not explained here.
-Please look at the original wxWindows documentation at <http://www.wxwindows.org>
+to the wxWidgets library. The wxWidgets functions are not explained here.
+Please look at the original wxWidgets documentation at <http://www.wxwidgets.org>
+
 
 LICENSE:
 
 The wxHaskell libraries are distributed under the wxWindows library license.
 The documentation is subject to the wxWindows documentation license.
 
-See <http://www.wxwindows.org/newlicen.htm> for the legal description of the license.
+See <http://www.wxwidgets.org/newlicen.htm> for the legal description of the license.
 
 The wxWindows library license is essentially the L-GPL (Library General Public Licence), 
 with an exception stating that derived works in binary form may be distributed on the 

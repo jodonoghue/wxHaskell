@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.63 2004/03/23 12:37:13 dleijen Exp $
+# $Id: makefile,v 1.64 2004/03/23 13:04:15 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -174,7 +174,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 # wxhaskell project itself
 #--------------------------------------------------------------------------
 WXHASKELL-SOURCES= \
-	config.search configure makefile \
+	configure makefile \
 	prologue.txt license.txt \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
