@@ -131,6 +131,7 @@ module Graphics.UI.WXCore.Events
         , EventList(..), ListIndex
         
         -- * Current event
+        , propagateEvent
         , skipCurrentEvent
         , withCurrentEvent
 
@@ -1828,10 +1829,19 @@ withCurrentEvent f
         else return ()
 
 -- | Pass the event on the next /wxWindows/ event handler, either on this window or its parent.
--- Always call this method when you do not process the event.
+-- Always call this method when you do not process the event. /Note:/ The use of
+-- 'propagateEvent' is encouraged as it is a much better name than 'skipCurrentEvent'. This
+-- function name is just for better compatibility with wxWindows :-)
 skipCurrentEvent :: IO ()
 skipCurrentEvent
   = withCurrentEvent (\event -> eventSkip event)
+
+-- | Pass the event on the next /wxWindows/ event handler, either on this window or its parent.
+-- Always call this method when you do not process the event. (This function just call 'skipCurrentEvent').
+propagateEvent :: IO ()
+propagateEvent
+  = skipCurrentEvent
+
 
 ------------------------------------------------------------------------------------------
 -- Generic event connection

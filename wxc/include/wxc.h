@@ -138,6 +138,9 @@ TClass(wxClosure)  wxTimerEx_GetClosure( TSelf(wxTimerEx) _obj );
 TClass(wxMenuItem)  wxMenuItem_CreateSeparator();
 TClass(wxMenuItem)  wxMenuItem_CreateEx(int id, TString label, TString help, int itemkind, TClass(wxMenu) submenu);
 
+/* Toolbar */
+void wxToolBar_AddTool2( TSelf(wxToolBar) _obj, int toolId, TString label, TClass(wxBitmap) bmp, TClass(wxBitmap) bmpDisabled, int itemKind, TString shortHelp, TString longHelp );
+
 /* Progress dialog */
 TClass(wxProgressDialog) wxProgressDialog_Create( TString title, TString message, int max, TClass(wxWindow) parent, int style );
 int  wxProgressDialog_Update(TSelf(wxProgressDialog) obj, int value );

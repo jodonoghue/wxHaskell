@@ -54,7 +54,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , colourFromColor, colorFromColour
             , colourCreate, colourCreateRGB, colourDelete, colourRed, colourGreen, colourBlue
 
-            , TreeItem, treeItemInvalid, treeItemIsOk
+            , TreeItem, treeItemInvalid, treeItemIsOk, treeItemFromInt
             , withRefTreeItemId, withTreeItemId, withTreeItemIdResult
 
             -- ** Managed object types
@@ -741,6 +741,10 @@ treeItemInvalid   = TreeItem 0
 treeItemIsOk :: TreeItem -> Bool
 treeItemIsOk (TreeItem val)
   = (val /= 0)
+
+treeItemFromInt :: Int -> TreeItem
+treeItemFromInt i
+  = TreeItem i
 
 withRefTreeItemId :: (Object a -> IO ()) -> IO TreeItem
 withRefTreeItemId f

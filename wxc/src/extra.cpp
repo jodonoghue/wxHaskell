@@ -1201,7 +1201,7 @@ EWXWEXPORT(void, wxNotebook_AssignImageList)( wxNotebook* _obj, wxImageList* ima
 }
 
 /*-----------------------------------------------------------------------------
-  menu
+  menu & toolbar
 -----------------------------------------------------------------------------*/
 EWXWEXPORT(wxMenuBar*,wxMenu_GetMenuBar)(wxMenu* _obj)
 {
@@ -1214,6 +1214,10 @@ EWXWEXPORT(wxFrame*,wxMenuBar_GetFrame)(wxMenuBar* _obj)
   return _obj->GetFrame();
 }
 
+EWXWEXPORT(void,wxToolBar_AddTool2)( wxToolBar* _obj, int toolId, char* label, wxBitmap* bmp, wxBitmap* bmpDisabled, int itemKind, char* shortHelp, char* longHelp )
+{
+  _obj->AddTool(toolId,label,*bmp,*bmpDisabled,(wxItemKind)itemKind,shortHelp,longHelp,NULL);
+}
 
 /*-----------------------------------------------------------------------------
   listctrl

@@ -127,13 +127,6 @@ mapEvent :: (a -> b) -> (a -> b -> a) -> Event w a -> Event w b
 mapEvent get set (Event attr)
   = Event (mapAttr get set attr)
 
--- | Pass the current event on to the default handlers and parent widgets. Always call
--- this method when the event is not processed.
-propagateEvent :: IO ()
-propagateEvent
-  = skipCurrentEvent
-
-
 {--------------------------------------------------------------------
    Event classes
 --------------------------------------------------------------------}
@@ -157,6 +150,7 @@ class Reactive w where
 class Paint w where
   paint     :: Event w (DC () -> Rect -> [Rect] -> IO ())
   repaint   :: w -> IO ()
+
 
 {--------------------------------------------------------------------
    Mouse event filters

@@ -45,6 +45,11 @@ imageViewer
        hlp    <- menuHelp      [text := "&Help"]
        about  <- menuAbout hlp [text := "&About...", help := "About ImageViewer"]
 
+       -- create Toolbar
+       tbar   <- toolBar f []
+       toolMenu tbar "open" open "../bitmaps/fileopen16.png" []
+       toolMenu tbar "about" about "../bitmaps/wxwin16.png"   []
+
        -- create statusbar field
        status <- statusField   [text := "Welcome to the wxHaskell ImageViewer"]
 

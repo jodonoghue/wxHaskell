@@ -4,7 +4,7 @@
 module Main where
 
 import Graphics.UI.WX
-import Graphics.UI.WXCore -- ( textCtrlAppendText, (.+.), wxTE_MULTILINE, wxTE_LINEWRAP)
+import Graphics.UI.WXCore 
 
 main :: IO ()
 main
@@ -50,6 +50,12 @@ gui
                   [tooltip := "sorted listbox", on command ::= logSelect clabels]
        sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enable :~ not]]
 
+       -- slider/gauge page
+       p5   <- panel nb [text := "slider"]
+       s    <- hslider p5 True {- show labels -} 1 100 [selection := 50]
+       g    <- hgauge  p5 100 [selection := 50]
+       set s [on command := do{ i <- get s selection; set g [selection := i]} ]
+
        -- specify layout
        set f [layout :=
                 container p $
@@ -65,6 +71,10 @@ gui
                     ,container p4 $ margin 10 $ column 5 [ hstretch  $ widget sc1
                                                          , floatLeft $
                                                            row 0 [widget sl1, widget sl2]]
+                    ,container p5 $ margin 10 $ column 5 [ hfill $ widget s
+                                                         , hfill $ widget g
+                                                         , glue
+                                                         ]
                     ]
                  , hfill $ widget textlog
                  ]

@@ -32,6 +32,9 @@ module Graphics.UI.WX.Menu
       -- ** Menu items
     , MenuItem, menuItem, menuQuit, menuAbout
     , menuLine, menuSub
+    -- * Tool bar
+    , ToolBar, toolBar, toolBarEx
+    , ToolBarItem, toolMenu, toolItem, tool
     -- * Status bar
     , StatusField, statusBar, statusField, statusWidth
     -- * Deprecated
@@ -47,6 +50,7 @@ import System.IO.Unsafe (unsafePerformIO)
 import Graphics.UI.WXCore.WxcClasses hiding (Event)
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore.Image
 import Graphics.UI.WXCore.Frame
 
 
@@ -284,9 +288,144 @@ menuSetEvtHandlers menu hs
   = evtHandlerSetClientData menu (return ()) hs 
 
 
+{--------------------------------------------------------------------------------
+  Toolbar
+--------------------------------------------------------------------------------}
+-- | Create a toolbar window with a divider and text labels.
+toolBar :: Frame a -> [Prop (ToolBar ())] -> IO (ToolBar ())
+toolBar parent props
+  = toolBarEx parent True True props
+
+-- | Create a toolbar window. The second argument specifies whether text labels
+-- should be shown, and the third argument whether a divider line is present
+-- above the toolbar.
+toolBarEx :: Frame a -> Bool -> Bool -> [Prop (ToolBar ())] -> IO (ToolBar ())
+toolBarEx parent showText showDivider props
+  = do t <- toolBarCreate parent idAny rectNull 
+              ( wxTB_DOCKABLE .+. wxTB_FLAT
+                .+. (if showText then wxTB_TEXT else 0)
+                .+. (if showDivider then 0 else 0x200 {- wxTB_NODIVIDER -})
+              )
+       set t props
+       frameSetToolBar parent t
+       return t
 
 
+data ToolBarItem  = ToolBarItem (ToolBar ()) Id Bool
 
+instance Able ToolBarItem  where
+  enable 
+    = newAttr "enable" getter setter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = toolBarGetToolEnabled toolbar id
+
+      setter (ToolBarItem toolbar id isToggle) enable
+        = toolBarEnableTool toolbar id enable
+         
+
+instance Tipped ToolBarItem where
+  tooltip 
+    = newAttr "tooltip" getter setter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = toolBarGetToolShortHelp toolbar id
+
+      setter (ToolBarItem toolbar id isToggle) txt
+        = toolBarSetToolShortHelp toolbar id txt
+         
+instance Help ToolBarItem  where
+  help  
+    = newAttr "help" getter setter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = toolBarGetToolLongHelp toolbar id
+
+      setter (ToolBarItem toolbar id isToggle) txt
+        = toolBarSetToolLongHelp toolbar id txt
+         
+
+instance Checkable ToolBarItem where
+  checkable 
+    = readAttr "checkable" getter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = return isToggle
+
+  checked   
+    = newAttr "checked"  getter setter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = toolBarGetToolState toolbar id
+
+      setter (ToolBarItem toolbar id isToggle) toggle
+        = toolBarToggleTool toolbar id toggle
+         
+
+instance Identity ToolBarItem where
+  identity  
+    = readAttr "identity" getter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = return id
+
+
+instance Commanding ToolBarItem where
+  command
+    = newEvent "command" getter setter
+    where
+      getter (ToolBarItem toolbar id isToggle)
+        = evtHandlerGetOnMenuCommand toolbar id
+
+      setter (ToolBarItem toolbar id isToggle) io
+        = evtHandlerOnMenuCommand toolbar id io
+
+-- | React on tool event. (normally handled by 'menu' though, so only use this
+-- for orphan toolbar items).
+tool :: ToolBarItem -> Event (Window w) (IO ())
+tool (ToolBarItem toolbar id isToggle)
+  = newEvent "tool" getter setter
+  where
+    getter w
+      = evtHandlerGetOnMenuCommand w id
+    setter w io
+      = evtHandlerOnMenuCommand w id io
+
+-- | Create a tool bar item based on a menu. Takes a label, the relevant menu
+-- item and a bitmap file (or png,gif,ico,etc.) as arguments. The toolbar item will fire the relevant
+-- menu items just as if the menu has been selected.
+toolMenu :: ToolBar a -> String -> MenuItem a -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
+toolMenu toolbar label menuitem bitmapPath props
+  = do isToggle <- get menuitem checkable
+       id       <- get menuitem identity
+       lhelp    <- get menuitem help
+       shelp    <- get menuitem help
+       withBitmapFromFile bitmapPath $ \bitmap ->
+         do toolBarAddTool2 toolbar id label bitmap nullBitmap 
+                            (if isToggle then wxITEM_CHECK else wxITEM_NORMAL)
+                            shelp lhelp
+            let t = ToolBarItem (downcastToolBar toolbar) id isToggle
+            set t props
+            toolBarRealize toolbar
+            return t
+       
+-- | Create an /orphan/ toolbar item that is unassociated with a menu. Takes a 
+-- label, a flag that is 'True' when the item is 'checkable' and a path to a bitmap
+-- (or png,gif,ico,etc.) as arguments.
+toolItem :: ToolBar a -> String -> Bool -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
+toolItem toolbar label isCheckable bitmapPath props
+  = withBitmapFromFile bitmapPath $ \bitmap ->
+    do id <- idCreate
+       toolBarAddTool2 toolbar id label bitmap nullBitmap 
+                            (if isCheckable then wxITEM_CHECK else wxITEM_NORMAL)
+                            "" ""
+       let t = ToolBarItem (downcastToolBar toolbar) id isCheckable
+       set t props
+       toolBarRealize toolbar
+       return t
+   
+downcastToolBar :: ToolBar a -> ToolBar ()
+downcastToolBar t  = objectCast t
 
 {--------------------------------------------------------------------------------
   Statusbar

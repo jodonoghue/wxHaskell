@@ -19,7 +19,7 @@ imgComputer   = "computer"
 imgDisk       = "disk"
 imgFile       = "file"
 imgHFile      = "hsicon"
-imgFolder     = "f_closed"
+imgFolder     = "f_closed2"
 imgFolderOpen = "f_open"
 
 -- plain names of images
@@ -64,18 +64,18 @@ gui :: IO ()
 gui
   = do -- main gui elements: frame, panel
        f <- frame [text := "File browser"]
+       
        -- panel: just for the nice grey color
        p <- panel f []
       
        -- image list
-       images  <- imageListCreate (sz 16 16) True 2
-       imageListAddIconsFromFiles images imageFiles
+       images  <- imageListFromFiles (sz 16 16) imageFiles
 
        -- splitter window between directory tree and file view.
-       s <- splitterWindowCreate p idAny rectNull wxSP_LIVE_UPDATE
+       s <- splitterWindow p []
 
        -- initialize tree control
-       t <- treeCtrlCreate2 s idAny rectNull wxTR_HAS_BUTTONS
+       t <- treeCtrl s []
        treeCtrlAssignImageList t images  {- 'assign' deletes the imagelist on delete -}
        
        -- set top node
@@ -92,18 +92,15 @@ gui
        treeCtrlExpand t top
 
        -- list control
-       l  <- listCtrlCreate s idAny rectNull wxLC_REPORT
+       l  <- listCtrl s [columns := [("Name",AlignLeft,140),("Permissions",AlignLeft,80),("Date",AlignLeft,100)]]
        listCtrlSetImageList l images wxIMAGE_LIST_SMALL
-       listCtrlInsertColumn l 0 {-first-}  "Name"        wxLIST_FORMAT_LEFT 140 {- width -}
-       listCtrlInsertColumn l 1 {-second-} "Permissions" wxLIST_FORMAT_LEFT  80
-       listCtrlInsertColumn l 2 {-third-}  "Date"        wxLIST_FORMAT_LEFT 100
-
+       
        -- status bar
        status <- statusField [text := "wxHaskell file browser example"]
 
        -- install event handlers
-       treeCtrlOnTreeEvent t (onTreeEvent t l status)
-       listCtrlOnListEvent l (onListEvent l t status)
+       set t [on treeEvent := onTreeEvent t l status]
+       set l [on listEvent := onListEvent l t status]
 
        -- specify layout
        set f [layout     := container p $ margin 5 $ 
@@ -143,7 +140,7 @@ onListEvent :: ListCtrl a -> TreeCtrl b -> StatusField -> EventList -> IO ()
 onListEvent l t status event
   = case event of
       ListItemSelected item
-        -> do fpath <- treeCtrlGetSelection t >>= treeCtrlGetItemPath t
+        -> do fpath <- do{ idx <- treeCtrlGetSelection t; treeCtrlGetItemPath t idx }
               fname <- listCtrlGetItemText l item
               set status [text := fpath ++ fname]
               propagateEvent
@@ -206,6 +203,9 @@ treeCtrlAddSubDirs t parent
       = do item <- treeCtrlAppendItem t parent name (imageIndex imgFolder) (imageIndex imgFolderOpen) objectNull
            treeCtrlSetItemPath t item path
 
+{--------------------------------------------------------------------------------
+   General directory operations
+--------------------------------------------------------------------------------}
 
 -- Return the sub directories of a certain directory as a tuple: the full path and the directory name.
 getSubdirs :: FilePath -> IO [(FilePath,FilePath)]

@@ -35,6 +35,7 @@ module Graphics.UI.WX.Types
     -- ** Misc.
     , Style
     , EventId
+    , TreeItem
 
     -- * Graphical types
 

@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.10 2003/09/09 15:10:23 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.11 2003/09/11 14:07:32 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4370,7 +4370,7 @@ TStringLen wxToolBar_GetToolLongHelp( TSelf(wxToolBar) _obj, int id, TStringOutV
 int        wxToolBar_GetToolPacking( TSelf(wxToolBar) _obj );
 TStringLen wxToolBar_GetToolShortHelp( TSelf(wxToolBar) _obj, int id, TStringOutVoid _buf );
 void       wxToolBar_GetToolSize( TSelf(wxToolBar) _obj, TPointOutVoid(_x,_y) );
-int        wxToolBar_GetToolState( TSelf(wxToolBar) _obj, int id );
+TBoolInt   wxToolBar_GetToolState( TSelf(wxToolBar) _obj, int id );
 void       wxToolBar_InsertControl( TSelf(wxToolBar) _obj, int pos, TClass(wxControl) ctrl );
 void       wxToolBar_InsertSeparator( TSelf(wxToolBar) _obj, int pos );
 void       wxToolBar_InsertTool( TSelf(wxToolBar) _obj, int pos, int id, TClass(wxBitmap) bmp1, TClass(wxBitmap) bmp2, TBoolInt isToggle, TClass(wxObject) data, TStringVoid shelp, TStringVoid lhelp );

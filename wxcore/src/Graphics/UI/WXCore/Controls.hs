@@ -17,6 +17,7 @@ module Graphics.UI.WXCore.Controls
     , TreeCookie
     , treeCtrlGetChildCookie, treeCtrlGetNextChild2
     , treeCtrlWithChildren, treeCtrlGetChildren
+    , treeCtrlGetSelections2
       -- * Wrappers
     , listBoxGetSelectionList
     ) where
@@ -30,6 +31,12 @@ import Foreign.Storable
 import Foreign.Marshal.Array
 import Foreign.Marshal.Utils
 
+
+-- | Get the selections of a tree control.
+treeCtrlGetSelections2 :: TreeCtrl a -> IO [TreeItem]
+treeCtrlGetSelections2 treeCtrl
+  = do xs <- treeCtrlGetSelections treeCtrl
+       return (map treeItemFromInt xs)
 
 -- | Represents the children of a tree control.
 data TreeCookie   = TreeCookie (Var Cookie)
