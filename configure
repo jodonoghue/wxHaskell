@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.38 2004/03/23 15:22:48 dleijen Exp $
+# $Id: configure,v 1.39 2004/03/24 13:28:24 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -395,10 +395,10 @@ if test "$withmsc" != "yes"; then
 fi
 
 if test "$wxrezfile"; then
-  wxrezdir="`echo $wxrezfile | sed -e 's|\(.*\)/libwx_mac.*|\1|'`"
-  wxrezcomp="`echo \"${wxrezcomp}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
-  wxrezfile="`echo \"${wxrezfile}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
   echo "resource file: $wxrezfile"
+  wxrezdir="`echo $wxrezfile | sed -e 's|\(.*\)/libwx_mac.*|\1|'`"
+  wxinstallrezcomp="`echo \"${wxrezcomp}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
+  wxinstallrezfile="`echo \"${wxrezfile}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
 fi
 
 #--------------------------------------------------------------------
@@ -777,8 +777,8 @@ chmod a+x config/macosx-postinstall
 echo " - config/macosx-app"
 cat > config/macosx-app-temp << EOF
 #!/bin/sh
-rezcomp="$wxrezcomp"
-rezfile="$wxrezfile"
+rezcomp="$wxinstallrezcomp"
+rezfile="$wxinstallrezfile"
 
 EOF
 cat config/macosx-app-temp bin/macosx-app-template > config/macosx-app

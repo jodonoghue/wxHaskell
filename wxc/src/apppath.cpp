@@ -3,7 +3,8 @@
 # include <windows.h>
 #elif defined(__WXMAC__)
 # ifdef __DARWIN__
-#  include <ApplicationServices/ApplicationServices.h>
+#  include <mach-o/dyld.h>
+    typedef int (*NSGetExecutablePathProcPtr)(char *buf, size_t *bufsize);
 # else
 #  include <Types.h>
 #  include <Files.h>
@@ -11,36 +12,6 @@
 # endif
 #endif
 
-#ifdef __WXMAC__
-void fss2path(char *path, FSSpec *fss)
-{
-  int l;             //fss->name contains name of last item in path
-  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1]; 
-  path[l] = 0;
-
-  if(fss->parID != fsRtParID) //path is more than just a volume name
-  { 
-    int i, len;
-    CInfoPBRec pb;
-    
-    pb.dirInfo.ioNamePtr = fss->name;
-    pb.dirInfo.ioVRefNum = fss->vRefNum;
-    pb.dirInfo.ioDrParID = fss->parID;
-    do
-    {
-      pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
-      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;   
-      if(PBGetCatInfoSync(&pb) != noErr) break;
-
-      len = fss->name[0] + 1;
-      for(i=l; i>=0;  i--) path[i + len] = path[i];
-      for(i=1; i<len; i++) path[i - 1] = fss->name[i]; //add to start of path
-      path[i - 1] = ':';
-      l += len;
-    } while(pb.dirInfo.ioDrDirID != fsRtDirID); //while more directory levels
-  }
-}
-#endif
 
 wxString GetApplicationPath()
 {
@@ -55,26 +26,24 @@ wxString GetApplicationPath()
     GetModuleFileName(NULL, buf, 511);
     path = buf;
 
-/* MAC */
-#elif defined(__WXMAC__)
-    char buf[512] = "";
-    ProcessInfoRec processinfo;
-    ProcessSerialNumber procno ;
-    FSSpec fsSpec;
-
-    procno.highLongOfPSN = NULL ;
-    procno.lowLongOfPSN = kCurrentProcess ;
-    processinfo.processInfoLength = sizeof(ProcessInfoRec);
-    processinfo.processName = NULL;
-    processinfo.processAppSpec = &fsSpec;
-
-    GetProcessInformation( &procno , &processinfo ) ;
-    fss2path(buf,&fsSpec);
-    path = buf;
-		
-/* UNIX */
+/* UNIX & MAC*/
 #else
-    wxString argv0 = wxTheApp->argv[0];
+    wxString argv0;
+# ifdef __WXMAC__		
+	if (NSIsSymbolNameDefined("__NSGetExecutablePath"))
+    {
+		char buf[512];
+		size_t bufLen = 512;
+		buf[0] = 0;
+    	((NSGetExecutablePathProcPtr) NSAddressOfSymbol(NSLookupAndBindSymbol("__NSGetExecutablePath")))(buf, &bufLen);
+		if (strlen(buf) > 0) {
+		  path = buf;
+		  found=true;
+		  return path;
+		}
+	}
+# endif
+    argv0 = wxTheApp->argv[0];
 
     /* check absolute path */
     if (wxIsAbsolutePath(argv0)) {

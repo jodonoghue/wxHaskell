@@ -101,9 +101,10 @@ make-archive-index=$(AR) -s $(1)
 install-file    =echo "install: $(2)" && $(INSTALL) $(1) $(dir $(2)) \
 	         $(if $(filter %.a,$(2)),&& $(call make-archive-index,$(basename $(2)).a))
 install-dir     =echo "install directory: $(1)" && $(INSTALLDIR) $(1)
-install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir)) &&) \
+install-filesx  =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir)) &&) \
 	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))) &&) \
 		 :
+install-files   =$(call install-filesx,$(patsubst %/,%,$(1)),$(2),$(3))
 
 uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)" && $(RM) $(1); fi
 uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)" && $(call run-silent,$(RMDIR) -p $(2)); fi
@@ -121,7 +122,7 @@ uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file)) &&) \
 		 $(foreach dir,$(call reverse10,$(call dirs-of-files,$(call relative-to,$(1),$(2)))),$(call uninstall-dir,$(1),$(dir)) &&) \
 		 :
 
-uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
+uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(patsubst %/,%,$(1)),$(2),$(3)))
 
 # install packages
 # usage: $(call install-pkg,<install dir>,<package file>)

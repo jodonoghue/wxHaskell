@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.66 2004/03/23 15:22:48 dleijen Exp $
+# $Id: makefile,v 1.67 2004/03/24 13:28:24 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -601,9 +601,17 @@ wxc-install: wxc-compress
 ifeq ($(DLL),.dll)
 	@$(call install-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-ARCHIVE))
 endif
+ifneq ($(WXWIN-REZFILE),)
+	@$(call install-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).rsrc)
+	@$(call install-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).r)
+endif
 
 wxc-uninstall: 
 	-@$(call uninstall-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB) $(WXC-ARCHIVE))
+ifneq ($(WXWIN-REZFILE),)
+	-@$(call uninstall-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).rsrc)
+	-@$(call uninstall-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).r)
+endif
 
 # dynamic link library on mingw32/cygwin: generates wxc.dll and a libwxc.a import library
 ifeq ($(WITHMSC),yes)
