@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.1.1.1 2003/07/13 21:18:56 dleijen Exp $
+# $Id: makefile,v 1.2 2003/07/13 21:40:59 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -365,7 +365,6 @@ wxd-dist: $(WXD-HS)
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
 	  $(HC) $(HCFLAGS) -o $@ $(WXD-OBJS)
-	  @-$(STRIP) $@
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
@@ -409,7 +408,7 @@ WXH-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXH)
 
 
 # build main library
-wxh: wxc wxh-dirs $(WXH-LIBS)
+wxh: wxc wxd wxh-dirs $(WXH-LIBS)
 
 wxh-dirs:
 	@$(call ensure-dir,$(WXH-IMPORTSDIR)/$(WXH-HPATH))
