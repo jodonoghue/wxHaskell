@@ -957,10 +957,11 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
   /* initialize all column infos */
   for( column = 0; column < numCols; column++)
   {
-    SWORD colNameLen = 0;
-    UDWORD colSize   = 0;
+    SWORD  colNameLen  = 0;
+    SWORD  typeNameLen = 0;
+    UDWORD colSize     = 0;
 
-    /* get the column description */
+    /* get the column information */
     retcode = SQLDescribeCol(hstmt, column+1,
                             (UCHAR*) colInf[column].colName, DB_MAX_COLUMN_NAME_LEN+1, &colNameLen,
                             &colInf[column].sqlDataType,
@@ -969,11 +970,17 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
                             &colInf[column].nullable );
     colInf[column].columnSize   = colSize;
     
+    /* check for errors */
     if (retcode != SQL_SUCCESS) {
       db->DispAllErrors(db->GetHENV(), db->GetHDBC(), hstmt);
       delete [] colInf;
       return NULL;
     }
+
+    /* try to get type name too (errors are no problem) */
+    SQLColAttribute( hstmt, column+1, SQL_DESC_TYPE_NAME,
+                     colInf[column].typeName, 128+1,
+                     &typeNameLen, NULL );
 
     /* for compatibilty with the wxWindows GetColumns, we set the dbDataType too */
     colInf[column].dbDataType = 0;
@@ -1002,18 +1009,22 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
         case SQL_REAL:
             colInf[column].dbDataType = DB_DATA_TYPE_FLOAT;
             break;
+#ifdef SQL_DATE
         case SQL_DATE:
             colInf[column].dbDataType = DB_DATA_TYPE_DATE;
             break;
+#endif
+#ifdef SQL_BINARY
         case SQL_BINARY:
             colInf[column].dbDataType = DB_DATA_TYPE_BLOB;
             break;
-    #ifdef __WXDEBUG__
+#endif
+#ifdef __WXDEBUG__
         default:
             wxString errMsg;
             errMsg.Printf(wxT("SQL Data type %d currently not supported by wxWindows"), colInf[column].sqlDataType);
             wxLogDebug(errMsg,wxT("ODBC DEBUG MESSAGE"));
-    #endif
+#endif
     }
   } /* for columns */
 

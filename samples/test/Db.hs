@@ -7,6 +7,7 @@ import Graphics.UI.WXCore.WxcTypes
 
 import IO( catch, ioError, isUserError, ioeGetErrorString)
 import List( isPrefixOf )
+import Char( isDigit )
 import Foreign
 import Foreign.Ptr
 import Foreign.C.String
@@ -15,6 +16,34 @@ import Foreign.Marshal.Array
 main 
   = do printDataSources 
        -- printInfo "pubs"
+
+
+printAuthorNames
+  = dbWithConnection "pubs" "" "" $ \db ->
+    do names <- dbQuery db "SELECT au_fname, au_lname, contract FROM authors" 
+                (\row -> do fname <- dbRowGetStringValue row "au_fname"
+                            lname <- dbRowGetStringValue row "au_lname"
+                            contr <- dbRowGetValue row "contract"
+                            return (fname ++ " " ++ lname ++ (if contr then "" else " (no contract)")))
+       putStrLn $ unlines names
+
+printTitlePrices
+  = dbWithConnection "pubs" "" "" $ \db ->
+    do dbQuery_ db "SELECT title, price FROM titles" 
+        (\row -> do title   <- dbRowGetStringValue row "title"
+                    mbprice <- dbRowGetNullValue row "price" :: IO (Maybe Integer)
+                    -- print price nicely
+                    info    <- dbRowGetColumnInfo row "price"
+                    let prec   = columnDecimalDigits info
+                        price  = case mbprice of
+                                   Nothing -> "no price"
+                                   Just p  -> let s = show p
+                                              in "$" ++
+                                                 reverse (drop prec (reverse s)) 
+                                                 ++ "." ++ 
+                                                 take 2 (reverse (take prec (reverse s)))
+                    -- print fields
+                    putStrLn (title ++ " (" ++ price ++ ")"))
 
 
 showPubsNames :: IO ()
@@ -131,8 +160,150 @@ dbGetDataStringEx db maxLen column
 
 
 
+{----------------------------------------------------------
+  Query
+----------------------------------------------------------}
+dbQuery  :: Db a -> String -> (DbRow a -> IO b) -> IO [b]
+dbQuery db select action
+  = do dbHandleExn db $ dbExecSql db select
+       infos <- dbGetColumnInfos db
+       walkRows (DbRow db infos) [] 
+  where
+    walkRows row acc
+      = do ok <- dbGetNext db
+           if (not ok)
+            then return (reverse acc)
+            else do x <- action row
+                    walkRows row (x:acc)
 
 
+dbQuery_ :: Db a -> String -> (DbRow a -> IO b) -> IO ()
+dbQuery_ db select action
+  = do dbHandleExn db $ dbExecSql db select
+       infos <- dbGetColumnInfos db
+       walkRows (DbRow db infos) 
+  where
+    walkRows row 
+      = do ok <- dbGetNext db
+           if (not ok)
+            then return ()
+            else do action row
+                    walkRows row 
+
+
+data DbRow a = DbRow (Db a) [ColumnInfo]
+
+dbRowGetColumnInfos :: DbRow a -> [ColumnInfo]
+dbRowGetColumnInfos (DbRow db columnInfos)
+  = columnInfos
+
+dbRowGetColumnInfo :: DbRow a -> String -> IO ColumnInfo
+dbRowGetColumnInfo row name
+  = do (info,idx) <- dbRowGetColumnInfoIndex row name
+       return info
+
+dbRowGetNullValue   :: DbValue b => DbRow a -> String -> IO (Maybe b)
+dbRowGetNullValue row@(DbRow db columnInfos) name
+  = do (info,idx) <- dbRowGetColumnInfoIndex row name
+       dbValueRead db info idx  
+
+dbRowGetColumnInfoIndex (DbRow db columnInfos) name
+  = case lookup name (zip (map columnName columnInfos) (zip columnInfos [1..])) of
+      Just x    -> return x
+      Nothing   -> do dataSource <- dbGetDatasourceName db
+                      raiseDbError (DbError ("Invalid column name (" ++ name ++ ")") 
+                                            dataSource DB_ERR_INVALID_COLUMN_NAME 0 "")
+
+dbRowGetValue :: DbValue b => DbRow a -> String -> IO b
+dbRowGetValue row@(DbRow db columnInfos) columnName
+  = do mbValue <- dbRowGetNullValue row columnName
+       case mbValue of
+         Just x  -> return x
+         Nothing -> do dataSource <- dbGetDatasourceName db
+                       raiseDbError (DbError "Unexpected NULL value" dataSource DB_ERR_UNEXPECTED_NULL 0 "")
+
+class DbValue a where
+  dbValueRead :: Db b -> ColumnInfo -> Int -> IO (Maybe a)
+
+instance DbValue Bool where
+  dbValueRead db columnInfo idx
+    = alloca $ \pint ->
+      do isNull <- dbGetDataNull db $ dbGetDataInt db idx pint
+         if isNull 
+          then return Nothing
+          else do i <- peek pint
+                  return (Just (i/=0))
+
+
+instance DbValue Int where
+  dbValueRead db columnInfo idx
+    = alloca $ \pint ->
+      do isNull <- dbGetDataNull db $ dbGetDataInt db idx pint
+         if isNull 
+          then return Nothing
+          else do i <- peek pint
+                  return (Just (fromCInt i))
+
+instance DbValue Double where
+  dbValueRead db columnInfo idx
+    = alloca $ \pdouble ->
+      do isNull <- dbGetDataNull db $ dbGetDataDouble db idx pdouble
+         if isNull 
+          then return Nothing
+          else do d <- peek pdouble
+                  return (Just d)
+
+
+instance DbValue Integer where
+  dbValueRead db columnInfo idx
+    = do mbS <- dbStringRead db columnInfo idx
+         case mbS of
+           Nothing -> return Nothing
+           Just s  -> case parse s of
+                        Just i  -> return (Just i)
+                        Nothing -> raiseDbTypeMismatch db 
+    where
+      parse s
+        = let (val,xs) = span isDigit s
+          in case xs of
+               ('.':frac) | all isDigit frac 
+                          -> Just (read (val ++ adjust (columnDecimalDigits columnInfo) frac))
+               other      -> Nothing
+
+
+dbRowGetStringValue :: DbRow a -> String -> IO String
+dbRowGetStringValue row name
+  = do mbStr <- dbRowGetStringNullValue row name
+       return (maybe "" id mbStr)
+
+dbRowGetStringNullValue :: DbRow a -> String -> IO (Maybe String)
+dbRowGetStringNullValue row@(DbRow db columnInfos) name
+  = do (info,idx) <- dbRowGetColumnInfoIndex row name
+       dbStringRead db info idx 
+
+
+dbStringRead :: Db a -> ColumnInfo -> Int -> IO (Maybe String)
+dbStringRead db info idx
+  = allocaArray maxLen $ \cstr ->
+    do isNull <- dbGetDataNull db $ dbGetDataString db idx cstr maxLen 
+       if isNull
+        then return Nothing
+        else do s <- peekCString cstr 
+                return (Just s)
+  where
+    maxLen  | columnSize info > 0   = columnSize info + 1
+            | otherwise             = 4096  -- just something ?
+
+-- | Takes a @dbGetData...@ method and supplies the @Ptr CInt@ argument.
+-- It raises and exception on error. Otherwise, it returns 'True' when a
+-- @NULL@ value is read.
+dbGetDataNull :: Db a -> (Ptr CInt -> IO Bool) -> IO Bool
+dbGetDataNull db getData
+  = alloca $ \pused ->
+    do dbHandleExn db $ getData pused
+       used <- peek pused
+       return (fromCInt used == wxSQL_NULL_DATA)
+    
 {----------------------------------------------------------
   Open connection
 ----------------------------------------------------------}
@@ -195,10 +366,10 @@ data ColumnInfo
               , columnNullable :: Bool    -- ^ Are NULL values allowed?  
               , columnType     :: DbType  -- ^ Logical type
               , columnSqlType  :: SqlType -- ^ SQL type
-              , columnTypeName :: String  -- ^ Logical type name (ie. @VARCHAR@, @INTEGER@ etc.)
+              , columnTypeName :: String  -- ^ SQL type name (ie. @VARCHAR@, @INTEGER@ etc.)
               , columnRemarks  :: String  -- ^ Comments
 
-              , columnDecimalDigits    :: Int     -- ^ Number of decimal digits (for currency for example).
+              , columnDecimalDigits    :: Int     -- ^ Number of decimal digits
               , columnNumPrecRadix     :: Int     -- ^ Radix precision
               , columnIsForeignKey     :: Bool    -- ^ Is this a foreign key column?
               , columnIsPrimaryKey     :: Bool    -- ^ Is this a primary key column?
@@ -240,10 +411,14 @@ dbGetColumnInfos db
                                   [1..numCols])
     
 
--- | Return the column information of a certain table.
+-- | Return the column information of a certain table. Use an empty
+-- table name to get the column information of the current query
+-- ('dbGetColumnInfos').
 dbGetTableColumnInfos :: Db a -> String -> IO [ColumnInfo]
 dbGetTableColumnInfos db tableName
-  = alloca $ \pcnumCols ->
+  | null tableName = dbGetColumnInfos db
+  | otherwise =
+    alloca $ \pcnumCols ->
     bracket (dbGetColumns db tableName pcnumCols "")
             (dbColInfArrayDelete)
             (\colInfs  -> do cnumCols <- peek pcnumCols
@@ -314,21 +489,21 @@ dbGetDataSourceEx henv isFirst
 ----------------------------------------------------------}
 -- The Database backend system.
 data Dbms
-  = DbmsORACLE |
-    DbmsSYBASE_ASA |        
-    DbmsSYBASE_ASE |        
-    DbmsMS_SQL_SERVER |
-    DbmsMY_SQL |
-    DbmsPOSTGRES |
-    DbmsACCESS |
-    DbmsDBASE |
-    DbmsINFORMIX |
-    DbmsVIRTUOSO |
-    DbmsDB2 |
-    DbmsINTERBASE |
-    DbmsPERVASIVE_SQL |
-    DbmsXBASE_SEQUITER |
-    DbmsUNIDENTIFIED 
+  = DbmsORACLE 
+  | DbmsSYBASE_ASA         -- ^ Adaptive Server Anywhere
+  | DbmsSYBASE_ASE         -- ^ Adaptive Server Enterprise
+  | DbmsMS_SQL_SERVER 
+  | DbmsMY_SQL 
+  | DbmsPOSTGRES 
+  | DbmsACCESS 
+  | DbmsDBASE 
+  | DbmsINFORMIX 
+  | DbmsVIRTUOSO 
+  | DbmsDB2 
+  | DbmsINTERBASE 
+  | DbmsPERVASIVE_SQL 
+  | DbmsXBASE_SEQUITER 
+  | DbmsUNIDENTIFIED 
   deriving (Eq,Enum,Show)
 
 -- | Retrieve the database backend system.
@@ -351,7 +526,6 @@ data DbError
               , dbNativeCode :: Int
               , dbSqlState   :: String  
               }    -- ^ General error.
-  | DbNull         -- ^ Reading a @NULL@ value.
   deriving (Read,Show)  
 
 
@@ -408,6 +582,11 @@ dbGetErrorMessages :: Db a -> IO [String]
 dbGetErrorMessages db
   = do n <- dbGetNumErrorMessages db
        mapM (\idx -> dbGetErrorMessage db (idx-1)) [1..n]
+
+-- | Raise a type mismatch
+raiseDbTypeMismatch db
+  = do dataSource <- dbGetDatasourceName db
+       raiseDbError (DbError "Type mismatch" dataSource DB_ERR_TYPE_MISMATCH 0 "" )
 
 -- | Raise a database error.
 raiseDbError :: DbError -> IO a
@@ -523,6 +702,9 @@ data DbStatus
   | DB_ERR_INVALID_BOOKMARK_VALUE                     -- ^ SqlState = @S1111@
   | DB_ERR_DRIVER_NOT_CAPABLE                         -- ^ SqlState = @S1C00@
   | DB_ERR_TIMEOUT_EXPIRED                            -- ^ SqlState = @S1T00@
+  | DB_ERR_UNEXPECTED_NULL
+  | DB_ERR_INVALID_COLUMN_NAME
+  | DB_ERR_TYPE_MISMATCH
   | DB_ERR_CONNECT
   deriving (Read,Show,Eq,Enum)
 
@@ -547,8 +729,7 @@ data DbType
   | DbBlob            -- ^ Binary
   deriving (Show,Eq,Enum)
 
--- | Standard SQL types. Use 'toSqlType' and 'fromSqlType' to marshal between
--- the system SQL types (like 'wxSQL_C_CHAR' etc.)
+-- | Standard SQL types. 
 data SqlType
   = SqlChar           -- ^ Fixed Strings
   | SqlNumeric
