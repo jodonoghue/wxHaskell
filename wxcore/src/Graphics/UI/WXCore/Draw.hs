@@ -774,14 +774,16 @@ dcBufferWithRef dc mbVar r draw
       = do -- set the device origin for scrolled windows
            dcSetDeviceOrigin memdc (pointFromVec (vecNegate (vecFromPoint (rectTopLeft r))))
            dcSetClippingRegion memdc r
-           bracket (dcGetBackground dc)
+           -- dcBlit memdc r dc (rectTopLeft r) wxCOPY False
+	   bracket (dcGetBackground dc)
                    (\brush -> do dcSetBrush memdc nullBrush
                                  brushDelete brush)
                    (\brush -> do -- set the background to the owner brush
                                  dcSetBackground memdc brush
-                                 dcSetBrush memdc brush
-                                 dcWithPenStyle memdc penTransparent (dcDrawRectangle memdc r)
-                                 -- and finally do the drawing!
+                                 -- dcSetBrush memdc brush
+                                 -- dcWithPenStyle memdc penTransparent (dcDrawRectangle memdc r)
+                                 dcClear memdc
+				 -- and finally do the drawing!
                                  draw (objectCast memdc) -- down cast
                    )
            -- blit the memdc into the owner dc.
