@@ -21,7 +21,7 @@ gui
        f       <- frame [text := "Controls"]
        p       <- panel f []
        nb      <- notebook p []
-       textlog <- textCtrl p WrapLine [enable := False] 
+       textlog <- textCtrl p WrapNone [enabled := False] 
 
        -- use text control as logger
        textCtrlMakeLogActiveTarget textlog
@@ -36,15 +36,15 @@ gui
        -- radio box page
        p2   <- panel  nb []
        let rlabels = ["first", "second", "third"]
-       r1   <- radioBox p2 Vertical rlabels   [text := "radio box", on command ::= logSelect rlabels]
-       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two", on command ::= logSelect rlabels ]
+       r1   <- radioBox p2 Vertical rlabels   [text := "radio box", on select ::= logSelect rlabels]
+       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two", on select ::= logSelect rlabels ]
        rb1  <- button   p2 [text := "disable", on command ::= onEnable r1]
 
        -- choice
        p3   <- panel nb []
        let clabels = ["mies","noot","aap"]
-       c1   <- choice p3 False clabels [tooltip := "unsorted choices", on command ::= logSelect clabels]
-       c2   <- choice p3 True  clabels [tooltip := "sorted choices", on command ::= logSelect clabels]
+       c1   <- choice p3 False clabels [tooltip := "unsorted choices", on select ::= logSelect clabels]
+       c2   <- choice p3 True  clabels [tooltip := "sorted choices", on select ::= logSelect clabels]
        cb1  <- button p3 [text := "disable", on command ::= onEnable c1]
 
        -- list box page
@@ -52,12 +52,12 @@ gui
        sl1  <- singleListBox p4 False 
                   [items      := clabels
                   ,tooltip    := "unsorted single-selection listbox"
-                  ,on command ::= logSelect clabels]
+                  ,on select ::= logSelect clabels]
        sl2  <- singleListBox p4 True 
                   [items      := clabels
                   ,tooltip    := "sorted listbox"
-                  ,on command ::= logSelect clabels]
-       sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enable :~ not]]
+                  ,on select ::= logSelect clabels]
+       sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enabled :~ not]]
 
        -- slider/gauge page
        p5   <- panel nb []
@@ -104,9 +104,9 @@ gui
            
 
     onEnable w b
-      = do set w [enable :~ not]
-           enabled <- get w enable
-           set b [text := (if enabled then "disable" else "enable")]
+      = do set w [enabled :~ not]
+           enable <- get w enabled
+           set b [text := (if enable then "disable" else "enable")]
 
 -- kindof :: Object a -> String -> IO ()
 kindof obj className

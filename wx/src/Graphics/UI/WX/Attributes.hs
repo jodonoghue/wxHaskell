@@ -67,7 +67,7 @@ module Graphics.UI.WX.Attributes
     -- ** Reflection
     , attrName, propName, containsProp
     -- ** Reflective attributes
-    , reflectiveAttr, unsafeGetPropValue
+    , reflectiveAttr, getPropValue
     ) where
 
 import Data.Dynamic
@@ -93,7 +93,8 @@ data Attr w a   = Attr String (Maybe (a -> Dynamic)) (w -> IO a) (w -> a -> IO (
 
 
 -- | Create a /reflective/ attribute with a specified name: value can possibly
--- retrieved using 'getPropValue'.
+-- retrieved using 'getPropValue'. Note: the use of this function is discouraged
+-- as it leads to non-compositional code.
 reflectiveAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 reflectiveAttr name getter setter
   = Attr name (Just toDyn) getter setter
@@ -190,10 +191,12 @@ containsProp name props
 
 -- | Get a value of a reflective property. Only works on attributes
 -- created with 'reflectiveAttr' and when the property is set using ':='.
-unsafeGetPropValue :: Typeable a => Attr w a -> [Prop w] -> Maybe a
-unsafeGetPropValue (Attr name1 (Just todyn1) _ _) ((Attr name2 (Just todyn2) _ _ := x):props)
+-- Returns 'Nothing' whenever the property is not present or when the types
+-- do not match.
+getPropValue :: Typeable a => Attr w a -> [Prop w] -> Maybe a
+getPropValue (Attr name1 (Just todyn1) _ _) ((Attr name2 (Just todyn2) _ _ := x):props)
   | name1 == name2  = fromDynamic (todyn2 x)
-unsafeGetPropValue attr (prop:props)
-  = unsafeGetPropValue attr props
-unsafeGetPropValue attr []
+getPropValue attr (prop:props)
+  = getPropValue attr props
+getPropValue attr []
   = Nothing

@@ -24,7 +24,7 @@ ballsFrame
        -- react on user input
        set p [on click         := dropBall vballs p             -- drop ball
              ,on clickRight    := (\pt -> ballsFrame)           -- new window
-             ,on (charKey 'p') := set t [enable :~ not]       -- pause
+             ,on (charKey 'p') := set t [enabled :~ not]       -- pause
              ,on (charKey '-') := set t [interval :~ \i -> i*2] -- increase interval
              ,on (charKey '+') := set t [interval :~ \i -> max 1 (i `div` 2)]  -- decrease interval
              ]

@@ -7,15 +7,13 @@ main :: IO ()
 main
   = start gui
 
-
-
 gui :: IO ()
 gui
   = do f      <- frame [text := "Process test"]
        p      <- panel f []                       -- panel for tab-management etc.
-       input  <- comboBox p False ["cmd"] [style :~ \stl -> stl .+. wxTE_PROCESS_ENTER]
-       output <- textCtrlRich p WrapNone  [bgcolor := black, textColor := red, font := fontFixed{ _fontSize = 12 }]
-       stop   <- button p                 [text := "kill", enable := False]
+       input  <- comboBox p False ["cmd"] [processEnter := True]
+       output <- textCtrlRich p WrapLine  [bgcolor := black, textColor := red, font := fontFixed{ _fontSize = 12 }]
+       stop   <- button p                 [text := "kill", enabled := False]
        focusOn input
        textCtrlSetEditable output False
        set f [layout := container p $
@@ -25,7 +23,7 @@ gui
              ]
 
        let message txt = appendText output txt
-       set input [on keyboard := onEnter (startProcess f input stop message)]
+       set input [on command := startProcess f input stop message]
        return ()
   where
     startProcess f input stop message
@@ -36,8 +34,8 @@ gui
            let sendLn txt = send (txt ++ "\n")
            if (pid /= 0)
             then do message ("-- start process: '" ++ txt ++ "' --\n")
-                    set input [on keyboard := onEnter (sendCommand input sendLn)]
-                    set stop  [enable := True, on command  := unitIO (kill pid wxSIGKILL)]
+                    set input [on command := sendCommand input sendLn]
+                    set stop  [enabled := True, on command  := unitIO (kill pid wxSIGKILL)]
             else return ()
 
     sendCommand input send
@@ -50,13 +48,8 @@ gui
 
     onEndProcess f input stop message exitcode
       = do message ("\n-- process ended with exitcode " ++ show exitcode ++ " --\n")
-           set input [on keyboard := onEnter (startProcess f input stop message)]
-           set stop  [enable := False, on command  := return ()]
-
-    onEnter io (EventKey key mod pt)
-      | key == KeyReturn  = io
-      | otherwise         = propagateEvent
-
+           set input [on command := startProcess f input stop message]
+           set stop  [enabled := False, on command  := return ()]
 
     onReceive message txt streamStatus
       = message txt

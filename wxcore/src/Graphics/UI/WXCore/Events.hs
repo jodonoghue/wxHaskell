@@ -22,6 +22,7 @@ module Graphics.UI.WXCore.Events
         , checkBoxOnCommand
         , choiceOnCommand
         , comboBoxOnCommand
+        , comboBoxOnTextEnter
         , controlOnText
         , listBoxOnCommand
         -- , listBoxOnDClick
@@ -66,6 +67,7 @@ module Graphics.UI.WXCore.Events
         , checkBoxGetOnCommand
         , choiceGetOnCommand
         , comboBoxGetOnCommand
+        , comboBoxGetOnTextEnter
         , controlGetOnText
         , listBoxGetOnCommand
         -- , listBoxGetOnDClick
@@ -246,6 +248,17 @@ textCtrlGetOnTextMaxLen :: TextCtrl a -> IO (IO ())
 textCtrlGetOnTextMaxLen textCtrl
   = unsafeWindowGetHandlerState textCtrl wxEVT_COMMAND_TEXT_MAXLEN skipCurrentEvent
 -}
+
+-- | Set an event handler for an enter command in a combo box.
+comboBoxOnTextEnter :: ComboBox a -> IO () -> IO ()
+comboBoxOnTextEnter comboBox eventHandler
+  = windowOnEvent comboBox [wxEVT_COMMAND_TEXT_ENTER] eventHandler (\evt -> eventHandler)
+
+-- | Get the current text enter event handler.
+comboBoxGetOnTextEnter :: ComboBox a -> IO (IO ())
+comboBoxGetOnTextEnter comboBox
+  = unsafeWindowGetHandlerState comboBox wxEVT_COMMAND_TEXT_ENTER skipCurrentEvent
+
 
 -- | Set an event handler for when a combo box item is selected.
 comboBoxOnCommand :: ComboBox a -> IO () -> IO ()

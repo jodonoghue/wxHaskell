@@ -61,6 +61,8 @@ module Graphics.UI.WX.Events
              , mapEvent
              , propagateEvent
              -- * Basic events
+             -- ** Selecting
+             , Selecting, select
              -- ** Commanding
              , Commanding, command
              -- ** Reactive
@@ -126,6 +128,11 @@ mapEvent get set (Event attr)
 {--------------------------------------------------------------------
    Event classes
 --------------------------------------------------------------------}
+-- | 'Selecting' widgets fire a 'select' event when an item is selected.
+class Selecting w where
+  -- | A 'select' event is fired when an item is selected.
+  select :: Event w (IO ())
+
 -- | 'Commanding' widgets fire a 'command' event.
 class Commanding w where
   -- | A commanding event, for example a button press.

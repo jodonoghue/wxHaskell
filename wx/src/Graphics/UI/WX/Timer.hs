@@ -59,8 +59,8 @@ interval
                            timerStop t)
 
 instance Able Timer where
-  enable
-    = newAttr "timer-enable"
+  enabled
+    = newAttr "enabled"
         (\t      -> timerIsRuning t)
         (\t able -> do runs <- timerIsRuning t
                        when (runs /= able)
@@ -71,4 +71,4 @@ instance Able Timer where
 
 instance Commanding Timer where
   command
-    = newEvent "timer-command" timerGetOnCommand timerOnCommand
+    = newEvent "command" timerGetOnCommand timerOnCommand

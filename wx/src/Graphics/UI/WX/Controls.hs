@@ -23,6 +23,7 @@ module Graphics.UI.WX.Controls
       -- ** Text entry
       , Align(..), Wrap(..)
       , TextCtrl, textEntry, textCtrl, textCtrlRich, textCtrlEx
+      , processEnter, processTab
       -- ** CheckBox
       , CheckBox, checkBox
       -- ** Choice
@@ -71,7 +72,8 @@ import Graphics.UI.WX.Window
 --             'Textual', 'Literate' 
 panel :: Window a -> [Prop (Panel ())] -> IO (Panel ())
 panel parent props
-  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props
+  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props 
+      -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props 
 
 -- | Create a 'Panel' with a specific style.
 --
@@ -269,6 +271,35 @@ textCtrlEx parent flags props
 instance Commanding (TextCtrl a) where
   command = newEvent "command" textCtrlGetOnTextEnter textCtrlOnTextEnter
 
+-- | Process @enter@ key events, used in a 'comboBox' or 'textCtrl' and
+-- catched using a 'on' 'command' handler.
+-- (otherwise pressing @Enter@ is either processed 
+-- internally by the control or used for navigation between dialog controls). 
+processEnter :: Styled w => Attr w Bool
+processEnter 
+  = newAttr "processEnter" getter setter
+  where
+    getter w 
+      = do s <- get w style
+           return (bitsSet wxTE_PROCESS_ENTER s)
+    setter w p
+      = set w [style :~ \stl -> stl .+. wxTE_PROCESS_ENTER]
+
+
+-- | Process @tab@ key events, used in a 'comboBox' or 'textCtrl'. 
+-- (otherwise pressing @Tab@ is either processed 
+-- internally by the control or used for navigation between dialog controls). 
+processTab :: Styled w => Attr w Bool
+processTab 
+  = newAttr "processTab" getter setter
+  where
+    getter w 
+      = do s <- get w style
+           return (bitsSet wxTE_PROCESS_TAB s)
+    setter w p
+      = set w [style :~ \stl -> stl .+. wxTE_PROCESS_TAB]
+
+
 {--------------------------------------------------------------------------------
   Static text
 --------------------------------------------------------------------------------}
@@ -288,7 +319,7 @@ instance Commanding (CheckBox a) where
 
 instance Checkable (CheckBox a) where
   checkable
-    = enable
+    = enabled
 
   checked
     = newAttr "checked" checkBoxGetValue checkBoxSetValue
@@ -307,8 +338,8 @@ checkBox parent props
 {--------------------------------------------------------------------------------
   Choice
 --------------------------------------------------------------------------------}
-instance Commanding (Choice ()) where
-  command = newEvent "command" choiceGetOnCommand choiceOnCommand
+instance Selecting (Choice ()) where
+  select = newEvent "select" choiceGetOnCommand choiceOnCommand
 
 instance Selection (Choice ()) where
   selection
@@ -347,7 +378,11 @@ choice parent sorted labels props
 --------------------------------------------------------------------------------}
 instance Commanding (ComboBox a) where
   command
-    = newEvent "command" comboBoxGetOnCommand comboBoxOnCommand
+    = newEvent "command" comboBoxGetOnTextEnter comboBoxOnTextEnter
+
+instance Selecting (ComboBox a) where
+  select
+    = newEvent "select" comboBoxGetOnCommand comboBoxOnCommand
 
 instance Selection (ComboBox a) where
   selection
@@ -386,9 +421,9 @@ comboBox parent sorted labels props
 {--------------------------------------------------------------------------------
   ListBox
 --------------------------------------------------------------------------------}
-instance Commanding (ListBox a) where
-  command
-    = newEvent "command" listBoxGetOnCommand listBoxOnCommand
+instance Selecting (ListBox a) where
+  select
+    = newEvent "select" listBoxGetOnCommand listBoxOnCommand
 
 instance Items (ListBox a) String where
   itemCount
@@ -459,8 +494,9 @@ multiListBox parent sorted props
 {--------------------------------------------------------------------------------
   RadioBox
 --------------------------------------------------------------------------------}
-instance Commanding (RadioBox a) where
-  command = newEvent "radioBox-command" radioBoxGetOnCommand radioBoxOnCommand
+instance Selecting (RadioBox a) where
+  select 
+    = newEvent "select" radioBoxGetOnCommand radioBoxOnCommand
 
 instance Selection (RadioBox a) where
   selection
@@ -651,7 +687,7 @@ treeEvent
 --             
 treeCtrl :: Window a -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrl parent props
-  = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
+  = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props
 
 -- | Create a tree control.
 --
@@ -752,7 +788,7 @@ listEvent
 --             
 listCtrl :: Window a -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrl parent props
-  = listCtrlEx parent (wxLC_REPORT .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
+  = listCtrlEx parent (wxLC_REPORT .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props
 
 -- | Create a list control.
 --
@@ -777,7 +813,8 @@ listCtrlEx parent style props
 --             
 splitterWindow :: Window a -> [Prop (SplitterWindow ())] -> IO (SplitterWindow ())
 splitterWindow parent props
-  = do s <- splitterWindowCreate parent idAny rectNull (wxSP_LIVE_UPDATE .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE)
+  = do s <- splitterWindowCreate parent idAny rectNull 
+            (wxSP_LIVE_UPDATE .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props)
        set s props
        return s
 

@@ -39,7 +39,7 @@ module Graphics.UI.WX.Classes
     , Selections( selections )
     , Items( itemCount, item, items, itemAppend, itemDelete, itemsDelete )
       -- * Misc.
-    , Able( enable )
+    , Able( enabled ) -- , enable
     , Checkable( checkable, checked )
     , Help( help )
     , Tipped( tooltip )
@@ -167,6 +167,14 @@ class Visible w where
   -- | Refresh the widget explicitly.
   refresh    :: w -> IO ()
 
+  -- | Should the widget be fully repainted on resize? This attribute only
+  -- has effect when set at creation. If 'False', you will have to repaint
+  -- the new window area manually at a resize, but flickering can be prevented
+  -- in this way.
+  fullRepaintOnResize :: Attr w Bool
+  fullRepaintOnResize
+    = nullAttr "fullRepaintOnResize"
+
   -- defaults
   visible
     = nullAttr "visible"
@@ -191,7 +199,11 @@ class Closeable w where
 -- | Widgets that can be enabled or disabled.
 class Able w where
   -- | Enable, or disable, the widget.
-  enable :: Attr w Bool
+  enabled :: Attr w Bool
+
+-- | Deprecated: use 'enabled' instead
+enable :: Able w => Attr w Bool
+enable = enabled
 
 -- | Widgets with help text.
 class Help w where

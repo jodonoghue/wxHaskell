@@ -9,8 +9,10 @@ main
 
 gui :: IO ()
 gui
-  = do f  <- frame [text := "Paint demo"]
-       sw <- scrolledWindow f [on paint := onpaint, virtualSize := sz 500 500, scrollRate := sz 10 10]
+  = do f  <- frame [text := "Paint demo", fullRepaintOnResize := False]
+       sw <- scrolledWindow f [ on paint := onpaint
+                              , virtualSize := sz 500 500, scrollRate := sz 10 10
+                              , fullRepaintOnResize := False]
        set f [clientSize := sz 150 150, layout := fill $ widget sw]
        return ()
   where

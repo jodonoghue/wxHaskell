@@ -19,6 +19,8 @@ module Graphics.UI.WX.Window
           Window, refit, refitMinimal, rootParent, frameParent
           -- * ScrolledWindow
         , ScrolledWindow, scrolledWindow, scrollRate
+          -- * Internal
+        , noFullRepaintOnResize
         ) where
 
 import Graphics.UI.WXCore
@@ -44,7 +46,7 @@ import Graphics.UI.WX.Events
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
   = do sw <- scrolledWindowCreate parent idAny rectNull 
-              (wxNO_FULL_REPAINT_ON_RESIZE .+. wxCLIP_CHILDREN)
+              (wxCLIP_CHILDREN .+. noFullRepaintOnResize props  )
        set sw props
        return sw
 
@@ -66,8 +68,8 @@ scrollRate
   Properties
 --------------------------------------------------------------------------------}
 instance Able (Window a) where
-  enable
-    = newAttr "enable" windowIsEnabled setter
+  enabled
+    = newAttr "enabled" windowIsEnabled setter
     where
       setter w enable
         | enable    = unitIO $ windowEnable w
@@ -217,6 +219,26 @@ instance Visible (Window a) where
   refresh w
     = windowRefresh w False
 
+  fullRepaintOnResize
+    = reflectiveAttr "fullRepaintOnResize" getFlag setFlag
+    where
+      getFlag w
+        = do s <- get w style
+             return (not (bitsSet wxNO_FULL_REPAINT_ON_RESIZE s))
+
+      setFlag w repaint
+        = set w [style :~ \stl -> if repaint 
+                                   then stl .-. wxNO_FULL_REPAINT_ON_RESIZE 
+                                   else stl .+. wxNO_FULL_REPAINT_ON_RESIZE]
+
+
+-- | Helper function that retrieves the 'wxNO_FULL_REPAINT_ON_RESIZE' flag
+-- out of the properties.
+noFullRepaintOnResize :: Visible w => [Prop w] -> Int
+noFullRepaintOnResize props
+  = case getPropValue fullRepaintOnResize props of
+      Just False -> wxNO_FULL_REPAINT_ON_RESIZE
+      other      -> 0
 
 instance Child (Window a) where
   parent

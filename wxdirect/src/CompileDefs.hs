@@ -12,7 +12,6 @@
 -----------------------------------------------------------------------------------------
 module CompileDefs( compileDefs ) where
 
-import Numeric( showHex )
 import List( sortBy, sort )
 
 import Types
@@ -70,15 +69,11 @@ toHaskellDef def
     )
 
 haskellDefValue def
-  = case defType def of
-      DefMask   -> showAsHex (defValue def)
-      other     -> showNum (defValue def)
+  = showNum (defValue def)
   where
-    showAsHex x   | x >= 0    = showHex x ""
-                  | otherwise = showNum x
-
     showNum x     | x >= 0    = show x
                   | otherwise = "(" ++ show x ++ ")"
+
 
 haskellDefType def
   = case defType def of

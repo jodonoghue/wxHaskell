@@ -13,8 +13,6 @@
     * Instances: 'Form' -- 
              'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
-             
-
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Dialogs

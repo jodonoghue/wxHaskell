@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.16 2003/11/07 12:23:09 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.17 2004/02/20 09:16:46 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -2978,11 +2978,11 @@ void       wxMDIParentFrame_ActivateNext( TSelf(wxMDIParentFrame) _obj );
 void       wxMDIParentFrame_ActivatePrevious( TSelf(wxMDIParentFrame) _obj );
 void       wxMDIParentFrame_ArrangeIcons( TSelf(wxMDIParentFrame) _obj );
 void       wxMDIParentFrame_Cascade( TSelf(wxMDIParentFrame) _obj );
-TClass(wxMDIParentFrame) wxMDIParentFrame_Create( TClass(wxWindow) _prt, int _id, TString _txt, TRect(_lft,_top,_wdt,_hgt), int _stl );
-void*      wxMDIParentFrame_GetActiveChild( TSelf(wxMDIParentFrame) _obj );
-void*      wxMDIParentFrame_GetClientWindow( TSelf(wxMDIParentFrame) _obj );
-void*      wxMDIParentFrame_GetWindowMenu( TSelf(wxMDIParentFrame) _obj );
-void*      wxMDIParentFrame_OnCreateClient( TSelf(wxMDIParentFrame) _obj );
+TClass(wxMDIParentFrame)  wxMDIParentFrame_Create( TClass(wxWindow) _prt, int _id, TString _txt, TRect(_lft,_top,_wdt,_hgt), int _stl );
+TClass(wxMDIChildFrame)   wxMDIParentFrame_GetActiveChild( TSelf(wxMDIParentFrame) _obj );
+TClass(wxMDIClientWindow) wxMDIParentFrame_GetClientWindow( TSelf(wxMDIParentFrame) _obj );
+TClass(wxMenu)            wxMDIParentFrame_GetWindowMenu( TSelf(wxMDIParentFrame) _obj );
+TClass(wxMDIClientWindow) wxMDIParentFrame_OnCreateClient( TSelf(wxMDIParentFrame) _obj );
 void       wxMDIParentFrame_SetWindowMenu( TSelf(wxMDIParentFrame) _obj, TClass(wxMenu) menu );
 void       wxMDIParentFrame_Tile( TSelf(wxMDIParentFrame) _obj );
 

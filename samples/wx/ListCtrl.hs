@@ -34,29 +34,19 @@ gui
        f       <- frame [text := "List Sample"]
        -- panel: just for the nice grey color
        p       <- panel f []
-       textlog <- textCtrl p WrapLine [enable := False]
+       textlog <- textCtrl p WrapLine [enabled := False]
 
        -- use text control as logger
        textCtrlMakeLogActiveTarget textlog
        logMessage "logging enabled"              
 
-       -- image list
-       images  <- imageListCreate (sz 16 16) True 2
-       mapM_ (addIcon images) ["../bitmaps/tooltodo.ico","../bitmaps/toolchar.ico"]
-
        -- list control
-       l  <- listCtrlCreate p idAny rectNull wxLC_REPORT
-       listCtrlAssignImageList l images wxIMAGE_LIST_SMALL
-       listCtrlInsertColumn l 0 "Name" wxLIST_FORMAT_LEFT (-1)
-       listCtrlInsertColumn l 0 "Size" wxLIST_FORMAT_LEFT (-1)
-       listCtrlInsertColumn l 0 "Date" wxLIST_FORMAT_LEFT (-1)
-       mapM_ (\(idx,(name,size,date)) -> do listCtrlInsertItemWithLabel l idx name (-1)
-                                            listCtrlSetItem l idx 0 name 0
-                                            listCtrlSetItem l idx 1 size 1
-                                            listCtrlSetItem l idx 2 date (-1)
-                                            return ())
-                                            (zip [0..] entries)
-       listCtrlOnListEvent l onListEvent 
+       l  <- listCtrl p [columns := [("Name", AlignLeft, 120)
+                                    ,("Size", AlignRight, -1)
+                                    ,("Date", AlignRight, -1)]
+                        ,items := [[name,size,date] | (name,size,date) <- entries]
+                        ,on listEvent := onListEvent
+                        ]
 
        -- specify layout
        set f [layout     := container p $ margin 10 $ 
@@ -72,9 +62,3 @@ gui
           ListItemSelected idx    -> logMessage ("item selected: " ++ show idx)
           ListItemDeselected idx  -> logMessage ("item de-selected: " ++ show idx)
           other                   -> logMessage ("list control event.")
-
-    addIcon images fname
-      = do icon <- iconCreateLoad fname (imageTypeFromFileName fname) (sz 16 16)
-           imageListAddIcon images icon
-           iconDelete icon
-           return ()

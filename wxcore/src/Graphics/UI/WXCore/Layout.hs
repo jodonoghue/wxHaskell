@@ -138,6 +138,7 @@ module Graphics.UI.WXCore.Layout( -- * Types
                                -- ** Whitespace
                              , space, hspace, vspace, empty
                                -- * Transformers
+                             , dynamic
                                -- ** Stretch
                              , static, stretch, hstretch, vstretch, minsize
                                -- ** Expansion
@@ -565,6 +566,14 @@ valignCentre layout
   = updateOptions layout (\options -> options{ alignV = AlignVCentre })
 
 
+-- | Adjust the minimal size of a control dynamically when the content changes.
+-- This is used for example to correctly layout static text or buttons when the
+-- text or label changes at runtime. This property is automatically set for
+-- 'StaticText', 'label's, and 'button's.
+dynamic :: Layout -> Layout
+dynamic layout
+  = updateOptions layout (\options -> options{ adjustMinSize = True })
+
 updateOptions :: Layout -> (LayoutOptions -> LayoutOptions) -> Layout
 updateOptions layout f
   = layout{ options = f (options layout) }
@@ -624,7 +633,9 @@ container window layout
 -- | (primitive) Lift a basic control to a 'Layout'.
 layoutFromWindow :: Window a -> Layout
 layoutFromWindow window
-  = Widget optionsDefault (downcastWindow window)
+  = Widget optionsDefault{ adjustMinSize = adjust } (downcastWindow window)
+  where
+    adjust  = instanceOf window classButton || instanceOf window classStaticText
 
 -- | (primitive) Empty layout with a given width and height.
 space :: Int -> Int -> Layout
@@ -699,11 +710,9 @@ split splitHorizontal splitter sashWidth paneWidth pane1 pane2
   = Splitter optionsDefault (downcastSplitterWindow splitter) pane1 pane2 splitHorizontal sashWidth paneWidth
 
 
-
-
 optionsDefault :: LayoutOptions
 optionsDefault
-  = LayoutOptions False False [] 10 AlignLeft AlignTop FillNone Nothing
+  = LayoutOptions False False [] 10 AlignLeft AlignTop FillNone Nothing False
 
 
 
@@ -732,13 +741,13 @@ data LayoutOptions
                           , alignH :: HAlign, alignV :: VAlign
                           , fillMode :: FillMode
                           , minSize  :: Maybe Size
+                          , adjustMinSize :: Bool
                           }
 
 data FillMode = FillNone | FillShaped | Fill
 data HAlign   = AlignLeft | AlignRight | AlignHCentre
 data VAlign   = AlignTop | AlignBottom | AlignVCentre
 data Margin   = MarginTop | MarginLeft | MarginRight | MarginBottom
-
 
 -- | Fits a widget properly by calling 'windowReLayout' on
 -- the parent frame or dialog ('windowGetFrameParent').
@@ -981,12 +990,17 @@ sizerFromLayout parent layout
           MarginRight  -> wxRIGHT
     
     flagsAdjustMinSize window options
-      = case minSize options of
+      = if (adjustMinSize options) 
+         then wxADJUST_MINSIZE
+         else 0
+{-      
+        case minSize options of
           Nothing | -- dleijen: unfortunately, wxADJUST_MINSIZE has bugs for certain controls:
                     not ( instanceOf window classGauge || instanceOf window classGauge95 
                          || instanceOf window classGaugeMSW 
                          || instanceOf window classSlider || instanceOf window classSlider95 
-                         || instanceOf window classSliderMSW )
+                         || instanceOf window classSliderMSW 
+                        )
                   -> wxADJUST_MINSIZE
           other   -> 0
-
+-}

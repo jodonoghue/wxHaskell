@@ -36,8 +36,8 @@ main
              ,clientSize := sz 300 300
              ]
        
-       set dsnList   [on command := onDsnEvent   f dsnList tableList tableView]
-       set tableList [on command := onTableEvent f dsnList tableList tableView]
+       set dsnList   [on select := onDsnEvent   f dsnList tableList tableView]
+       set tableList [on select := onTableEvent f dsnList tableList tableView]
    where
       -- data source name selected: show tables in the tableList
       onDsnEvent f dsnList tableList tableView

@@ -20,6 +20,13 @@ wxITEM_CHECK            : INTEGER is 1
 wxITEM_RADIO            : INTEGER is 2
 wxITEM_MAX              : INTEGER is 3
 
+
+wxTreeItemIcon_Normal			: INTEGER is 0
+wxTreeItemIcon_Selected			: INTEGER is 1
+wxTreeItemIcon_Expanded			: INTEGER is 2
+wxTreeItemIcon_SelectedExpanded		: INTEGER is 3
+
+
 wxSIGNONE : INTEGER is 0
 wxSIGHUP  : INTEGER is 1
 wxSIGINT  : INTEGER is 2

@@ -123,7 +123,7 @@ instance Textual (Menu a) where
 menuSub :: Menu b -> Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuSub parent menu props
   = do id <- idCreate
-       label <- case (unsafeGetPropValue text props) of 
+       label <- case (getPropValue text props) of 
                   Just txt -> return txt
                   Nothing  -> do title <- menuGetTitle menu
                                  if (null title) 
@@ -159,10 +159,10 @@ menuLine menu
 menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItem menu props
   = do id <- idCreate
-       let label = case (unsafeGetPropValue text props) of 
+       let label = case (getPropValue text props) of 
                      Nothing  -> "<empty>"
                      Just txt -> txt
-           check = case (unsafeGetPropValue checkable props) of
+           check = case (getPropValue checkable props) of
                      Nothing  -> False
                      Just b   -> b
        menuItemEx menu id label check props
@@ -213,7 +213,7 @@ menuItemEx menu id label isCheck props
        return item
 
 instance Able (MenuItem a) where
-  enable = newAttr "enable" menuItemIsEnabled menuItemEnable
+  enabled = newAttr "enabled" menuItemIsEnabled menuItemEnable
 
 instance Textual (MenuItem a) where
   text
@@ -370,8 +370,8 @@ toolBarEx parent showText showDivider props
 data ToolBarItem  = ToolBarItem (ToolBar ()) Id Bool
 
 instance Able ToolBarItem  where
-  enable 
-    = newAttr "enable" getter setter
+  enabled 
+    = newAttr "enabled" getter setter
     where
       getter (ToolBarItem toolbar id isToggle)
         = toolBarGetToolEnabled toolbar id
