@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.33 2003/09/29 14:27:58 dleijen Exp $
+# $Id: makefile,v 1.34 2003/09/29 14:49:03 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -425,12 +425,13 @@ endif
 	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
 	
 # specific binary distributions
+WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).dmg
 WXHASKELLVER=wxhaskell-$(VERSION)
 RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLVER)
 INFOFILE=$(PACKAGEDIR).info
 
-macdist: bindist
+macdist: 
 	@$(call ensure-dir,$(RESOURCEDIR))
 	@$(call ensure-dir,$(PACKAGEDIR))
 	# copy packages
@@ -447,6 +448,8 @@ macdist: bindist
 	# create package
 	bin/macosx-package $(BINDIST-OUTDIR) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
+	@mv -f $(OUTDIR)/$(WXHASKELLVER).dmg $(WXHASKELLDMG)
+	echo "created: $(WXHASKELLDMG)"
 
 #--------------------------------------------------------------------------
 # WX: the medium level abstraction on wxcore
