@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.72 2004/03/29 14:51:56 dleijen Exp $
+# $Id: makefile,v 1.73 2004/03/29 20:38:47 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]		- build the libraries (in "lib").
@@ -278,13 +278,13 @@ endif
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
 BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
-REL-VERSION	=$(VERSION)-$(RELEASE)
-HCBIN-VERSION   =$(HCNAME)$(HCVERSION)-$(BIN-VERSION)-$(RELEASE)
+REL-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(HCNAME)$(HCVERSION)-$(VERSION)-$(RELEASE)
+
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
-DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).zip
+DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(REL-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
 SRCDIST-OUTDIR  =$(DIST-OUTDIR)/srcdist
@@ -342,18 +342,13 @@ bindist-clean:
 # specific binary distributions
 
 # RPM dist
-ifeq ($(RPM-SOURCE-DIR),)
-RPM-SOURCE-DIR=$(HOME)/rpm/SOURCES
-endif
-
 rpmdist: srcdist
-	$(CP) -f $(DIST-SRC) $(RPM-SOURCE-DIR)
 	rpmbuild -ba config/wxhaskell.spec
 
 
 # MAC dist
 WXHASKELLINS=wxhaskell
-WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).dmg
+WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(REL-VERSION).dmg
 RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLINS)
 INFOFILE=$(PACKAGEDIR).info

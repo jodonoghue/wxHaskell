@@ -612,7 +612,7 @@ fi
 #--------------------------------------------------------------------
 
 # Create directories
-echo "creating build directories:"
+echo "creating configuration directory:"
 echo " - config"
 mkdir -p config
 
@@ -738,8 +738,8 @@ if test "$withmsc" = "yes"; then
   done
 fi
 
-# create utility scripts
-echo "creating utility scripts"
+# create installer scripts
+echo "creating installer scripts"
 
 # generate compress utility
 if test "$enableupx" = "yes"; then
@@ -823,6 +823,7 @@ echo "%define hcversion    $hcversion"		>> config/wxhaskell.spec.temp
 echo "%define wxtoolkit    $wxtoolkit"		>> config/wxhaskell.spec.temp
 echo "%define wxToolkit    $wxToolkit"		>> config/wxhaskell.spec.temp
 echo "%define wxversion    $wxversion"		>> config/wxhaskell.spec.temp
+echo "%define sourceroot   $topdir/out/"        >> config/wxhaskell.spec.temp
 echo "%define configflags  $configflags"	>> config/wxhaskell.spec.temp
 echo ""						>> config/wxhaskell.spec.temp
 cat config/wxhaskell.spec.temp bin/wxhaskell-spec-template > config/wxhaskell.spec
