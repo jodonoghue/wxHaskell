@@ -25,6 +25,7 @@
 #include "managed.h"
 #include "previewframe.h"
 #include "printout.h"
+#include "textstream.h"
 
 /*-----------------------------------------------------------------------------
   Extra exports
@@ -77,6 +78,10 @@ int   expEVT_MOUSEWHEEL(  );
 
 void wxcGetMousePosition( TPointOut(x,y) );
 
+
+/* wxDC */
+double wxDC_GetUserScaleX( TSelf(wxDC) dc );
+double wxDC_GetUserScaleY( TSelf(wxDC) dc );
 
 /* wxWindow */
 void  wxWindow_ConvertDialogToPixelsEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );
@@ -381,6 +386,9 @@ void wxcInitPixelsRGB( void* buffer, TSize(width,height), int rgb );
 void* wxcMalloc(int size );
 void  wxcFree( void* p );
 
+/* wakeup idle */
+void wxcWakeUpIdle();
+
 /* application directory */
 /** Return the directory of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. Therefore, the APPDIR environment variable is returned first if it is defined. */
 TStringLen wxGetApplicationDir( TStringOut buffer);
@@ -389,6 +397,8 @@ TStringLen wxGetApplicationPath( TStringOut buffer);
 
 /* ELJApp */
 void  ELJApp_InitializeC( TClass(wxClosure) closure, int _argc, TChar** _argv );
+int   ELJApp_GetIdleInterval();
+void  ELJApp_SetIdleInterval( int interval );
 
 
 #endif /* wxc_h */

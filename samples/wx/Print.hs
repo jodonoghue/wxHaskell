@@ -67,7 +67,7 @@ gui
            pageSetupData<- pageSetupDialogDataCreateFromData printData
            pageSetup    <- pageSetupDialogCreate f pageSetupData
            dialogShowModal pageSetup
-           printData'   <- pageSetupDialogDataGetPrintData pageSetupData
-                           -- pageSetupDialogGetPageSetupData pageSetup >>= pageSetupDialogDataGetPrintData
+           printData'   <- -- pageSetupDialogDataGetPrintData pageSetupData
+                           pageSetupDialogGetPageSetupData pageSetup >>= pageSetupDialogDataGetPrintData
            printDialogDataSetPrintData printDialogData printData'
            objectDelete pageSetup

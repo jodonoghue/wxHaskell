@@ -1253,6 +1253,11 @@ EWXWEXPORT(wxColour*, wxcSystemSettingsGetColour)( int systemColour )
    return colour;
 }
 
+EWXWEXPORT( void, wxcWakeUpIdle)(void)
+{
+  wxWakeUpIdle();
+}
+
 /*-----------------------------------------------------------------------------
   delete
 -----------------------------------------------------------------------------*/
@@ -1589,6 +1594,27 @@ EWXWEXPORT(int, wxMouseEvent_GetButton) (void* _obj)
 EWXWEXPORT(int,expEVT_MOUSEWHEEL)()
 {
     return (int)wxEVT_MOUSEWHEEL;
+}
+
+
+/*-----------------------------------------------------------------------------
+  DC
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(double, wxDC_GetUserScaleX)( wxDC* dc )
+{
+  double x = 1.0;
+  double y = 1.0;
+  dc->GetUserScale(&x,&y);
+  return x;
+}
+
+
+EWXWEXPORT(double, wxDC_GetUserScaleY)( wxDC* dc )
+{
+  double x = 1.0;
+  double y = 1.0;
+  dc->GetUserScale(&x,&y);
+  return y;
 }
 
 

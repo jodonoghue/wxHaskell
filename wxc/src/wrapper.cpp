@@ -9,6 +9,35 @@
 #endif
 
 /*-----------------------------------------------------------------------------
+    The global idle timer
+-----------------------------------------------------------------------------*/
+class wxIdleTimer : public wxTimer
+{
+public:
+  void Notify() {
+    wxWakeUpIdle();   /* send idle events */
+  }
+};
+
+wxIdleTimer* idleTimer = NULL;
+
+void initIdleTimer()
+{
+  idleTimer = new wxIdleTimer();
+}
+
+void doneIdleTimer()
+{
+  if (idleTimer) {
+    idleTimer->Stop();
+    delete idleTimer;
+    idleTimer = NULL;
+  }
+}
+
+
+
+/*-----------------------------------------------------------------------------
     The main application
 -----------------------------------------------------------------------------*/
 wxClosure* initClosure = NULL;
@@ -19,11 +48,18 @@ IMPLEMENT_APP_NO_MAIN(ELJApp);
 bool ELJApp::OnInit (void)
 {
   wxInitAllImageHandlers();
+  initIdleTimer();
   if (initClosure) {
     delete initClosure; /* special: init is only called once with a NULL event */
     initClosure=NULL;
   }
   return true;
+}
+
+int ELJApp::OnExit( void )
+{
+  doneIdleTimer();
+  return wxApp::OnExit();
 }
 
 void ELJApp::InitZipFileSystem()
@@ -232,6 +268,31 @@ EWXWEXPORT(void, wxObject_SetClientClosure)( wxObject* _obj, wxClosure* closure 
   wxASSERT(_obj->GetRefData() == NULL);
   refData = new wxcClosureRefData( closure );
   _obj->SetRefData( refData );    //set new data -- ref count must be 1 as setRefData doesn't increase it.  
+}
+
+/*-----------------------------------------------------------------------------
+    C interface to the idle timer
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(int, ELJApp_GetIdleInterval)()
+{
+  if (!idleTimer) return 0;
+
+  if (idleTimer->IsRunning())
+    return idleTimer->GetInterval();
+  else
+    return 0;
+}
+
+EWXWEXPORT(void, ELJApp_SetIdleInterval)( int interval )
+{
+  if (idleTimer) {
+    if (idleTimer->IsRunning()) {
+      idleTimer->Stop();
+    }
+    if (interval >= 5) {
+      idleTimer->Start( interval, false );
+    }
+  }
 }
 
 /*-----------------------------------------------------------------------------

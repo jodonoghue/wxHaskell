@@ -124,6 +124,10 @@ SOURCE=.\include\printout.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\textstream.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\wave.h
 # End Source File
 # Begin Source File
@@ -189,6 +193,10 @@ SOURCE=.\src\previewframe.cpp
 # Begin Source File
 
 SOURCE=.\src\printout.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\textstream.cpp
 # End Source File
 # Begin Source File
 

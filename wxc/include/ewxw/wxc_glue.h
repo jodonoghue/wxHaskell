@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.21 2004/11/12 16:08:43 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.22 2005/01/21 15:47:23 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -1351,7 +1351,7 @@ void       wxDC_GetSizeMM( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetTextBackground( TSelf(wxDC) _obj, TClassRef(wxColour) _ref );
 void       wxDC_GetTextExtent( TSelf(wxDC) _obj, TStringVoid string, void* x, void* y, void* descent, void* externalLeading, TClass(wxFont) theFont );
 void       wxDC_GetTextForeground( TSelf(wxDC) _obj, TClassRef(wxColour) _ref );
-void       wxDC_GetUserScale( TSelf(wxDC) _obj, TPointOutVoid(_x,_y) );
+void       wxDC_GetUserScale( TSelf(wxDC) _obj, void* x, void* y );
 int        wxDC_LogicalToDeviceX( TSelf(wxDC) _obj, int x );
 int        wxDC_LogicalToDeviceXRel( TSelf(wxDC) _obj, int x );
 int        wxDC_LogicalToDeviceY( TSelf(wxDC) _obj, int y );

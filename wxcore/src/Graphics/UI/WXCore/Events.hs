@@ -116,6 +116,9 @@ module Graphics.UI.WXCore.Events
         , timerOnCommand
         , timerGetOnCommand
 
+        -- Idle events
+        , appRegisterIdle
+
         -- * Types
         -- ** Streams
         , StreamStatus(..), streamStatusFromInt
@@ -1982,6 +1985,47 @@ timerGetOnCommand timer
   = do closure <- timerExGetClosure timer
        unsafeClosureGetState closure (return ())
 
+{--------------------------------------------------------------------------
+  The global idle timer
+  Currently only used by the process code but can potentially be used to
+  enable haskell threads to run in idle time
+--------------------------------------------------------------------------}
+{-# NOINLINE appIdleIntervals #-}
+appIdleIntervals :: Var [Int]
+appIdleIntervals 
+  = unsafePerformIO (varCreate [])
+
+-- | @appRegisterIdle interval handler@ registers a global idle event 
+-- handler that is at least called every @interval@ milliseconds (and
+-- possible more). Returns a method that can be used to unregister this
+-- handler (so that it doesn't take any resources anymore). Multiple
+-- calls to this method chains the different idle event handlers.
+appRegisterIdle :: Int -> IO (IO ())
+appRegisterIdle interval 
+  = do varUpdate appIdleIntervals (interval:)
+       appUpdateIdleInterval 
+       return (appUnregisterIdle interval)
+
+-- Update the idle interval to the minimal one.
+appUpdateIdleInterval
+  = do ivals <- varGet appIdleIntervals
+       let ival = if null ivals then 0 else minimum ivals   -- zero is off.
+       appival <- wxcAppGetIdleInterval 
+       if (ival < appival)
+        then wxcAppSetIdleInterval ival
+        else return ()
+
+-- Unregister an idle handler       
+appUnregisterIdle :: Int -> IO ()            
+appUnregisterIdle ival
+  = do varUpdate appIdleIntervals (remove ival)
+       appUpdateIdleInterval
+  where
+    remove ival []       = [] -- very wrong!
+    remove ival (i:is)   | ival == i  = is
+                         | otherwise  = i : remove ival is
+
+
 ------------------------------------------------------------------------------------------
 -- Application startup
 ------------------------------------------------------------------------------------------
@@ -2000,6 +2044,7 @@ appOnInit init
   where
     onDelete ownerDeleted
       = init
+           
 
 
 ------------------------------------------------------------------------------------------

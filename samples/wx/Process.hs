@@ -1,6 +1,6 @@
 module Main where
 
-import Graphics.UI.WXCore
+import Graphics.UI.WXCore 
 import Graphics.UI.WX
 
 main :: IO ()
@@ -29,7 +29,7 @@ gui
     startProcess f input stop message
       = do txt <- get input text
            appendText input txt
-           (send,process,pid) <- processExecAsync f txt 256
+           (send,process,pid) <- processExecAsyncTimed f txt 
                                   (onEndProcess f input stop message) (onReceive message) (onReceive message)
            let sendLn txt = send (txt ++ "\n")
            if (pid /= 0)
@@ -39,11 +39,12 @@ gui
             else return ()
 
     sendCommand input send
-      = do txt <- get input text
+      = do txt   <- get input text
            count <- comboBoxGetCount input
            appendText input txt
            set input [selection := count]
            send txt
+           return ()
 
 
     onEndProcess f input stop message exitcode

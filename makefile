@@ -175,6 +175,7 @@ WXC-SPECS-HEADER = \
 	wxc/include/db.h wxc/include/glcanvas.h \
 	wxc/include/wave.h wxc/include/managed.h \
 	wxc/include/printout.h wxc/include/previewframe.h \
+	wxc/include/textstream.h \
 	wxc/include/ewxw/wxc_glue.h 
 
 

@@ -115,6 +115,7 @@ class ELJApp: public wxApp
 {
   public:
     bool OnInit (void);
+    int  OnExit (void);
     void HandleEvent(wxEvent& _evt);
     void InitZipFileSystem();
     void InitImageHandlers();

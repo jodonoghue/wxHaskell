@@ -56,7 +56,7 @@ import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Defines
 import Graphics.UI.WXCore.Process
-import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore.Events hiding ( StreamStatus(..) )
 import Graphics.UI.WXCore.Draw
 import Graphics.UI.WXCore.Frame
 import Graphics.UI.WXCore.Dialogs
