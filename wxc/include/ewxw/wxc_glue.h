@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.11 2003/09/11 14:07:32 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.12 2003/09/30 13:38:21 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -2559,7 +2559,7 @@ void       wxIdleEvent_RequestMore( TSelf(wxIdleEvent) _obj, TBool needMore );
 /* wxImage */
 TClassDefExtend(wxImage,wxObject)
 TBool      wxImage_CanRead( TStringVoid name );
-void       wxImage_ConvertToBitmap( TSelf(wxImage) _obj, TClass(wxBitmap) bitmap );
+void       wxImage_ConvertToBitmap( TSelf(wxImage) _obj, TClassRef(wxBitmap) bitmap );
 int        wxImage_CountColours( TSelf(wxImage) _obj, int stopafter );
 TClass(wxImage) wxImage_CreateDefault(  );
 TClass(wxImage) wxImage_CreateFromBitmap( TClass(wxBitmap) bitmap );

@@ -29,6 +29,9 @@ TClass(wxClosure)  wxObject_GetClientClosure( TSelf(wxObject) _obj );
 /** Set the reference data of an object as a closure. The closure data contains the data while the function is called on deletion. Returns 'True' on success. Only works if the reference data is unused by wxWindows! */
 void               wxObject_SetClientClosure( TSelf(wxObject) _obj, TClass(wxClosure) closure );
 
+/* Object */
+void wxObject_Delete( TSelf(wxObject) obj );
+
 /* Frame */
 TStringLen  wxFrame_GetTitle( TSelf(wxFrame) _obj, TStringOutVoid _buf );
 void        wxFrame_SetTitle( TSelf(wxFrame) _frame, TString _txt );
@@ -300,6 +303,33 @@ TBool     wxTextAttr_IsDefault( TSelf(wxTextAttr) _obj );
 void      wxTextAttr_SetTextColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colour );
 void      wxTextAttr_SetBackgroundColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colour );
 void      wxTextAttr_SetFont(TSelf(wxTextAttr) _obj, TClass(wxFont) font );
+
+
+/* Image.cpp */
+TClass(wxBitmap) wxBitmap_CreateFromImage( TClass(wxImage) image, int depth );
+TClass(wxImage) wxImage_CreateFromDataEx( TSize(width,height), void* data, TBoolInt isStaticData);
+void wxImage_Delete( TSelf(wxImage) image );
+
+/* basic (zbuffer) pixel manipulation */
+void wxcSetPixel( void* buffer, int width, TPoint(x,y), int r, int g, int b );
+void wxcSetPixelRGB( void* buffer, int width, TPoint(x,y), int rgb  );
+int  wxcGetPixelRGB( void* buffer, int width, TPoint(x,y) );
+void wxcSetZPixel( void* buffer, void* zbuffer, int width, TPoint(x,y), int z, int r, int g, int b );
+void wxcSetZPixelRGB( void* buffer, void* zbuffer, int width, TPoint(x,y), int z, int rgb );
+int  wxcGetZValue( void* zbuffer, int width, int x, int y );
+void wxcSetZValue( void* zbuffer, int width, int x, int y, int z );
+/** usage: @wxcUpdateZValue zbuffer width xy z@. Updates the z-buffer with the new z value when it is /less/ than the previous z value. Returns 'True' in this case, and 'False' otherwise. */ 
+TBoolInt  wxcUpdateZValue( void* zbuffer, int width, int x, int y, int z );
+/* buffer helpers */
+void* wxcMalloc( int size );
+void* wxcMallocInts( int count );
+void  wxcFree( void* p );
+int  wxcPeekByte( void* buffer, int index );
+void wxcPokeByte( void* buffer, int index, int i );
+int  wxcPeekInt( void* buffer, int index );
+void wxcPokeInt( void* buffer, int index, int i );
+void wxcPokeBytes( void* buffer, int index, int count, int i );
+void wxcPokeInts( void* buffer, int index, int count, int i );
 
 
 /* ELJApp */

@@ -3,26 +3,31 @@ module Main where
 import Graphics.UI.WXCore
 import Graphics.UI.WX
 
+rgbSize = sz 255 255
+
 main :: IO ()
 main
   = start gui
 
 gui :: IO ()
 gui
-  = do f  <- frame [text := "Paint demo"]
-       sw <- scrolledWindow f [on paint := onpaint, virtualSize := sz 500 500, scrollRate := sz 10 10]
-       set f [clientSize := sz 150 150, layout := fill $ widget sw]
+  = do pb  <- pixelBufferCreate rgbSize
+       fill pb
+       im  <- imageCreateFromPixelBuffer pb
+       bm  <- bitmapCreateFromImage im (-1)
+       f   <- frame [text := "Paint demo"]
+       p   <- panel f [on paintRaw := onpaint bm, clientSize := rgbSize ]
+       set f [layout := fill $ widget p]
        return ()
   where
-    onpaint dc viewArea
-      = do circle dc (pt 200 200) 20 [penKind := PenDash DashDot]
-           arc dc (pt 100 100) 20 90 230 [color := red, penWidth :~ (+1), penKind := PenSolid]
-           ellipticArc dc (rect  (pt 20  20) (sz 60 30)) 90 230 [color := blue, penWidth :~ (*2)]
-           c <- get dc color
-           -- set dc [font := fontDefault{ fontFace = "Courier New", fontSize = 16, fontWeight = WeightBold }]
-           set dc [fontFace := "Courier New", fontSize := 16, fontWeight := WeightBold ]
-           drawText dc (show c) (pt 50 50) []
-           rotatedText dc "rotated text" (pt 80 160) 45 [textColor := green]
+    onpaint bm dc viewArea dirtyAreas
+      = do drawBitmap dc bm 
+
+    fill pb
+      = mapM_ (drawPixel pb) [Point x y  | x <- [0..255], y <- [0..255]]
+
+    drawPixel pb point
+      = pixelBufferSetPixel pb point (colorRGB 0 (pointX point) (pointY point))
 
 
            

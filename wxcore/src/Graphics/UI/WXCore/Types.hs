@@ -42,7 +42,7 @@ module Graphics.UI.WXCore.Types(
             , boolFromInt, intFromBool
 
             -- ** Colors
-            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue
+            , Color(Color,colorRed,colorGreen,colorBlue), rgb, colorRGB, colorOk
             , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
             , red, green, blue
             , cyan, magenta, yellow

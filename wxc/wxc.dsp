@@ -140,6 +140,10 @@ SOURCE=.\src\extra.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\image.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\treectrl.cpp
 # End Source File
 # Begin Source File

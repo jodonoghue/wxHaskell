@@ -1321,6 +1321,10 @@ EWXWEXPORT(int,wxObject_IsScrolledWindow)(void* _obj)
   return (int)(((wxObject*)_obj)->IsKindOf(CLASSINFO(wxScrolledWindow)));
 }
 
+EWXWEXPORT(void,wxObject_Delete)(wxObject* _obj)
+{
+  delete _obj;
+}
 
 /*-----------------------------------------------------------------------------
   classinfo

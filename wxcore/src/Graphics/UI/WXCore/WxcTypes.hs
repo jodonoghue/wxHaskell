@@ -39,7 +39,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
             -- ** Color
-            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, colorOk
+            , Color(Color,colorRed,colorGreen,colorBlue), rgb, colorRGB, colorOk
 
             -- * Marshalling
             -- ** Basic types
@@ -776,7 +776,7 @@ foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Object a -> IO ()
   Color
 -----------------------------------------------------------------------------------------}
 -- | An abstract data type to define colors.
-data Color = Color Int Int Int deriving Eq
+data Color = Color{ colorRed :: !Int, colorGreen :: !Int, colorBlue :: !Int } deriving Eq
 
 instance Show Color where
   showsPrec d c
@@ -793,6 +793,7 @@ colorRGB r g b = Color r g b
 rgb :: Int -> Int -> Int -> Color
 rgb r g b = Color r g b
 
+{-
 -- | Returns a red color component
 colorRed   :: Color -> Int
 colorRed   (Color r g b) = r
@@ -804,6 +805,7 @@ colorGreen (Color r g b) = g
 -- | Returns a blue color component
 colorBlue  :: Color -> Int
 colorBlue  (Color r g b) = b
+-}
 
 -- | This is an illegal color, corresponding to @nullColour@.
 colorNull :: Color

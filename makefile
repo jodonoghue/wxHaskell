@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.34 2003/09/29 14:49:03 dleijen Exp $
+# $Id: makefile,v 1.35 2003/09/30 13:38:18 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -125,7 +125,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl
+	treectrl image
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -181,7 +181,7 @@ SAMPLE-SOURCES= \
 	samples/wx/Layout.hs \
 	samples/wx/Minimal.hs \
 	samples/wx/Process.hs \
-	samples/wx/Paint.hs \
+	samples/wx/Paint.hs samples/wx/PaintDirect.hs \
 	samples/wx/ImageViewer.hs \
 	samples/wx/TimeFlows.hs \
 	samples/wx/TimeFlowsEx.hs \
