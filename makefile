@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.4 2003/07/15 13:51:24 dleijen Exp $
+# $Id: makefile,v 1.5 2003/07/15 22:10:36 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -89,12 +89,12 @@ WXH-CORE-SOURCES = \
 	Graphics/UI/WXH/WxcTypes \
 	Graphics/UI/WXH/WxcClasses
 
-WXH-NONGEN-SOURCES = \
-	$(filter-out Graphics/UI/WXH/WxcClasses, \
-	  $(filter-out Graphics/UI/WXH/WxcClassTypes, \
-	    $(filter-out Graphics/UI/WXH/WxcDefs, \
-		$(WXH-SOURCES) $(WXH-CORE-SOURCES))))
 
+WXH-GEN-SOURCES = \
+	Graphics/UI/WXH/WxcClasses \
+	Graphics/UI/WXH/WxcClassTypes \
+	Graphics/UI/WXH/WxcDefs 
+	
 # all sources that generate stub files (ie. containing: foreign import "wrapper")
 WXH-STUBS = \
 	Graphics/UI/WXH/Events
@@ -181,45 +181,52 @@ SAMPLE-SOURCES= \
 # Functions  ($(1) means first argument etc.)
 #--------------------------------------------------------------------------
 # create derived file from base name
-# usage: $(call make-hs, <source root path>, <file base names>)
+# usage: $(call make-hs,<source root path>,<file base names>)
+# usage: $(call make-objs,<object root path>,<file base names>)
 make-hs  =$(patsubst %,$(1)/%.hs,$(2))
 make-objs=$(patsubst %,$(1)/%.o,$(2))
 make-deps=$(patsubst %,$(1)/%.d,$(2))
 make-his =$(patsubst %,$(1)/%.hi,$(2))
 
+# usage: $(call run-silent,<command>)
+run-silent	=$(1) > /dev/null 2> /dev/null
+
+# usage: $(call relative-to,<root-dir>,<relative files>)
+relative-to	=$(patsubst $(1)/%,%,$(2))
+
+# usage: $(call relative-fromto,<old-root-dir>,<new-root-dir>,<files>)
+relative-fromto	=$(patsubst $(1)%,$(2)%,$(3))
+
+# get directories of files (using 'sort' to get rid of duplicates)
+dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
+
 # usage: $(call ensure-dir,<directory>)
-ensure-dir=if test -d $(1); then :; else $(MKDIR) $(1); fi
-
-# usage: $(call unprefix,<prefix>,<names>)
-unprefix=$(patsubst $(1)%,%,$(2))
-
-# usage: $(call reprefix,<old-prefix>,<new-prefix>,<names>)
-reprefix=$(patsubst $(1)%,$(2)%,$(3))
+# usage: $(call ensure-dirs-of-files,<files>)
+ensure-dir	=if test -d "$(1)" -o "$(1)" = "./"; then :; else $(MKDIR) $(1); fi
+ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,$(dir));)
 
 # install files, keeping directory structure intact (that is why we use 'foreach').
 # we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
 # usage: $(call install-files,<local dir>,<install dir>,<files>)
 # usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
-dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
-
 install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)); \
 	         $(foreach archive,$(filter %.a,$(2)),$(AR) -s $(archive);)
-install-dir     =if test ! -d $(1); then echo "install directory: $(1)"; $(INSTALLDIR) $(1); fi;
-install-files   =$(foreach dir,$(call dirs-of-files,$(call reprefix,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
-	         $(foreach file,$(3),$(call install-file,$(file),$(call reprefix,$(1),$(2),$(file))))
+install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1);
+install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
+	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))))
 
 uninstall-file  =if test -e "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
-uninstall-dir   =if test -d "$(1)" -a "$(1)" != "./"; then echo "uninstall directory: $(1)"; $(RMDIR) -p $(1) 2> /dev/null; fi;
+uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi;
 uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file))) \
 		 $(CD) $(1); \
-		 $(foreach dir,$(call dirs-of-files,$(call unprefix,$(1)/,$(2))),$(call uninstall-dir,$(dir)))
-uninstall-files =$(call uninstall-filesx,$(2),$(call reprefix,$(1),$(2),$(3)))
+		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)))
+uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
 
 # install packages
 # usage: $(call install-pkg,<install dir>,<package file>)
 # usage: $(call uninstall-pkg,<package name>)
 install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
-uninstall-pkg=if $(HCPKG) -s $(1) > /dev/null 2> /dev/null; then echo "unregister package: $(1)"; $(HCPKG) -r $(1); fi
+uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)"; $(HCPKG) -r $(1); fi
 
 
 #--------------------------------------------------------------------------
@@ -252,27 +259,33 @@ realclean: wxhrealclean
 .PHONY: wxc-dist wxd-dist wxh-dist wx-dist
 .PHONY: wxc-bindist wxh-bindist wx-bindist
 
+DIST-OUTDIR	=$(OUTDIR)
+DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
+DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
+DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(VERSION).zip
+DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
+
 # extract toplevel directory name  (=wxhaskell)
 TOPDIRS   =$(subst \, ,$(subst /, ,$(TOPDIR)))
 ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
 
 # zip commands
-# usage: $(call zip-bindist, <directory>, <files>)
-# usage: $(call zip-srcdist, <local files>)
-zip-add		=echo zipping: $(OUTDIR)/$(1); $(ZIP) -9 $(TOPDIR)/$(OUTDIR)/$(1) $(2)
+# usage: $(call zip-bindist,<relative directory>,<files>)
+# usage: $(call zip-srcdist,<local files>)
+zip-add		=echo zipping: $(1); $(ZIP) -9 $(TOPDIR)/$(1) $(2)
 
-zip-docdist	=$(CD) $(1); $(call zip-add,wxhaskell-doc-$(VERSION).zip, $(call unprefix,$(1)/,$(2)))
-zip-bindist	=$(CD) $(1); $(call zip-add,wxhaskell-bin-$(TOOLKIT)-$(VERSION).zip, $(call unprefix,$(1)/,$(2)))
-zip-srcdist	=$(CD) ..;   $(call zip-add,wxhaskell-src-$(VERSION).zip, $(patsubst %,$(ROOTDIR)/%, $(1)))
+zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
+zip-bindist	=$(CD) $(1); $(call zip-add,$(DIST-BIN), $(call relative-to,$(1),$(2)))
+zip-srcdist	=$(CD) ..;   $(call zip-add,$(DIST-SRC), $(patsubst %,$(ROOTDIR)/%, $(1)))
 
 # full distribution
 dist: dist-dirs all srcdist bindist docdist
 
 dist-dirs:
-	@$(call ensure-dir,$(OUTDIR))
+	@$(call ensure-dirs-of-files,$(DISTS))
 
 dist-clean:
-	$(RM) $(OUTDIR)/*.zip
+	-$(RM) $(DISTS)
 
 # source distribution
 srcdist: dist-dirs wxc-dist wxd-dist wxh-dist wx-dist
@@ -298,7 +311,6 @@ endif
 #--------------------------------------------------------------------------
 WX		=wx
 WX-SRCDIR	=$(WX)/src
-WX-HPATH	=Graphics/UI/WX
 WX-PKG		=config/$(WX).pkg
 WX-OUTDIR	=$(OUTDIR)/$(WX)
 WX-IMPORTSDIR	=$(WX-OUTDIR)/imports
@@ -318,7 +330,7 @@ WX-HCFLAGS	=$(HCFLAGS) -package-name $(WX)
 wx: wxh wx-dirs $(WX-LIBS)
 
 wx-dirs:
-	@$(call ensure-dir,$(WX-IMPORTSDIR)/$(WX-HPATH))
+	@$(call ensure-dirs-of-files,$(WX-OBJS))
 
 wx-clean:
 	-$(RM) -r $(WX-OUTDIR)/*
@@ -348,15 +360,35 @@ $(WX-OBJ): $(WX-OBJS)
 $(WX-LIB): $(WX-OBJS)
 	  $(AR) -sr  $@ $^
 
+run-and-echo    =echo "$(1)"; $(1)
+
+safe-move-file	=if test -f $(1); then $(MV) $(1) $(2); fi
+safe-remove-file=if test -f $(1); then $(RM) $(1); fi
+
+safe-move-stubs =$(call safe-move-file,$(basename $(2))_stub.h,$(dir $(1))); \
+		 $(call safe-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
+
+make-hs-obj     =$(call run-and-echo,$(HC) -c $(2) -o$(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
+
+make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d; \
+		 sed -i -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d; \
+		 $(call safe-remove-file,$(basename $(1)).d.bak)
+
+compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)); \
+		 $(call safe-move-stubs,$(1),$(2)); \
+		 $(call make-hs-deps,$(1),$(2),$(3))
+
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
-	$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WX-IMPORTSDIR)/$(*D) $(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR)
+	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WX-IMPORTSDIR)/$(*D) $(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR)
+	@$(call compile-hs,$@,$<,$(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR))
 	@# move stub files
-	@-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WX-IMPORTSDIR)/$(*D); fi
+	@#$(call safe-move-stubs,$@,$<)
 	@# create dependency file
-	@$(HC) $< $(WX-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR)
-	@sed -e 's|$(subst .hs,,$<)\.o|$(WX-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WX-IMPORTSDIR)/$*.d
-	@$(RM) $(*F).d
+	@#$(call make-hs-deps,$@,$<,$(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR))
+	@#$(HC) $< $(WX-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WX-IMPORTSDIR) -i$(WXH-IMPORTSDIR)
+	@#sed -e 's|$(subst .hs,,$<)\.o|$(WX-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WX-IMPORTSDIR)/$*.d
+	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WX-DEPS)
@@ -378,7 +410,7 @@ WXD-FLAGS	= --wxc $(WXC) -o $(WXH-SRCDIR)/$(WXH-HPATH)
 wxd: wxd-dirs $(WXD-EXE)
 
 wxd-dirs:
-	@$(call ensure-dir,$(WXD-OUTDIR))
+	@$(call ensure-dirs-of-files,$(WXD-OBJS))
 
 wxd-clean:
 	-$(RM) -r $(WXD-OUTDIR)/*
@@ -389,17 +421,18 @@ wxd-dist: $(WXD-HS)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
-	  $(HC) $(HCFLAGS) -o $@ $(WXD-OBJS)
+	$(HC) $(HCFLAGS) -o $@ $(WXD-OBJS)
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXD-OUTDIR)/$(*D) $(HCFLAGS) -i$(WXD-OUTDIR)
+	@$(compile-hs,$@,$<,$(HCFLAGS) -i$(WXD-OUTDIR))
+	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXD-OUTDIR)/$(*D) $(HCFLAGS) -i$(WXD-OUTDIR)
 	@# move stub files
-	@-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXD-OUTDIR)/$(*D); fi
+	@#-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXD-OUTDIR)/$(*D); fi
 	@# create dependency file
-	@$(HC) $< $(HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXD-OUTDIR)
-	@sed -e 's|$(subst .hs,,$<)\.o|$(WXD-OUTDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXD-OUTDIR)/$*.d
-	@$(RM) $(*F).d
+	@#$(HC) $< $(HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXD-OUTDIR)
+	@#sed -e 's|$(subst .hs,,$<)\.o|$(WXD-OUTDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXD-OUTDIR)/$*.d
+	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)
@@ -426,7 +459,8 @@ WXH-STUB-OBJS	=$(call make-objs, $(WXH-IMPORTSDIR), $(patsubst %,%_stub,$(WXH-ST
 WXH-DEPS	=$(call make-deps, $(WXH-IMPORTSDIR), $(WXH-CORE-SOURCES) $(WXH-SOURCES))
 WXH-HIS		=$(call make-his,  $(WXH-IMPORTSDIR), $(WXH-CORE-SOURCES) $(WXH-SOURCES))
 WXH-HS		=$(call make-hs,   $(WXH-SRCDIR),     $(WXH-SOURCES) $(WXH-CORE-SOURCES))
-WXH-NONGEN-HS   =$(call make-hs,   $(WXH-SRCDIR),     $(WXH-NONGEN-SOURCES)) 
+WXH-GEN-HS      =$(call make-hs,   $(WXH-SRCDIR),     $(WXH-GEN-SOURCES))
+WXH-NONGEN-HS   =$(filter-out $(WXH-GEN-HS),$(WXH-HS))
 WXH-BINS	=$(WXH-HIS) $(WXH-LIBS)
 WXH-DOCS	=$(filter-out $(WXH-SRCDIR)/$(WXH-HPATH)/IntMap.hs,$(WXH-HS))
 WXH-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXH)
@@ -436,15 +470,13 @@ WXH-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXH)
 wxh: wxc wxd wxh-dirs $(WXH-LIBS)
 
 wxh-dirs:
-	@$(call ensure-dir,$(WXH-IMPORTSDIR)/$(WXH-HPATH))
+	@$(call ensure-dirs-of-files,$(WXH-OBJS))
 
 wxh-clean:
 	-$(RM) -r $(WXH-OUTDIR)/*
 
 wxhrealclean: wxh-clean
-	-$(RM) $(WXH-SRCDIR)/$(WXH-HPATH)/WxcClasses.hs
-	-$(RM) $(WXH-SRCDIR)/$(WXH-HPATH)/WxcClassTypes.hs
-	-$(RM) $(WXH-SRCDIR)/$(WXH-HPATH)/WxcDefs.hs
+	-$(RM) $(WXH-GEN-HS)
 
 # bindist
 wxh-bindist: wxh
@@ -490,13 +522,16 @@ $(WXH-CORE-LIB): $(WXH-CORE-OBJS)
 
 # create an object file from source files.
 $(WXH-CORE-OBJS) $(WXH-OBJS): $(WXH-IMPORTSDIR)/%.o: $(WXH-SRCDIR)/%.hs
-	$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXH-IMPORTSDIR)/$(*D) $(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR) -Iwxc/include
+	@$(call compile-hs,$@,$<,$(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR) -Iwxc/include)
+	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXH-IMPORTSDIR)/$(*D) $(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR) -Iwxc/include
 	@# move stub files
-	@-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXH-IMPORTSDIR)/$(*D); fi
+	@#-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXH-IMPORTSDIR)/$(*D); fi
+	@#$(call safe-move-stubs,$@,$<)
 	@# create dependency file
-	@$(HC) $< $(WXH-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXH-IMPORTSDIR)
-	@sed -e 's|$(subst .hs,,$<)\.o|$(WXH-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXH-IMPORTSDIR)/$*.d
-	@$(RM) $(*F).d
+	@#$(call make-hs-deps,$@,$<,$(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR))
+	@#$(HC) $< $(WXH-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXH-IMPORTSDIR)
+	@#sed -e 's|$(subst .hs,,$<)\.o|$(WXH-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXH-IMPORTSDIR)/$*.d
+	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WXH-DEPS)
@@ -531,7 +566,7 @@ wxc: wxc-dirs $(WXC-LIB)
 endif
 
 wxc-dirs:
-	@$(call ensure-dir,$(WXC-OUTDIR)/$(WXC-CPATH))
+	@$(call ensure-dirs-of-files,$(WXC-OBJS))
 
 wxc-clean:
 	-$(RM) -r $(WXC-OUTDIR)/*
@@ -590,6 +625,7 @@ $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -dynamiclib -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
+
 # create an object file from source files
 $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 	$(CXX) -c $< -o $@ $(WXC-CXXFLAGS) -MD
