@@ -874,11 +874,16 @@ fromMouseEvent event
 
        dragging    <- mouseEventDragging event
        if (dragging)
-        then do but <- mouseEventGetButton event
-                case but of
-                  3 -> return (MouseRightDrag point modifiers)
-                  2 -> return (MouseMiddleDrag point modifiers)
-                  _ -> return (MouseLeftDrag point modifiers)
+        then do leftDown <- mouseEventLeftIsDown event
+                if (leftDown)
+                 then return (MouseLeftDrag point modifiers)
+                 else do middleDown <- mouseEventMiddleIsDown event
+                         if (middleDown)
+                          then return (MouseMiddleDrag point modifiers)
+                          else do rightDown <- mouseEventRightIsDown event
+                                  if (rightDown)
+                                   then return (MouseRightDrag point modifiers)
+                                   else return (MouseMotion point modifiers)
         else do tp <- eventGetEventType event
                 case lookup tp mouseEventTypes of
                   Just mouse  -> return (mouse point modifiers)
