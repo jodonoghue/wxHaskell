@@ -16,6 +16,29 @@
 # define wxDbConnectInf  void
 #endif
 
+
+/* used for easy marshalling in Haskell */
+enum StandardSqlType {
+  SqlUnknown
+ ,SqlChar
+ ,SqlNumeric
+ ,SqlDecimal
+ ,SqlInteger
+ ,SqlSmallInt
+ ,SqlFloat
+ ,SqlReal
+ ,SqlDouble
+ ,SqlDate
+ ,SqlTime
+ ,SqlTimeStamp
+ ,SqlVarChar
+ ,SqlBit
+ ,SqlBinary
+ ,SqlVarBinary
+ ,SqlBigInt
+ ,SqlTinyInt
+};
+
 extern "C" {
 
 
@@ -152,6 +175,82 @@ EWXWEXPORT(bool,wxDb_GetDataSource)( void* henv, char* dsn, int dsnLen, char* de
 #endif
 }
 
+
+/* translate a system sql type to standard range of enumerations */
+EWXWEXPORT(int,wxDb_SqlTypeToStandardSqlType)( int sqlType )
+{
+#ifdef wxUSE_ODBC
+  switch (sqlType) {
+    case SQL_CHAR:      return SqlChar;
+    case SQL_NUMERIC:   return SqlNumeric;
+    case SQL_DECIMAL:   return SqlDecimal;
+    case SQL_INTEGER:   return SqlInteger;
+    case SQL_SMALLINT:  return SqlSmallInt;
+    case SQL_FLOAT:     return SqlFloat;
+    case SQL_REAL:      return SqlReal;
+    case SQL_DOUBLE:    return SqlDouble;
+#ifdef SQL_DATE
+    case SQL_DATE:      return SqlDate;
+    case SQL_TIME:      return SqlTime;
+    case SQL_TIMESTAMP: return SqlTimeStamp;
+#endif
+    case SQL_VARCHAR:   return SqlVarChar;
+#ifdef SQL_BIT
+    case SQL_BIT:       return SqlBit;
+#endif
+#ifdef SQL_BINARY
+    case SQL_BINARY:    return SqlBinary;
+    case SQL_VARBINARY: return SqlVarBinary;
+#endif
+#ifdef SQL_BIGINT
+    case SQL_BIGINT:    return SqlBigInt;
+    case SQL_TINYINT:   return SqlTinyInt;
+#endif
+    default:  return SqlUnknown;
+  }
+#else
+  return SqlUnknown;
+#endif
+}
+
+EWXWEXPORT(int,wxDb_StandardSqlTypeToSqlType)( int sqlType )
+{
+#ifdef wxUSE_ODBC
+  switch (sqlType) {
+    case SqlUnknown   : return SQL_DEFAULT;
+    case SqlChar      : return SQL_CHAR;
+    case SqlNumeric   : return SQL_NUMERIC;
+    case SqlDecimal   : return SQL_DECIMAL;
+    case SqlInteger   : return SQL_INTEGER;
+    case SqlSmallInt  : return SQL_SMALLINT;
+    case SqlFloat     : return SQL_FLOAT;
+    case SqlReal      : return SQL_REAL;
+    case SqlDouble    : return SQL_DOUBLE;
+#ifdef SQL_DATE
+    case SqlDate      : return SQL_DATE;
+    case SqlTime      : return SQL_TIME;
+    case SqlTimeStamp : return SQL_TIMESTAMP;
+#endif
+    case SqlVarChar   : return SQL_VARCHAR;
+#ifdef SQL_BIT
+    case SqlBit       : return SQL_BIT;
+#endif
+#ifdef SQL_BINARY
+    case SqlBinary    : return SQL_BINARY;
+    case SqlVarBinary : return SQL_VARBINARY;
+#endif
+#ifdef SQL_BIGINT
+    case SqlBigInt    : return SQL_BIGINT;
+    case SqlTinyInt   : return SQL_TINYINT;
+#endif
+    default           : return SQL_DEFAULT;
+  }
+#else
+  return 0;
+#endif
+}
+
+
 /*-----------------------------------------------------------------------------
   Db
 -----------------------------------------------------------------------------*/
@@ -178,6 +277,31 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMsg)(wxDb* db)
   return new wxString("ODBC is not supported on this platform");
 #endif
 }
+
+EWXWEXPORT(wxString*,wxDb_GetErrorMessage)(wxDb* db, int index)
+{
+#ifdef wxUSE_ODBC
+  if (db==NULL)
+    return new wxString("");
+  else
+    return new wxString(db->errorList[index]);
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDb_GetNativeError)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  if (db==NULL)
+    return (-1);
+  else
+    return db->nativeError;
+#else
+  return (-1);
+#endif
+}
+
 
 EWXWEXPORT(bool,wxDb_IsOpen)(wxDb* db)
 {

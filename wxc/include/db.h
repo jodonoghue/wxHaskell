@@ -13,6 +13,8 @@ TClass(wxHSTMT) Null_HSTMT();
   Global
 -----------------------------------------------------------------------------*/
 TBool wxDb_IsSupported();
+int   wxDb_SqlTypeToStandardSqlType( int sqlType );
+int   wxDb_StandardSqlTypeToSqlType( int sqlType );
 void  wxDb_CloseConnections();
 int   wxDb_ConnectionsInUse();
 TClass(wxDb)  wxDb_GetConnection( TClass(wxDbConnectInf) connectInf, TBool fwdCursorsOnly );
@@ -35,8 +37,13 @@ TClass(wxHENV) wxDbConnectInf_GetHenv(TSelf(wxDbConnectInf) self);
 -----------------------------------------------------------------------------*/
 TClassDef(wxDb);
 
-int   wxDb_GetStatus(TSelf(wxDb) db);
+int              wxDb_GetStatus(TSelf(wxDb) db);
+int              wxDb_GetNativeError( TSelf(wxDb) db);
+/** Retrieve error message set by 'dbGetNextError' */
 TClass(wxString) wxDb_GetErrorMsg(TSelf(wxDb) db);
+/** Retrieve the last /n/ error messages. /0/ is the most recent error
+   that corresponds with 'dbGetStatus' and 'dbGetNativeError' */
+TClass(wxString) wxDb_GetErrorMessage( TSelf(wxDb) db, int index);
 TBool wxDb_IsOpen(TSelf(wxDb) db );
 void wxDb_Close(TSelf(wxDb) db);
 TBool wxDb_CommitTrans(TSelf(wxDb) db);
