@@ -8,7 +8,7 @@
 #  Copyright (c) 2003, Daan Leijen, Arthur Baars
 #------------------------------------------------------------------------
 
-# $Id: macosx-app,v 1.1.1.1 2003/07/13 21:18:56 dleijen Exp $
+# $Id: macosx-app,v 1.2 2003/07/21 19:29:38 dleijen Exp $
 arg=""
 
 # variables
@@ -50,6 +50,10 @@ fi
 mainversion="`echo \"$version\" | sed -e \"s|\\.[0-9]\$||\"`"
 libname="libwx_mac-$mainversion"
 
+# nicely shown names
+eprefix_doc="<prefix>"
+libdir_doc="<exec-prefix>/lib"
+
 # Parse command-line arguments
 while : ; do
   # put optional argument in the $arg variable
@@ -71,8 +75,8 @@ while : ; do
         echo ""
         echo "options to find installed wxWindows libraries:"
         echo " --prefix=<dir>      platform independent install directory [$prefix]"
-        echo " --exec-prefix=<dir> platform dependent install directory [<prefix>]"
-        echo " --libdir=<dir>      library files install directory [<exec-prefix>/lib]"
+        echo " --exec-prefix=<dir> platform dependent install directory [$eprefix_doc]"
+        echo " --libdir=<dir>      library files install directory [$libdir_doc]"
         echo " --libname=<name>    base name the wxWindows library [$libname]"
         echo " --rescomp=<name>    the resource compiler [$rescomp]"
         echo ""
@@ -84,9 +88,11 @@ while : ; do
     -prefix=*|--prefix=*)
         prefix="$arg";;
     -exec-prefix=*|--exec-prefix=*)
-        eprefix="$arg";;
+        eprefix="$arg"
+	eprefix_doc="$arg";;
     -libdir=*|--libdir=*)
-        libdir="$arg";;
+        libdir="$arg"
+	libdir_doc="$arg";;
     -libname=*|--libname=*)
         libname="$arg";;
     *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
@@ -134,10 +140,10 @@ $rescomp -t APPL Carbon.r "$libdir"/"$libname".r -o $program
 bundle="$program.app/Contents"
 
 # create bundle directories
-mkdir $program.app
-mkdir $bundle
-mkdir $bundle/MacOS
-mkdir $bundle/Resources
+mkdir -p $program.app
+mkdir -p $bundle
+mkdir -p $bundle/MacOS
+mkdir -p $bundle/Resources
 
 # standard files
 cp -f "$libdir"/"$libname".rsrc $bundle/Resources/$program.rsrc
