@@ -21,7 +21,7 @@ gui
        f       <- frame [text := "Controls"]
        p       <- panel f []
        nb      <- notebook p []
-       textlog <- textCtrl p WrapNone [enabled := False] 
+       textlog <- textCtrl p [enabled := False, wrap := WrapNone] 
 
        -- use text control as logger
        textCtrlMakeLogActiveTarget textlog
@@ -43,20 +43,23 @@ gui
        -- choice
        p3   <- panel nb []
        let clabels = ["mies","noot","aap"]
-       c1   <- choice p3 False clabels [tooltip := "unsorted choices", on select ::= logSelect clabels]
-       c2   <- choice p3 True  clabels [tooltip := "sorted choices", on select ::= logSelect clabels]
+       c1   <- choice p3 [tooltip := "unsorted choices", on select ::= logSelect clabels
+                         ,sorted  := False, items := clabels]
+       c2   <- choice p3 [tooltip := "sorted choices", on select ::= logSelect clabels
+                         ,sorted  := True, items := clabels] 
        cb1  <- button p3 [text := "disable", on command ::= onEnable c1]
 
        -- list box page
        p4   <- panel nb []
-       sl1  <- singleListBox p4 False 
+       sl1  <- singleListBox p4 
                   [items      := clabels
                   ,tooltip    := "unsorted single-selection listbox"
                   ,on select ::= logSelect clabels]
-       sl2  <- singleListBox p4 True 
+       sl2  <- singleListBox p4 
                   [items      := clabels
                   ,tooltip    := "sorted listbox"
-                  ,on select ::= logSelect clabels]
+                  ,on select ::= logSelect clabels
+                  ,sorted     := True]
        sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enabled :~ not]]
 
        -- slider/gauge page

@@ -12,8 +12,12 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Controls
-    ( -- * Containers
-        Panel, panel, panelEx, defaultButton
+    ( -- * Classes
+        Align(..), Aligned, alignment
+      , Wrap(..), Wrapped, wrap
+      , Sorted, sorted
+      -- * Containers
+      , Panel, panel, panelEx, defaultButton
       , Notebook, notebook
       , focusOn
       -- * Controls
@@ -21,15 +25,14 @@ module Graphics.UI.WX.Controls
       , Button, button, buttonEx, smallButton
       , BitmapButton, bitmapButton
       -- ** Text entry
-      , Align(..), Wrap(..)
       , TextCtrl, textEntry, textCtrl, textCtrlRich, textCtrlEx
       , processEnter, processTab
       -- ** CheckBox
       , CheckBox, checkBox
       -- ** Choice
-      , Choice, choice
+      , Choice, choice, choiceEx
       -- ** ComboBox
-      , ComboBox, comboBox
+      , ComboBox, comboBox, comboBoxEx
       -- ** ListBox
       , ListBox, SingleListBox, MultiListBox, singleListBox, multiListBox
       -- ** RadioBox
@@ -60,6 +63,8 @@ import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Events
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Window
+
+import Data.Typeable  -- for "alignment"
 
 
 defaultStyle
@@ -192,13 +197,13 @@ instance HasImage (BitmapButton a) where
 --------------------------------------------------------------------------------}
 -- | Alignment.
 data Align   = AlignLeft | AlignRight | AlignCentre
-             deriving Eq
+             deriving (Eq,Typeable)
 
 -- | Wrap mode.
 data Wrap    = WrapNone   -- ^ No wrapping (and show a horizontal scrollbar).
              | WrapLine   -- ^ Wrap lines that are too long at any position.
              | WrapWord   -- ^ Wrap lines that are too long at word boundaries.
-             deriving Eq
+             deriving (Eq,Typeable)
 
 instance BitMask Align where
   assocBitMask
@@ -212,67 +217,105 @@ instance BitMask Wrap where
       ,(WrapLine, wxTE_LINEWRAP)
       ,(WrapWord, wxTE_WORDWRAP)]
 
-{-
--- note: you can't seem to set alignment after creation in a text control :-(
-class Aligned w where
-  align :: Attr w Align
 
-instance Aligned (Entry a) where
-  align
-    = newAttr "entry-align" getter setter
+-- | Widgets that can have aligned content. 
+-- Note: this property is not
+-- used to set the alignment of a widget itself -- See "Graphics.UI.WXCore.Layout"
+-- for more information about layout.
+class Aligned w where
+  -- | Set the alignment of the content. Due to wxWidgets constrictions,
+  -- this property has to be set at creation time.
+  alignment :: Attr w Align
+
+alignmentFlags props stl
+  = case getPropValue alignment props of
+      Just align -> setBitMask align stl
+      Nothing    -> stl
+
+
+instance Aligned (TextCtrl a) where
+  alignment
+    = reflectiveAttr "alignment" getter setter
     where
       getter w
-        = do st <- get style w
+        = do st <- get w style 
              return (fromBitMask st)
 
-      setter align w
+      setter w align 
         = set w [style :~ setBitMask align ]
 
+-- | Widgets that have wrappable content.
+class Wrapped w where
+  -- | Set the wrap mode of a widget.
+  wrap :: Attr w Wrap
+
+wrapFlags props stl
+  = case getPropValue wrap props of
+      Just mode -> setBitMask mode stl
+      Nothing   -> stl
+
+instance Wrapped (TextCtrl a) where
+  wrap
+    = reflectiveAttr "wrap" getter setter
+    where
+      getter w
+        = do st <- get w style
+             return (fromBitMask st)
+       
+      setter w mode
+        = set w [style :~ setBitMask mode]
+
+
+{-
 instance Able (TextCtrl a) where
-  enable
-    = newAttr "entry-enable" textCtrlIsEditable textCtrlSetEditable
+  enabled
+    = newAttr "enabled" textCtrlIsEditable textCtrlSetEditable
 -}
 
--- | Create a single-line text entry control.
+-- | Create a single-line text entry control. Note: 'alignment' has to
+-- be set at creation time (or the entry has default alignment (=left) ).
 --
--- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-textEntry :: Window a -> Align -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
-textEntry parent align props
-  = textCtrlEx parent (toBitMask align) props
+textEntry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
+textEntry parent props
+  = textCtrlEx parent 0 props
 
--- | Create a multi-line text control with a certain wrap mode
+-- | Create a multi-line text control. Note: the 'wrap' and 'alignment'
+-- have to be set at creation time or the default to 'WrapNone' and 'AlignLeft' respectively.
 --
--- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-textCtrl :: Window a -> Wrap -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
-textCtrl parent wrap props
-  = textCtrlEx parent (toBitMask wrap .+. wxTE_MULTILINE) props
+textCtrl :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
+textCtrl parent props
+  = textCtrlEx parent wxTE_MULTILINE props
 
 
 -- | Create a multi-line text rich-text control with a certain wrap mode
 -- Enables font and color settings on windows, while being equal to 'textCtrl'
--- on other platforms.
+-- on other platforms. Note: the 'wrap' and 'alignment'
+-- have to be set at creation time or the default to 'WrapNone' and 'AlignLeft' respectively.
 --
--- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-textCtrlRich :: Window a -> Wrap -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
-textCtrlRich parent wrap props
-  = textCtrlEx parent (toBitMask wrap .+. wxTE_MULTILINE .+. wxTE_RICH2) props
+textCtrlRich :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
+textCtrlRich parent props
+  = textCtrlEx parent (wxTE_MULTILINE .+. wxTE_RICH2) props
 
--- | Create a generic text control given a certain style.
+-- | Create a generic text control given a certain style. 
 --
--- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 textCtrlEx :: Window a -> Style -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlEx parent flags props
-  = do e <- textCtrlCreate parent idAny "" rectNull flags
+  = do e <- textCtrlCreate parent idAny "" rectNull (wrapFlags props $ alignmentFlags props $ flags)
        set e props
        return e
+
 
 instance Commanding (TextCtrl a) where
   command = newEvent "command" textCtrlGetOnTextEnter textCtrlOnTextEnter
@@ -344,6 +387,27 @@ checkBox parent props
 {--------------------------------------------------------------------------------
   Choice
 --------------------------------------------------------------------------------}
+-- | Widgets that have sorted contents.
+class Sorted w where
+  -- | Is the content of the widget sorted?
+  sorted :: CreateAttr w Bool
+
+instance Sorted (Choice a) where
+  sorted 
+    = createAttr "sorted" getter setter
+    where
+      getter w
+        = do st <- get w style
+             return (bitsSet wxCB_SORT st)
+      setter w sort
+        = set w [style :~ \st -> if sort then st .+. wxCB_SORT else st .-. wxCB_SORT]
+
+sortedFlags mask props st
+  = case getPropValue sorted props of
+      Just True  -> st .+. mask
+      Just False -> st .-. mask
+      Nothing    -> st
+
 instance Selecting (Choice ()) where
   select = newEvent "select" choiceGetOnCommand choiceOnCommand
 
@@ -367,15 +431,23 @@ instance Items (Choice a) String where
 
 
 -- | Create a choice item to select a one of a list of strings.
--- It takes a boolean that determines if the list is sorted
--- and a list of labels.
+--
+-- * Instances: 'Sorted', 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
+choice :: Window a -> [Prop (Choice ())] -> IO (Choice ())
+choice parent props
+  = choiceEx parent 0 props
+
+
+-- | Create a choice item, given a set of style flags, to select a one of a list of strings
 --
 -- * Instances: 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-choice :: Window a -> Bool -> [String] -> [Prop (Choice ())] -> IO (Choice ())
-choice parent sorted labels props
-  = do c <- choiceCreate parent idAny rectNull labels (if sorted then wxCB_SORT else 0)
+choiceEx :: Window a -> Style -> [Prop (Choice ())] -> IO (Choice ())
+choiceEx parent flags props
+  = do c <- choiceCreate parent idAny rectNull [] (sortedFlags wxCB_SORT props flags)
        set c props
        return c
 
@@ -411,17 +483,30 @@ instance Items (ComboBox a) String where
     = comboBoxDelete w i
 -}
 
--- | Create a new combo box with a list of initial entries and a boolean
--- that is 'True' when the entries should be sorted.
+-- | Create a new combo box.
 --
--- * Instances: 'Selecting', 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting', 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 
+--              'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 -- A 'command' event is triggered when the @enter@ key is pressed and when
 -- 'processEnter' has been set to 'True'.
-comboBox :: Window a -> Bool -> [String] -> [Prop (ComboBox ())] -> IO (ComboBox ())
-comboBox parent sorted labels props
-  = do cb <- comboBoxCreate parent idAny "" rectNull labels ((if sorted then wxCB_SORT else 0) .+. wxCB_DROPDOWN)
+comboBox :: Window a -> [Prop (ComboBox ())] -> IO (ComboBox ())
+comboBox parent props
+  = comboBoxEx parent (wxCB_DROPDOWN) props
+
+
+-- | Create a new combo box with a given set of flags.
+--
+-- * Instances: 'Selecting', 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 
+--              'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
+-- A 'command' event is triggered when the @enter@ key is pressed and when
+-- 'processEnter' has been set to 'True'.
+comboBoxEx :: Window a -> Style -> [Prop (ComboBox ())] -> IO (ComboBox ())
+comboBoxEx parent flags props
+  = do cb <- comboBoxCreate parent idAny "" rectNull [] (sortedFlags wxCB_SORT props flags)
        set cb props
        return cb
 
@@ -429,6 +514,18 @@ comboBox parent sorted labels props
 {--------------------------------------------------------------------------------
   ListBox
 --------------------------------------------------------------------------------}
+instance Sorted (ListBox a) where
+  sorted
+    = createAttr "sorted" getter setter
+    where
+      getter w
+        = do st <- get w style
+             return (bitsSet wxLB_SORT st)
+      setter w sort
+        = set w [style :~ \st -> if sort then st .+. wxLB_SORT else st .-. wxLB_SORT]
+
+
+      
 instance Selecting (ListBox a) where
   select
     = newEvent "select" listBoxGetOnCommand listBoxOnCommand
@@ -471,30 +568,28 @@ instance Selections (MultiListBox a) where
         = mapM_ (\i -> listBoxSetSelection w i True) is
 
 
--- | Create a single selection list box. Takes a boolean that determines if
--- the entries are sorted.
+-- | Create a single selection list box. 
 --
--- * Instances: 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Sorted','Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-singleListBox :: Window a -> Bool -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
-singleListBox parent sorted props
+singleListBox :: Window a -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
+singleListBox parent props
   = do lb <- listBoxCreate parent idAny rectNull []
-                (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
+                (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (sortedFlags wxLB_SORT props 0))
        let sl = (objectCast lb :: SingleListBox ())
        set sl props
        return sl
 
--- | Create a multi selection list box with a boolean that determines if
--- the entries are sorted.
+-- | Create a multi selection list box.
 ----
--- * Instances: 'Selecting','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Sorted', 'Selecting','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-multiListBox :: Window a -> Bool -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
-multiListBox parent sorted props
+multiListBox :: Window a -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
+multiListBox parent props
   = do lb <- listBoxCreate parent idAny rectNull []
-              (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
+              (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (sortedFlags wxLB_SORT props 0))
        let ml = (objectCast lb :: MultiListBox ())
        set ml props
        return ml  

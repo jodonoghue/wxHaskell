@@ -56,7 +56,7 @@
 module Graphics.UI.WX.Attributes
     (
     -- * Attributes
-      Attr, Prop((:=),(:~),(::=),(::~)), ReadAttr, WriteAttr
+      Attr, Prop((:=),(:~),(::=),(::~)), ReadAttr, WriteAttr, CreateAttr
     , get, set
     , mapAttr, mapAttrW
 
@@ -67,7 +67,7 @@ module Graphics.UI.WX.Attributes
     -- ** Reflection
     , attrName, propName, containsProp
     -- ** Reflective attributes
-    , reflectiveAttr, getPropValue
+    , reflectiveAttr, createAttr, getPropValue
     ) where
 
 import Data.Dynamic
@@ -81,6 +81,9 @@ data Prop w     = forall a. Attr w a := a         -- ^ Assign a value to an attr
                 | forall a. Attr w a ::= (w -> a) -- ^ Assign a value to an attribute with the widget as argument.
                 | forall a. Attr w a ::~ (w -> a -> a) -- ^ Apply an update function to an attribute with the widget as an argument.
 
+
+-- | An attribute that should be specified at creation time. Just for documentation purposes.
+type CreateAttr w a = Attr w a
 
 -- | A read-only attribute. Just for documentation purposes.
 type ReadAttr w a = Attr w a
@@ -98,6 +101,13 @@ data Attr w a   = Attr String (Maybe (a -> Dynamic)) (w -> IO a) (w -> a -> IO (
 reflectiveAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 reflectiveAttr name getter setter
   = Attr name (Just toDyn) getter setter
+
+-- | Create a /reflective/ attribute with a specified name: value can possibly
+-- retrieved using 'getPropValue'. Note: the use of this function is discouraged
+-- as it leads to non-compositional code.
+createAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> CreateAttr w a
+createAttr name getter setter
+  = reflectiveAttr name getter setter
 
 -- | Create a new attribute with a specified name, getter and setter function.
 newAttr :: String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a

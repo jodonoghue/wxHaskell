@@ -11,9 +11,9 @@ gui :: IO ()
 gui
   = do f      <- frame [text := "Process test"]
        p      <- panel f []                       -- panel for tab-management etc.
-       input  <- comboBox p False ["cmd"] [processEnter := True]
-       output <- textCtrlRich p WrapLine  [bgcolor := black, textColor := red, font := fontFixed{ _fontSize = 12 }]
-       stop   <- button p                 [text := "kill", enabled := False]
+       input  <- comboBox p [processEnter := True, text := "cmd"]
+       output <- textCtrlRich p [bgcolor := black, textColor := red, font := fontFixed{ _fontSize = 12 }]
+       stop   <- button p       [text := "kill", enabled := False]
        focusOn input
        textCtrlSetEditable output False
        set f [layout := container p $
