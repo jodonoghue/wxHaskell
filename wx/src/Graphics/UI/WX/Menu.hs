@@ -13,14 +13,14 @@
 module Graphics.UI.WX.Menu
     ( -- * Menu
       -- ** Menu containers
-      MenuBar, Menu, menubar, menuPopup, menuList
+      MenuBar, Menu, menubar, menuPopup, menuList, menuHelp
     -- ** Menu events
     , menu, menuId
       -- ** Menu items
-    , MenuItem, menuItem, menuExit, menuHelp, menuAbout
+    , MenuItem, menuItem, menuQuit, menuAbout
     , menuLine, menuSub
     -- * Status bar
-    , StatusField, statusbar, statusFixed, statusField
+    , StatusField, statusbar, statusField, statusWidth
     ) where
 
 import Char( toUpper )
@@ -77,6 +77,13 @@ menuList lab props
        set m props
        return m
 
+-- | Append a /help/ menu item with an initial title. On some platforms,
+-- the /help/ menu is handled specially
+menuHelp :: String -> [Prop (Menu ())] -> IO (Menu ())
+menuHelp lab props
+  = menuList lab props
+
+
 instance Textual (Menu a) where
   text
     = newAttr "text" menuGetTitle menuSetTitle
@@ -112,17 +119,11 @@ menuAbout :: Menu a -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem 
 menuAbout menu lab hlp props
   = menuItemId menu  wxID_ABOUT False lab hlp props
 
--- | Append an /exit/ menu item with a label, and help text. On some platforms,
--- the /exit/ menu is handled specially
-menuExit :: Menu a -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuExit menu lab hlp props
+-- | Append an /quit/ menu item with a label, and help text. On some platforms,
+-- the /quit/ menu is handled specially
+menuQuit :: Menu a -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuQuit menu lab hlp props
   = menuItemId menu wxID_EXIT False lab hlp props
-
--- | Append a /help/ menu item with a label, and help text. On some platforms,
--- the /help/ menu is handled specially
-menuHelp :: Menu a -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuHelp menu lab hlp props
-  = menuItemId menu wxID_HELP False lab hlp props
 
 -- | Append a menu item with a specific id, check ability, label, and help text.
 menuItemId :: Menu a -> Int -> Bool -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
@@ -197,31 +198,43 @@ menuId id
 {--------------------------------------------------------------------------------
   Statusbar
 --------------------------------------------------------------------------------}
-data StatusField  = SF Int (Var (StatusBar ())) (Var Int) (Var String)
+data StatusField  = SF (Var Int) (Var (StatusBar ())) (Var Int) (Var String)
 
--- | Create a fixed width (in pixels) status field.
-statusFixed :: Int -> [Prop StatusField] -> IO StatusField
-statusFixed pixels props
-  = do vsbar <- varCreate objectNull
-       vidx  <- varCreate (-1)
-       vtext <- varCreate ""
-       let sf = SF pixels vsbar vidx vtext
-       set sf props
-       return sf
-
--- | Create a variable witdth status field. The argument determines the stretch
--- weight in relation to the other fields. Here is an example of a statusbar
+-- | The status width attribute determines the width of a status bar field.
+-- A negative width makes the field strechable. The width than determines
+-- the amount of stretch in relation with other fields. The default 
+-- status width is @-1@, ie. all fields stretch evenly.
+--
+-- Here is an example of a statusbar
 -- with three fields, where the last field is 50 pixels wide, the first takes
 -- 66% of the remaining space and the second field 33%.
 --
--- > field1 <- statusField 2 []
--- > field2 <- statusField 1 [label := "hi"]
--- > field3 <- statusFixed 50  []
+-- > field1 <- statusField [statusWidth := -2]
+-- > field2 <- statusField [label := "hi"]
+-- > field3 <- statusField [statusWidth := 50]
 -- > set [statusbar := [field1,field2,field3]] frame
 --
-statusField :: Int -> [Prop StatusField] -> IO StatusField
-statusField weight props
-  = statusFixed (-weight) props
+statusWidth :: Attr StatusField Int
+statusWidth 
+  = newAttr "statusWidth" getter setter
+  where
+    getter (SF vwidth _ _ _)
+      = varGet vwidth
+
+    setter (SF vwidth _ _ _) w
+      = varSet vwidth w
+
+-- | Create a status field.
+statusField :: [Prop StatusField] -> IO StatusField
+statusField props
+  = do vwidth<- varCreate (-1)
+       vsbar <- varCreate objectNull
+       vidx  <- varCreate (-1)
+       vtext <- varCreate ""
+       let sf = SF vwidth vsbar vidx vtext
+       set sf props
+       return sf
+
 
 instance Textual StatusField where
   text
@@ -239,17 +252,17 @@ instance Textual StatusField where
               else return ()
 
 
+
+
 -- | Specify the statusbar of a frame.
 statusbar :: WriteAttr (Frame a) [StatusField]
 statusbar
   = writeAttr "statusbar" set
   where
     set f fields
-      = do sb <- statusBarCreateFields f (map width fields)
+      = do ws <- mapM (\field -> get field statusWidth) fields
+           sb <- statusBarCreateFields f ws
            mapM_ (setsb sb) (zip [0..] fields )
-
-    width (SF w _ _ _)
-      = w
 
     setsb sb (idx,SF _ vsbar vidx vtext)
       = do varSet vsbar sb

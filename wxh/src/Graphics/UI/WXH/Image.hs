@@ -12,6 +12,8 @@ module Graphics.UI.WXH.Image
     ( -- * Images
       frameSetIconFromFile
     , bitmapCreateFromFile
+    , bitmapGetSize, bitmapSetSize
+
       -- * Helpers
     , imageTypeFromExtension
     , imageTypeFromFileName
@@ -30,6 +32,19 @@ frameSetIconFromFile f fname
   = bracket (iconCreateLoad fname (imageTypeFromFileName fname) sizeNull)
             (iconDelete)
             (frameSetIcon f)
+
+-- | The size of a bitmap.
+bitmapGetSize :: Bitmap a -> IO Size
+bitmapGetSize bitmap
+  = do w <- bitmapGetWidth bitmap
+       h <- bitmapGetHeight bitmap
+       return (sz w h)
+
+-- | Set the size of a bitmap.
+bitmapSetSize :: Bitmap a -> Size -> IO ()
+bitmapSetSize bitmap (Size w h)
+  = do bitmapSetWidth bitmap w
+       bitmapSetHeight bitmap h
 
 -- | Load a bitmap from an image file (gif, jpg, png, etc.) Raises an IO exception
 -- when the file is not found or if the format is not supported.

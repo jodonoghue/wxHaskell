@@ -16,7 +16,7 @@ module Graphics.UI.WX.Draw
       Drawn, pen, penKind, penWidth, penCap, penJoin, penColor
     , Brushed, brush, brushKind
       -- * Types
-    , DC
+    , DC, Bitmap
     -- ** Brushes
     , BrushStyle(..), BrushKind(..), brushDefault, brushColor
     -- ** Pens

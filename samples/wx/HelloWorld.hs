@@ -13,16 +13,18 @@ hello
 
        -- create file menu
        file   <- menuList  "&File" []
-       about  <- menuAbout file "&About.." "About wxHaskell" []
-       menuLine file
-       exit   <- menuExit file "&Quit\tCtrl+Q" "Quit the demo" []
+       quit   <- menuQuit file "&Quit\tCtrl+Q" "Quit the demo" []
+
+       -- create Help menu
+       help   <- menuHelp "&Help" []
+       about  <- menuAbout help "&About" "About wxHaskell" []
 
        -- create statusbar field
-       status <- statusField 1 [text := "Welcome to wxHaskell"]
+       status <- statusField [text := "Welcome to wxHaskell"]
 
        -- set the statusbar and menubar, and add menu item event handlers
        set f [statusbar := [status]
-             ,menubar   := [file]
+             ,menubar   := [file,help]
              ,on (menu about) := infoDialog f "About wxHaskell" "This is a wxHaskell demo"
-             ,on (menu exit)  := close f
+             ,on (menu quit)  := close f
              ]

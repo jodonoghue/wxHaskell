@@ -72,7 +72,7 @@ imageViewer
              Nothing
                -> return ()
              Just fname
-               -> do bm    <- bitmapCreateFromFile fname  -- can fail with exception
+               -> do bm <- bitmapCreateFromFile fname  -- can fail with exception
                      close f vbitmap
                      varSet vbitmap (Just bm)
                      menuEnable fm wxID_CLOSE True

@@ -391,7 +391,7 @@ windowGetOnScroll window
 windowAddOnClose :: Window a -> IO () -> IO ()
 windowAddOnClose window new
   = do prev <- windowGetOnClose window
-       windowSetOnClose window (do{ new; prev })
+       windowOnClose window (do{ new; prev })
 
 -- | Set an event handler that is called when the user tries to close a frame or dialog.
 -- Don't forget to call the previous handler or 'frameDestroy' explicitly or otherwise the
