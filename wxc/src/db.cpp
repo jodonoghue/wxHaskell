@@ -42,6 +42,10 @@ enum StandardSqlType {
 };
 
 
+#ifndef SQL_DEFAULT
+# define SQL_DEFAULT SQL_CHAR
+#endif
+
 extern "C" {
 
 
@@ -220,7 +224,6 @@ EWXWEXPORT(int,wxDb_StandardSqlTypeToSqlType)( int sqlType )
 {
 #ifdef wxUSE_ODBC
   switch (sqlType) {
-    case SqlUnknown   : return SQL_DEFAULT;
     case SqlChar      : return SQL_CHAR;
     case SqlNumeric   : return SQL_NUMERIC;
     case SqlDecimal   : return SQL_DECIMAL;
@@ -246,6 +249,7 @@ EWXWEXPORT(int,wxDb_StandardSqlTypeToSqlType)( int sqlType )
     case SqlBigInt    : return SQL_BIGINT;
     case SqlTinyInt   : return SQL_TINYINT;
 #endif
+    case SqlUnknown   : return SQL_DEFAULT;
     default           : return SQL_DEFAULT;
   }
 #else
@@ -558,7 +562,7 @@ EWXWEXPORT(int,wxDb_GetColumnCount)(wxDb* db, wxString* tableName, wxString* use
 EWXWEXPORT(wxDbColInf*,wxDb_GetColumns)(wxDb* db, wxString* tableName, int* columnCount, wxString* userName)
 {
 #ifdef wxUSE_ODBC
-  USHORT      count  = 0;
+  UWORD       count  = 0;
   wxDbColInf* result = NULL;
   if (userName!=NULL && userName->IsEmpty()) {
     userName=NULL;
@@ -977,10 +981,12 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
       return NULL;
     }
 
+#ifdef SQL_DESC_TYPE_NAME    
     /* try to get type name too (errors are no problem) */
     SQLColAttribute( hstmt, column+1, SQL_DESC_TYPE_NAME,
                      colInf[column].typeName, 128+1,
                      &typeNameLen, NULL );
+#endif
 
     /* for compatibilty with the wxWindows GetColumns, we set the dbDataType too */
     colInf[column].dbDataType = 0;
