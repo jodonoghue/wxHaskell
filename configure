@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.34 2004/03/17 21:32:18 dleijen Exp $
+# $Id: configure,v 1.35 2004/03/22 14:31:31 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -44,7 +44,6 @@ wxwinlibs=""
 # wxwindows
 wxconfig="wx-config"
 wxtoolkit=""
-wxwinlib=""
 extraldopts=""
 
 # macosx: wx-config might be not in the path
@@ -113,13 +112,6 @@ if sh ./config.search "$wxconfig"; then
   fi
   fi
 
-  # guess wxwindows library
-  # extraction process is a bit flaky: it expects a single -llibname option.
-  # wxwinlibdir="`wx-config --libs | sed -e 's|.*-L\([^ ]*\).*|\1|'`"
-  wxwinexecprefix="`$wxconfig --exec-prefix`"
-  wxwinlibname="`$wxconfig --libs | sed -e 's|.*-lwx\([^ ]*\).*|wx\1|'`"
-  wxwinlib="$wxwinexecprefix/lib/$lib$wxwinlibname$dll"
-
   # guess extra link options
   extraldopts="`$wxconfig --ldflags`"
   pthread="`$wxconfig --libs | sed -e \"s|.* -pthread .*|yes|\"`"
@@ -174,7 +166,6 @@ while : ; do
         echo " --haddock=<program>    haddock documentation tool [$hdoc]"
         echo ""
         echo "wxwindows options:"
-        echo " --wx-lib=<library>     wxWindows library [$wxwinlib]"
         echo " --wx-toolkit=<name>    wxWindows gui toolkit [$wxtoolkit]"
         echo " --wx-config=<program>  wxWindows configure script (must be the first option!)"
         echo "                        [$wxconfig]"
@@ -219,8 +210,6 @@ while : ; do
     -haddock=*|--haddock=*)
         hdoc="$arg";;
 
-    -wx-lib=*|--wx-lib=*)
-        wxwinlib="$arg";;
     -wx-toolkit=*|--wx-toolkit=*)
         wxtoolkit="$arg";;
     -wx-config=*|--wx-config=*)
@@ -332,9 +321,9 @@ if test "$withmsc" != "yes"; then
   fi
   
   # macosx: we get the resource compiler flags
-  if test "$wxtoolkit" = "MAC"; then
-    wxrezcomp="`$wxconfig --rezflags`"
-    wxrezfile=""
+  wxrezcomp="`$wxconfig --rezflags`"
+  wxrezfile=""
+  if test "$wxrezcomp"; then
     for word in $wxrezcomp; do
       temp="`echo $word | grep '[^_]*_mac-[^r]*r'`"
       if test "$temp"; then
@@ -460,25 +449,9 @@ if test "$hdocfound" = "yes"; then
 fi
 
 #--------------------------------------------------------------------
-# wxWindows
+# wxWidgets
 #--------------------------------------------------------------------
-# Find the wxwindows library (if it is specified).
-if test "$wxwinlib"; then
-  if test -f "$wxwinlib"; then
-    echo "wxwindows library found"
-  else
-    echo "error:"
-    echo " Unable to find the specified wxwindows library: $wxwinlib"
-    echo " Maybe you forgot to run 'make install' for wxWindows?"
-    echo " Otherwise, specify the full path to the library on the command line."
-    echo " For example: ./configure --wx-lib=/usr/local/lib/wxmsw241.dll"
-    if test "$WINDIR"; then
-      echo " Or maybe you are trying to compile with Microsoft Visual C++?"
-      echo " For example: ./configure --with-msc"
-    fi
-#    exit 2
-  fi
-fi
+
 
 #--------------------------------------------------------------------
 # install
@@ -598,10 +571,11 @@ run-compress=$runcompress
 WITHMSC=$withmsc
 WXC-LIBNAME=$wxclibname
 
-# WxWindows
+# WxWidgets
 WXWINLIB=$wxwinlib
 WXWIN-LIBS=$wxwinlibs
 WXWIN-CXXFLAGS=$wxwincxxflags
+WXWIN-REZFILE=$wxrezfile
 
 # Platform
 EXE=$exe

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.60 2004/03/18 14:47:39 dleijen Exp $
+# $Id: makefile,v 1.61 2004/03/22 14:31:32 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -167,7 +167,8 @@ WXC-SPECS-HEADER = \
 WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard wxc/src/ewxw/*.h)\
 	 $(wildcard wxc/include/*.h) $(wildcard wxc/include/ewxw/*.h) \
 	 $(wildcard wxc/eiffel/*.e)  $(wildcard wxc/eiffel/ewxw/*.e) \
-	 wxc/src/wxc.rc wxc/wxc.dsp wxc/wxc.dsw
+	 wxc/src/wxc.rc \
+	 $(wildcard wxc/wxc*.dsp) $(wildcard wxc/wxc*.dsw)
 
 #--------------------------------------------------------------------------
 # wxhaskell project itself
@@ -724,16 +725,18 @@ wxc-dist: $(WXC-SRCS)
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).
 wxc-bindist: wxc-compress
 	@$(call cp-bindist,$(dir $(WXC-LIB)),$(BINDIST-DLLDIR),$(WXC-LIB))
-ifneq ($(WXWINLIB),)
-	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*$(DLL))
-endif
 ifeq ($(DLL),.dll)
 	@$(call cp-bindist,$(dir $(WXC-ARCHIVE)),$(BINDIST-LIBDIR),$(WXC-ARCHIVE))
 endif
-ifeq ($(TOOLKIT),mac)
-	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.r)
-	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.rsrc)
+ifneq ($(WXWIN-REZFILE),)
+	@$(call cp-bindist,$(dir $(WXWIN-REZFILE)),$(BINDIST-DLLDIR),$(basename $(WXWIN-REZFILE)).rsrc)
+	@$(call cp-bindist,$(dir $(WXWIN-REZFILE)),$(BINDIST-DLLDIR),$(basename $(WXWIN-REZFILE)).r)
 endif
+
+# ifeq ($(TOOLKIT),mac)
+#	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.r)
+#	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.rsrc)
+# endif
 
 # install
 wxc-install: wxc-compress
@@ -755,12 +758,12 @@ endif
 
 # dynamic link library on unix: generates single .so file
 $(basename $(WXC-LIB)).so: $(WXC-OBJS)
-	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$@
+	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$(LIBDIR)/$@
 
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^ $(WXC-LIBS)
-	$(CXX) -dynamiclib -install_name $(LIBDIR)/$(notdir $@) -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
+	$(CXX) -dynamiclib -install_name $(LIBDIR)/$@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
 # create an object file from source files
