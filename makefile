@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.40 2003/10/15 18:34:42 dleijen Exp $
+# $Id: makefile,v 1.41 2003/10/17 06:16:48 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -402,9 +402,6 @@ BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
 BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
-
-#zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
-
 
 # full distribution
 dist: dist-dirs all srcdist bindist docdist
