@@ -4,69 +4,50 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.73 2004/03/29 20:38:47 dleijen Exp $
+# main target
+all:	wx
 
 #--------------------------------------------------------------------------
-# make [all]		- build the libraries (in "lib").
-#
-# make install		- install the libraries as packages.
-#      uninstall	- uninstall the libraries
-#      install-files	- just install files (no registration)
-#      uninstall-files
-#
-# make doc		- generate documentation (in "doc")
-# 
-# make clean		- remove generated object files and binaries.
-#       wx-clean
-#       wxcore-clean
-#       wxc-clean
-#	doc-clean
-#	dist-clean
-#      realclean - remove all generated files (including documentation)
-#
-# make dist	 - create distribution files
-#       srcdist
-#       docdist
-#       bindist	 - zip file (on windows with install scripts)
-#	macdist	 - macOSX installer
-#       
-#
-# Dependencies are handled (almost) automatically: no need for "make depend" :-)
-#
-# Makefile implementation notes:
-#
-# The dependency (.d) files are generated together with object files using
-# the compiler -M switch. Such dependency file is later processed
-# by sed to prepend the proper directory to the target and to move it
-# into the proper (imports) directory. The way dependency files are handled
-# was 'discovered' by Tom Tromey, and described by Paul Smith,
-# see "advanced auto-dependency generation" at:
-# "http://make.paulandlesley.org/autodep.html"
-#
-# (Unfortunately, there are situations where this method doesn't work for Haskell
-#  modules -- but these situations are exteremely rare in practice, nothing that
-#  can't be solved by a "make clean; make" command. I believe that in the end
-#  this method is much more robust than "make depend".)
-#
-# We use a single makefile in order to correctly resolve dependencies
-# between the different projects -- a recursive make fails to do that,
-# see "recursive make considered harmfull" at:
-# "http://www.tip.net.au/~millerp/rmch/recu-make-cons-harm.html"
-# (We might use include files in the future to split this file in smaller chunks.)
-#
-# We don't use implicit rules (i.e. "%.o: %.c") as the VPATH mechanism can't
-# deal with modules with the same name in different directories :-(
-#
-# We edit (sed) the haskell dependency files to change dependencies on .hi
-# files to .o files. We just disregard .hi files and assume they are always
-# generated together with the .o file. This allows us to leave out the implicit
-# rule for interface files ("%.hi: %.o").
+# Help
 #--------------------------------------------------------------------------
+help:
+	@echo "usage:"
+	@echo " make [macros] [target]"
+	@echo ""
+	@echo "build:"
+	@echo " all             build the library (default target)"
+	@echo " doc             generate haddock documentation"
+	@echo " install         build and install the library"
+	@echo " uninstall       uninstall the library"
+	@echo " install-files   install, but do not register with the Haskell compiler"
+	@echo ""
+	@echo "distribution:"
+	@echo " dist            make a source, documentation, and binary distribution"
+	@echo " srcdist         make a source distribution (as a .zip file)"
+	@echo " docdist         make a documentation and samples zip file"
+	@echo " bindist         binaries, docs, and samples zip (windows distribution)"
+	@echo " macdist         installer for MacOS X (.dmg file) (includes docs and samples)"
+	@echo " rpmdist         unix RPM installer (no docs and samples included)"
+	@echo ""
+	@echo "maintenance:"
+	@echo " clean           remove object files and binaries"
+	@echo " realclean       remove all generated files (including documentation)"
+	@echo " wx-clean        clean the wx library only"
+	@echo " wxcore-clean    clean the wxcore library only"
+	@echo " wxc-clean       clean the wxc wrapper only"
+	@echo ""
+	@echo "macros:"
+	@echo " DESTDIR=<dir>   prefix the installation directories with <dir>"
+	@echo ""
+
+depend:
+	@echo "You do not need 'make depend' for wxHaskell ;-)"
+
 
 # system dependent stuff
 include config/config.mk
 
-# helper functions
+# helper functions, see also for makefile implementation notes.
 include makefile.lib
 
 #--------------------------------------------------------------------------
@@ -239,17 +220,18 @@ SAMPLE-SOURCES= \
 # The main targets.
 #--------------------------------------------------------------------------
 .SUFFIXES: .hs .hi .o .c .cpp
-.PHONY: all install uninstall doc webdoc clean realclean
+.PHONY: all install uninstall install-files uninstall-files
+.PHONY: help doc webdoc clean realclean
 
 # global variables
 OUTDIR	= out
 
-# main targets
-all:		wx
-clean:		wxc-clean wxd-clean wxcore-clean wx-clean 
+# clean
+clean:	wxc-clean wxd-clean wxcore-clean wx-clean 
 
 realclean: wxcore-realclean 
 	-@$(call full-remove-dir,$(OUTDIR)) 
+
 
 
 #--------------------------------------------------------------------------

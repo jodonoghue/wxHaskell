@@ -7,6 +7,39 @@
 #-----------------------------------------------------------------------
 
 #--------------------------------------------------------------------------
+# Dependencies are handled (almost) automatically: no need for "make depend" :-)
+#
+# Makefile implementation notes:
+#
+# The dependency (.d) files are generated together with object files using
+# the compiler -M switch. Such dependency file is later processed
+# by sed to prepend the proper directory to the target and to move it
+# into the proper (imports) directory. The way dependency files are handled
+# was 'discovered' by Tom Tromey, and described by Paul Smith,
+# see "advanced auto-dependency generation" at:
+# "http://make.paulandlesley.org/autodep.html"
+#
+# (Unfortunately, there are situations where this method doesn't work for Haskell
+#  modules -- but these situations are exteremely rare in practice, nothing that
+#  can't be solved by a "make clean; make" command. I believe that in the end
+#  this method is much more robust than "make depend".)
+#
+# We use a single makefile in order to correctly resolve dependencies
+# between the different projects -- a recursive make fails to do that,
+# see "recursive make considered harmfull" at:
+# "http://www.tip.net.au/~millerp/rmch/recu-make-cons-harm.html"
+# (We might use include files in the future to split this file in smaller chunks.)
+#
+# We don't use implicit rules (i.e. "%.o: %.c") as the VPATH mechanism can't
+# deal with modules with the same name in different directories :-(
+#
+# We edit (sed) the haskell dependency files to change dependencies on .hi
+# files to .o files. We just disregard .hi files and assume they are always
+# generated together with the .o file. This allows us to leave out the implicit
+# rule for interface files ("%.hi: %.o").
+#--------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------
 # Support DESTDIR
 #--------------------------------------------------------------------------
 
