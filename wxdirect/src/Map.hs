@@ -61,7 +61,7 @@ module Map  (
               Map          -- instance Eq,Show
 
             -- * Operators
-            , (!), (\\)
+            , (!)
 
             -- * Query
             , isEmpty
@@ -186,15 +186,12 @@ import List(nub,sort)
 {--------------------------------------------------------------------
   Operators
 --------------------------------------------------------------------}
-infixl 9 !,\\
+infixl 9 !
 
 -- | /O(log n)/. See 'find'.
 (!) :: Ord k => Map k a -> k -> a
 m ! k    = find k m
 
--- | /O(n+m)/. See 'difference'.
-(\\) :: Ord k => Map k a -> Map k a -> Map k a
-m1 \\ m2 = difference m1 m2
 
 {--------------------------------------------------------------------
   Size balanced trees.

@@ -8,12 +8,12 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.32 2004/02/29 12:46:53 dleijen Exp $
+# $Id: configure,v 1.33 2004/03/16 13:38:28 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
 #--------------------------------------------------------------------
-version="0.6"
+version="0.7"
 enablestrip="no"
 enableupx="no"
 withmsc="no"
@@ -305,7 +305,7 @@ if test "$withmsc" != "yes"; then
   # initialize options for wxc
   cxx="`$wxconfig --cxx`"
   wxwincxxflags="`$wxconfig --cxxflags`"
-  wxwinlibs="`$wxconfig --libs`"
+  wxwinlibs="`$wxconfig --libs --gl-libs`"
 
   # extract the wxWindows wxtoolkit: MSW, MAC, GTK etc.
   if test -z "$wxtoolkit"; then
