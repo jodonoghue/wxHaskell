@@ -108,7 +108,9 @@ windowGetScreenPosition w
 ------------------------------------------------------------------------------------------
 statusBarCreateFields :: Frame a -> [Int] -> IO (StatusBar ())
 statusBarCreateFields parent widths
-  = do sb <- frameCreateStatusBar parent (length widths) wxST_SIZEGRIP
+  = do pst <- windowGetWindowStyleFlag parent
+       let st = if (bitsSet wxRESIZE_BORDER pst) then wxST_SIZEGRIP else 0
+       sb <- frameCreateStatusBar parent (length widths) st
        let len = length widths
        if (len <= 1)
         then return sb

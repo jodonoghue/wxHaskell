@@ -15,6 +15,7 @@ Not backward compatible changes:
 - Removed sorted argument for listboxes.
 - Added default "stretch" to every toplevel layout, assuring that
   such layout gets at least all available space assigned.
+- (un)set "maximize box" when "resizeable" is set.
 
 Backward compatible additions:
 - Added "changes.txt" file :-)

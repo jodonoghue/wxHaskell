@@ -376,13 +376,16 @@ toolBar parent props
 -- above the toolbar.
 toolBarEx :: Frame a -> Bool -> Bool -> [Prop (ToolBar ())] -> IO (ToolBar ())
 toolBarEx parent showText showDivider props
-  = do t <- toolBarCreate parent idAny rectNull 
-              ( wxTB_DOCKABLE .+. wxTB_FLAT
-                .+. (if showText then wxTB_TEXT else 0)
-                .+. (if showDivider then 0 else 0x200 {- wxTB_NODIVIDER -})
-              )
-       set t props
+  = do let style = ( wxTB_DOCKABLE .+. wxTB_FLAT
+                   .+. (if showText then wxTB_TEXT else 0)
+                   .+. (if showDivider then 0 else 0x200) -- wxTB_NODIVIDER                   
+                   )
+       t <- toolBarCreate parent idAny rectNull style
        frameSetToolBar parent t
+       {-
+       t <- frameCreateToolBar parent style 
+       -}
+       set t props
        return t
 
 -- | A tool in a toolbar.

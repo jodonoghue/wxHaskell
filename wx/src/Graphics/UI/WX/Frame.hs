@@ -64,9 +64,9 @@ frameEx :: Style -> [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameEx style props parent
   = do f <- frameCreate parent idAny "" rectNull 
               ( minimizeableFlags props 
-              $ maximizeableFlags props 
               $ clipChildrenFlags props 
               $ resizeableFlags props   
+              $ maximizeableFlags props 
               $ closeableFlags props
               $ fullRepaintOnResizeFlags props style)
        wxcAppSetTopWindow f
@@ -194,7 +194,8 @@ tile = mdiParentFrameTile
 {--------------------------------------------------------------------------
   Framed instances
 --------------------------------------------------------------------------}
--- | Display a resize border on a 'Frame' or 'Dialog' window.
+-- | Display a resize border on a 'Frame' or 'Dialog' window.  Also enables or
+-- disables the the maximize box.
 -- This attribute must be set at creation time.
 windowResizeable :: Attr (Window a) Bool
 windowResizeable
@@ -205,16 +206,16 @@ windowResizeable
            return (bitsSet wxRESIZE_BORDER s)
     setFlag w resize
       = set w [style :~ \stl -> if resize 
-                                 then stl .+. wxRESIZE_BORDER
-                                 else stl .-. wxRESIZE_BORDER]
+                                 then stl .+. wxRESIZE_BORDER .+. wxMAXIMIZE_BOX
+                                 else stl .-. wxRESIZE_BORDER .-. wxMAXIMIZE_BOX]
 
 -- | Helper function that transforms the style accordding
 -- to the 'resizeable' flag out of the properties
 resizeableFlags :: [Prop (Window a)] -> Int -> Int
 resizeableFlags props stl
   = case getPropValue windowResizeable props of
-      Just True  -> stl .+. wxRESIZE_BORDER
-      Just False -> stl .-. wxRESIZE_BORDER
+      Just True  -> stl .+. wxRESIZE_BORDER .+. wxMAXIMIZE_BOX
+      Just False -> stl .-. wxRESIZE_BORDER .-. wxMAXIMIZE_BOX
       Nothing    -> stl
 
 
