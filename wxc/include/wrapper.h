@@ -82,7 +82,7 @@ typedef int  _cdecl (*TreeCompareFunc) (void* _obj, void* _itm1, void* _itm2);
 */
 class wxClosure : public wxClientData
 {
-  private:
+  protected:
     int         m_refcount;     /* callbacks reference count the closures */
     ClosureFun  m_fun;          /* the foreign function to call */
     void*       m_data;         /* the associated data, passed along with the function call */
@@ -90,11 +90,11 @@ class wxClosure : public wxClientData
     wxClosure( ClosureFun fun, void* data );
     ~wxClosure();
 
-    void IncRef();
-    void DecRef();
+    virtual void IncRef();
+    virtual void DecRef();
 
     virtual void Invoke( wxEvent* event );
-    void* GetData();
+    virtual void* GetData();
 };
 
 class wxCallback: public wxObject

@@ -31,6 +31,8 @@ Backward compatible additions:
 - Added "entry" as shorthand for "textEntry"
 - Added "SystemColor" and "colorSystem" to get standard system colors.
 - Defaulted background color of "Frame"s to Color3DFace (as a Panel).
+- Made the definition of "Closure" in "wrappers.h" more liberal to 
+  support wxOCaml better.
 
 Bug fixes:
 - Fixed bug that crashed wxHaskell when a tree control had the focus
