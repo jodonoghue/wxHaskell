@@ -13,7 +13,7 @@ BuildRoot: %{_builddir}/%{name}-%{wxtoolkit}%{wxversion}-%{hcomp}%{hcversion}-%{
 # Some useful shorthands
 %define wxhpackage  %{wxtoolkit}%{wxversion}-%{hcomp}%{hcversion}
 %define wxhlibdir   %{_libdir}/%{hcomp}-%{hcversion}/%{name}-%{version}
-%define libwxc      libwxc-%{wxtoolkit}%{wxversion}-%{version}
+%define libwxc      libwxc-%{wxtoolkit}%{wxversion}-%{version}.so
 %define source	    %{name}-src-%{version}.zip
 
 # We define a sub package to build for a specific wxGTK and Haskell compiler
