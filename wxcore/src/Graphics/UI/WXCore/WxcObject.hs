@@ -169,6 +169,8 @@ objectFromPtr p
 objectFromManagedPtr :: ManagedPtr a -> IO (Object a)
 objectFromManagedPtr mp
   = do -- wxManagedPtr_NoFinalize mp    {- turn off finalization -}
+       -- GHC 6.0.1 switches the parameters, use: 
+       --   fp <- newForeignPtr mp wxManagedPtrDeleteFunction 
        fp <- newForeignPtr wxManagedPtrDeleteFunction mp
        return (Managed fp)
 

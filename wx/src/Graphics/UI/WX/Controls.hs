@@ -64,7 +64,7 @@ import Graphics.UI.WX.Events
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Window
 
-import Data.Typeable  -- for "alignment"
+import Data.Dynamic  -- for "alignment"
 
 
 defaultStyle

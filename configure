@@ -643,7 +643,7 @@ fi
 
 runcompress=":"
 if test "$enableupx" = "yes"; then
-  runcompress="upx -qt \$(1) >/dev/null 2>/dev/null; if test \$? != 0; then upx \$(1); fi"
+  runcompress="upx -qt \$(1) >/dev/null 2>/dev/null || if test \"\$?\" != \"0\"; then upx \$(1); fi"
 else
  if test "$enablestrip" = "yes"; then
    runcompress="echo strip \$(1); strip \$(1)"
