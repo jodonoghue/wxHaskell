@@ -12,6 +12,7 @@ TClass(wxHSTMT) Null_HSTMT();
 /*-----------------------------------------------------------------------------
   Global
 -----------------------------------------------------------------------------*/
+TBool wxDb_IsSupported();
 void  wxDb_CloseConnections();
 int   wxDb_ConnectionsInUse();
 TClass(wxDb)  wxDb_GetConnection( TClass(wxDbConnectInf) connectInf, TBool fwdCursorsOnly );
@@ -93,8 +94,8 @@ int wxDbTableInf_GetNumCols( TSelf(wxDbTableInf) self );
   DbColInfArray
 -----------------------------------------------------------------------------*/
 TClassDef(wxDbColInfArray);
-TClass(wxDbColInf) wxDbColInfArray_GetColInf( TSelf(wxDbColInf) self, int index );
-void wxDbColInfArray_Delete( TSelf(wxDbColInf) self );
+TClass(wxDbColInf) wxDbColInfArray_GetColInf( TSelf(wxDbColInfArray) self, int index );
+void wxDbColInfArray_Delete( TSelf(wxDbColInfArray) self );
 
 /*-----------------------------------------------------------------------------
   DbColInf

@@ -18,6 +18,8 @@
 
 extern "C" {
 
+
+
 /*-----------------------------------------------------------------------------
   HENV, HDBC, HSTMT
 -----------------------------------------------------------------------------*/
@@ -96,6 +98,15 @@ EWXWEXPORT(void,wxDbConnectInf_Delete)(wxDbConnectInf* self)
 /*-----------------------------------------------------------------------------
   Global functions
 -----------------------------------------------------------------------------*/
+EWXWEXPORT(bool,wxDb_IsSupported)()
+{
+#ifdef wxUSE_ODBC
+  return true;
+#else
+  return false;
+#endif
+}
+
 EWXWEXPORT(void,wxDb_CloseConnections)()
 {
 #ifdef wxUSE_ODBC
@@ -384,7 +395,7 @@ EWXWEXPORT(wxDbInf*,wxDb_GetCatalog)( wxDb* db, wxString* userName )
   if (userName!=NULL && userName->IsEmpty()) {
     userName=NULL;
   }
-  return db->GetCatalog(*userName);
+  return db->GetCatalog((userName ? userName->c_str() : NULL));
 #else
   return NULL;
 #endif
@@ -396,7 +407,7 @@ EWXWEXPORT(int,wxDb_GetColumnCount)(wxDb* db, wxString* tableName, wxString* use
   if (userName!=NULL && userName->IsEmpty()) {
     userName=NULL;
   }
-  return db->GetColumnCount(*tableName,*userName);
+  return db->GetColumnCount((userName ? userName->c_str() : NULL));
 #else
   return 0;
 #endif
@@ -410,7 +421,7 @@ EWXWEXPORT(wxDbColInf*,wxDb_GetColumns)(wxDb* db, wxString* tableName, int* colu
   if (userName!=NULL && userName->IsEmpty()) {
     userName=NULL;
   }
-  result = db->GetColumns(*tableName,&count,*userName);
+  result = db->GetColumns(*tableName,&count,(userName ? userName->c_str() : NULL));
   if (columnCount) *columnCount = count;
   return result;
 #else
@@ -452,7 +463,7 @@ EWXWEXPORT(bool,wxDb_TableExists)(wxDb* db, wxString* tableName, wxString* userN
   if (userName!=NULL && userName->IsEmpty()) {
     userName=NULL;
   }
-  return db->TableExists(*tableName,*userName,*path);
+  return db->TableExists(*tableName,(userName ? userName->c_str() : NULL),*path);
 #else
   return false;
 #endif
@@ -465,7 +476,7 @@ EWXWEXPORT(bool,wxDb_TablePrivileges)(wxDb* db, wxString* tableName, wxString* p
   if (schema!=NULL && schema->IsEmpty()) {
     schema=NULL;
   }
-  return db->TablePrivileges(*tableName,*privileges,(userName==NULL ? "" : userName->c_str()),schema->c_str(),*path);
+  return db->TablePrivileges(*tableName,*privileges,(userName==NULL ? "" : userName->c_str()),(schema ? schema->c_str() : NULL),*path);
 #else
   return false;
 #endif
