@@ -7,14 +7,14 @@ GOTO installarg
 
 :installarg
 SET installdir=%1
-ghc-pkg -u -i "%1\wxh.pkg"
+ghc-pkg -u -i "%1\wxcore.pkg"
 ghc-pkg -u -i "%1\wx.pkg"
 PAUSE
 GOTO end
 
 :noarg
 SET installdir=%CD%
-ghc-pkg -u -i wxh.pkg
+ghc-pkg -u -i wxcore.pkg
 ghc-pkg -u -i wx.pkg
 PAUSE
 GOTO end

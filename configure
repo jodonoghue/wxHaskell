@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.7 2003/08/14 10:07:37 dleijen Exp $
+# $Id: configure,v 1.8 2003/08/20 09:57:44 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -96,6 +96,8 @@ if sh ./config.search "$wxconfig"; then
   else if test "$wxtoolkit" = "MAC"; then
     dll=".dylib"
     lib="lib"
+    # use a standard prefix on MacOS X for the installer
+    prefix="/usr/local/wxhaskell"
   fi
   fi
 
@@ -579,13 +581,13 @@ fi
 
 # create packages
 echo "creating package descriptions"
-echo " - config/wxh.pkg"
-cat > config/wxh.pkg << EOF
+echo " - config/wxcore.pkg"
+cat > config/wxcore.pkg << EOF
 Package
-  { name="wxh"
+  { name="wxcore"
   , import_dirs=["\${installdir}/imports"]
   , library_dirs=["\${installdir}"]
-  , hs_libraries=["wxh","wxhcore"]
+  , hs_libraries=["wxcore","wxcore0"]
   , extra_libraries=["$wxclibname"]
   , package_deps = ["base","data"]
   , extra_ld_opts=[$extraldopts]
@@ -599,7 +601,7 @@ Package
   , import_dirs=["\${installdir}/imports"]
   , library_dirs=["\${installdir}"]
   , hs_libraries=["wx"]
-  , package_deps=["wxh"]
+  , package_deps=["wxcore"]
   }
 EOF
 

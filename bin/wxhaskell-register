@@ -43,5 +43,5 @@ if test ! -e "${installdir}/wxh.pkg"; then
 fi
 
 # register the packages.
-env installdir=${installdir} ghc-pkg -u -i ${installdir}/wxh.pkg
+env installdir=${installdir} ghc-pkg -u -i ${installdir}/wxcore.pkg
 env installdir=${installdir} ghc-pkg -u -i ${installdir}/wx.pkg

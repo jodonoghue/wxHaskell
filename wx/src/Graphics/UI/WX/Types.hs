@@ -83,8 +83,8 @@ module Graphics.UI.WX.Types
 
     ) where
 
-import Graphics.UI.WXH.Types
-import Graphics.UI.WXH.Draw
+import Graphics.UI.WXCore.Types
+import Graphics.UI.WXCore.Draw
 
 -- | Data types that can be represented through a bit mask. Only the @assocBitMask@ method
 -- is required for a new instance.

@@ -4,7 +4,7 @@
 module Main where
 
 import Graphics.UI.WX
-import Graphics.UI.WXH -- ( textCtrlAppendText, (.+.), wxTE_MULTILINE, wxTE_LINEWRAP)
+import Graphics.UI.WXCore -- ( textCtrlAppendText, (.+.), wxTE_MULTILINE, wxTE_LINEWRAP)
 
 main :: IO ()
 main

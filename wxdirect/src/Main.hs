@@ -39,16 +39,16 @@ main
          ModeHelp
           -> showHelp
          ModeClasses outputDir inputFiles verbose
-          -> compileClasses verbose moduleRootWxh moduleClassesName
+          -> compileClasses verbose moduleRootWxCore moduleClassesName
                              (outputDir ++ moduleClassesName ++ ".hs") inputFiles
          ModeDefs outputDir inputFiles verbose
-          -> compileDefs verbose moduleRootWxh moduleDefsName
+          -> compileDefs verbose moduleRootWxCore moduleDefsName
                              (outputDir ++ moduleDefsName ++ ".hs") inputFiles
          ModeClassTypes outputDir verbose
-          -> compileClassTypes verbose moduleRootWxh moduleClassesName moduleClassTypesName
+          -> compileClassTypes verbose moduleRootWxCore moduleClassesName moduleClassTypesName
                              (outputDir ++ moduleClassTypesName ++ ".hs")
          ModeClassesShort outputDir inputFiles verbose
-          -> compileClassesShort verbose moduleRootWxh moduleClassesName moduleClassesShortName
+          -> compileClassesShort verbose moduleRootWxCore moduleClassesName moduleClassesShortName
                              (outputDir ++ moduleClassesShortName ++ ".hs") inputFiles
 
          ModeCHeader outputDir inputFiles verbose
@@ -59,7 +59,7 @@ moduleClassesShortName  = "Classes"
 moduleClassTypesName  = "WxcClassTypes"
 moduleClassesName  = "WxcClasses"
 moduleDefsName     = "WxcDefs"
-moduleRootWxh      = "Graphics.UI.WXH."
+moduleRootWxCore   = "Graphics.UI.WXCore."
 moduleRootWx       = "Graphics.UI.WX."
 
 moduleRootDir moduleRoot
@@ -70,7 +70,7 @@ moduleRootDir moduleRoot
 
 
 defaultOutputDirWxh
-  = "../wxh/src/" ++ moduleRootDir moduleRootWxh
+  = "../wxcore/src/" ++ moduleRootDir moduleRootWxCore
 
 getDefaultFiles
   = do hs <- getDefaultHeaderFiles

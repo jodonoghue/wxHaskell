@@ -15,11 +15,11 @@ module Graphics.UI.WX.Frame
     ) where
 
 -- for haddock, we import wxh module selectively
--- import Graphics.UI.WXH
-import Graphics.UI.WXH.WxcClasses
-import Graphics.UI.WXH.WxcDefs
-import Graphics.UI.WXH.Image
-import Graphics.UI.WXH.Frame
+-- import Graphics.UI.WXCore
+import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.Image
+import Graphics.UI.WXCore.Frame
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

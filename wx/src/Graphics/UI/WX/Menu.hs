@@ -43,11 +43,11 @@ import List( partition, intersperse )
 import System.IO.Unsafe (unsafePerformIO)
 
 -- for haddock, we import wxh module selectively
--- import Graphics.UI.WXH
-import Graphics.UI.WXH.WxcClasses hiding (Event)
-import Graphics.UI.WXH.WxcDefs
-import Graphics.UI.WXH.Events
-import Graphics.UI.WXH.Frame
+-- import Graphics.UI.WXCore
+import Graphics.UI.WXCore.WxcClasses hiding (Event)
+import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore.Frame
 
 
 import Graphics.UI.WX.Types

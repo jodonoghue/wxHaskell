@@ -15,8 +15,8 @@ module Graphics.UI.WX.Timer
             ( Timer, timer, interval
             ) where
 
-import Graphics.UI.WXH.WxcClasses hiding (Timer)
-import Graphics.UI.WXH.Events  
+import Graphics.UI.WXCore.WxcClasses hiding (Timer)
+import Graphics.UI.WXCore.Events  
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

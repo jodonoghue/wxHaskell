@@ -27,11 +27,11 @@ module Graphics.UI.WX.Draw
     ) where
 
 -- for haddock, we import wxh module selectively
--- import Graphics.UI.WXH
-import Graphics.UI.WXH.WxcClasses
-import Graphics.UI.WXH.WxcDefs
-import Graphics.UI.WXH.Events
-import Graphics.UI.WXH.Draw
+-- import Graphics.UI.WXCore
+import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore.Draw
 
 
 import Graphics.UI.WX.Types

@@ -2,7 +2,7 @@ wxHaskell is a Haskell binding to the portable wxWindows GUI library.
 See <http://wxhaskell.sourceforge.net> for the latest information.
 
 The "Graphics.UI.WX" library is a /middle-level/ Haskell library for writing graphical
-user interfaces. It is build on top the "Graphics.UI.WXH" library, the core interface
+user interfaces. It is build on top the "Graphics.UI.WXCore" library, the core interface
 to the wxWindows library. The wxWindows functions are not explained here.
 Please look at the original wxWindows documentation at <http://www.wxwindows.org>
 

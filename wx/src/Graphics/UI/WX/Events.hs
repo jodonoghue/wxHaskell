@@ -45,7 +45,7 @@
 
     > set w [on closing :~ \previous -> do{ ...; previous }]
 
-    Note that you should call 'propagateEvent' (or 'Graphics.UI.WXH.Events.skipCurrentEvent') whenever
+    Note that you should call 'propagateEvent' (or 'Graphics.UI.WXCore.Events.skipCurrentEvent') whenever
     you do not process the event yourself in an event handler. This propagates
     the event to the parent event handlers and give them a chance to
     handle the event in an appropiate way. This gives another elegant way to install
@@ -101,10 +101,10 @@ module Graphics.UI.WX.Events
             ) where
 
 -- for haddock, we import wxh module selectively
--- import Graphics.UI.WXH
-import Graphics.UI.WXH.WxcClasses hiding (Event)
-import Graphics.UI.WXH.WxcDefs
-import Graphics.UI.WXH.Events
+-- import Graphics.UI.WXCore
+import Graphics.UI.WXCore.WxcClasses hiding (Event)
+import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.Events
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

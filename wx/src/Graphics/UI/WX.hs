@@ -48,7 +48,7 @@ import Graphics.UI.WX.Controls
 import Graphics.UI.WX.Dialogs
 import Graphics.UI.WX.Draw
 
-import Graphics.UI.WXH
+import Graphics.UI.WXCore
 
 -- | 'start' runs the GUI.
 start :: IO a -> IO ()

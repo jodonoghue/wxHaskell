@@ -1,6 +1,6 @@
 module Main where
 
-import Graphics.UI.WXH
+import Graphics.UI.WXCore
 import Graphics.UI.WX
 
 main :: IO ()

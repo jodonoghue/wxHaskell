@@ -6,7 +6,7 @@
 -----------------------------------------------------------------------------------------}
 module Main where
 
-import Graphics.UI.WXH (bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear)
+import Graphics.UI.WXCore( bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear )
 import Graphics.UI.WX
 
 main :: IO ()

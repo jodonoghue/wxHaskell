@@ -4,7 +4,7 @@
 module Main where
 
 import Graphics.UI.WX
-import Graphics.UI.WXH
+import Graphics.UI.WXCore
 
 {--------------------------------------------------------------------------------
    The game

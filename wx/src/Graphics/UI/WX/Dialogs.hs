@@ -31,9 +31,9 @@ module Graphics.UI.WX.Dialogs
     , dialogEx
     ) where
 
-import Graphics.UI.WXH.WxcClasses
-import Graphics.UI.WXH.WxcDefs
-import Graphics.UI.WXH.Dialogs
+import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.Dialogs
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

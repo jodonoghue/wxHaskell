@@ -8,7 +8,7 @@
     Stability   :  provisional
     Portability :  portable
 
-    Just re-exports functionality of "Graphics.UI.WXH.Layout". See that module
+    Just re-exports functionality of "Graphics.UI.WXCore.Layout". See that module
     for a description of layout combinators. 
 
     Any object in the 'Form' class has a 'layout' attribute to specify the 
@@ -27,10 +27,10 @@ module Graphics.UI.WX.Layout
              -- * Classes
                Form, layout
              -- * Layout
-             , module Graphics.UI.WXH.Layout
+             , module Graphics.UI.WXCore.Layout
              ) where
 
-import Graphics.UI.WXH.Layout
+import Graphics.UI.WXCore.Layout
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
 

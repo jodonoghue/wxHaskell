@@ -13,7 +13,7 @@
 module Main where
 
 import System.CPUTime
-import Graphics.UI.WXH (getTextExtent)
+import Graphics.UI.WXCore (getTextExtent)
 import Graphics.UI.WX
 
 {-------------------------------------------------------------------------
