@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.71 2004/03/29 13:05:14 dleijen Exp $
+# $Id: makefile,v 1.72 2004/03/29 14:51:56 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]		- build the libraries (in "lib").
@@ -190,6 +190,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 WXHASKELL-SOURCES= \
 	configure makefile makefile.lib \
 	prologue.txt license.txt \
+	bin/wxhaskell-spec-template \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
 	bin/wxhaskell-register bin/wxhaskell-unregister \
@@ -339,6 +340,18 @@ bindist-clean:
 
 
 # specific binary distributions
+
+# RPM dist
+ifeq ($(RPM-SOURCE-DIR),)
+RPM-SOURCE-DIR=$(HOME)/rpm/SOURCES
+endif
+
+rpmdist: srcdist
+	$(CP) -f $(DIST-SRC) $(RPM-SOURCE-DIR)
+	rpmbuild -ba config/wxhaskell.spec
+
+
+# MAC dist
 WXHASKELLINS=wxhaskell
 WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).dmg
 RESOURCEDIR=$(OUTDIR)/macdist/recources

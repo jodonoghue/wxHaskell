@@ -19,7 +19,7 @@ enablestrip="no"
 enableupx="no"
 withmsc="no"
 wxclibname="wxc"
-configflags="$@"
+configflags="$*"
 
 # haskell
 hc="ghc"
@@ -817,7 +817,7 @@ wxToolkit="`echo "$wxtoolkit" | sed -e 'y|abcdefghijklmnopqrstuvwxyz|ABCDEFGHIJK
 echo " - config/wxhaskell.spec"
 echo "%define wxhversion   $version"	>  config/wxhaskell.spec.temp
 echo "%define wxhrelease   $release"	>> config/wxhaskell.spec.temp
-echo "%define hccomp       $hcbasename"		>> config/wxhaskell.spec.temp
+echo "%define hcomp        $hcbasename"		>> config/wxhaskell.spec.temp
 echo "%define hcpkg        $hcpkgbasename"	>> config/wxhaskell.spec.temp
 echo "%define hcversion    $hcversion"		>> config/wxhaskell.spec.temp	
 echo "%define wxtoolkit    $wxtoolkit"		>> config/wxhaskell.spec.temp

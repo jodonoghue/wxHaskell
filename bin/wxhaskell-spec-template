@@ -1,13 +1,3 @@
-%define wxhversion  0.7
-%define wxhrelease  0
-%define hccomp      ghc
-%define hcpkg       ghc-pkg
-%define hcversion   6.2
-%define wxtoolkit   gtk
-%define wxToolkit   GTK
-%define wxversion   2.5.1
-%define configflags "--wx-config=/home/dleijen/local/wxWindows2.5.1/bin/wx-config"
-
 Summary: A Haskell library for wxWidgets
 Name: wxhaskell
 Version: %{wxhversion}
@@ -24,7 +14,6 @@ BuildRoot: %{_builddir}/%{name}-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{
 Summary: A Haskell library for wxWidgets
 Group: Development/Libraries
 BuildRequires: %{hcomp} = %{hcversion}
-# , wx%{wxtoolkit}-devel = %{wxversion}
 Requires: %{hcomp} = %{hcversion}
 Requires(post,preun): %{_bindir}/%{hcpkg}-%{hcversion}
 
@@ -49,7 +38,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install-files
-mv %buildroot%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/libwxc-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{version}.so %buildroot%{_libdir}
+mv %buildroot%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/libwxc-%{wxtoolkit}%{wxversion}-%{version}.so %buildroot%{_libdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -67,7 +56,7 @@ fi
 %files %{hcomp}-%{hcversion}
 %defattr(-,root,root,-)
 %{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/*
-%{_libdir}/libwxc-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{version}.so
+%{_libdir}/libwxc-%{wxtoolkit}%{wxversion}-%{version}.so
 
 %changelog
 * Fri Mar 26 2004 Daan Leijen <http://www.cs.uu.nl/~daan> - 0.7-0
