@@ -37,7 +37,7 @@ imageViewer
        windowSetClientSize f (sz defaultWidth defaultHeight)
 
        -- coolness: set a custom icon
-       frameSetIconFromFile f "ImageViewer.ico"
+       frameSetIconFromFile f "../bitmaps/eye.ico"
 
        -- put a scrolled window inside the frame to paint the image on
        -- note that 'wxNO_FULL_REPAINT_ON_RESIZE'  is needed to prevent flicker on resize.
