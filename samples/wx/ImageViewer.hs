@@ -52,12 +52,12 @@ imageViewer
        set f [statusbar       := [status]
              ,menubar         := [file,help]
              ,layout          := fill (widget sw)
+             ,clientSize      := sz 300 200
              ,on (menu about) := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
              ,on (menu quit)  := close f
              ,on (menu open)  := onOpen f sw vbitmap mclose status 
              ,on (menu mclose):= onClose  sw vbitmap mclose status
              ,on closing      :~ \prev -> do closeImage vbitmap; prev 
-             ,clientSize       := sz 300 200
              ]
 
   where
