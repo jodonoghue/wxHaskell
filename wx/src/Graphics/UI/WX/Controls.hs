@@ -28,7 +28,7 @@ module Graphics.UI.WX.Controls
       -- ** ComboBox
       , ComboBox, comboBox
       -- ** ListBox
-      , ListBox, singleListBox
+      , ListBox, singleListBox, multiListBox
       -- ** RadioBox
       , RadioBox, radioBox
       -- ** Slider
@@ -46,6 +46,7 @@ module Graphics.UI.WX.Controls
 import Graphics.UI.WXH.WxcClasses
 import Graphics.UI.WXH.WxcDefs
 import Graphics.UI.WXH.Events
+import Graphics.UI.WXH.Controls
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
@@ -181,7 +182,8 @@ textCtrl parent wrap props
 
 
 -- | Create a multi-line text rich-text control with a certain wrap mode
--- Has only effect on windows.
+-- Enables font and color settings on windows, while being equal to 'textCtrl'
+-- on other platforms.
 textCtrlRich :: Window a -> Wrap -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlRich parent wrap props
   = textCtrlEx parent (toBitMask wrap .+. wxTE_MULTILINE .+. wxTE_RICH2) props
@@ -238,26 +240,27 @@ instance Selection (Choice ()) where
   selection
     = newAttr "selection" choiceGetSelection choiceSetSelection
 
+
+instance Items (Choice a) String where
+  itemcount
+    = readAttr "itemcount" choiceGetCount
+
+  item i
+    = newAttr "item" (\w -> choiceGetString w i) (\w x -> choiceSetString w i x)
+
+  itemadd w x
+    = choiceAppend w x
+
+
+
 -- | Create a choice item to select a one of a list of strings.
 -- It takes a boolean that determines if the list is sorted
--- and a list of labels with corresponding event handlers when the item is selected.
--- The handlers get the created choice item as their argument. The event
--- handlers are installed with the 'command' event and can be overridden.
-choice :: Window a -> Bool -> [(String,IO ())] -> [Prop (Choice ())] -> IO (Choice ())
+-- and a list of labels.
+choice :: Window a -> Bool -> [String] -> [Prop (Choice ())] -> IO (Choice ())
 choice parent sorted labels props
-  = do c <- choiceCreate parent idAny rectNull (map fst labels) (if sorted then wxCB_SORT else 0)
-       set c [on command := select c]
+  = do c <- choiceCreate parent idAny rectNull labels (if sorted then wxCB_SORT else 0)
        set c props
        return c
-  where
-    select c
-      = do i <- choiceGetSelection c
-           if (i >= 0 && i < length labels)
-            then do s <- choiceGetString c i
-                    case lookup s labels of
-                      Just io -> io
-                      Nothing -> snd (labels !! i)
-            else return ()
 
 {--------------------------------------------------------------------------------
   ComboBox
@@ -270,11 +273,14 @@ instance Selection (ComboBox a) where
   selection
     = newAttr "selection" comboBoxGetSelection comboBoxSetSelection
 
--- | Create a new combo box with a boolean argument that specifies if the entries
--- should be sorted and a list of initial entries.
+
+
+
+-- | Create a new combo box with a list of initial entries and a boolean
+-- that is 'True' when the entries should be sorted.
 comboBox :: Window a -> Bool -> [String] -> [Prop (ComboBox ())] -> IO (ComboBox ())
-comboBox parent sort labels props
-  = do cb <- comboBoxCreate parent idAny "" rectNull labels ((if sort then wxCB_SORT else 0) .+. wxCB_DROPDOWN)
+comboBox parent sorted labels props
+  = do cb <- comboBoxCreate parent idAny "" rectNull labels ((if sorted then wxCB_SORT else 0) .+. wxCB_DROPDOWN)
        set cb props
        return cb
 
@@ -286,11 +292,27 @@ instance Commanding (ListBox a) where
   command
     = newEvent "command" listBoxGetOnCommand listBoxOnCommand
 
+instance Items (ListBox a) String where
+  itemcount
+    = readAttr "itemcount" listBoxGetCount
+
+  item i
+    = newAttr "item" (\w -> listBoxGetString w i) (\w x -> listBoxSetString w i x)
+
+  itemadd w x
+    = listBoxAppend w x
+
+
 -- | Pointer to single selection list boxes, deriving from 'ListBox'.
 type SingleListBox a  = ListBox (CSingleListBox a)
 
 -- | Abstract type of the 'SingleListBox' class.
 data CSingleListBox a = CSingleListBox
+
+instance Selection (SingleListBox a) where
+  selection
+    = newAttr "selection" listBoxGetSelection (\w x -> listBoxSetSelection w x True)
+
 
 -- | Pointer to multiple selection list boxes, deriving from 'ListBox'.
 type MultiListBox a   = ListBox (CMultiListBox a)
@@ -298,21 +320,33 @@ type MultiListBox a   = ListBox (CMultiListBox a)
 -- | Abstract type of the 'MultiListBox' class.
 data CMultiListBox a  = CMultiListBox
 
+instance Selections (MultiListBox a) where
+  selections
+    = newAttr "selections" listBoxGetSelectionList setter
+    where
+      setter w is
+        = mapM_ (\i -> listBoxSetSelection w i True) is
 
-singleListBox :: Window a -> Bool -> [(String,IO ())] -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
+
+-- | Create a single selection list box. Takes a boolean that determines if
+-- the entries are sorted and a list of labels.
+singleListBox :: Window a -> Bool -> [String] -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
 singleListBox parent sorted labels props
-  = do lb <- listBoxCreate parent idAny rectNull (map fst labels)
+  = do lb <- listBoxCreate parent idAny rectNull labels
                 (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
        let sl = (objectCast lb :: SingleListBox ())
-       set sl [on command := select sl]
        set sl props
        return sl
-  where
-    select sl
-      = do i <- listBoxGetSelection sl
-           if (i >= 0 && i < length labels)
-            then snd (labels !! i)
-            else return ()
+
+-- | Create a multi selection list box with a boolean that determines if
+-- the entries are sorted and a list of labels.
+multiListBox :: Window a -> Bool -> [String] -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
+multiListBox parent sorted labels props
+  = do lb <- listBoxCreate parent idAny rectNull labels
+              (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
+       let ml = (objectCast lb :: MultiListBox ())
+       set ml props
+       return ml  
 
 {--------------------------------------------------------------------------------
   RadioBox
@@ -324,14 +358,20 @@ instance Selection (RadioBox a) where
   selection
     = newAttr "selection" radioBoxGetSelection radioBoxSetSelection
 
+instance Items (RadioBox a) String where
+  itemcount
+    = readAttr "itemcount" radioBoxNumber
+
+  item i
+    = newAttr "item" (\r -> radioBoxGetItemLabel r i) (\r s -> radioBoxSetItemLabel r i s)
+
+
+
 -- | Create a new radio button group with an initial orientation and a list of
--- labels and corresponding event handlers when the item is selected. The handlers
--- get the created radio box as their argument. The event
--- handlers are installed with the 'command' event and can be overridden.
-radioBox :: Window a -> Orientation -> [(String,IO ())] -> [Prop (RadioBox ())] -> IO (RadioBox ())
+-- labels. Use 'selection' to get the currently selected item.
+radioBox :: Window a -> Orientation -> [String] -> [Prop (RadioBox ())] -> IO (RadioBox ())
 radioBox parent direction labels props
-  = do r <- radioBoxCreate parent idAny title rectNull (map fst labels) 1 flags
-       set r [on command := select r]
+  = do r <- radioBoxCreate parent idAny title rectNull labels 1 flags
        set r props
        return r
   where
@@ -340,12 +380,6 @@ radioBox parent direction labels props
 
     flags
       = (if (direction==Horizontal) then wxRA_SPECIFY_ROWS else wxRA_SPECIFY_COLS)
-
-    select r
-      = do i <- radioBoxGetSelection r
-           if (i >= 0 && i < length labels)
-            then snd (labels !! i)
-            else return ()
 
 
 {--------------------------------------------------------------------------------

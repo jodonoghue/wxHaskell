@@ -9,8 +9,12 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WXH.Controls
-    ( -- * Wrappers
-      listBoxGetSelectionList
+    ( 
+      -- * Log
+      textCtrlMakeLogActiveTarget
+    , logDeleteAndSetActiveTarget
+      -- * Wrappers
+    , listBoxGetSelectionList
     ) where
 
 import Graphics.UI.WXH.WxcTypes
@@ -20,6 +24,7 @@ import Graphics.UI.WXH.Types
 
 import Foreign.Marshal.Array
 
+-- | Return the current selection in a listbox.
 listBoxGetSelectionList :: ListBox a -> IO [Int]
 listBoxGetSelectionList listBox
   = do n <- listBoxGetSelections listBox ptrNull 0
@@ -28,3 +33,17 @@ listBoxGetSelectionList listBox
         do listBoxGetSelections listBox carr count
            xs <- peekArray count carr
            return (map fromCInt xs)
+
+-- | Sets the active log target and deletes the old one.
+logDeleteAndSetActiveTarget :: Log a -> IO ()
+logDeleteAndSetActiveTarget log
+  = do oldlog <- logSetActiveTarget log
+       logDelete oldlog
+       
+
+-- | Set a text control as a log target.
+textCtrlMakeLogActiveTarget :: TextCtrl a -> IO ()
+textCtrlMakeLogActiveTarget textCtrl
+  = do log <- logTextCtrlCreate textCtrl
+       logDeleteAndSetActiveTarget log
+       

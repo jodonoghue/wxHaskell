@@ -99,7 +99,7 @@ menuSub parent lab m props
 -- menu accellerators by using an ampersand. It can also contain keyboard accellerators
 -- after a tab (@'\\t'@) character.
 --
--- > menuItem "&Open\tCtrl+O" "Opens an existing document" [] menu
+-- > menuItem menu "&Open\tCtrl+O" "Opens an existing document" [] 
 --
 menuItem :: Menu a -> String -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItem menu lab hlp props
@@ -149,6 +149,20 @@ instance Checkable (MenuItem a) where
 instance Identity (MenuItem a) where
   identity  = newAttr "identity" menuItemGetId menuItemSetId
 
+instance Commanding (MenuItem a) where
+  command
+    = newEvent "command" getter setter
+    where
+      getter item
+        = do id   <- get item identity
+             menu <- menuItemGetMenu item
+             evtHandlerGetOnMenuCommand menu id
+
+      setter item h
+        = do id   <- get item identity
+             menu <- menuItemGetMenu item
+             evtHandlerOnMenuCommand menu id h
+                   
 
 -- | Add a menu seperator.
 menuLine :: Menu a -> IO ()
@@ -161,12 +175,13 @@ menuLine menu
 --------------------------------------------------------------------------------}
 -- | React to menu events.
 --
--- > do frame <- frame [label := "Demo"]
+-- > do frame <- frame [text := "Demo"]
 -- >    file  <- menuList "&File" []
--- >    quit  <- menuItem "Quit\tCtrl+Q" "Quit the application" [] file
--- >    set [menubar := [file]] frame
--- >    set [on (menu quit) := close frame] frame
+-- >    quit  <- menuItem file "Quit\tCtrl+Q" "Quit the application" [] 
+-- >    set frame [menubar := [file]] 
+-- >    set frame [on (menu quit) := close frame] 
 --
+-- Note that popup menus can also use a 'command' handler on the menu item itself.
 menu :: MenuItem a -> Event (Window w) (IO ())
 menu item
   = let id = unsafePerformIO (get item identity)
@@ -175,7 +190,9 @@ menu item
 -- | React to a menu event based on identity.
 menuId :: Id -> Event (Window w) (IO ())
 menuId id
-  = newEvent "menu" (\w -> windowGetOnMenuCommand w id) (\w h -> windowOnMenuCommand w id h)
+  = newEvent "menu" (\w -> evtHandlerGetOnMenuCommand w id) (\w h -> evtHandlerOnMenuCommand w id h)
+
+                 
 
 {--------------------------------------------------------------------------------
   Statusbar

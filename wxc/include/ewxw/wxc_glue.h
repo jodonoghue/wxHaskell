@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.3 2003/07/18 13:47:13 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.4 2003/07/18 22:00:55 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -2790,9 +2790,9 @@ void       wxListBox_InsertItems( TSelf(wxListBox) _obj, void* items, int pos, i
 TBool      wxListBox_IsSelected( TSelf(wxListBox) _obj, int n );
 void       wxListBox_SetClientData( TSelf(wxListBox) _obj, int n, TClass(wxClientData) clientData );
 void       wxListBox_SetFirstItem( TSelf(wxListBox) _obj, int n );
-void       wxListBox_SetSelection( TSelf(wxListBox) _obj, int n, int select );
+void       wxListBox_SetSelection( TSelf(wxListBox) _obj, int n, TBoolInt select );
 void       wxListBox_SetString( TSelf(wxListBox) _obj, int n, TString s );
-void       wxListBox_SetStringSelection( TSelf(wxListBox) _obj, TString str, int sel );
+void       wxListBox_SetStringSelection( TSelf(wxListBox) _obj, TString str, TBoolInt sel );
 
 /* wxListCtrl */
 TClassDefExtend(wxListCtrl,wxControl)

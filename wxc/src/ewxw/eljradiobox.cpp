@@ -47,7 +47,7 @@ EWXWEXPORT(void, wxRadioBox_SetItemBitmap)(void* _obj, int item, void* bitmap)
 EWXWEXPORT(int, wxRadioBox_GetItemLabel)(void* _obj, int item, void* _buf)
 {
 #if wxVERSION_NUMBER >= 2400
-	wxString result = ((wxRadioBoxBase*)_obj)->GetString(item);
+	wxString result = ((wxRadioBox*)_obj)->GetString(item);
 #else
 	wxString result = ((wxRadioBox*)_obj)->GetLabel(item);
 #endif

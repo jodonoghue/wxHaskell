@@ -19,9 +19,9 @@ gui
        textlog <- textCtrl p WrapLine [enable := False]
 
        -- use text control as logger
-       log  <- logTextCtrlCreate textlog
-       logSetActiveTarget log
-       logMessage "logging enabled"
+       textCtrlMakeLogActiveTarget textlog
+       logMessage "logging enabled"              
+       -- set f [on closing :~ \prev -> do logSetActiveTarget oldlog; logDelete log; prev]
 
        -- button page
        p1   <- panel  nb [text := "buttons"]
@@ -30,26 +30,25 @@ gui
 
        -- radio box page
        p2   <- panel  nb [text := "radio box"]
-       let rlabels = map (\(i,s) -> (s,logMessage ("selected: index " ++ show i ++ ": text " ++ show s))) $
-                     zip [0..] ["first", "second", "third"]
-       r1   <- radioBox p2 Vertical rlabels   [text := "radio box"]
-       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two"]
+       let rlabels = ["first", "second", "third"]
+       r1   <- radioBox p2 Vertical rlabels   [text := "radio box", on command ::= logSelect rlabels]
+       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two", on command ::= logSelect rlabels ]
        rb1  <- button   p2 [text := "disable", on command ::= onEnable r1]
 
        -- choice
        p3   <- panel nb [text := "choice box"]
-       let clabels = map (\s -> (s,logMessage ("selected: " ++ show s)))
-                     ["noot","mies","aap"]
-       c1   <- choice p3 False clabels [tooltip := "unsorted choices"]
-       c2   <- choice p3 True  clabels [tooltip := "sorted choices"]
+       let clabels = ["noot","mies","aap"]
+       c1   <- choice p3 False clabels [tooltip := "unsorted choices", on command ::= logSelect clabels]
+       c2   <- choice p3 True  clabels [tooltip := "sorted choices", on command ::= logSelect clabels]
        cb1  <- button p3 [text := "disable", on command ::= onEnable c1]
 
        -- list box page
        p4   <- panel nb [text := "list box"]
-       sl1  <- singleListBox p4 False clabels [tooltip := "unsorted single-selection listbox"]
-       sl2  <- singleListBox p4 True  clabels [tooltip := "sorted listbox"]
+       sl1  <- singleListBox p4 False clabels 
+                  [tooltip := "unsorted single-selection listbox", on command ::= logSelect clabels]
+       sl2  <- singleListBox p4 True clabels 
+                  [tooltip := "sorted listbox", on command ::= logSelect clabels]
        sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enable :~ not]]
-
 
        -- specify layout
        set f [layout :=
@@ -73,6 +72,13 @@ gui
        return ()
 
   where
+    -- logSelect :: (Selection w, Items w String) => [String] -> w -> IO ()
+    logSelect labels w
+      = do i <- get w selection
+           s <- get w (item i)
+           logMessage ("selected index: " ++ show i ++ ": " ++ s)
+           
+
     onEnable w b
       = do set w [enable :~ not]
            enabled <- get w enable

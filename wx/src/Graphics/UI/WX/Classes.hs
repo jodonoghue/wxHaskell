@@ -29,6 +29,7 @@ module Graphics.UI.WX.Classes
     , Tipped( tooltip )
     , Selection( selection )
     , Selections( selections )
+    , Items( itemcount, item, items, itemadd )
     -- * Types
     , FontInfo(..)
     ) where
@@ -213,3 +214,31 @@ class Selection w where
 class Selections w where
   -- | The currently selected items in zero-based indices.
   selections :: Attr w [Int]
+
+
+-- | Widgets containing certain items (like strings in a listbox)
+class Items w a | w -> a where
+  -- | Number of items.
+  itemcount  :: ReadAttr w Int
+  -- | All the items as a list. This attribute might not be writable for some widgets (like radioboxes)
+  items  :: Attr w [a]
+  -- | An item by zero-based index.
+  item   :: Int -> Attr w a
+  -- | Add an items. Only valid for writeable items.
+  itemadd :: w -> a -> IO ()
+
+  items
+    = newAttr "items" getter setter
+    where
+      getter :: w -> IO [a]
+      getter w
+        = do n <- get w itemcount
+             mapM (\i -> get w (item i)) [0..n-1]
+
+      setter :: w -> [a] -> IO ()
+      setter w xs
+        = mapM_ (\(i,x) -> set w [item i := x]) (zip [0..] xs)
+
+  itemadd w x
+    = do xs <- get w items
+         set w [items := xs ++ [x]]

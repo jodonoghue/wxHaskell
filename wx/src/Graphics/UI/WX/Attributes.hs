@@ -159,6 +159,8 @@ attrName (Attr name _ _)
 propName :: Prop w -> String
 propName (attr := x)    = attrName attr
 propName (attr :~ f)    = attrName attr
+propName (attr ::= f)   = attrName attr
+propName (attr ::~ f)   = attrName attr
 
 containsProp :: String -> [Prop w] -> Bool
 containsProp name props

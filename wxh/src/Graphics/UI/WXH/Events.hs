@@ -43,10 +43,10 @@ module Graphics.UI.WXH.Events
         , windowOnActivate
         , windowOnPaint
         , windowOnContextMenu
-        , windowOnMenuCommand
         , windowOnScroll
 
         -- ** Event handlers
+        , evtHandlerOnMenuCommand
         , evtHandlerOnEndProcess
         , evtHandlerOnInput
         , evtHandlerOnInputSink
@@ -80,10 +80,10 @@ module Graphics.UI.WXH.Events
         , windowGetOnActivate
         , windowGetOnPaint
         , windowGetOnContextMenu
-        , windowGetOnMenuCommand
         , windowGetOnScroll
 
         -- ** Event handlers
+        , evtHandlerGetOnMenuCommand
         , evtHandlerGetOnEndProcess
         , evtHandlerGetOnInputSink
 
@@ -502,14 +502,14 @@ windowGetOnContextMenu window
 
 
 -- | A menu event is generated when the user selects a menu item.
--- You should install this handler on the window that owns the menubar.
-windowOnMenuCommand :: Window a -> Id -> IO () -> IO ()
-windowOnMenuCommand window id eventHandler
+-- You should install this handler on the window that owns the menubar or a popup menu.
+evtHandlerOnMenuCommand :: EvtHandler a -> Id -> IO () -> IO ()
+evtHandlerOnMenuCommand window id eventHandler
   = evtHandlerOnEvent window id id [wxEVT_COMMAND_MENU_SELECTED] eventHandler (\_ -> return ()) (\ev -> eventHandler)
 
 -- | Get the current event handler for a certain menu.
-windowGetOnMenuCommand :: Window a -> Id -> IO (IO ())
-windowGetOnMenuCommand window id
+evtHandlerGetOnMenuCommand :: EvtHandler a -> Id -> IO (IO ())
+evtHandlerGetOnMenuCommand window id
   = unsafeGetHandlerState window id wxEVT_COMMAND_MENU_SELECTED skipCurrentEvent
 
 
