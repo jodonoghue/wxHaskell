@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.55 2003/11/10 12:30:46 dleijen Exp $
+# $Id: makefile,v 1.56 2004/02/12 06:41:49 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -580,11 +580,11 @@ wxd-dist: $(WXD-HS)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
-	$(HC) $(HCFLAGS) -o $@ $^
+	$(HC) $(HCFLAGS) $(PKG-PARSEC) -o $@ $^
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(HCFLAGS) -i$(WXD-OUTDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) -i$(WXD-OUTDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)
@@ -773,13 +773,9 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 #--------------------------------------------------------------------------
 # Documentation
 #--------------------------------------------------------------------------
-ifdef HDOCBASE
-HDOC-BASE   = -ihttp://haskell.cs.yale.edu/ghc/docs/latest/html/base,$(HDOCBASE)
-endif
-
 DOC-OUTDIR  =$(OUTDIR)/doc
 DOCFILE     =$(DOC-OUTDIR)/wxhaskell.haddock
-HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=prologue.txt --html $(HDOC-BASE)
+HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=prologue.txt --html $(HDOCBASES)
 DOCSOURCES  = $(WX-DOCS) $(WXCORE-DOCS)
 
 doc: doc-dirs $(DOCFILE)

@@ -339,8 +339,9 @@ public:
     wxcHtmlEvent( wxEventType commandType, int id, const wxMouseEvent* mouseEvent, const wxHtmlCell* htmlCell, const wxHtmlLinkInfo* linkInfo, wxPoint logicalPoint );
     const wxMouseEvent* GetMouseEvent();
     const wxHtmlCell *  GetHtmlCell();
-    wxString            GetHref();
-    wxString            GetTarget();
+    wxString*           GetHtmlCellId();
+    wxString*           GetHref();
+    wxString*           GetTarget();
     wxPoint             GetLogicalPosition();
 };
 
@@ -395,20 +396,28 @@ const wxHtmlCell *  wxcHtmlEvent::GetHtmlCell()
     return m_htmlCell;
 }
 
-wxString wxcHtmlEvent::GetHref()
+wxString* wxcHtmlEvent::GetHtmlCellId()
 {
-    if (m_linkInfo)
-        return m_linkInfo->GetHref();
+    if (m_htmlCell)
+        return new wxString(m_htmlCell->GetId());
     else
-        return "";
+        return new wxString("");
 }
 
-wxString wxcHtmlEvent::GetTarget()
+wxString* wxcHtmlEvent::GetHref()
 {
     if (m_linkInfo)
-        return m_linkInfo->GetTarget();
+        return new wxString(m_linkInfo->GetHref());
     else
-        return "";
+        return new wxString("");
+}
+
+wxString* wxcHtmlEvent::GetTarget()
+{
+    if (m_linkInfo)
+        return new wxString (m_linkInfo->GetTarget());
+    else
+        return new wxString("");
 }
 
 wxPoint wxcHtmlEvent::GetLogicalPosition()
@@ -1850,23 +1859,24 @@ EWXWEXPORT(void*,wxcHtmlEvent_GetHtmlCell)( void* _obj  )
     return (void*)(((wxcHtmlEvent*)_obj)->GetHtmlCell());
 }
 
-EWXWEXPORT(int,wxcHtmlEvent_GetHref)( void* _obj, char* _buf)
+EWXWEXPORT(wxString*,wxcHtmlEvent_GetHtmlCellId)( wxcHtmlEvent* _obj)
 {
-    wxString result = ((wxcHtmlEvent*)_obj)->GetHref();
-    if (_buf) memcpy (_buf, result.c_str(), result.Length());
-    return result.Length();
+    return _obj->GetHtmlCellId();
 }
 
-EWXWEXPORT(int,wxcHtmlEvent_GetTarget)( void* _obj, char* _buf )
+EWXWEXPORT(wxString*,wxcHtmlEvent_GetHref)( wxcHtmlEvent* _obj)
 {
-    wxString result = ((wxcHtmlEvent*)_obj)->GetTarget();
-    if (_buf) memcpy (_buf, result.c_str(), result.Length());
-    return result.Length();
+    return _obj->GetHref();
 }
 
-EWXWEXPORT(void,wxcHtmlEvent_GetLogicalPosition)( void* _obj, int* x, int* y )
+EWXWEXPORT(wxString*,wxcHtmlEvent_GetTarget)( wxcHtmlEvent* _obj )
 {
-    wxPoint p = ((wxcHtmlEvent*)_obj)->GetLogicalPosition();
+    return _obj->GetTarget();
+}
+
+EWXWEXPORT(void,wxcHtmlEvent_GetLogicalPosition)( wxcHtmlEvent* _obj, int* x, int* y )
+{
+    wxPoint p = _obj->GetLogicalPosition();
     if (x) *x = p.x;
     if (y) *y = p.y;
     return;

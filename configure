@@ -8,12 +8,12 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.27 2003/11/09 08:55:18 dleijen Exp $
+# $Id: configure,v 1.28 2004/02/12 06:41:49 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
 #--------------------------------------------------------------------
-version="0.4"
+version="0.5"
 enablestrip="no"
 enableupx="no"
 withmsc="no"
@@ -24,9 +24,9 @@ hc="ghc"
 hcpkg="ghc-pkg"
 hcpkglocal=""
 hdoc="haddock"
-hdocbase="base.haddock"
 
 # directories
+topdir="`pwd`"
 prefix="/usr"
 execprefix=""
 libdir=""
@@ -172,8 +172,6 @@ while : ; do
         echo "documentation options:"
         echo " --username=<name>      username on sourceforge [$username]"
         echo " --haddock=<program>    haddock documentation tool [$hdoc]"
-        echo " --haddock-base=<file>  haddock interface for the base libraries"
-        echo "                        [$hdocbase]"
         echo ""
         echo "wxwindows options:"
         echo " --wx-lib=<library>     wxWindows library [$wxwinlib]"
@@ -218,8 +216,6 @@ while : ; do
 
     -username=*|--username=*)
         username="$arg";;
-    -haddock-base=*|--haddock-base=*)
-        hdocbase="$arg";;
     -haddock=*|--haddock=*)
         hdoc="$arg";;
 
@@ -409,6 +405,13 @@ if test "$hcpkglocal"; then
   hcpkg="$hcpkg -f $hcpkglocal"
 fi
 
+# Test if we can include the parsec package explicitly
+$hcpkg -s parsec > /dev/null 2> /dev/null || exit 100
+case $? in
+  0) pkgparsec="-package parsec";;
+  *) pkgparsec="";;
+esac
+
 #--------------------------------------------------------------------
 # Haddock
 #--------------------------------------------------------------------
@@ -427,25 +430,34 @@ else
   hdocfound="no"
 fi
 
-# find  base.haddock
-if test "$hdocfound" = "yes"; then
-  if test "$cygpathfound"; then
-    hdocbase="`cygpath -w $hdocbase | sed -e 's|\\\\|/|g'`"
-  fi
 
-  if test -f "$hdocbase"; then
-    echo "base.haddock found"
-  else
-    echo "warning"
-    echo " Could not find haddock interface: $hdocbase"
-    echo " The haddock documentation will be incomplete"
-    echo " Please specify the haddock interface for the base libraries."
-    echo " For example: ./configure --haddock-base=/c/ghc/doc/html/base/base.haddock"
-    echo ""
-    hdocbase=""
+# Find .haddock files
+if test "$hdocfound" = "yes"; then
+  if sh ./config.search "ghc"; then
+    ghcroot="`which ghc | sed -e 's|/bin/ghc||'`"
+    docroot="$ghcroot/doc/html/libraries"
+    # normalize the root since haddock doesn't like unix names
+    if test "$cygpathfound"; then
+      normdocroot="`cygpath -w $docroot | sed -e 's|\\\\|/|g'`"
+    fi
+
+    if test -d "$docroot"; then
+      # modern ghc >= 6.2, include all available haddock files
+      cd $docroot
+      for file in */*.haddock
+      do
+	 basename="`echo $file | sed -e 's|/.*||'`"
+	 hdocbases="$hdocbases -ihttp://haskell.cs.yale.edu/ghc/docs/latest/html/libraries/$basename,$normdocroot/$file"
+      done
+      cd $topdir
+    else
+      # older ghc < 6.2, try to include the base.haddock file
+      if test -f "$ghcroot/doc/html/base/base.haddock"; then
+	hdocbases=" -ihttp://haskell.cs.yale.edu/ghc/docs/6.0.1/html/base,$ghcroot/doc/html/base/base.haddock"
+      fi
+    fi
   fi
 fi
-
 
 #--------------------------------------------------------------------
 # wxWindows
@@ -548,7 +560,6 @@ echo " - config"
 mkdir -p config
 
 # Finish generated files
-topdir="`pwd`"
 if sh ./config.search "date"; then
   date="`date`"
 else
@@ -570,6 +581,8 @@ HCNAME=$hcname
 HCFLAGS=
 HCPKG=$hcpkg
 
+# Packages
+PKG-PARSEC=$pkgparsec
 
 # C compiler
 CXX=$cxx
@@ -598,7 +611,7 @@ LIB=$lib
 # Documentation
 HDOCFOUND=$hdocfound
 HDOC=$hdoc
-HDOCBASE=$hdocbase
+HDOCBASES=$hdocbases
 USERNAME=$username
 
 # Standard programs

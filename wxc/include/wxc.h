@@ -209,11 +209,14 @@ char* wxInputSinkEvent_LastInput( TSelf(wxInputSinkEvent) obj );
 /* html events */
 TClassDefExtend(wxcHtmlEvent,wxCommandEvent)
 
-TClass(wxMouseEvent) wxcHtmlEvent_GetMouseEvent();
-TClass(wxHtmlCell)   wxcHtmlEvent_GetHtmlCell();
-TStringLen           wxcHtmlEvent_GetHref( TStringOutVoid _buf);
-TStringLen           wxcHtmlEvent_GetTarget( TStringOutVoid _buf );
-void                 wxcHtmlEvent_GetLogicalPosition( TPointOut(x,y));
+TClass(wxMouseEvent) wxcHtmlEvent_GetMouseEvent( TSelf(wxcHtmlEvent) self );
+TClass(wxHtmlCell)   wxcHtmlEvent_GetHtmlCell( TSelf(wxcHtmlEvent) self );
+/** Return the /id/ attribute of the associated html cell (if applicable) */
+TClass(wxString)     wxcHtmlEvent_GetHtmlCellId( TSelf(wxcHtmlEvent) self );
+/** Return the /href/ attribute of the associated html anchor (if applicable) */
+TClass(wxString)     wxcHtmlEvent_GetHref( TSelf(wxcHtmlEvent) self );
+TClass(wxString)     wxcHtmlEvent_GetTarget( TSelf(wxcHtmlEvent) self );
+void                 wxcHtmlEvent_GetLogicalPosition( TSelf(wxcHtmlEvent) self, TPointOut(x,y) );
 
 /* html window */
 TClassDefExtend(wxcHtmlWindow,wxHtmlWindow)
