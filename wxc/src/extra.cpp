@@ -1439,6 +1439,14 @@ EWXWEXPORT(void, wxWindow_FitInside)(void* _obj)
 }
 
 
+EWXWEXPORT(void, wxWindow_ClientToScreen)(wxWindow* self, int x, int y, int* sx, int* sy)
+{
+  wxPoint pt = self->ClientToScreen( wxPoint(x,y) );
+  if (sx) *sx = pt.x;
+  if (sy) *sy = pt.y;
+}
+
+
 EWXWEXPORT(void, wxcGetMousePosition)( int* x, int* y )
 {
   wxPoint pt = wxGetMousePosition();

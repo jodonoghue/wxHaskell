@@ -98,10 +98,10 @@ windowGetMousePosition w
        windowScreenToRelativePosition w p
   
 -- | Translate a screen position to a position relative to a window.
-windowScreenToRelativePosition :: Window a -> Point -> IO Point
-windowScreenToRelativePosition w p
-  = do sp <- windowGetScreenPosition w
-       return (pointSub p sp)
+windowScreenToClient :: Window a -> Point -> IO Point
+windowScreenToClient w sp
+  = do sp0 <- windowClientToScreen w pointZero
+       return (pointSub sp sp0)
 
 -- | Get the window position relative to the origin of the display.
 windowGetScreenPosition :: Window a -> IO Point
