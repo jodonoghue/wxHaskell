@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.3 2003/07/14 12:08:20 dleijen Exp $
+# $Id: makefile,v 1.4 2003/07/15 13:51:24 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -146,9 +146,9 @@ WXC-SPECS-HEADER = \
 	wxc/include/wxc.h wxc/include/ewxw/wxc_glue.h
 
 # distributed in a source distribution
-WXC-SRCS=$(shell echo wxc/src/*.cpp)   $(shell echo wxc/src/ewxw/*.cpp) $(shell echo wxc/src/ewxw/*.h)\
-	 $(shell echo wxc/include/*.h) $(shell echo wxc/include/ewxw/*.h) \
-	 $(shell echo wxc/eiffel/*.e)  $(shell echo wxc/eiffel/ewxw/*.e) \
+WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard wxc/src/ewxw/*.h)\
+	 $(wildcard wxc/include/*.h) $(wildcard wxc/include/ewxw/*.h) \
+	 $(wildcard wxc/eiffel/*.e)  $(wildcard wxc/eiffel/ewxw/*.e) \
 	 wxc/src/wxc.rc wxc/wxc.dsp wxc/wxc.dsw
 
 #--------------------------------------------------------------------------
@@ -187,17 +187,40 @@ make-objs=$(patsubst %,$(1)/%.o,$(2))
 make-deps=$(patsubst %,$(1)/%.d,$(2))
 make-his =$(patsubst %,$(1)/%.hi,$(2))
 
-# usage: $(call ensure-dir, <directory>)
+# usage: $(call ensure-dir,<directory>)
 ensure-dir=if test -d $(1); then :; else $(MKDIR) $(1); fi
 
-# usage: $(call unprefix, <prefix>, <names>)
+# usage: $(call unprefix,<prefix>,<names>)
 unprefix=$(patsubst $(1)%,%,$(2))
 
-# usage: $(call reprefix, <old-prefix>, <new-prefix>, <names>)
+# usage: $(call reprefix,<old-prefix>,<new-prefix>,<names>)
 reprefix=$(patsubst $(1)%,$(2)%,$(3))
 
-# usage: $(call install-lib, <local dir>, <install dir>, <file base names>)
-install-lib=echo install: $(3); $(INSTALL) $(3) $(dir $(patsubst $(1)%,$(2)%,$(3)))
+# install files, keeping directory structure intact (that is why we use 'foreach').
+# we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
+# usage: $(call install-files,<local dir>,<install dir>,<files>)
+# usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
+dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
+
+install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)); \
+	         $(foreach archive,$(filter %.a,$(2)),$(AR) -s $(archive);)
+install-dir     =if test ! -d $(1); then echo "install directory: $(1)"; $(INSTALLDIR) $(1); fi;
+install-files   =$(foreach dir,$(call dirs-of-files,$(call reprefix,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
+	         $(foreach file,$(3),$(call install-file,$(file),$(call reprefix,$(1),$(2),$(file))))
+
+uninstall-file  =if test -e "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
+uninstall-dir   =if test -d "$(1)" -a "$(1)" != "./"; then echo "uninstall directory: $(1)"; $(RMDIR) -p $(1) 2> /dev/null; fi;
+uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file))) \
+		 $(CD) $(1); \
+		 $(foreach dir,$(call dirs-of-files,$(call unprefix,$(1)/,$(2))),$(call uninstall-dir,$(dir)))
+uninstall-files =$(call uninstall-filesx,$(2),$(call reprefix,$(1),$(2),$(3)))
+
+# install packages
+# usage: $(call install-pkg,<install dir>,<package file>)
+# usage: $(call uninstall-pkg,<package name>)
+install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
+uninstall-pkg=if $(HCPKG) -s $(1) > /dev/null 2> /dev/null; then echo "unregister package: $(1)"; $(HCPKG) -r $(1); fi
+
 
 #--------------------------------------------------------------------------
 # The main targets.
@@ -239,7 +262,7 @@ ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
 zip-add		=echo zipping: $(OUTDIR)/$(1); $(ZIP) -9 $(TOPDIR)/$(OUTDIR)/$(1) $(2)
 
 zip-docdist	=$(CD) $(1); $(call zip-add,wxhaskell-doc-$(VERSION).zip, $(call unprefix,$(1)/,$(2)))
-zip-bindist	=$(CD) $(1); $(call zip-add,wxhaskell-bin-$(VERSION).zip, $(call unprefix,$(1)/,$(2)))
+zip-bindist	=$(CD) $(1); $(call zip-add,wxhaskell-bin-$(TOOLKIT)-$(VERSION).zip, $(call unprefix,$(1)/,$(2)))
 zip-srcdist	=$(CD) ..;   $(call zip-add,wxhaskell-src-$(VERSION).zip, $(patsubst %,$(ROOTDIR)/%, $(1)))
 
 # full distribution
@@ -302,7 +325,7 @@ wx-clean:
 
 # bindist
 wx-bindist: wx
-	@$(call zip-bindist,$(WX-OUTDIR), $(WX-BINS))
+	@$(call zip-bindist,$(WX-OUTDIR),$(WX-BINS))
 
 # source dist
 wx-dist: $(WX-HS)
@@ -310,14 +333,12 @@ wx-dist: $(WX-HS)
 
 # install
 wx-install: wx wxh-install
-	$(INSTALLDIR) $(call reprefix,$(WX-OUTDIR),$(LIBDIR), $(WX-IMPORTSDIR)/$(WX-HPATH))
-	@$(foreach file, $(WX-BINS), $(call install-lib,$(WX-OUTDIR),$(LIBDIR),$(file)); )
-	env installdir=$(LIBDIR) $(HCPKG) -u -i $(WX-PKG)
+	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
 
 wx-uninstall:
-	-$(HCPKG) -r $(WX)
-	-$(RM) $(call reprefix,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
-	-$(CD) $(LIBDIR); $(RMDIR) -p $(call unprefix,$(WX-OUTDIR)/,$(WX-IMPORTSDIR)/$(WX-HPATH))
+	-@$(call uninstall-pkg  ,$(WX))
+	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
 
 # build ghci object files
 $(WX-OBJ): $(WX-OBJS)
@@ -435,14 +456,12 @@ wxh-dist: $(WXH-NONGEN-HS)
 
 # install
 wxh-install: wxh wxc-install
-	$(INSTALLDIR) $(call reprefix,$(WXH-OUTDIR),$(LIBDIR),$(WXH-IMPORTSDIR)/$(WXH-HPATH))
-	@$(foreach file, $(WXH-BINS), $(call install-lib,$(WXH-OUTDIR),$(LIBDIR),$(file)); )
-	env installdir=$(LIBDIR) $(HCPKG) -u -i $(WXH-PKG)
+	@$(call install-files,$(WXH-OUTDIR),$(LIBDIR),$(WXH-BINS))
+	@$(call install-pkg  ,$(LIBDIR),$(WXH-PKG))
 
 wxh-uninstall:
-	-$(HCPKG) -r $(WXH)
-	-$(RM) $(call reprefix,$(WXH-OUTDIR),$(LIBDIR),$(WXH-BINS))
-	-$(CD) $(LIBDIR); $(RMDIR) -p $(call unprefix,$(WXH-OUTDIR)/,$(WXH-IMPORTSDIR)/$(WXH-HPATH))
+	-@$(call uninstall-pkg  ,$(WXH))
+	-@$(call uninstall-files,$(WXH-OUTDIR),$(LIBDIR),$(WXH-BINS))
 	
 
 # build marshall modules
@@ -492,12 +511,12 @@ WXC-OUTDIR	=$(OUTDIR)/$(WXC)
 WXC-SRCDIR	=$(WXC)/src
 WXC-INCDIR	=$(WXC)/include
 
-ifeq ($(WITHMSC),)
-WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC).a
-WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC)$(DLL)
-else
+ifeq ($(WITHMSC),yes)
 WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME).a
 WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)$(DLL)
+else
+WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC).a
+WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC)$(DLL)
 endif
 
 WXC-OBJS	=$(call make-objs, $(WXC-OUTDIR), $(WXC-SOURCES))
@@ -505,10 +524,10 @@ WXC-DEPS	=$(call make-deps, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-LIBS	=$(WXWIN-LIBS)
 WXC-CXXFLAGS	=$(WXWIN-CXXFLAGS) -I$(WXC-INCDIR)
 
-ifeq ($(WITHMSC),)
-wxc: wxc-dirs $(WXC-LIB)
-else
+ifeq ($(WITHMSC),yes)
 wxc: 
+else
+wxc: wxc-dirs $(WXC-LIB)
 endif
 
 wxc-dirs:
@@ -549,13 +568,13 @@ wxc-dist: $(WXC-SRCS)
 
 # install
 wxc-install: wxc-compress
-	$(INSTALL) $(WXC-LIB) $(LIBDIR)
+	@$(call install-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB))
 ifeq ($(DLL),.dll)
-	$(INSTALL) $(WXC-ARCHIVE) $(LIBDIR)
+	@$(call install-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-ARCHIVE))
 endif
 
 wxc-uninstall: 
-	-$(RM) $(call reprefix,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB) $(WXC-ARCHIVE))
+	-@$(call uninstall-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB) $(WXC-ARCHIVE))
 
 # dynamic link library on mingw32/cygwin: generates wxc.dll and a libwxc.a import library
 $(basename $(WXC-LIB)).dll: $(WXC-OBJS)
@@ -603,10 +622,17 @@ webdoc: doc
 	cd $(DOC-OUTDIR); scp *.* $(USERNAME)@shell.sourceforge.net:/home/groups/w/wx/wxhaskell/htdocs/doc
 
 # documentation distribution
+ifeq ($(HDOCFOUND),yes)
 docdist: doc
+	@echo "-- adding documentation"
 	@$(call zip-docdist,$(OUTDIR), $(DOC-OUTDIR)/*)
+else
+docdist:
+	@echo "-- haddock not available: documentation can not be added"
+endif
+	@echo "-- adding samples"
 	@$(call zip-docdist,., $(SAMPLE-SOURCES))
-
+	
 # generate documentation with haddock
 $(DOCFILE): prologue.txt $(DOCSOURCES)
 	$(HDOC) $(HDOCFLAGS) $(DOCSOURCES)
