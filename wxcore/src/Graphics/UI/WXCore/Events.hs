@@ -1132,7 +1132,9 @@ eventKeyFromEvent event
   = do x <- keyEventGetX event
        y <- keyEventGetY event
        obj   <- eventGetEventObject event
-       point <- windowCalcUnscrolledPosition (objectCast obj) (Point x y)
+       point <- if objectIsNull obj
+                 then return (Point x y)
+                 else windowCalcUnscrolledPosition (objectCast obj) (Point x y)
 
        altDown     <- keyEventAltDown event
        controlDown <- keyEventControlDown event

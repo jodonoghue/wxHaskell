@@ -31,6 +31,7 @@ module Graphics.UI.WXCore.Dialogs
     , numberDialog
     -- * Internal
     , messageDialog
+    , fileDialog
     ) where
 
 import List( intersperse )
@@ -106,9 +107,9 @@ fileOpenDialog parent rememberCurrentDir allowReadOnly message wildcards directo
 --
 -- The @overwritePrompt@ argument determines whether the user gets a prompt for confirmation when
 -- overwriting a file. The other arguments are as in 'fileOpenDialog'.
-fileSaveDialog :: Window a -> Bool -> Bool -> String -> FilePath -> FilePath -> IO (Maybe FilePath)
-fileSaveDialog parent rememberCurrentDir overwritePrompt message directory filename
-  = fileDialog parent result flags message [] directory filename
+fileSaveDialog :: Window a -> Bool -> Bool -> String -> [(String,[String])] -> FilePath -> FilePath -> IO (Maybe FilePath)
+fileSaveDialog parent rememberCurrentDir overwritePrompt message wildcards directory filename
+  = fileDialog parent result flags message wildcards directory filename
   where
     flags
       = wxSAVE .+. (if rememberCurrentDir then wxCHANGE_DIR else 0) .+. (if overwritePrompt then wxOVERWRITE_PROMPT else 0)
@@ -118,6 +119,24 @@ fileSaveDialog parent rememberCurrentDir overwritePrompt message directory filen
          then return Nothing
          else do fname <- fileDialogGetPath fd
                  return (Just fname)
+
+
+-- | Generic file dialog function. Takes a function that is called when the dialog is
+-- terminated, style flags, a message, a list of wildcards, a directory, and a file name.
+-- For example:
+-- 
+-- > fileOpenDialog  
+-- >   = fileDialog parent result flags message wildcards directory filename
+-- >   where
+-- >     flags
+-- >      = wxOPEN .+. (if rememberCurrentDir then wxCHANGE_DIR else 0) 
+-- >        .+. (if allowReadOnly then 0 else wxHIDE_READONLY)
+-- >
+-- >    result fd r
+-- >      = if (r /= wxID_OK)
+-- >         then return Nothing
+-- >         else do fname <- fileDialogGetPath fd
+-- >                 return (Just fname)
 
 fileDialog :: Window a -> (FileDialog () -> Int -> IO b) -> Int -> String -> [(String,[String])] -> FilePath -> FilePath -> IO b
 fileDialog parent processResult flags message wildcards directory filename

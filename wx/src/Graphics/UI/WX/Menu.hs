@@ -172,7 +172,10 @@ menuItem menu props
 -- | Append a radio menu item. These items are 'checkable' by default.
 -- A sequence of radio menu items form automatically a group. 
 -- A different kind of menu item, like  a 'menuLine', terminates the group.
--- See 'menuItem' for specifics about menu items.
+-- Note: one sometimes has to set the first selected radio item 
+-- specifically after setting the "menubar" property, or otherwise the
+-- radio item bullet is not displayed on windows.
+-- See 'menuItem' for other properties of menu radio items.
 menuRadioItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuRadioItem menu props
   = menuItemKind menu wxITEM_RADIO ([checked := True] ++ props)

@@ -6,9 +6,18 @@
 
 Version 0.7.1
 -------------
+Not backward compatible changes:
+- Added wildcards argument to the "fileSaveDialog" function.
+- Removed to call to "buttonSetDefault" in the "defaultButton" 
+  property since GTK seems to enlarge the button in that case.
 
-* Added "changes.txt" file :-)
-* Added "HAS_RADIO_MENU_ITEMS" to "isDefined".
-* Added support for radio menu items.
+Backward compatible additions:
+- Added "changes.txt" file :-)
+- Added "HAS_RADIO_MENU_ITEMS" to "isDefined".
+- Added support for radio menu items.
+
+Bug fixes:
+- Fixed bug that crashed wxHaskell when a tree control had the focus
+  and a key was pressed. Thanks to Olivier Spier for sending a fix.
 
 

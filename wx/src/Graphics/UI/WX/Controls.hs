@@ -107,7 +107,7 @@ defaultButton
 
     setter panel button
       = do panelSetDefaultItem panel button
-           buttonSetDefault button
+           -- buttonSetDefault button       -- note: seems to enlarge the button on GTK?
            focusOn button
 
 -- | Set the initial focus on this control.
