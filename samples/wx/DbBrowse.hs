@@ -1,5 +1,7 @@
 module Main where
 
+import List( intersperse )
+import System.IO.Unsafe( unsafePerformIO )
 import Graphics.UI.WX
 import Graphics.UI.WXCore
 
@@ -45,17 +47,22 @@ main
              tableIdx <- get tableList selection
              tname    <- get tableList (item tableIdx)
              tableInfo <- dbGetDataSourceTableInfo dsn tname "" ""
-             let columnInfos = tableColumns tableInfo
-             
+
+             let columnInfos = tableColumns tableInfo             
              let headers = map headerFromColumn columnInfos
 
              set tableView [columns := headers]
              dbWithConnection dsn "" "" $ \db ->
-              do items <- dbQuery db ("SELECT * FROM " ++ tname) 
-                            (\row -> mapM (dbRowGetString row) (map columnName columnInfos))
+              do items <- dbQuery db ("SELECT * FROM " ++ toSqlTableName db tname) 
+                           (\row -> mapM (\i -> dbRowGetString row (show i)) (map columnIndex columnInfos))
                  mapM_ insertRow  (zip [0..] items)
              return ()
-          `catchDbError` \err -> errorDialog f ("Database '" ++ dbDataSource err ++ "'") (dbErrorMsg err)
+          `catchDbError` \err -> 
+             errorDialog f ("Database '" ++ dbDataSource err ++ "'")
+                (case dbErrorCode err of
+                   DB_ERR_WRONG_NO_OF_PARAMS 
+                         -> "This is a table view function and can not be displayed.\n(" ++ dbErrorMsg err ++ ")"
+                   other -> dbErrorMsg err)
         where
           insertRow (idx,[])
             = return ()
@@ -76,3 +83,12 @@ main
             | n  > 15   = 15
             | otherwise = n
              
+
+toSqlTableName :: Db a -> String -> TableName
+toSqlTableName db name
+  = unsafePerformIO $ dbSQLTableName db name
+
+toSqlColumnName :: Db a -> String -> ColumnName
+toSqlColumnName db name
+  = unsafePerformIO $ dbSQLColumnName db name
+

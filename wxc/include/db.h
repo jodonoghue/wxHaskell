@@ -13,14 +13,14 @@ TClass(wxHSTMT) Null_HSTMT();
   Global
 -----------------------------------------------------------------------------*/
 /** Are the database classes supported on this platform ? */
-TBool wxDb_IsSupported();
+TBoolInt wxDb_IsSupported();
 int   wxDb_SqlTypeToStandardSqlType( int sqlType );
 int   wxDb_StandardSqlTypeToSqlType( int sqlType );
 void  wxDb_CloseConnections();
 int   wxDb_ConnectionsInUse();
 TClass(wxDb)  wxDb_GetConnection( TClass(wxDbConnectInf) connectInf, TBool fwdCursorsOnly );
-TBool wxDb_FreeConnection( TClass(wxDb) db);
-TBool wxDb_GetDataSource( TClass(HENV) henv, void* dsn, int dsnLen, void* description, int descLen, int direction );
+TBoolInt wxDb_FreeConnection( TClass(wxDb) db);
+TBoolInt wxDb_GetDataSource( TClass(HENV) henv, void* dsn, int dsnLen, void* description, int descLen, int direction );
 
 /*-----------------------------------------------------------------------------
   ConnectInf
@@ -48,36 +48,39 @@ TClass(wxString) wxDb_GetErrorMsg(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetErrorMessage( TSelf(wxDb) db, int index);
 /** Get the number of stored error messages. */
 int wxDb_GetNumErrorMessages( TSelf(wxDb) db);
-TBool wxDb_IsOpen(TSelf(wxDb) db );
+TBoolInt wxDb_IsOpen(TSelf(wxDb) db );
 void wxDb_Close(TSelf(wxDb) db);
-TBool wxDb_CommitTrans(TSelf(wxDb) db);
-TBool wxDb_RollbackTrans(TSelf(wxDb) db);
+TBoolInt wxDb_CommitTrans(TSelf(wxDb) db);
+TBoolInt wxDb_RollbackTrans(TSelf(wxDb) db);
 TClass(wxHENV) wxDb_GetHENV(TSelf(wxDb) db);
 TClass(wxHDBC) wxDb_GetHDBC(TSelf(wxDb) db);
 TClass(wxHSTMT) wxDb_GetHSTMT(TSelf(wxDb) db);
-TBool wxDb_GetNextError(TSelf(wxDb) db, TClass(wxHENV) henv, TClass(wxHDBC) hdbc, TClass(wxHSTMT) hstmt);
-TBool wxDb_ExecSql(TSelf(wxDb) db, TClass(wxString) sql);
-TBool wxDb_GetNext(TSelf(wxDb) db);
-TBool wxDb_GetData(TSelf(wxDb) db, int column, int ctype, void* data, int dataLen, int* usedLen );
-TBool wxDb_GetDataInt(TSelf(wxDb) db, int column, int* i, int* usedLen );
-TBool wxDb_GetDataDouble(TSelf(wxDb) db, int column, double* d, int* usedLen );
-TBool wxDb_GetDataString(TSelf(wxDb) db, int column, void* buf, int bufLen, int* usedLen );
+TBoolInt wxDb_GetNextError(TSelf(wxDb) db, TClass(wxHENV) henv, TClass(wxHDBC) hdbc, TClass(wxHSTMT) hstmt);
+TBoolInt wxDb_ExecSql(TSelf(wxDb) db, TClass(wxString) sql);
+TBoolInt wxDb_GetNext(TSelf(wxDb) db);
+TBoolInt wxDb_GetData(TSelf(wxDb) db, int column, int ctype, void* data, int dataLen, int* usedLen );
+TBoolInt wxDb_GetDataInt(TSelf(wxDb) db, int column, int* i, int* usedLen );
+TBoolInt wxDb_GetDataDouble(TSelf(wxDb) db, int column, double* d, int* usedLen );
+TBoolInt wxDb_GetDataString(TSelf(wxDb) db, int column, void* buf, int bufLen, int* usedLen );
+TClass(wxString) wxDb_GetDataVarString( TSelf(wxDb) db, int column, int initLen );
+/** usage: @dbGetDataBinary db column initLen pbuffer plen@. Returns binary data to given buffer. (must be deallocated using 'wxcFree'). */
+TBoolInt wxDb_GetDataBinary(TSelf(wxDb) db, int column, int startLen, void* pbuf, int* len );
 
 int wxDb_Dbms(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetDatabaseName(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetDatasourceName(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetPassword(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetUsername(TSelf(wxDb) db);
-TBool wxDb_Grant(TSelf(wxDb) db, int privileges, TClass(wxString) tableName, TClass(wxString) userList );
+TBoolInt wxDb_Grant(TSelf(wxDb) db, int privileges, TClass(wxString) tableName, TClass(wxString) userList );
 int wxDb_GetTableCount(TSelf(wxDb) db);
 TClass(wxDbInf) wxDb_GetCatalog( TSelf(wxDb) db, TClass(wxString) userName );
 int wxDb_GetColumnCount(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wxString) userName );
 TClass(wxDbColInfArray) wxDb_GetColumns(TSelf(wxDb) db, TClass(wxString) tableName, int* columnCount, TClass(wxString) userName);
-TBool wxDb_Open(TSelf(wxDb) db, TClass(wxString) dsn, TClass(wxString) userId, TClass(wxString) password);
+TBoolInt wxDb_Open(TSelf(wxDb) db, TClass(wxString) dsn, TClass(wxString) userId, TClass(wxString) password);
 TClass(wxString) wxDb_SQLColumnName(TSelf(wxDb) db, TClass(wxString) columnName);
 TClass(wxString) wxDb_SQLTableName(TSelf(wxDb) db, TClass(wxString) tableName);
-TBool wxDb_TableExists(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wxString) userName, TClass(wxString) path );
-TBool wxDb_TablePrivileges(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wxString) privileges, TClass(wxString) userName, TClass(wxString) schema, TClass(wxString) path );
+TBoolInt wxDb_TableExists(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wxString) userName, TClass(wxString) path );
+TBoolInt wxDb_TablePrivileges(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wxString) privileges, TClass(wxString) userName, TClass(wxString) schema, TClass(wxString) path );
 int wxDb_TranslateSqlState(TSelf(wxDb) db, TClass(wxString) sqlState);
 TClass(wxDb) wxDb_Create( TClass(wxHENV) henv, TBool fwdOnlyCursors );
 void wxDb_Delete( TSelf(wxDb) db );
@@ -130,5 +133,5 @@ int wxDbColInf_GetNumPrecRadix( TSelf(wxDbColInf) self );
 int wxDbColInf_GetDbDataType( TSelf(wxDbColInf) self );
 int wxDbColInf_GetPkCol( TSelf(wxDbColInf) self );
 int wxDbColInf_GetFkCol( TSelf(wxDbColInf) self );
-TBool wxDbColInf_IsNullable( TSelf(wxDbColInf) self );
+TBoolInt wxDbColInf_IsNullable( TSelf(wxDbColInf) self );
 

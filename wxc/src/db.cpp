@@ -128,7 +128,7 @@ EWXWEXPORT(void,wxDbConnectInf_Delete)(wxDbConnectInf* self)
 /*-----------------------------------------------------------------------------
   Global functions
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(bool,wxDb_IsSupported)()
+EWXWEXPORT(int,wxDb_IsSupported)()
 {
 #ifdef wxUSE_ODBC
   return true;
@@ -153,7 +153,7 @@ EWXWEXPORT(int,wxDb_ConnectionsInUse)()
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_FreeConnection)( wxDb* db)
+EWXWEXPORT(int,wxDb_FreeConnection)( wxDb* db)
 {
 #ifdef wxUSE_ODBC
   return wxDbFreeConnection(db);
@@ -171,7 +171,7 @@ EWXWEXPORT(wxDb*,wxDb_GetConnection)( wxDbConnectInf* connectInf, bool fwdCursor
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_GetDataSource)( void* henv, char* dsn, int dsnLen, char* description, int descLen, int direction)
+EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, char* dsn, int dsnLen, char* description, int descLen, int direction)
 {
   if (dsn && dsnLen > 0)   *dsn = '\0';
   if (description && descLen > 0) *description = '\0';
@@ -334,7 +334,7 @@ EWXWEXPORT(int,wxDb_GetNativeError)(wxDb* db)
 }
 
 
-EWXWEXPORT(bool,wxDb_IsOpen)(wxDb* db)
+EWXWEXPORT(int,wxDb_IsOpen)(wxDb* db)
 {
 #ifdef wxUSE_ODBC
   if (db==NULL)
@@ -354,7 +354,7 @@ EWXWEXPORT(void,wxDb_Close)(wxDb* db)
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_CommitTrans)(wxDb* db)
+EWXWEXPORT(int,wxDb_CommitTrans)(wxDb* db)
 {
 #ifdef wxUSE_ODBC
   return db->CommitTrans();
@@ -363,7 +363,7 @@ EWXWEXPORT(bool,wxDb_CommitTrans)(wxDb* db)
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_RollbackTrans)(wxDb* db)
+EWXWEXPORT(int,wxDb_RollbackTrans)(wxDb* db)
 {
 #ifdef wxUSE_ODBC
   return db->RollbackTrans();
@@ -400,7 +400,7 @@ EWXWEXPORT(void*,wxDb_GetHSTMT)(wxDb* db)
 }
 
 
-EWXWEXPORT(bool,wxDb_GetNextError)(wxDb* db, void* henv, void* hdbc, void* hstmt)
+EWXWEXPORT(int,wxDb_GetNextError)(wxDb* db, void* henv, void* hdbc, void* hstmt)
 {
 #ifdef wxUSE_ODBC
   return db->GetNextError( (HENV)(henv), (HDBC)(hdbc), (HSTMT)(hstmt) );
@@ -409,7 +409,7 @@ EWXWEXPORT(bool,wxDb_GetNextError)(wxDb* db, void* henv, void* hdbc, void* hstmt
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_ExecSql)(wxDb* db, wxString* sql)
+EWXWEXPORT(int,wxDb_ExecSql)(wxDb* db, wxString* sql)
 {
 #ifdef wxUSE_ODBC
   return db->ExecSql(*sql);
@@ -418,7 +418,7 @@ EWXWEXPORT(bool,wxDb_ExecSql)(wxDb* db, wxString* sql)
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_GetNext)(wxDb* db)
+EWXWEXPORT(int,wxDb_GetNext)(wxDb* db)
 {
 #ifdef wxUSE_ODBC
   return db->GetNext();
@@ -428,7 +428,7 @@ EWXWEXPORT(bool,wxDb_GetNext)(wxDb* db)
 }
 
 
-EWXWEXPORT(bool,wxDb_GetData)(wxDb* db, int column, int ctype, void* data, int dataLen, int* usedLen ) 
+EWXWEXPORT(int,wxDb_GetData)(wxDb* db, int column, int ctype, void* data, int dataLen, int* usedLen ) 
 {
 #ifdef wxUSE_ODBC
   long used;
@@ -441,7 +441,7 @@ EWXWEXPORT(bool,wxDb_GetData)(wxDb* db, int column, int ctype, void* data, int d
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_GetDataInt)(wxDb* db, int column, int* i, int* usedLen ) 
+EWXWEXPORT(int,wxDb_GetDataInt)(wxDb* db, int column, int* i, int* usedLen ) 
 {
 #ifdef wxUSE_ODBC
   long used;
@@ -455,7 +455,7 @@ EWXWEXPORT(bool,wxDb_GetDataInt)(wxDb* db, int column, int* i, int* usedLen )
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_GetDataDouble)(wxDb* db, int column, double* d, int* usedLen ) 
+EWXWEXPORT(int,wxDb_GetDataDouble)(wxDb* db, int column, double* d, int* usedLen ) 
 {
 #ifdef wxUSE_ODBC
   long used;
@@ -469,7 +469,7 @@ EWXWEXPORT(bool,wxDb_GetDataDouble)(wxDb* db, int column, double* d, int* usedLe
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_GetDataString)(wxDb* db, int column, char* buf, int bufLen, int* usedLen ) 
+EWXWEXPORT(int,wxDb_GetDataString)(wxDb* db, int column, char* buf, int bufLen, int* usedLen ) 
 {
 #ifdef wxUSE_ODBC
   long used;
@@ -481,6 +481,65 @@ EWXWEXPORT(bool,wxDb_GetDataString)(wxDb* db, int column, char* buf, int bufLen,
 #endif
 }
 
+EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, int startLen, char** pbuf, int* plen ) 
+{
+#ifdef wxUSE_ODBC
+  long  used;
+  char* buf    = NULL;
+  int   bufLen = (startLen <= 0 ? 512 : startLen);
+  bool  ok;
+  
+  /* init */
+  *pbuf = NULL;
+  *plen = 0;    
+  buf   = (char*)malloc(bufLen);  
+  if (buf==NULL) return false;
+  
+  /* get data */
+  ok = db->GetData( column, SQL_C_CHAR, buf, bufLen, &used );
+  while (!ok && db->DB_STATUS == DB_ERR_DATA_TRUNCATED) {
+    char* newbuf = (char*)realloc( buf, 2*bufLen );
+    if (newbuf == NULL) {
+      free(buf);
+      ok = false;
+      break;
+    }
+    buf    = newbuf;
+    ok     = db->GetData( column, SQL_C_CHAR, buf+bufLen, bufLen, &used );
+    bufLen = 2*bufLen;
+  }
+  
+  /* return results */
+  if (ok) {
+    *pbuf = buf;
+    *plen = (used == SQL_NO_TOTAL ? bufLen : used);
+  }
+  return ok;
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_GetDataVarString)(wxDb* db, int column, int startLen ) 
+{
+#ifdef wxUSE_ODBC
+  char* buf = NULL;
+  int   len = 0;
+  bool ok = wxDb_GetDataBinary(db,column,startLen,&buf,&len);
+  if (ok && len > 0 && buf != NULL) {
+    wxString* s = new wxString(buf,len);
+    free(buf);
+    if (s!=NULL) { db->DB_STATUS = DB_SUCCESS; }
+    return s;
+  }
+  else {
+    if (buf) free(buf);
+    return NULL;
+  }
+#else
+  return NULL;
+#endif
+}
 
 EWXWEXPORT(int,wxDb_Dbms)(wxDb* db)
 {
@@ -527,7 +586,7 @@ EWXWEXPORT(wxString*,wxDb_GetUsername)(wxDb* db)
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_Grant)(wxDb* db, int privileges, wxString* tableName, wxString* userList )
+EWXWEXPORT(int,wxDb_Grant)(wxDb* db, int privileges, wxString* tableName, wxString* userList )
 {
 #ifdef wxUSE_ODBC
   return db->Grant(privileges, *tableName, *userList);
@@ -584,7 +643,7 @@ EWXWEXPORT(wxDbColInf*,wxDb_GetColumns)(wxDb* db, wxString* tableName, int* colu
 #endif
 }
 
-EWXWEXPORT(bool,wxDb_Open)(wxDb* db, wxString* dsn, wxString* userId, wxString* password)
+EWXWEXPORT(int,wxDb_Open)(wxDb* db, wxString* dsn, wxString* userId, wxString* password)
 {
 #ifdef wxUSE_ODBC
   return db->Open(*dsn,*userId,*password);
@@ -612,7 +671,7 @@ EWXWEXPORT(wxString*,wxDb_SQLTableName)(wxDb* db, wxString* tableName)
 }
 
 
-EWXWEXPORT(bool,wxDb_TableExists)(wxDb* db, wxString* tableName, wxString* userName, wxString* path )
+EWXWEXPORT(int,wxDb_TableExists)(wxDb* db, wxString* tableName, wxString* userName, wxString* path )
 {
 #ifdef wxUSE_ODBC
   if (userName!=NULL && userName->IsEmpty()) {
@@ -625,7 +684,7 @@ EWXWEXPORT(bool,wxDb_TableExists)(wxDb* db, wxString* tableName, wxString* userN
 }
 
 
-EWXWEXPORT(bool,wxDb_TablePrivileges)(wxDb* db, wxString* tableName, wxString* privileges, wxString* userName, wxString* schema, wxString* path )
+EWXWEXPORT(int,wxDb_TablePrivileges)(wxDb* db, wxString* tableName, wxString* privileges, wxString* userName, wxString* schema, wxString* path )
 {
 #ifdef wxUSE_ODBC
   if (schema!=NULL && schema->IsEmpty()) {
@@ -918,7 +977,7 @@ EWXWEXPORT(int,wxDbColInf_GetFkCol)( wxDbColInf* self )
 #endif
 }
 
-EWXWEXPORT(bool,wxDbColInf_IsNullable)( wxDbColInf* self )
+EWXWEXPORT(int,wxDbColInf_IsNullable)( wxDbColInf* self )
 {
 #ifdef wxUSE_ODBC
   return (self->nullable != 0);

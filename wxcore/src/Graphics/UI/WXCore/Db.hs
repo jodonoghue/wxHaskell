@@ -97,9 +97,9 @@ and password as arguments, and returns a 'DbInfo' structure:
 >         digits : 0
 >         prec   : 0
 >         remarks: Author Key
->         pkey   : False
+>         pkey   : 0
 >         ptable :
->         fkey   : False
+>         fkey   : 0
 >         ftable :
 >      2: name   : au_fname
 >         index  : 2
@@ -112,12 +112,13 @@ module Graphics.UI.WXCore.Db
    ( 
    -- * Connection
       dbWithConnection, dbConnect, dbDisconnect
-   
+   , dbWithDirectConnection, dbConnectDirect
    -- * Queries
    , dbQuery, dbQuery_, dbExecute
 
    -- * Rows
-   , DbRow
+   , DbRow(..)
+
    -- ** Standard values
    , dbRowGetString, dbRowGetStringMb
    , dbRowGetBool, dbRowGetBoolMb
@@ -243,7 +244,13 @@ dbRowGetColumnInfo :: DbRow a -> ColumnName -> IO ColumnInfo
 dbRowGetColumnInfo (DbRow db columnInfos) name
   = case lookup name (zip (map columnName columnInfos) columnInfos) of
       Just info -> return info
-      Nothing   -> raiseDbInvalidColumnName db name
+      Nothing   -> if (all isDigit name)
+                    then case lookup (read name) (zip (map columnIndex columnInfos) columnInfos) of
+                           Just info -> return info
+                           Nothing   -> err
+                    else err
+  where
+    err = raiseDbInvalidColumnName db (name ++ " in " ++ (show (map columnName columnInfos)))
 
 -- | Get a database value ('DbValue') from a row.
 -- Returns 'Nothing' when a @NULL@ value is encountered.
@@ -382,6 +389,23 @@ dbRowGetStringMb row@(DbRow db columnInfos) name
 -- | Internal: Low level string reading.
 dbStringRead :: Db a -> ColumnInfo -> IO (Maybe String)
 dbStringRead db info 
+  = alloca $ \pbuf ->
+    alloca $ \plen ->
+    do dbHandleExn db $ dbGetDataBinary db (columnIndex info) initLen pbuf plen
+       len <- peek plen
+       if (fromCInt len == wxSQL_NULL_DATA)
+        then do buf <- peek pbuf
+                wxcFree buf
+                return Nothing
+        else do buf <- peek pbuf
+                s   <- peekCStringLen (buf,fromCInt len)
+                wxcFree buf
+                return (Just s)
+  where
+    initLen  | columnSize info > 0  = columnSize info + 1
+             | otherwise            = 0
+
+{-
   = allocaArray maxLen $ \cstr ->
     do isNull <- dbGetDataNull db $ dbGetDataString db (columnIndex info) cstr maxLen 
        if isNull
@@ -391,6 +415,7 @@ dbStringRead db info
   where
     maxLen  | columnSize info > 0   = columnSize info + 1
             | otherwise             = 4096  -- just something ?
+-}
 
 -- | Internal: used to implement 'dbReadValue' methods.
 -- Takes a @dbGetData...@ method and supplies the @Ptr CInt@ argument.
@@ -481,6 +506,9 @@ dbDisconnect db
 ----------------------------------------------------------}
 type DataSourceName = String
 type TableName      = String
+
+-- | Column names. Note that a column name consisting of a number can
+-- be used to retrieve a value by index, for example: 'dbGetString' @db \"1\"'.
 type ColumnName     = String
 type ColumnIndex    = Int
 
@@ -780,7 +808,7 @@ raiseDbFetchNull db
 raiseDbInvalidColumnName :: Db a -> ColumnName -> IO b
 raiseDbInvalidColumnName db name
   = do dataSource <- dbGetDataSourceName db
-       raiseDbError (DbError ("Invalid column name (" ++ name ++ ")") dataSource DB_ERR_INVALID_COLUMN_NAME 0 "")
+       raiseDbError (DbError ("Invalid column name/index (" ++ name ++ ")") dataSource DB_ERR_INVALID_COLUMN_NAME 0 "")
 
 -- | Raise an invalid table name error
 raiseDbInvalidTableName :: Db a -> ColumnName -> IO b
