@@ -436,8 +436,8 @@ data EventHtml
       -- ^ A /cell/ is clicked. Contains the cell /id/ attribute value, the mouse event and the logical coordinates.
   | HtmlCellHover String 
       -- ^ The mouse hovers over a cell. Contains the cell /id/ attribute value.
-  | HtmlLinkClicked String String String EventMouse 
-     -- ^ A link is clicked. Contains the hyperlink, the frame target, the cell /id/ attribute value, and the mouse event.
+  | HtmlLinkClicked String String String EventMouse Point 
+     -- ^ A link is clicked. Contains the hyperlink, the frame target, the cell /id/ attribute value, the mouse event, and the logical coordinates.
   | HtmlSetTitle String
      -- ^ Called when a @<title>@ tag is parsed.
   | HtmlUnknown 
@@ -446,11 +446,11 @@ data EventHtml
 instance Show EventHtml where
   show ev
     = case ev of
-        HtmlCellClicked id mouse pnt         -> "Html Cell " ++ show id ++ " clicked: " ++ show mouse
-        HtmlLinkClicked href target id mouse -> "Html Link " ++ show id ++ " clicked: " ++ href
-        HtmlCellHover id                     -> "Html Cell " ++ show id ++ " hover"
-        HtmlSetTitle title                   -> "Html event title: " ++ title
-        HtmlUnknown                          -> "Html event unknown"
+        HtmlCellClicked id mouse pnt           -> "Html Cell " ++ show id ++ " clicked: " ++ show mouse
+        HtmlLinkClicked href target id mouse p -> "Html Link " ++ show id ++ " clicked: " ++ href
+        HtmlCellHover id                       -> "Html Cell " ++ show id ++ " hover"
+        HtmlSetTitle title                     -> "Html event title: " ++ title
+        HtmlUnknown                            -> "Html event unknown"
 
 fromHtmlEvent :: WXCHtmlEvent a -> IO EventHtml
 fromHtmlEvent event
@@ -485,7 +485,8 @@ fromHtmlEvent event
            mouse   <- fromMouseEvent mouseEv
            href    <- wxcHtmlEventGetHref event
            target  <- wxcHtmlEventGetTarget event
-           return (HtmlLinkClicked href target id mouse)
+           pnt     <- wxcHtmlEventGetLogicalPosition event
+           return (HtmlLinkClicked href target id mouse pnt)
       
 -- | Set a html event handler for a html window. The first argument determines whether
 -- hover events ('HtmlCellHover') are handled or not.

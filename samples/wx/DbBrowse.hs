@@ -22,12 +22,12 @@ main
 
        s1      <- splitterWindow p []
        dsns    <- dbGetDataSources
-       dsnList <- singleListBox s1 False 
+       dsnList <- singleListBox s1 
                     [tooltip    := "Data sources"
                     ,items      := (reverse (map fst dsns))]
 
        s2        <- splitterWindow s1 []
-       tableList <- singleListBox s2 False [tooltip := "Tables"]
+       tableList <- singleListBox s2 [tooltip := "Tables"]
        tableView <- listCtrl s2 []
 
        set f [layout := container p $ margin 5 $ fill $ 

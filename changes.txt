@@ -36,6 +36,7 @@ Backward compatible additions:
   support wxOCaml better.
 
 Bug fixes:
+- HtmlLinkClicked events are now properly generated.
 - Fixed bug that crashed wxHaskell when a tree control had the focus
   and a key was pressed. Thanks to Olivier Spier for sending a fix.
 - The "item" attribute of a list control always returned the first

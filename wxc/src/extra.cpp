@@ -357,8 +357,25 @@ wxcHtmlWindow::wxcHtmlWindow(wxWindow * prt, wxWindowID id, const wxPoint& pt, c
 
 void wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event)
 {
-    wxcHtmlEvent htmlEvent( wxEVT_HTML_CELL_CLICKED, this->GetId(), &event, cell, NULL, wxPoint(x,y) );
-    this->ProcessEvent( htmlEvent );
+    wxHtmlLinkInfo* linkPtr;
+    if (cell==NULL) return;
+
+    linkPtr = cell->GetLink(x, y);
+    if (linkPtr != NULL)
+    {
+        wxHtmlLinkInfo link(*linkPtr);
+        link.SetEvent(&event);
+        link.SetHtmlCell(cell);
+        {
+          wxcHtmlEvent htmlEvent( wxEVT_HTML_LINK_CLICKED, this->GetId(), &event, cell, &link, wxPoint(x,y) );
+          this->ProcessEvent( htmlEvent );
+        }
+    }
+    else
+    {
+      wxcHtmlEvent htmlEvent( wxEVT_HTML_CELL_CLICKED, this->GetId(), &event, cell, NULL, wxPoint(x,y) );
+      this->ProcessEvent( htmlEvent );
+    }
 }
 
 void wxcHtmlWindow::OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y)
