@@ -13,7 +13,7 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Media
             ( -- * Sound
-            , sound, play, playLoop, playWait
+              sound, play, playLoop, playWait
               -- * Images
             , bitmap, bitmapCreateFromFile
             ) where
