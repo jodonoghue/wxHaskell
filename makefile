@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.18 2003/08/20 09:57:45 dleijen Exp $
+# $Id: makefile,v 1.19 2003/08/20 12:38:18 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -304,7 +304,7 @@ install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 # copy files
-cp-echo		=echo  "copy $(1) to $(2)" && $(CP) $(1) $(2)
+cp-echo		=echo  "copy $(1) to $(2)" && $(CP) -d $(1) $(2)
 cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
 		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
 cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
