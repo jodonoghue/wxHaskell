@@ -104,13 +104,12 @@
 
     > nbook  <- notebookCreate ...
     > panel1 <- panelCreate nbook ...
-    > windowSetLabel panel1 "page one"
+    > ...
     > panel2 <- panelCreate nbook ...
-    > windowSetLabel panel2 "page two"
     > ...
     > windowSetLayout frame
-    >    (tabs nbook [container panel1 $ margin 10 $ floatCentre $ widget ok)
-    >                ,container panel2 $ margin 10 $ hfill $ widget quit)])
+    >    (tabs nbook [tab "page one" $ container panel1 $ margin 10 $ floatCentre $ widget ok
+    >                ,tab "page two" $ container panel2 $ margin 10 $ hfill $ widget quit])
 
     The pages /always/ need to be embedded inside a 'container' (normally a 'Panel'). The
     title of the pages is determined from the label of the container widget.
@@ -128,7 +127,7 @@ module Graphics.UI.WXCore.Layout( -- * Types
                              , Widget, widget, label, rule, hrule, vrule, sizer, layoutFromWindow
                                -- ** Containers
                              , row, column
-                             , grid, boxed, container, tabs, imageTabs
+                             , grid, boxed, container, tab, imageTab, tabs
                              , hsplit, vsplit
                                -- ** Glue
                              , glue, hglue, vglue
@@ -647,22 +646,26 @@ sizer :: Sizer a -> Layout
 sizer s
   = XSizer optionsDefault (downcastSizer s)
 
--- | Create a notebook layout.
--- The pages /always/ need to be embedded inside a 'container' (normally a 'Panel'). The
--- title of the pages is determined from the label of the container widget.
--- Just like a 'grid', the horizontal or vertical stretch of the child layout determines
--- the stretch and expansion mode of the notebook.
-tabs :: Notebook a -> [Layout] -> Layout
-tabs notebook pages
-  = imageTabs notebook [("",ptrNull,layout) | layout <- pages]
 
--- | (primitive) Create a notebook layout with images (null values are allowed). When
--- a page title is empty, the label of the container widget in the page is used.
--- The pages /always/ need to be embedded inside a 'container' (normally a 'Panel').
+-- | A tab page in a notebook: a title, a possible bitmap and a layout.
+type TabPage  = (String,Bitmap (),Layout)
+
+-- | Create a simple tab page with a certain title and layout.
+tab :: String -> Layout -> TabPage
+tab title layout
+  = (title,ptrNull,layout)
+
+-- | Create a tab page with a certain title, icon, and layout.
+imageTab :: String -> Bitmap () -> Layout -> TabPage
+imageTab title bitmap layout
+  = (title,bitmap,layout)
+
+-- | Create a notebook layout.
+-- The pages /always/ need to be embedded inside a 'container' (normally a 'Panel'). 
 -- Just like a 'grid', the horizontal or vertical stretch of the child layout determines
 -- the stretch and expansion mode of the notebook.
-imageTabs :: Notebook a -> [(String,Bitmap (),Layout)] -> Layout
-imageTabs notebook pages
+tabs :: Notebook a -> [TabPage] -> Layout
+tabs notebook pages
   = XNotebook optionsDefault{ stretchV = hasvstretch, stretchH = hashstretch, fillMode = hasfill }
               (downcastNotebook notebook) pages
   where

@@ -44,18 +44,17 @@ timeFlows
        vflowLine     <- varCreate True
 
        -- create a frame.
-       f <- frame   [ text        := "Time flows" 
-                    , clientSize  := sz 300 300
-                    ]
+       f <- frame   [ text        := "Time flows"]
+       p <- panel f [ clientSize  := sz 300 300  ]
 
        -- create menus & status fields       
        mfile    <- menuPane       [text := "&File"]
-       mquit    <- menuQuit mfile [text := "&Quit\tCtrl+Q", help := "Exit the demo", on command := close f]
+       mquit    <- menuQuit mfile [help := "Exit the demo", on command := close f]
 
        medit    <- menuPane       [text := "&Edit"]
-       mshowline<- menuItem medit [text := "&Show mouse track\tCtrl+S", checkable := True, checked := True]
-       mfont    <- menuItem medit [text := "&Font...\tCtrl+F"]
-       moptions <- menuItem medit [text := "&Options...\tCtrl+O", help := "Edit demo options"]
+       mshowline<- menuCheckItem medit "&Show mouse track\tCtrl+S" [checked := True]
+       mfont    <- menuItem medit "&Font...\tCtrl+F"    [help := "Set the font"]
+       moptions <- menuItem medit "&Options...\tCtrl+O" [help := "Edit demo options"]
        
        mhelp    <- menuHelp        []
        mabout   <- menuAbout mhelp [help := "Information about this demo."]
@@ -75,10 +74,13 @@ timeFlows
              ]
       
        -- set event handlers
-       set f [ on paint    := onPaint  vmouseHistory vtimeSpan vflowLine vflowText vflowFont
-             , on idle     := onIdle   vmouseHistory vtimeSpan f
+       set p [ on paint    := onPaint  vmouseHistory vtimeSpan vflowLine vflowText vflowFont
+             , on idle     := onIdle   vmouseHistory vtimeSpan p
              , on drag     := onDrag   vmouseHistory
              ]
+
+       -- set layout
+       set f [ layout      := fill $ widget p]
        return ()
 
 {-------------------------------------------------------------------------

@@ -43,14 +43,14 @@ imageViewer
 
        -- create file menu
        file   <- menuPane      [text := "&File"]
-       mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the image", enable := False]
-       open   <- menuItem file [text := "&Open\tCtrl+O",  help := "Open an image"]
+       mclose <- menuItem file "&Close\tCtrl+C" [help := "Close the image", enable := False]
+       open   <- menuItem file "&Open\tCtrl+O"  [help := "Open an image"]
        menuLine file
-       quit   <- menuQuit file [text := "&Quit\tCtrl+Q", help := "Quit the demo"]
+       quit   <- menuQuit file [help := "Quit the demo"]
 
        -- create Help menu
-       hlp    <- menuHelp      [text := "&Help"]
-       about  <- menuAbout hlp [text := "&About...", help := "About ImageViewer"]
+       hlp    <- menuHelp      []
+       about  <- menuAbout hlp [help := "About ImageViewer"]
 
        -- create Toolbar
        tbar   <- toolBar f []

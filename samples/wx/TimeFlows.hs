@@ -47,15 +47,17 @@ timeFlows
        vmouseHistory <- varCreate [(0,pt 0 0)]
 
        -- create a frame.
-       f <- frame   [ text        := flowText 
-                    , clientSize  := sz 300 300
-                    ]
+       f <- frame   [ text        := flowText]      
+       p <- panel f [ clientSize  := sz 300 300]  -- draw in a panel
 
        -- set event handlers
-       set f        [ on paint    := onPaint  vmouseHistory 
-                    , on idle     := onIdle   vmouseHistory f
+       set p        [ on paint    := onPaint  vmouseHistory 
+                    , on idle     := onIdle   vmouseHistory p
                     , on drag     := onDrag   vmouseHistory
                     ]
+
+       -- set layout
+       set f        [ layout      := fill $ widget p]
        return ()
 
 {-------------------------------------------------------------------------

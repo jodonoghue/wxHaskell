@@ -15,14 +15,16 @@
     using ('on' 'command'), but they can also be set, using the 'menu'
     function, on a frame or (mdi) window so that the menu command is handled
     in the context of the active window instead of the context of the
-    entire application.
+    entire application. 
 
    > do frame <- frame    [text := "Demo"]
    >    file  <- menuPane [text := "&File"]
-   >    quit  <- menuItem file [text := "&Quit\tCtrl+Q", help := "Quit the application"] 
+   >    quit  <- menuItem file "&Quit\tCtrl+Q" [help := "Quit the application"] 
    >    set frame [menuBar        := [file] 
    >              ,on (menu quit) := close frame] 
 
+    Note: /Unfortunately, the 'text' of menu items must be given at creation time
+    due to restrictions on GTK./
 -}
 --------------------s------------------------------------------------------------
 module Graphics.UI.WX.Menu
@@ -32,7 +34,7 @@ module Graphics.UI.WX.Menu
     -- ** Menu events
     , menu, menuId
       -- ** Menu items
-    , MenuItem, menuItem, menuQuit, menuAbout
+    , MenuItem, menuItem, menuCheckItem, menuQuit, menuAbout
     , menuLine, menuSub
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
@@ -101,16 +103,16 @@ menuPopup menu pt parent
 -- | /Deprecated/: use 'menuPane'.
 menuList :: [Prop (Menu ())] -> IO (Menu ())
 menuList 
-  = menuPane
+  = menuPane 
 
--- | Create a new menu.
+-- | Create a new menu with a certain title (corresponds with 'text' attribute).
 menuPane :: [Prop (Menu ())] -> IO (Menu ())
 menuPane props
-  = do m <- menuCreate "" wxMENU_TEAROFF
+  = do m <- menuCreate " " wxMENU_TEAROFF
        set m props
        return m
 
--- | Append a /help/ menu item. On some platforms,
+-- | Append a /help/ menu item (@"&Help"@). On some platforms,
 -- the /help/ menu is handled specially
 menuHelp :: [Prop (Menu ())] -> IO (Menu ())
 menuHelp props
@@ -142,29 +144,40 @@ menuLine menu
 -- menu accellerators by using an ampersand. It can also contain keyboard accellerators
 -- after a tab (@'\\t'@) character.
 --
--- > menuItem menu [text := "&Open\tCtrl+O", help := "Opens an existing document"] 
+-- > menuItem menu "&Open\tCtrl+O" [help := "Opens an existing document"] 
 --
-menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuItem menu props
+menuItem :: Menu a -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuItem menu label props
   = do id <- idCreate
-       menuItemId menu id props
+       menuItemId menu id label props
 
--- | Append an /about/ menu item. On some platforms,
+-- | Append a checkable menu item with a certain title (corresponds with 'text' attribute).
+menuCheckItem :: Menu a -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuCheckItem menu label props
+  = do id <- idCreate
+       menuItemEx menu id label True props
+
+-- | Append an /about/ menu item (@"&About..."@). On some platforms,
 -- the /about/ menu is handled specially.
 menuAbout :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuAbout menu props
-  = menuItemId menu wxID_ABOUT ([text := "&About..."] ++ props)
+  = menuItemId menu wxID_ABOUT "&About..." props
 
--- | Append an /quit/ menu item. On some platforms,
+-- | Append an /quit/ menu item (@"&Quit\tCtrl+Q"@). On some platforms,
 -- the /quit/ menu is handled specially
 menuQuit :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuQuit menu props
-  = menuItemId menu wxID_EXIT ([text := "&Quit"] ++ props)
+  = menuItemId menu wxID_EXIT "&Quit\tCtrl+Q" props
 
--- | Append a menu item with a specific id.
-menuItemId :: Menu a -> Id -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuItemId menu id props
-  = do menuAppend menu id "" "" False
+-- | Append a menu item with a specific id and label.
+menuItemId :: Menu a -> Id -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuItemId menu id label props
+  = menuItemEx menu id label False props
+
+-- | Append a menu item with a specific id, label, and whether it is checkable.
+menuItemEx :: Menu a -> Id -> String -> Bool -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuItemEx menu id label isCheck props
+  = do menuAppend menu id label "" isCheck
        item <- menuFindItem menu id objectNull
        set item props
        return item
