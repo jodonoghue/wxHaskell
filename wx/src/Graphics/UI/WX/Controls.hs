@@ -103,6 +103,7 @@ defaultButton
 
     setter panel button
       = do panelSetDefaultItem panel button
+           buttonSetDefault button
            focusOn button
 
 -- | Set the initial focus on this control.

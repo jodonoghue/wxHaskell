@@ -9,7 +9,8 @@ main
        f <- frame [text := p]
        h <- staticText f [text := "Hello world!", on click ::= goodbye]
        b <- button     f [text := "Ok", on command ::= longlabel]
-       set f [layout := column 5 [widget h, widget b]] 
+       set f [layout := column 5 [widget h, widget b]]
+       set f [clientSize := sz 300 300]
 
 longlabel b
   = do set b [text        := "a really long label for a button"
