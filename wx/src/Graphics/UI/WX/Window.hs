@@ -11,7 +11,12 @@
     Exports default instances for generic windows.
 -}
 --------------------------------------------------------------------------------
-module Graphics.UI.WX.Window( Window ) where
+module Graphics.UI.WX.Window
+        ( -- * Window
+          Window 
+          -- * ScrolledWindow
+        , ScrolledWindow, scrolledWindow
+        ) where
 
 import Graphics.UI.WXH
 import Graphics.UI.WX.Types
@@ -19,6 +24,17 @@ import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Events
+
+{--------------------------------------------------------------------------------
+  ScrolledWindow
+--------------------------------------------------------------------------------}
+scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
+scrolledWindow parent props
+  = do sw <- scrolledWindowCreate parent idAny rectNull 0
+       set sw props
+       return sw
+
+
 
 {--------------------------------------------------------------------------------
   Properties
@@ -30,6 +46,19 @@ instance Able (Window a) where
       setter w enable
         | enable    = unitIO $ windowEnable w
         | otherwise = unitIO $ windowDisable w
+
+instance Literate (Window a) where
+  font
+    = newAttr "font" getter setter
+    where
+      getter w
+        = do f <- windowGetFont w
+             finalize (fontDelete f) (fontGetFontInfo f)
+
+      setter w info
+        = do (f,del) <- fontCreateFromInfo info
+             finalize del (windowSetFont w f)
+             return ()
 
 instance Textual (Window a) where
   text
@@ -134,5 +163,5 @@ instance Reactive (Window a) where
   activate  = newEvent "activate" windowGetOnActivate windowOnActivate
 
 instance Paint (Window a) where
-  paint     = newEvent "paint" windowGetOnPaint (\w h -> windowOnPaint w True h)
+  paint     = newEvent "paint" windowGetOnPaint (\w h -> windowOnPaint w False h)
   repaint w = windowRefresh w False

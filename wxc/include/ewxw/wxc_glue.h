@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.1 2003/07/13 21:20:10 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.2 2003/07/17 23:23:58 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -3416,7 +3416,7 @@ int        wxPen_GetCap( TSelf(wxPen) _obj );
 void       wxPen_GetColour( TSelf(wxPen) _obj, TClassRef(wxColour) _ref );
 int        wxPen_GetDashes( TSelf(wxPen) _obj, void* ptr );
 int        wxPen_GetJoin( TSelf(wxPen) _obj );
-void       wxPen_GetStipple( TSelf(wxPen) _obj, void* ref );
+void       wxPen_GetStipple( TSelf(wxPen) _obj, TClassRef(wxBitmap) _ref );
 int        wxPen_GetStyle( TSelf(wxPen) _obj );
 int        wxPen_GetWidth( TSelf(wxPen) _obj );
 TBool      wxPen_IsEqual( TSelf(wxPen) _obj, TClass(wxPen) pen );

@@ -19,14 +19,14 @@ void*              wxClosure_GetData( TSelf(wxClosure) _obj );
 
 TClass(wxClosure)  wxEvtHandler_GetClosure( TSelf(wxEvtHandler) _obj, int id, int type );
 
-/** Get the client data in the from of a closure. */
+/** Get the client data in the form of a closure. Use 'closureGetData' to get to the actual data.*/
 TClass(wxClosure)  wxEvtHandler_GetClientClosure( TSelf(wxEvtHandler) _obj );
 /** Set the client data as a closure. The closure data contains the data while the function is called on deletion. */
 void               wxEvtHandler_SetClientClosure( TSelf(wxEvtHandler) _obj, TClass(wxClosure) closure );
 
-/** Get the reference data of an object as a closure: only works if properly initialized. */
+/** Get the reference data of an object as a closure: only works if properly initialized. Use 'closureGetData' to get to the actual data. */
 TClass(wxClosure)  wxObject_GetClientClosure( TSelf(wxObject) _obj );
-/** Set the reference data of an object as a closure. Only works if the reference data is unused by wxWindows! */
+/** Set the reference data of an object as a closure. The closure data contains the data while the function is called on deletion. Returns 'True' on success. Only works if the reference data is unused by wxWindows! */
 void               wxObject_SetClientClosure( TSelf(wxObject) _obj, TClass(wxClosure) closure );
 
 /* Frame */

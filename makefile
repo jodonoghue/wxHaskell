@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.11 2003/07/17 12:46:25 dleijen Exp $
+# $Id: makefile,v 1.12 2003/07/17 23:23:56 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -185,14 +185,14 @@ SAMPLE-SOURCES= \
 # create derived file from base name
 # usage: $(call make-hs,<source root path>,<file base names>)
 # usage: $(call make-objs,<object root path>,<file base names>)
-make-hs  =$(patsubst %,$(1)/%.hs,$(2))
-make-objs=$(patsubst %,$(1)/%.o,$(2))
-make-deps=$(patsubst %,$(1)/%.d,$(2))
-make-his =$(patsubst %,$(1)/%.hi,$(2))
+make-hs		=$(patsubst %,$(1)/%.hs,$(2))
+make-objs	=$(patsubst %,$(1)/%.o,$(2))
+make-deps	=$(patsubst %,$(1)/%.d,$(2))
+make-his	=$(patsubst %,$(1)/%.hi,$(2))
 
 # usage: $(call run-silent,<command>)
 run-silent	=$(1) > /dev/null 2> /dev/null
-run-with-echo   =echo "$(1)"; $(1)
+run-with-echo   =echo "$(1)" && $(1)
 
 # usage: $(call relative-to,<root-dir>,<relative files>)
 relative-to	=$(patsubst $(1)/%,%,$(2))
@@ -212,20 +212,17 @@ ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,
 # safe-remove-dir
 safe-remove-dir	=if test -d $(1); then $(call run-with-echo,$(RMDIR) $(1)); fi
 safe-remove-dir-contents = if test -d $(1); then $(call run-with-echo,$(RM) -r $(1)/*); fi
-full-remove-dir	  =$(call safe-remove-dir-contents,$(1)); $(call safe-remove-dir,$(1))
+full-remove-dir	=$(call safe-remove-dir-contents,$(1)); $(call safe-remove-dir,$(1))
 
 # safe-move-file(<source>,<destination (directory)>)
 # safe-remove-file(<file>)
-safe-move-file	   =if test -f $(1); then $(call run-with-echo,$(MV) $(1) $(2)); fi
-safe-remove-file   =if test -f $(1); then $(call run-with-echo,$(RM) $(1)); fi
-safe-remove-files  =$(foreach file,$(1),$(call safe-remove-file,$(file)) &&) :
-
-
-
+safe-move-file	=if test -f $(1); then $(call run-with-echo,$(MV) $(1) $(2)); fi
+safe-remove-file=if test -f $(1); then $(call run-with-echo,$(RM) $(1)); fi
+safe-remove-files=$(foreach file,$(1),$(call safe-remove-file,$(file)) &&) :
 
 # silent-move-file
-silent-move-file   =if test -f $(1); then $(MV) $(1) $(2); fi
-silent-remove-file =if test -f $(1); then $(RM) $(1); fi
+silent-move-file=if test -f $(1); then $(MV) $(1) $(2); fi
+silent-remove-file=if test -f $(1); then $(RM) $(1); fi
 
 # make-c-obj(<output .o>,<input .c>,<compile flags>)
 make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
@@ -235,7 +232,7 @@ compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
 		 $(silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
 
 # silent-move-stubs(<output .o>,<input .c>)
-silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))); \
+silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
 		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
 
 # make-hs-obj(<output .o>,<input .hs>,<compile flags>)
@@ -243,7 +240,7 @@ make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)
 
 # make-hs-deps(<output .o>,<input .hs>,<compile flags>)
 make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d.in && \
-		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d; \
+		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d && \
 		 $(call silent-remove-file,$(basename $(1)).d.in)
 
 # compile-hs(<output .o>,<input .hs>,<compile flags>)
@@ -262,26 +259,26 @@ endif
 
 # create an archive
 # make-archive(<archive>,<input .o files>)
-make-archive		=$(AR) -sr $(1) $(2)
+make-archive	=$(AR) -sr $(1) $(2)
 
 # update the archive symbol index
 # make-archive-index(<archive>)
-make-archive-index	=$(AR) -s $(1)
+make-archive-index=$(AR) -s $(1)
 
 
 # install files, keeping directory structure intact (that is why we use 'foreach').
 # we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
 # usage: $(call install-files,<local dir>,<install dir>,<files>)
 # usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
-install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)) \
+install-file    =echo "install: $(2)" && $(INSTALL) $(1) $(dir $(2)) \
 	         $(if $(filter %.a,$(2)),&& $(call make-archive-index,$(basename $(2)).a))
-install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1)
+install-dir     =echo "install directory: $(1)" && $(INSTALLDIR) $(1)
 install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir)) &&) \
 	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))) &&) \
 		 :
 
-uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi
-uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi
+uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)" && $(RM) $(1); fi
+uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)" && $(call run-silent,$(RMDIR) -p $(2)); fi
 uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file)) &&) \
 		 $(CD) $(1) && \
 		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)) &&) \
@@ -292,7 +289,7 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$
 # usage: $(call install-pkg,<install dir>,<package file>)
 # usage: $(call uninstall-pkg,<package name>)
 install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
-uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)"; $(HCPKG) -r $(1); fi
+uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 
 #--------------------------------------------------------------------------
@@ -300,10 +297,10 @@ uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister pack
 #--------------------------------------------------------------------------
 .SUFFIXES: .hs .hi .o .c .cpp
 .PHONY: all install uninstall doc webdoc clean realclean
-.PHONY: wxc wxd wxh wx
-.PHONY: wxc-install wxh-install wx-install
-.PHONY: wxc-uninstall wxh-uninstall wx-uninstall
-.PHONY: wxc-dirs wxd-dirs wxh-dirs wx-dirs 
+#.PHONY: wxc wxd wxh wx
+#.PHONY: wxc-install wxh-install wx-install
+#.PHONY: wxc-uninstall wxh-uninstall wx-uninstall
+#.PHONY: wxc-dirs wxd-dirs wxh-dirs wx-dirs 
 
 # global variables
 OUTDIR	= out
@@ -321,8 +318,8 @@ realclean: wxhrealclean
 # Distribution
 #--------------------------------------------------------------------------
 .PHONY: dist srcdist bindist docdist dist-dirs
-.PHONY: wxc-dist wxd-dist wxh-dist wx-dist
-.PHONY: wxc-bindist wxh-bindist wx-bindist
+#.PHONY: wxc-dist wxd-dist wxh-dist wx-dist
+#.PHONY: wxc-bindist wxh-bindist wx-bindist
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip

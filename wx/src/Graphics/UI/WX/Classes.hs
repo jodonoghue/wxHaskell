@@ -11,7 +11,10 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Classes
-    ( Textual(text,appendText)
+    ( 
+      -- * Attributes
+      Textual(text,appendText)
+    , Literate(font)
     , Dimensions(..)
     , Colored(..)
     , Visible(..)
@@ -25,15 +28,19 @@ module Graphics.UI.WX.Classes
     , Tipped( tooltip )
     , Selection( selection )
     , Selections( selections )
+    -- * Types
+    , FontInfo
     ) where
 
 -- for haddock, we import wxh module selectively
 -- import Graphics.UI.WXH
 import Graphics.UI.WXH.WxcClasses
+import Graphics.UI.WXH.Draw
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
+
 
 -- | Widgets with a label or text field.
 class Textual w where
@@ -46,6 +53,11 @@ class Textual w where
   appendText w s
     = set w [text :~ (++s)]
 
+
+-- | Widgets with a font.
+class Literate w where
+  -- | The font of the widget.
+  font       :: Attr w FontInfo
 
 -- | Widgets that have a size.
 class Dimensions w where
@@ -146,6 +158,7 @@ class Identity w where
 class Styled w where
   -- | The windows style.
   style :: Attr w Int
+
 
 -- | Widgets that have a tooltip
 class Tipped w where

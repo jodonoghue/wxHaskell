@@ -982,6 +982,7 @@ eventKeyFromEvent event
 
 -- | A keyboard event contains the key, the modifiers and the focus point.
 data EventKey  = EventKey !Key !Modifiers !Point
+               deriving (Eq,Show)
 
 -- | Extract the key from a keyboard event.
 keyKey :: EventKey -> Key
@@ -1560,24 +1561,6 @@ unsafeGetHandlerState object id eventId def
   = do closure <- evtHandlerGetClosure object id eventId
        unsafeClosureGetState closure def
 
-unsafeClosureGetState :: Closure () -> a -> IO a
-unsafeClosureGetState closure def
-  = do mb <- unsafeClosureGetData closure
-       case mb of
-         Nothing -> return def
-         Just x  -> return x
-
-unsafeClosureGetData :: Closure () -> IO (Maybe a)
-unsafeClosureGetData closure
-  = if (ptrIsNull closure)
-     then return Nothing
-     else do ptr <- closureGetData closure
-             if (ptrIsNull ptr)
-              then return Nothing
-              else do x <- deRefStablePtr (castPtrToStablePtr ptr)
-                      return (Just x)
-
-
 -- | Type synonym to make the type signatures shorter for the documentation :-)
 type OnEvent = (Bool -> IO ()) -> (Event () -> IO ()) -> IO ()
 
@@ -1627,6 +1610,30 @@ evtHandlerOnEventConnect object firstId lastId eventIds state destroy eventHandl
       = evtHandlerConnect object firstId lastId eventId closure
 
 
+
+-- Use a data wrapper for the closure state: seem to circumvent bugs when wrapping
+-- things like Int or overloaded stuff.
+data Wrap a  = Wrap a
+
+
+unsafeClosureGetState :: Closure () -> a -> IO a
+unsafeClosureGetState closure def
+  = do mb <- unsafeClosureGetData closure
+       case mb of
+         Nothing -> return def
+         Just x  -> return x
+
+unsafeClosureGetData :: Closure () -> IO (Maybe a)
+unsafeClosureGetData closure
+  = if (ptrIsNull closure)
+     then return Nothing
+     else do ptr <- closureGetData closure
+             if (ptrIsNull ptr)
+              then return Nothing
+              else do (Wrap x) <- deRefStablePtr (castPtrToStablePtr ptr)
+                      return (Just x)
+
+
 -- | Create a closure with a certain haskell state, a function that is called
 -- when the closure is destroyed, and a function that is called when an event
 -- happens. The destroy function takes a boolean that is 'True' when the parent
@@ -1635,7 +1642,7 @@ evtHandlerOnEventConnect object firstId lastId eventIds state destroy eventHandl
 createClosure :: state -> (Bool -> IO ()) -> (Event () -> IO ()) -> IO (Closure ())
 createClosure st destroy handler
   = do funptr  <- wrapEventHandler eventHandlerWrapper
-       stptr   <- newStablePtr st
+       stptr   <- newStablePtr (Wrap st)
        closureCreate funptr (castStablePtrToPtr stptr)
   where
     eventHandlerWrapper funptr stptr event

@@ -696,9 +696,10 @@ data Color = Color Int Int Int deriving Eq
 
 instance Show Color where
   showsPrec d c
-    = showParen (d > 0) (showString "rgbColor " . shows (colorRed   c) .
-                          showChar   ' '        . shows (colorGreen c) .
-                          showChar   ' '        . shows (colorBlue  c))
+    = showParen (d > 0) (showString "rgb(" . shows (colorRed   c) .
+                          showChar   ','   . shows (colorGreen c) .
+                          showChar   ','   . shows (colorBlue  c) .
+                          showChar   ')' )
 
 -- | Create a color from a red\/green\/blue triple.
 colorRGB :: Int -> Int -> Int -> Color

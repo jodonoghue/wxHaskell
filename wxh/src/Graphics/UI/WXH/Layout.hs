@@ -131,7 +131,7 @@ module Graphics.UI.WXH.Layout( -- * Types
                              , space, hspace, vspace, empty
                                -- * Transformers
                                -- ** Stretch
-                             , static, stretch, hstretch, vstretch
+                             , static, stretch, hstretch, vstretch, minsize
                                -- ** Expansion
                              , rigid, shaped, expand
                                -- ** Fill
@@ -404,6 +404,12 @@ vspace h
 {-----------------------------------------------------------------------------------------
   Primitive layout tranformers
 -----------------------------------------------------------------------------------------}
+
+-- | (primitive) Set the minimal size of a widget.
+minsize :: Size -> Layout -> Layout
+minsize sz layout
+  = updateOptions layout (\options -> options{ minSize = Just sz })
+
 -- | (primitive) Never resize the layout, but align it in the assigned area
 -- (default, except for containers like 'grid' and 'boxed' where it depends on the child layouts).
 rigid :: Layout -> Layout
@@ -627,7 +633,7 @@ imageTabs notebook pages
 
 optionsDefault :: LayoutOptions
 optionsDefault
-  = LayoutOptions False False [] 10 AlignLeft AlignTop FillNone
+  = LayoutOptions False False [] 10 AlignLeft AlignTop FillNone Nothing
 
 
 {-----------------------------------------------------------------------------------------
@@ -636,10 +642,10 @@ optionsDefault
 -- | Abstract data type that represents the layout of controls in a window.
 data Layout = Grid      { options :: LayoutOptions, gap  :: Size, rows :: [[Layout]] }
             | Widget    { options :: LayoutOptions, win  :: Window () }
-            | Spacer    { options :: LayoutOptions, minsize :: Size   }
+            | Spacer    { options :: LayoutOptions, spacesize :: Size   }
             | Label     { options :: LayoutOptions, txt  :: String    }
             | TextBox   { options :: LayoutOptions, txt  :: String, content :: Layout }
-            | Line      { options :: LayoutOptions, minsize :: Size }
+            | Line      { options :: LayoutOptions, linesize :: Size }
             | XSizer    { options :: LayoutOptions, xsizer :: Sizer () }
             | WidgetContainer{ options :: LayoutOptions, win :: Window (), content :: Layout }
             | XNotebook { options :: LayoutOptions, nbook :: Notebook (), pages :: [(String,Bitmap (),Layout)] }
@@ -649,6 +655,7 @@ data LayoutOptions
                           , margins :: [Margin], marginW :: Int
                           , alignH :: HAlign, alignV :: VAlign
                           , fillMode :: FillMode
+                          , minSize  :: Maybe Size
                           }
 
 data FillMode = FillNone | FillShaped | Fill
@@ -673,11 +680,11 @@ sizerFromLayout parent layout
   where
     insert :: Sizer () -> Layout -> IO (Sizer ())
     insert container (Spacer options sz)
-      = do addWithOptions (sizerAdd container sz) options
+      = do sizerAddWithOptions (sizerAdd container sz) (\sz -> return ()) options
            return container
 
     insert container (Widget options win)
-      = do addWithOptions (sizerAddWindow container win) options
+      = do sizerAddWindowWithOptions container win options
            return container
 
     insert container (Grid goptions gap rows)
@@ -685,40 +692,42 @@ sizerFromLayout parent layout
            mapM_ (stretchRow g) (zip [0..] (map (all (stretchV.options)) rows))
            mapM_ (stretchCol g) (zip [0..] (map (all (stretchH.options)) (transpose rows)))
            mapM_ (insert (downcastSizer g)) (concat rows)
-           when (container /= objectNull) (addWithOptions (sizerAddSizer container g) goptions)
+           when (container /= objectNull) 
+             (sizerAddSizerWithOptions container g goptions)
            return (downcastSizer g)
 
     insert container (Label options txt)
       = do t <- staticTextCreate parent idAny txt rectNull 0
-           addWithOptions (sizerAddWindow container t) options
+           sizerAddWindowWithOptions container t options
            return container
 
     insert container (TextBox options txt layout)
       = do box   <- staticBoxCreate parent idAny txt rectNull 0
            sizer <- staticBoxSizerCreate box wxVERTICAL
            insert (downcastSizer sizer) layout
-           when (container /= objectNull) (addWithOptions (sizerAddSizer container sizer) options)
+           when (container /= objectNull) 
+             (sizerAddSizerWithOptions container sizer options)
            return (downcastSizer sizer)
 
     insert container (Line options (Size w h))
       = do l <- staticLineCreate parent idAny (rectNull{ width = w, height = h }) (if (w >= h) then wxHORIZONTAL else wxVERTICAL)
-           addWithOptions (sizerAddWindow container l) options
+           sizerAddWindowWithOptions container l options
            return container
 
     insert container (XSizer options sizer)
-      = do addWithOptions (sizerAddSizer container sizer) options
+      = do sizerAddSizerWithOptions container sizer options
            return container
 
     insert container (WidgetContainer options win layout)
       = do windowSetLayout win layout -- recursively set the layout in the window itself
-           addWithOptions (sizerAddWindow container win) options
+           sizerAddWindowWithOptions container win options
            return container
 
     insert container (XNotebook options nbook pages)
       = do pages' <- addImages ptrNull pages
            mapM_ addPage pages'
            nbsizer <- notebookSizerCreate nbook
-           addWithOptions (sizerAddSizer container nbsizer) options
+           sizerAddSizerWithOptions container nbsizer options
            return container
       where
         addPage (title,idx,WidgetContainer options win layout)
@@ -764,9 +773,23 @@ sizerFromLayout parent layout
     stretchCol g (i,stretch)
       = when stretch (flexGridSizerAddGrowableCol g i)
 
-    addWithOptions :: (Int -> Int -> Int -> Ptr p -> IO ()) -> LayoutOptions -> IO ()
-    addWithOptions add options
-      = add 1 (flags options) (marginW options) objectNull
+    
+
+    sizerAddWindowWithOptions :: Sizer a -> Window b -> LayoutOptions -> IO ()
+    sizerAddWindowWithOptions container window options
+      = sizerAddWithOptions (sizerAddWindow container window) (sizerSetItemMinSizeWindow container window) options
+
+    sizerAddSizerWithOptions :: Sizer a -> Sizer b -> LayoutOptions -> IO ()
+    sizerAddSizerWithOptions container sizer options
+      = sizerAddWithOptions (sizerAddSizer container sizer) (sizerSetItemMinSizeSizer container sizer) options
+           
+
+    sizerAddWithOptions :: (Int -> Int -> Int -> Ptr p -> IO ()) -> (Size -> IO ()) -> LayoutOptions -> IO ()
+    sizerAddWithOptions addSizer setMinSize options
+      = do addSizer 1 (flags options) (marginW options) objectNull
+           case minSize options of
+             Nothing -> return ()
+             Just sz -> setMinSize sz
 
     flags options
       = flagsFillMode (fillMode options) .+. flagsMargins (margins options)

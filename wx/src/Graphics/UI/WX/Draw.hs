@@ -11,19 +11,40 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Draw
-    ( DC, withPen
+    ( 
+      -- * Types
+      DC
+    -- ** Brushes
+    , BrushStyle(..), BrushKind(..), brushDefault
+    -- ** Pens
+    , PenKind(..), penDefault, penColored, penTransparent
+    -- ** Draw styles
+    , HatchStyle(..), CapStyle(..), JoinStyle(..), DashStyle(..)
+    -- ** Font
+    -- , FontInfo(..)
+    , FontFamily(..), FontStyle(..), FontWeight(..)
+    , fontNormal, fontSwiss, fontSmall, fontItalic
+    -- * Classes
+    , Drawn, penStyle, pen, penwidth, pencap, penjoin
+    , Brushed, brushStyle, brush
+
+    {-
+    , withPen
     , Drawn, pen, penwidth, pencap, penjoin
     , Brushed, brush
     , circle
     , BrushKind(..), PenKind(..)
     , HatchStyle(..), CapStyle(..), JoinStyle(..), DashStyle(..)
+    -}
     ) where
 
 -- for haddock, we import wxh module selectively
 -- import Graphics.UI.WXH
 import Graphics.UI.WXH.WxcClasses
 import Graphics.UI.WXH.WxcDefs
+import Graphics.UI.WXH.Events
 import Graphics.UI.WXH.Draw
+
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
@@ -31,6 +52,60 @@ import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Window
 
+
+
+{--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------}
+class Drawn w where
+  penStyle  :: Attr w PenStyle
+  pen       :: Attr w PenKind  
+  penwidth  :: Attr w Int
+  pencap    :: Attr w CapStyle
+  penjoin   :: Attr w JoinStyle
+
+class Brushed w where
+  brushStyle :: Attr w BrushStyle
+  brush      :: Attr w BrushKind
+
+instance Drawn (DC a) where
+  penStyle 
+    = newAttr "penStyle" dcGetPenStyle dcSetPenStyle
+  pen
+    = mapAttr penKind (\x pstyle -> pstyle{ penKind = x }) penStyle
+
+  penwidth
+    = mapAttr penWidth (\x pstyle -> pstyle{ penWidth = x }) penStyle
+
+  pencap
+    = mapAttr penCap (\x pstyle -> pstyle{ penCap = x }) penStyle
+  
+  penjoin
+    = mapAttr penJoin (\x pstyle -> pstyle{ penJoin = x }) penStyle
+
+
+instance Brushed (DC a) where
+  brushStyle
+    = newAttr "brushStyle" dcGetBrushStyle dcSetBrushStyle
+
+  brush
+    = mapAttr brushKind (\x bstyle -> bstyle{ brushKind = x }) brushStyle
+
+
+instance Literate (DC a) where
+  font
+    = newAttr "font" dcGetFontInfo dcSetFontInfo
+
+instance Colored (DC a) where
+  color
+    = mapAttr penColor (\color pstyle -> pstyle{ penColor = color }) penStyle
+
+  bgcolor
+    = mapAttr brushColor (\color bstyle -> bstyle{ brushColor = color }) brushStyle
+
+
+
+{-
 {--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------}
@@ -38,6 +113,7 @@ data Pencil = Pencil{ penStyle   :: Var (Maybe PenStyle)
                     , brushStyle :: Var (Maybe BrushStyle)
                     , fontInfo   :: Var (Maybe FontInfo)
                     }
+
 
 withPen :: DC a -> [Prop Pencil] -> IO b -> IO b
 withPen dc props io
@@ -162,3 +238,5 @@ instance Colored Circle where
 circle :: DC a -> Point -> Int -> [Prop Circle] -> IO ()
 circle dc center radius props
   = withPencil dc (\pen -> set (Circle pen) props) (dcDrawCircle dc center radius)
+
+  -}

@@ -24,15 +24,22 @@ module Graphics.UI.WXH.Draw
         -- * Font
         , FontInfo(..), FontFamily(..), FontStyle(..), FontWeight(..)
         , fontNormal, fontSwiss, fontSmall, fontItalic
-        , withFontInfo, dcWithFontInfo, fontCreateFromInfo, fontGetFontInfo
+        , withFontInfo, dcWithFontInfo
+        , dcSetFontInfo, dcGetFontInfo
+        , fontCreateFromInfo, fontGetFontInfo
         -- * Brush
         , BrushStyle(..), BrushKind(..)
         , HatchStyle(..)
-        , brushDefault, withBrushStyle, dcWithBrushStyle, brushCreateFromStyle
+        , brushDefault
+        , dcSetBrushStyle, dcGetBrushStyle
+        , withBrushStyle, dcWithBrushStyle
+        , brushCreateFromStyle, brushGetBrushStyle
         -- * Pen
         , PenStyle(..), PenKind(..), CapStyle(..), JoinStyle(..), DashStyle(..)
         , penDefault, penColored, penTransparent
-        , withPenStyle, dcWithPenStyle, penCreateFromStyle
+        , dcSetPenStyle, dcGetPenStyle
+        , withPenStyle, dcWithPenStyle
+        , penCreateFromStyle, penGetPenStyle
         ) where
 
 import Graphics.UI.WXH.WxcTypes
@@ -178,6 +185,20 @@ dcWithFontInfo dc fontInfo io
                  fontDelete oldFont)
              (const io)
 
+-- | Set the font info of a DC.
+dcSetFontInfo :: DC a -> FontInfo -> IO ()
+dcSetFontInfo dc info
+  = do (font,del) <- fontCreateFromInfo info
+       finalize del $
+        do dcSetFont dc font
+
+-- | Get the current font info.
+dcGetFontInfo :: DC a -> IO FontInfo
+dcGetFontInfo dc
+  = do font <- dcGetFont dc
+       finalize (fontDelete font) $
+        do fontGetFontInfo font
+
 
 -- | Create a 'Font' from 'FontInfo'. Returns both the font and a deletion procedure.
 fontCreateFromInfo :: FontInfo -> IO (Font (),IO ())
@@ -210,13 +231,13 @@ fontCreateFromInfo (FontInfo size family style weight underline face encoding)
 -- | Get the 'FontInfo' from a 'Font' object.
 fontGetFontInfo :: Font a -> IO FontInfo
 fontGetFontInfo font
-  = do size    <- font # fontGetPointSize
-       cfamily <- font # fontGetFamily
-       cstyle  <- font # fontGetStyle
-       cweight <- font # fontGetWeight
-       cunderl <- font # fontGetUnderlined
-       face    <- font # fontGetFaceName
-       enc     <- font # fontGetEncoding
+  = do size    <- fontGetPointSize font
+       cfamily <- fontGetFamily font
+       cstyle  <- fontGetStyle font
+       cweight <- fontGetWeight font
+       cunderl <- fontGetUnderlined font
+       face    <- fontGetFaceName font
+       enc     <- fontGetEncoding font
        return (FontInfo size (toFamily cfamily) (toStyle cstyle) (toWeight cweight) (cunderl /= 0) face enc)
    where
     toFamily f
@@ -331,7 +352,7 @@ dcWithPenStyle dc penStyle io
   = withPenStyle penStyle $ \pen ->
     dcWithPen dc pen io
 
--- | Set a pen that is automatically deleted at the end of the computation.
+-- | Set a pen that is used during a certain computation.
 -- The text color will also be adapted.
 dcWithPen :: DC a -> Pen p -> IO b -> IO b
 dcWithPen dc pen io
@@ -347,6 +368,20 @@ dcWithPen dc pen io
                  penDelete oldPen)
              (const io)
 
+-- | Set the current pen style. The text color is also adapted.
+dcSetPenStyle :: DC a -> PenStyle -> IO ()
+dcSetPenStyle dc penStyle
+  = do (pen,del) <- penCreateFromStyle penStyle
+       finalize del $ 
+        do dcSetPen dc pen
+           dcSetTextForeground dc (penColor penStyle)
+
+-- | Get the current pen style.
+dcGetPenStyle :: DC a -> IO PenStyle
+dcGetPenStyle dc
+  = do pen <- dcGetPen dc
+       finalize (penDelete pen) $ 
+         do penGetPenStyle pen
 
 -- | Create a new pen from a 'PenStyle'. Returns both the pen and its deletion procedure.
 penCreateFromStyle :: PenStyle -> IO (Pen (),IO ())
@@ -402,7 +437,48 @@ penCreateFromStyle penStyle
         ,(mediumgrey,8)
         ]
 
+-- | Create a 'PenStyle' from a 'Pen'.
+penGetPenStyle :: Pen a -> IO PenStyle
+penGetPenStyle pen
+  = do stl <- penGetStyle pen
+       toPenStyle stl
+  where
+    toPenStyle stl
+      | stl == wxTRANSPARENT      = return penTransparent
+      | stl == wxSOLID            = toPenStyleWithKind PenSolid
+      | stl == wxDOT              = toPenStyleWithKind (PenDash DashDot)
+      | stl == wxLONG_DASH        = toPenStyleWithKind (PenDash DashLong)
+      | stl == wxSHORT_DASH       = toPenStyleWithKind (PenDash DashShort)
+      | stl == wxDOT_DASH         = toPenStyleWithKind (PenDash DashDotShort)
+      | stl == wxSTIPPLE          = do stipple <- penGetStipple pen
+                                       toPenStyleWithKind (PenStipple stipple)
+      | stl == wxBDIAGONAL_HATCH  = toPenStyleWithKind (PenHatch HatchBDiagonal)
+      | stl == wxCROSSDIAG_HATCH  = toPenStyleWithKind (PenHatch HatchCrossDiag)
+      | stl == wxFDIAGONAL_HATCH  = toPenStyleWithKind (PenHatch HatchFDiagonal)
+      | stl == wxCROSS_HATCH      = toPenStyleWithKind (PenHatch HatchCross)
+      | stl == wxHORIZONTAL_HATCH = toPenStyleWithKind (PenHatch HatchHorizontal)
+      | stl == wxVERTICAL_HATCH   = toPenStyleWithKind (PenHatch HatchVertical)
+      | otherwise                 = toPenStyleWithKind PenSolid
+      
+    toPenStyleWithKind kind
+      = do width  <- penGetWidth pen
+           color  <- penGetColour pen
+           cap    <- penGetCap pen
+           join   <- penGetJoin pen
+           return (PenStyle kind color width (toCap cap) (toJoin join))
 
+    toCap cap
+      | cap == wxCAP_PROJECTING = CapProjecting
+      | cap == wxCAP_BUTT       = CapButt
+      | otherwise               = CapRound
+
+    toJoin join
+      | join == wxJOIN_MITER    = JoinMiter
+      | join == wxJOIN_BEVEL    = JoinBevel
+      | otherwise               = JoinRound
+
+
+           
 {--------------------------------------------------------------------------------
   Brush
 --------------------------------------------------------------------------------}
@@ -416,7 +492,8 @@ brushDefault
 withBrushStyle :: BrushStyle -> (Brush () -> IO a) -> IO a
 withBrushStyle brushStyle f
   = do (brush,delete) <- brushCreateFromStyle brushStyle
-       finally (f brush) delete
+       finalize delete $ 
+        do f brush 
 
 
 -- | Use a brush that is automatically deleted at the end of the computation.
@@ -439,6 +516,21 @@ dcWithBrush dc brush io
                  dcSetTextBackground dc oldTextColor
                  brushDelete oldBrush)
              (const io)
+
+-- | Set the brush style (and text background color) of a device context.
+dcSetBrushStyle :: DC a -> BrushStyle -> IO ()
+dcSetBrushStyle dc brushStyle
+  = do (brush,del) <- brushCreateFromStyle brushStyle
+       finalize del $ do dcSetBrush dc brush
+                         dcSetTextBackground dc (brushColor brushStyle)
+       
+-- | Get the current brush of a device context.
+dcGetBrushStyle :: DC a -> IO BrushStyle
+dcGetBrushStyle dc
+  = do brush <- dcGetBrush dc
+       finalize (brushDelete brush) $
+        do brushGetBrushStyle brush
+
 
 -- | Create a new brush from a 'BrushStyle'. Returns both the brush and its deletion procedure.
 brushCreateFromStyle :: BrushStyle -> IO (Brush (), IO ())
@@ -472,6 +564,27 @@ brushCreateFromStyle brushStyle
         ,(cyan,8),(red,9)
         ,(mediumgrey,5)
         ]
+
+-- | Get the 'BrushStyle' of 'Brush'.
+brushGetBrushStyle :: Brush a -> IO BrushStyle
+brushGetBrushStyle brush
+  = do stl   <- brushGetStyle brush
+       kind  <- toBrushKind stl
+       color <- brushGetColour brush
+       return (BrushStyle kind color)
+  where
+    toBrushKind stl
+      | stl == wxTRANSPARENT      = return BrushTransparent
+      | stl == wxSOLID            = return BrushSolid
+      | stl == wxSTIPPLE          = do stipple <- brushGetStipple brush
+                                       return (BrushStipple stipple)
+      | stl == wxBDIAGONAL_HATCH  = return (BrushHatch HatchBDiagonal)
+      | stl == wxCROSSDIAG_HATCH  = return (BrushHatch HatchCrossDiag)
+      | stl == wxFDIAGONAL_HATCH  = return (BrushHatch HatchFDiagonal)
+      | stl == wxCROSS_HATCH      = return (BrushHatch HatchCross)
+      | stl == wxHORIZONTAL_HATCH = return (BrushHatch HatchHorizontal)
+      | stl == wxVERTICAL_HATCH   = return (BrushHatch HatchVertical)
+      | otherwise                 = return BrushTransparent
 
 {--------------------------------------------------------------------------------
   DC utils

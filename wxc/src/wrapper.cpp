@@ -151,7 +151,7 @@ wxcClosureRefData::wxcClosureRefData( wxClosure* closure )
 
 wxcClosureRefData::~wxcClosureRefData()
 {
-printf("delete wxcClosureRefData\n");
+/* printf("delete wxc-ClosureRefData\n");  */
   if (m_closure) { delete m_closure; m_closure = NULL; }
 }
 
@@ -177,7 +177,7 @@ EWXWEXPORT(int, wxEvtHandler_Connect)(void* _obj, int first, int last, int type,
 EWXWEXPORT(wxClosure*, wxEvtHandler_GetClosure)(wxEvtHandler* evtHandler, int id, int type)
 {
   wxCommandEvent  event(type,id);     //We can use any kind of event here
-  wxCallback*       callback = NULL;
+  wxCallback*     callback = NULL;
   bool            found    = false;
 
   //set the global variable 'getCallback' so HandleEvent
@@ -224,17 +224,14 @@ EWXWEXPORT(wxClosure*, wxObject_GetClientClosure)(wxObject* _obj)
     return NULL;
 }
 
-EWXWEXPORT(int, wxObject_SetClientClosure)( wxObject* _obj, wxClosure* closure )
+EWXWEXPORT(void, wxObject_SetClientClosure)( wxObject* _obj, wxClosure* closure )
 {
+  wxcClosureRefData* refData;
+  /* wxASSERT(_obj->GetRefData() == NULL); */
+  _obj->UnRef();
   wxASSERT(_obj->GetRefData() == NULL);
-  if (_obj->GetRefData() != NULL) {
-    return 0;
-  }
-  else {
-    wxcClosureRefData* refData = new wxcClosureRefData( closure );
-    _obj->SetRefData( refData );    //set new data -- ref count must be 1 as setRefData doesn't increase it.
-    return 1;
-  }
+  refData = new wxcClosureRefData( closure );
+  _obj->SetRefData( refData );    //set new data -- ref count must be 1 as setRefData doesn't increase it.  
 }
 
 /*-----------------------------------------------------------------------------
