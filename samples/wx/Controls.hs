@@ -90,7 +90,7 @@ gui
                                                          , glue
                                                          ]
                     ]
-                 , hfill $ minsize (sz 20 70) $ widget textlog
+                 , hfill $ minsize (sz 20 80) $ widget textlog
                  ]
              , clientSize := sz 400 300 ]
        return ()
