@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.5 2003/07/21 10:57:54 dleijen Exp $
+# $Id: configure,v 1.6 2003/07/22 15:02:30 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -100,10 +100,11 @@ if sh ./config.search "$wxconfig"; then
   fi
 
   # guess wxwindows library
-  # extraction process is a bit flaky: it expects a single -Llibdir and -llibname option.
-  wxwinlibdir="`wx-config --libs | sed -e 's|.*-L\([^ ]*\).*|\1|'`"
+  # extraction process is a bit flaky: it expects a single -llibname option.
+  # wxwinlibdir="`wx-config --libs | sed -e 's|.*-L\([^ ]*\).*|\1|'`"
+  wxwinexecprefix="`wx-config --exec-prefix`"
   wxwinlibname="`wx-config --libs | sed -e 's|.*-lwx\([^ ]*\).*|wx\1|'`"
-  wxwinlib="$wxwinlibdir/$lib$wxwinlibname$dll"
+  wxwinlib="$wxwinexecprefix/lib/$lib$wxwinlibname$dll"
 
   # guess extra link options
   extraldopts="`wx-config --ldflags`"
@@ -422,7 +423,7 @@ if test "$wxwinlib"; then
     echo "error:"
     echo " Unable to find the specified wxwindows library: $wxwinlib"
     echo " Maybe you forgot to run 'make install' for wxWindows?"
-    echo " Otherwise, specify the path to the library on the command line."
+    echo " Otherwise, specify the full path to the library on the command line."
     echo " For example: ./configure --wx-lib=/usr/local/lib/wxmsw241.dll"
     if test "$WINDIR"; then
       echo " Or maybe you are trying to compile with Microsoft Visual C++?"
