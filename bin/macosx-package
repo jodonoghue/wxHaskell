@@ -1,0 +1,375 @@
+#!/bin/csh -ef
+
+set prog        = `/usr/bin/basename $0`
+set usage 	= "Usage: $prog [-f] rootDirectory infoFile [-d destinationDirectory] [-r resourceDirectory] [-ignoreDSStore]"
+set helpline 	= "*  rootDirectory - a directory containing the files to be added to the package"
+set helpline2 	= "*  infoFile - contains the package specific information and flags"
+set helpline3	= "*  destinationDirectory - the location where the package will be built"
+set helpline4	= "*  resourceDirectory - a directory containing any necessary scripts or documents"
+set noglob
+
+if (-x /usr/bin/mkbom) then
+    set mkbom=/usr/bin/mkbom
+    set lsbom=/usr/bin/lsbom
+else
+    set mkbom=/usr/etc/mkbom
+    set lsbom=/usr/etc/lsbom
+endif
+
+if (-x /usr/bin/awk) then
+    set awk=/usr/bin/awk
+else
+    set awk=/bin/awk
+endif
+
+set gnutar=/usr/bin/gnutar
+set tar=/usr/bin/tar
+set pax=/bin/pax
+
+# set resDir = ""
+
+# gather parameters
+if ($#argv == 0) then
+	echo $usage
+	echo $helpline
+	echo $helpline2
+	echo $helpline3
+	echo $helpline4
+    exit(1)
+endif
+
+while ( $#argv > 0 )
+    switch ( "$argv[1]" )
+	case -d:
+	    if ( $?destDir ) then
+			echo ${prog}: dest-dir parameter already set to ${destDir}.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4			
+			exit(1)
+	    else if ( $#argv < 2 ) then
+			echo ${prog}: -d option requires destination directory.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set destDir = "$argv[2]"
+			shift; shift
+			breaksw
+	    endif
+	case -f:
+	    if ( $?rootDir ) then
+			echo "${prog}": root-dir parameter already set to "${rootDir}".
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else if ( $#argv < 2 ) then
+			echo "${prog}": -f option requires package root directory.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set rootDir = "$argv[2]"
+			set fflag
+			shift; shift
+			breaksw
+	    endif
+	case -r:
+	    if ( $?resDir ) then
+			echo "${prog}": resource-dir parameter already set to "${resDir}".
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else if ( $#argv < 2 ) then
+			echo "${prog}": -r option requires package resource directory.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set resDir = "$argv[2]"
+			shift; shift
+			breaksw
+	    endif
+#	case -traditional:		# no longer supported
+#		set usetar
+#		unset usegnutar
+#		unset usepax
+#		breaksw
+#       shift
+#	case -gnutar:			# no longer supported
+#	    set usegnutar
+#       unset usepax
+#	    unset usetar
+	case -ignoreDSStore:
+		set ignoreDSStore
+	case -B:
+	    # We got long file names, better use bigtar instead
+	    #set archiver = /NextAdmin/Installer.app/Resources/installer_bigtar
+	    echo 2>&1 "${prog}": -B flag is no longer relevant.
+	    shift
+	    breaksw
+	case -*:
+	    echo "${prog}": Unknown option: "$argv[1]"
+		echo $usage
+		echo $helpline
+		echo $helpline2
+		echo $helpline3
+		echo $helpline4
+	    exit(1)
+	case *.info:
+	    if ( $?info ) then
+			echo ${prog}: info-file parameter already set to ${info}.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set info = "$argv[1]"
+			shift
+			breaksw
+	    endif
+	case *.tiff:
+	    if ( $?tiff ) then
+			echo ${prog}: tiff-file parameter already set to ${tiff}.
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set tiff = "$argv[1]"
+			shift
+			breaksw
+	    endif
+
+	default:
+	    if ( $?rootDir ) then
+			echo ${prog}: unrecognized parameter: $argv[1]
+			echo $usage
+			echo $helpline
+			echo $helpline2
+			echo $helpline3
+			echo $helpline4
+			exit(1)
+	    else
+			set rootDir = "$argv[1]"
+			shift
+			breaksw
+	    endif
+    endsw
+end
+
+# check for mandatory parameters
+if ( ! $?rootDir ) then
+    echo "${prog}": missing root-dir parameter.
+	echo $usage
+	echo $helpline
+	echo $helpline2
+	echo $helpline3
+	echo $helpline4
+    exit(1)
+else if ( ! $?info) then
+    echo "${prog}": missing info-file parameter.
+	echo $usage
+	echo $helpline
+	echo $helpline2
+	echo $helpline3
+	echo $helpline4
+    exit(1)
+endif
+
+# destDir gets default value if unset on command line
+if ( $?destDir ) then
+    /bin/mkdir -p "$destDir"
+else
+    set destDir = .
+endif
+
+# derive the root name for the package from the root name of the info file
+set root = `/usr/bin/basename "$info" .info`
+set fullPackageName = "$root".pkg
+
+# create package directory
+set pkg = "${destDir}"/"${root}".pkg/Contents/Resources
+echo Generating Installer package "${destDir}"/"${root}".pkg ...
+if ( -e "$pkg" ) /bin/rm -rf "$pkg"
+/bin/mkdir -p -m 755 "$pkg"
+
+# create package info file, creator and type info
+echo "	adding package info file ... "
+set infoFile = "${destDir}"/"${root}".pkg/Contents/PkgInfo
+if ( -e "$infoFile" ) /bin/rm -rf "$infoFile"
+echo pmkrpkg1 >  "$infoFile"
+chmod 444 "$infoFile"
+
+# (gnu)tar/pax and compress root directory to package archive
+echo -n "	creating package archive ... "
+if ($?fflag ) then
+    set pkgTop = "${rootDir:t}"
+    set parent = "${rootDir:h}"
+    if ( "$parent" == "$pkgTop" ) set parent = "."
+else
+    set parent = "$rootDir"
+    set pkgTop = .    
+endif
+
+if ( $?usetar ) then
+    set pkgArchive = "$pkg"/"$root".tar.Z
+    (cd "$parent"; $tar -w "$pkgTop") | /usr/bin/compress -f -c > "$pkgArchive"
+else if ( $?usegnutar ) then
+    set pkgArchive = "$pkg"/"$root".tar.gz
+    (cd "$parent"; "$gnutar" zcf "$pkgArchive" "$pkgTop")
+else
+    set pkgArchive = "$pkg"/"$root".pax.gz
+    (cd "$parent"; $pax -w -z -x cpio "$pkgTop") > "$pkgArchive"
+endif
+/bin/chmod 444 "$pkgArchive"
+echo done.
+
+# if there is a resource directory and it contains an English localized info file
+if ( $?resDir && $resDir != "" && -e "${resDir}"/English.lproj) then
+	# will be copied when resources are copied, below
+	# set var here as it is used later
+	set lproj = "${pkg}"/English.lproj
+else
+	# create English.lproj, created in Contents/Resources dir
+
+	set lproj = "${pkg}"/English.lproj
+	if ( -e "$lproj" ) /bin/rm -rf "$lproj"
+	/bin/mkdir -p -m 755 "$lproj"
+
+	# copy info file to English.lproj, make it read only
+	/bin/cp "$info" "$lproj"
+	/bin/chmod 444 "${lproj}"/${root}.info
+endif
+
+# copy tiff file to package
+if ( "$?tiff" ) then
+    set pkgTiff = "$pkg"/"$root.tiff"
+    echo -n "	copying ${tiff:t} ... "
+    /bin/cp "$tiff" "$pkgTiff"
+    /bin/chmod 444 "$pkgTiff"
+    echo done.
+endif
+
+# copy resources to package
+if ( $?resDir && $resDir != "" ) then
+    set PROGmaskSPACE='{gsub(" ","-sp-",$0); print $0}'
+    set PROGunmaskSPACE='{gsub("-sp-","\ ",$0); print $0}'
+
+    echo -n "	copying resources ${resDir:t} ... "
+
+    # don't want to see push/pop output
+    pushd "$resDir" > /dev/null
+	# get lists of resources. We'll want to change
+	# permissions on just these things later.
+        set directoriesInResDir = `find . -type d | awk "$PROGmaskSPACE"`
+        set filesInResDir = `find . -type f | awk "$PROGmaskSPACE"`
+    popd > /dev/null
+
+    # copy the resource directory contents into the package directory
+    foreach resFile (`ls -1a "$resDir"|awk "$PROGmaskSPACE"`)
+        set resFile2=`echo "$resFile"|awk "$PROGunmaskSPACE"`
+
+		if ("$resFile2" != "." && "$resFile2" != "..") then
+			if ($?ignoreDSStore && "$resFile2" == ".DS_Store") then
+				# echo "** skipping .DS_Store"
+			else
+				cp -R "$resDir"/"$resFile2" "$pkg"
+		
+				# set all files to read only except special executable files
+				if ("$resFile2" == "${root}.pre_upgrade" || "$resFile2" == "${root}.post_upgrade" || "$resFile2" == "${root}.pre_install" || "$resFile2" == "${root}.post_install") then
+					chmod 555 "$pkg"/"$resFile2"
+				else if ("$resFile2" == "preflight" || "$resFile2" == "postflight") then
+					chmod 555 "$pkg"/"$resFile2"
+				else if ("$resFile2" == "InstallationCheck" || "$resFile2" == "VolumeCheck") then
+					chmod 555 "$pkg"/"$resFile2"
+				else
+					chmod 444 "$pkg"/"$resFile2"
+				endif
+			endif
+		endif
+    end
+
+    pushd "$pkg" > /dev/null
+		# Change all directories to +r+x, except the package directory itself
+        foreach resFileItem ($directoriesInResDir)
+            set resFile2=`echo "$resFileItem" | awk "$PROGunmaskSPACE"`
+            if ( "$resFile2" != "." ) then
+                chmod 755 "$resFile2"
+            endif
+        end
+
+    popd > /dev/null
+
+    echo done.
+endif
+
+# generate bom file
+set pkgBom = "$pkg"/"$root.bom"
+echo -n "	generating bom file ... "
+/bin/rm -f "$pkgBom"
+if ( $?fflag ) then
+    $mkbom "$parent" "$pkgBom" >& /dev/null
+else
+    $mkbom "$rootDir" "$pkgBom" >& /dev/null
+endif
+/bin/chmod 444 "$pkgBom"
+echo done.
+	
+# generate sizes file
+set pkgSizes = "$pkg"/"$root".sizes
+echo -n "	generating sizes file ... "
+
+# compute number of files in package
+set numFiles = `"$lsbom" -s "$pkgBom" | /usr/bin/wc -l`
+
+# compute package size when compressed
+@ compressedSize = `/usr/bin/du -k -s "$pkg" | $awk '{print $1}'`
+@ compressedSize += 3		# add 1KB each for sizes, location, status files
+
+@ infoSize = `/bin/ls -s "${lproj}/${root}.info" | $awk '{print $1}'`
+@ bomSize = `/bin/ls -s "$pkgBom" | $awk '{print $1}'`
+if ( $?tiff ) then
+    @ tiffSize = `/bin/ls -s "$pkgTiff" | $awk '{print $1}'`
+else
+    @ tiffSize = 0
+endif 
+
+@ installedSize = `/usr/bin/du -k -s "$rootDir" | $awk '{print $1}'`
+@ installedSize += $infoSize + $bomSize + $tiffSize + 3
+
+# echo size parameters to sizes file
+echo NumFiles $numFiles             >  "$pkgSizes"
+echo InstalledSize $installedSize   >> "$pkgSizes"
+echo CompressedSize $compressedSize >> "$pkgSizes"
+/bin/chmod 444 "$pkgSizes"
+echo done.
+
+echo "... package $fullPackageName created."
+
+exit(0)
+
+# end package
+	
+

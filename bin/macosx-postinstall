@@ -1,0 +1,3 @@
+#!/bin/sh      
+env installdir="$(LIBDIR)" /usr/local/bin/ghc-pkg -u -i "$1/Contents/Resources/wxcore.pkg" 
+env installdir="$(LIBDIR)" /usr/local/bin/ghc-pkg -u -i "$1/Contents/Resources/wx.pkg" 
