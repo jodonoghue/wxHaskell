@@ -95,7 +95,58 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wx
 
 # Name "wxc - Win32 Release"
 # Name "wxc - Win32 Debug"
-# Begin Group "EWXW Sources"
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\include\ewxw_def.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\wrapper.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\wxc.h
+# End Source File
+# End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\src\wxc.rc
+# End Source File
+# End Group
+# Begin Group "Source Files"
+
+# PROP Default_Filter "*.cpp"
+# Begin Source File
+
+SOURCE=.\src\eljevent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\eljmime.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\ewxw_main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\extra.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\wrapper.cpp
+# End Source File
+# End Group
+# Begin Group "ewxw"
+
+# PROP Default_Filter ""
+# Begin Group "ewxw sources"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
@@ -459,53 +510,18 @@ SOURCE=.\src\ewxw\eljwizard.cpp
 SOURCE=.\src\ewxw\Scintilla.h
 # End Source File
 # End Group
-# Begin Group "Header Files"
+# Begin Group "ewxw headers"
 
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# PROP Default_Filter "*.h"
 # Begin Source File
 
-SOURCE=.\include\wxc.h
+SOURCE=.\include\ewxw\wxc_glue.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ewxw\wxc_types.h
 # End Source File
 # End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-# Begin Source File
-
-SOURCE=.\src\wxc.rc
-# End Source File
-# End Group
-# Begin Group "Source Files"
-
-# PROP Default_Filter "*.cpp"
-# Begin Source File
-
-SOURCE=.\src\eljevent.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\eljmime.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\ewxw_def.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\ewxw_main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\extra.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\wrapper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\wrapper.h
-# End Source File
 # End Group
 # End Target
 # End Project

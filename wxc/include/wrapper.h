@@ -1,6 +1,9 @@
 #ifndef __WRAPPER_H
 #define __WRAPPER_H
 
+/* MSC: disable warning about int-to-bool conversion (just affects performance) */
+#pragma warning(disable: 4800)
+
 #include "ewxw_def.h"
 #include "wx/wx.h"
 #include "wx/tabctrl.h"

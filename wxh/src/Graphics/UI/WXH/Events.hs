@@ -123,19 +123,28 @@ module Graphics.UI.WXH.Events
         -- * Primitive
         , appOnInit
 
-        -- * Input sink
+        -- ** Client data
+        , objectWithClientData
+        , objectSetClientData
+
+        -- ** Input sink
         , inputSinkEventLastString
+
         -- ** Keys
         , KeyCode
         , modifiersToAccelFlags
         , keyCodeToKey, keyToKeyCode
+
         -- ** Events
         , windowOnEvent, windowOnEventEx
+
         -- ** Generic
         , OnEvent
         , evtHandlerOnEvent
         , evtHandlerOnEventConnect
+
         -- ** Unsafe
+        , unsafeObjectGetClientData
         , unsafeGetHandlerState
         , unsafeWindowGetHandlerState
         ) where
@@ -1444,6 +1453,8 @@ timerGetOnCommand timer
 -- Application startup
 ------------------------------------------------------------------------------------------
 -- | Installs an init handler and starts the event loop.
+-- Note: the closure is deleted when initialization is complete, and than the Haskell init function
+-- is started.
 appOnInit :: IO () -> IO ()
 appOnInit init
   = do closure  <- createClosure (return () :: IO ()) onDelete (\ev -> return ())   -- run init on destroy !
@@ -1456,6 +1467,38 @@ appOnInit init
   where
     onDelete ownerDeleted
       = init
+
+
+------------------------------------------------------------------------------------------
+-- Attaching haskell data to arbitrary objects.
+------------------------------------------------------------------------------------------
+-- | Use attached haskell data locally. This makes it type-safe.
+objectWithClientData :: WxObject a -> b -> ((b -> IO ()) -> IO b -> IO c) -> IO c
+objectWithClientData object initx fun
+  = do let setter x = objectSetClientData object (return ()) x
+           getter   = do mb <- unsafeObjectGetClientData object
+                         case mb of
+                           Nothing -> return initx
+                           Just x  -> return x
+       setter initx
+       fun setter getter
+
+-- | Attach haskell value to an arbitrary object. The 'IO' action is executed
+-- when the object is deleted. Note: 'evtHandlerSetClientData' is preferred when possible.
+objectSetClientData :: WxObject a -> IO () -> b -> IO ()
+objectSetClientData object onDelete x
+  = do closure <- createClosure x (const onDelete) (const (return ()))
+       objectSetClientClosure object closure
+       return ()
+
+-- | Retrieve an attached haskell value.
+unsafeObjectGetClientData :: WxObject a -> IO (Maybe b)
+unsafeObjectGetClientData object
+  = do closure <- objectGetClientClosure object 
+       unsafeClosureGetData closure
+                
+
+
 
 ------------------------------------------------------------------------------------------
 -- Generic window connection
@@ -1480,7 +1523,7 @@ unsafeWindowGetHandlerState window eventId def
        unsafeGetHandlerState window id eventId def
 
 ------------------------------------------------------------------------------------------
--- Generic event connection
+-- The current event
 ------------------------------------------------------------------------------------------
 {-# NOINLINE currentEvent #-}
 currentEvent :: MVar (Event ())
@@ -1506,6 +1549,9 @@ skipCurrentEvent :: IO ()
 skipCurrentEvent
   = withCurrentEvent (\event -> eventSkip event)
 
+------------------------------------------------------------------------------------------
+-- Generic event connection
+------------------------------------------------------------------------------------------
 -- | Retrievs the state associated with a certain event handler. If
 -- no event handler is defined for this kind of event or 'Id', the
 -- default value is returned.
@@ -1516,12 +1562,21 @@ unsafeGetHandlerState object id eventId def
 
 unsafeClosureGetState :: Closure () -> a -> IO a
 unsafeClosureGetState closure def
-  = if (closure==objectNull)
-     then return def
+  = do mb <- unsafeClosureGetData closure
+       case mb of
+         Nothing -> return def
+         Just x  -> return x
+
+unsafeClosureGetData :: Closure () -> IO (Maybe a)
+unsafeClosureGetData closure
+  = if (ptrIsNull closure)
+     then return Nothing
      else do ptr <- closureGetData closure
-             if (ptr==ptrNull)
-              then return def
-              else deRefStablePtr (castPtrToStablePtr ptr)
+             if (ptrIsNull ptr)
+              then return Nothing
+              else do x <- deRefStablePtr (castPtrToStablePtr ptr)
+                      return (Just x)
+
 
 -- | Type synonym to make the type signatures shorter for the documentation :-)
 type OnEvent = (Bool -> IO ()) -> (Event () -> IO ()) -> IO ()
@@ -1572,6 +1627,11 @@ evtHandlerOnEventConnect object firstId lastId eventIds state destroy eventHandl
       = evtHandlerConnect object firstId lastId eventId closure
 
 
+-- | Create a closure with a certain haskell state, a function that is called
+-- when the closure is destroyed, and a function that is called when an event
+-- happens. The destroy function takes a boolean that is 'True' when the parent
+-- is deleted (and 'False' when the closure is just disconnected). The event
+-- handlers gets the 'Event' as its argument.
 createClosure :: state -> (Bool -> IO ()) -> (Event () -> IO ()) -> IO (Closure ())
 createClosure st destroy handler
   = do funptr  <- wrapEventHandler eventHandlerWrapper

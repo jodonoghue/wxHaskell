@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.9 2003/07/15 23:23:58 dleijen Exp $
+# $Id: makefile,v 1.10 2003/07/17 12:27:51 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -242,14 +242,31 @@ silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1)));
 make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
 
 # make-hs-deps(<output .o>,<input .hs>,<compile flags>)
-make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d; \
-		 sed -i -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d; \
-		 $(call silent-remove-file,$(basename $(1)).d.bak)
+make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d.in && \
+		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d; \
+		 $(call silent-remove-file,$(basename $(1)).d.in)
 
 # compile-hs(<output .o>,<input .hs>,<compile flags>)
-compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)); \
-		 $(call silent-move-stubs,$(1),$(2)); \
+compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)) && \
+		 $(call silent-move-stubs,$(1),$(2)) && \
 		 $(call make-hs-deps,$(1),$(2),$(3))
+
+
+# make single-object file
+# combine-objs(<output .o>,<input .o files>)
+ifeq ($(TOOLKIT),mac)
+combine-objs	=$(LD) -x -r -o $(1) $(2)
+else
+combine-objs	=$(LD) -r -o $(1) $(2)
+endif
+
+# create an archive
+# make-archive(<archive>,<input .o files>)
+make-archive		=$(AR) -sr $(1) $(2)
+
+# update the archive symbol index
+# make-archive-index(<archive>)
+make-archive-index	=$(AR) -s $(1)
 
 
 # install files, keeping directory structure intact (that is why we use 'foreach').
@@ -257,7 +274,7 @@ compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)); \
 # usage: $(call install-files,<local dir>,<install dir>,<files>)
 # usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
 install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)); \
-	         $(foreach archive,$(filter %.a,$(2)),$(AR) -s $(archive);)
+	         $(foreach archive,$(filter %.a,$(2)),$(call make-archive-index,$(archive));)
 install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1);
 install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
 	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))))
@@ -400,11 +417,11 @@ wx-uninstall:
 
 # build ghci object files
 $(WX-OBJ): $(WX-OBJS)
-	  $(LD) -r -o $@ $^
+	$(call combine-objs,$@,$^)
 
 # build a library
 $(WX-LIB): $(WX-OBJS)
-	  $(AR) -sr  $@ $^
+	$(call make-archive,$@,$^)
 
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
@@ -442,7 +459,7 @@ wxd-dist: $(WXD-HS)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
-	$(HC) $(HCFLAGS) -o $@ $(WXD-OBJS)
+	$(HC) $(HCFLAGS) -o $@ $^
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
@@ -522,17 +539,17 @@ $(WXH-SRCDIR)/$(WXH-HPATH)/WxcClassTypes.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
 
 # build ghci object files
 $(WXH-OBJ): $(WXH-OBJS)  $(WXH-STUB-OBJS)
-	  $(LD) -r -o $@ $^
+	  $(call combine-objs,$@,$^)
 
 $(WXH-CORE-OBJ): $(WXH-CORE-OBJS)
-	  $(LD) -r -o $@ $^
+	  $(call combine-objs,$@,$^)
 
 # build a library
 $(WXH-LIB): $(WXH-OBJS)  $(WXH-STUB-OBJS)
-	  $(AR) -sr  $@ $^
+	  $(call make-archive,$@,$^)
 
 $(WXH-CORE-LIB): $(WXH-CORE-OBJS)
-	  $(AR) -sr  $@ $^
+	  $(call make-archive,$@,$^)
 
 # create an object file from source files.
 $(WXH-CORE-OBJS) $(WXH-OBJS): $(WXH-IMPORTSDIR)/%.o: $(WXH-SRCDIR)/%.hs

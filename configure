@@ -8,7 +8,7 @@
 #  Copyright 2001, Daan Leijen.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.2 2003/07/15 13:51:24 dleijen Exp $
+# $Id: configure,v 1.3 2003/07/17 12:27:51 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -558,6 +558,7 @@ USERNAME=$username
 # Standard programs
 INSTALL=$install
 INSTALLDIR=$installdir
+LD=ld
 AR=ar
 CP=cp -f
 MV=mv
