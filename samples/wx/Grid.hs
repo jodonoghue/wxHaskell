@@ -11,8 +11,8 @@ main
 
 gui :: IO ()
 gui 
-  = do f <- frame  [text := "Grid test",clientSize := sz 10 10]
-       
+  = do f <- frame [text := "Grid test",clientSize := sz 10 10, style :~ \stl -> stl .-. wxTAB_TRAVERSAL] 
+           
        -- use text control as logger
        textlog <- textCtrl f [enabled := False, wrap := WrapNone] 
        textCtrlMakeLogActiveTarget textlog
