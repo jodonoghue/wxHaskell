@@ -19,10 +19,12 @@ main = start demo     -- "start" initializes the GUI.
 
 demo :: IO ()
 demo = do f <- frame        [text := "Bye!"]
-          t <- staticText f [text := "Hello World"]
-          b <- button     f [text := "Bye"]
-          set b [on command := bye f t b]                               -- set event handler on button
-          set f [layout := margin 10 (column 5 [widget t, widget b]) ]  -- layout controls in frame
+          p <- panel f      []  -- keyboard navigation
+          t <- staticText p [text := "Hello World"]
+          b <- button     p [text := "Bye"]
+          set b [on command := bye f t b]                      -- set event handler on button
+          set f [layout := fill $ container p $ margin 10 $    -- layout controls in frame
+                           column 5 [widget t, widget b]]      
           focusOn b
      where
        -- called on the first click, with the text, button, and frame as arguments.

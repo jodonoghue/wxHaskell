@@ -802,7 +802,7 @@ windowSetLayout window layout
 -- | Create a 'Sizer' from a 'Layout' and a parent window.
 sizerFromLayout :: Window a -> Layout -> IO (Sizer ())
 sizerFromLayout parent layout
-  = insert objectNull (grid 0 0 [[layout]])
+  = insert objectNull (grid 0 0 [[stretch layout]])
   where
     insert :: Sizer () -> Layout -> IO (Sizer ())
     insert container (Spacer options sz)

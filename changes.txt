@@ -13,6 +13,8 @@ Not backward compatible changes:
 - Removed alignment argument for text controls
 - Removed sorted and labels argument for choice and combo boxes.
 - Removed sorted argument for listboxes.
+- Added default "stretch" to every toplevel layout, assuring that
+  such layout gets at least all available space assigned.
 
 Backward compatible additions:
 - Added "changes.txt" file :-)
@@ -25,7 +27,8 @@ Backward compatible additions:
 - Added "Sorted" class to set the sort mode of choice, combo box,
   and listbox controls.
 - Added "creation time" attributes that use reflective attributes
-  -- not compositional (and thus not so nice), but very convenient!
+  not compositional (and thus not so nice), but very convenient!
+- Added "entry" as shorthand for "textEntry"
 
 Bug fixes:
 - Fixed bug that crashed wxHaskell when a tree control had the focus

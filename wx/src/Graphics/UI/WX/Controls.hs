@@ -25,7 +25,7 @@ module Graphics.UI.WX.Controls
       , Button, button, buttonEx, smallButton
       , BitmapButton, bitmapButton
       -- ** Text entry
-      , TextCtrl, textEntry, textCtrl, textCtrlRich, textCtrlEx
+      , TextCtrl, entry, textEntry, textCtrl, textCtrlRich, textCtrlEx
       , processEnter, processTab
       -- ** CheckBox
       , CheckBox, checkBox
@@ -271,6 +271,16 @@ instance Able (TextCtrl a) where
   enabled
     = newAttr "enabled" textCtrlIsEditable textCtrlSetEditable
 -}
+
+-- | Create a single-line text entry control. Note: 'alignment' has to
+-- be set at creation time (or the entry has default alignment (=left) ).
+--
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
+entry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
+entry parent props
+  = textCtrlEx parent 0 props
 
 -- | Create a single-line text entry control. Note: 'alignment' has to
 -- be set at creation time (or the entry has default alignment (=left) ).
