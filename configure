@@ -1,0 +1,607 @@
+#!/bin/sh
+
+#------------------------------------------------------------------------
+#  wxc: The C wrapper around the wxWindows interface.
+#
+#  Daan Leijen.
+#
+#  Copyright 2001, Daan Leijen.
+#------------------------------------------------------------------------
+
+# $Id: configure,v 1.1.1.1 2003/07/13 21:18:53 dleijen Exp $
+
+#--------------------------------------------------------------------
+# Variables
+#--------------------------------------------------------------------
+version="0.0"
+enablestrip="no"
+enableupx="no"
+withmsc=""
+wxclibname="wxc"
+
+# haskell
+hc="ghc"
+hcpkg="ghc-pkg"
+hcpkglocal=""
+hdoc="haddock"
+hdocbase="base.haddock"
+
+# directories
+prefix="/usr"
+execprefix=""
+libdir=""
+
+# dll extension and lib prefix
+exe=""
+dll=".so"
+lib="lib"
+
+# c++ compiler, flags and libraries
+cxx="c++"
+wxwincxxflags=""
+wxwinlibs=""
+
+# wxwindows
+wxconfig="wx-config"
+wxtoolkit=""
+wxwinlib=""
+extraldopts=""
+
+
+#--------------------------------------------------------------------
+# Improve guesses
+#--------------------------------------------------------------------
+# improve guess prefix
+if test -d "/usr/local"; then
+  prefix="/usr/local"
+fi
+
+# does 'cygpath' exist?
+cygpathfound=""
+if sh ./config.search "cygpath"; then
+  cygpathfound="yes"
+fi
+
+# guess username
+if test "$USERNAME"; then
+  username="$USERNAME"
+else if test "$HOME"; then
+  username=`echo $HOME | sed -e 's|.*[/\\]||'`
+else
+  username="username"
+fi
+fi
+
+# guess base.haddock location
+if sh ./config.search "ghc"; then
+  guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/doc/html/base/base.haddock|'`"
+  if test -f "$guesshdocbase"; then
+    hdocbase="$guesshdocbase"
+  fi
+fi
+
+
+# improve the guesses if wx-config is present.
+if sh ./config.search "$wxconfig"; then
+  # improve prefix guess
+  prefix="`$wxconfig --prefix`"
+
+  # guess toolkit
+  wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
+
+  # flaky way to guess library extensions
+  if test "$wxtoolkit" = "MSW"; then
+    dll=".dll"
+    lib=""
+  else if test "$wxtoolkit" = "MAC"; then
+    dll=".dylib"
+    lib="lib"
+  fi
+  fi
+
+  # guess wxwindows library
+  # extraction process is a bit flaky: it expects a single -Llibdir and -llibname option.
+  wxwinlibdir="`wx-config --libs | sed -e 's|.*-L\([^ ]*\).*|\1|'`"
+  wxwinlibname="`wx-config --libs | sed -e 's|.*-lwx\([^ ]*\).*|wx\1|'`"
+  wxwinlib="$wxwinlibdir/$lib$wxwinlibname$dll"
+
+  # guess extra link options
+  extraldopts="`wx-config --ldflags`"
+  pthread="`wx-config --libs | sed -e \"s|.* -pthread .*|yes|\"`"
+  if test "$pthread" = "yes"; then
+    if test -z "$extraldopts"; then
+      extraldopts="-pthread"
+    else
+      extraldopts="$extraldopts -pthread"
+    fi
+  fi
+fi
+
+# initial completion rules
+execprefix_doc="<prefix>"
+libdir_doc="<exec-prefix>/lib"
+wxclib_doc="<libdir>/${lib}wxc${dll}"
+
+#--------------------------------------------------------------------
+# Parse command-line arguments
+#--------------------------------------------------------------------
+arg=""
+while : ; do
+  # put optional argument in the $arg variable
+  case "$1" in
+   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+   *)    arg="";;
+  esac
+
+  # match on the arguments
+  case "$1" in
+    "") break;;
+    -?|--help)
+        echo "usage:"
+        echo "   ./configure [options]"
+        echo ""
+        echo "options: [defaults in brackets]"
+        echo " --help                 show this information"
+        echo " --hc=<program>         the haskell compiler [$hc]"
+        echo " --hcpkg=<program>      package compiler [$hcpkg]"
+        echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
+        echo " --version=<version>    library version [$version]"
+        echo ""
+        echo "install options:"
+        echo " --prefix=<dir>         platform independent install directory [$prefix]"
+        echo " --exec-prefix=<dir>    platform dependent install directory [$execprefix_doc]"
+        echo " --libdir=<dir>         library files install directory [$libdir_doc]"
+        echo " --enable-strip         remove symbols from the libraries [$enablestrip]"
+        echo " --enable-upx           compress the dynamic libraries with upx [$enableupx]"
+        echo ""
+        echo "documentation options:"
+        echo " --username=<name>      username on sourceforge [$username]"
+        echo " --haddock=<program>    haddock documentation tool [$hdoc]"
+        echo " --haddock-base=<file>  haddock interface for the base libraries"
+        echo "                        [$hdocbase]"
+        echo ""
+        echo "wxwindows options:"
+        echo " --wx-lib=<library>     the wxWindows library [$wxwinlib]"
+        echo " --wx-config=<program>  the wxWindows configure utility [$wxconfig]"
+        echo " --wx-toolkit=<name>    the wxWindows gui toolkit [$wxtoolkit]"
+        echo ""
+        echo "platform options:"
+        echo " --dllext=<extension>   dynamic link library extension [$dll]"
+        echo " --libprefix=<prefix>   library prefix [$lib]"
+        echo " --extra-ld-opts=<opts> extra link options [$extraldopts]"
+        echo " --with-msc             compile wxWindows and wxc with microsoft visual c++"
+        echo " --wxc-libname=<name>   wxc library name [$wxclibname]"
+        echo ""
+        exit 1;;
+
+    -hc=*|--hc=*)
+        hc="$arg";;
+    -hcpkg=*|--hcpkg=*)
+        hcpkg="$arg";;
+    -package-conf=*|--package-conf=*)
+        hcpkglocal="$arg";;
+    -version=*|--version=*)
+        version="$arg";;
+
+    -prefix=*|--prefix=*)
+        prefix="$arg";;
+    -exec-prefix=*|--exec-prefix=*)
+        execprefix="$arg"
+        execprefix_doc="$arg";;
+    -libdir=*|--libdir=*)
+        libdir="$arg"
+        libdir_doc="$arg";;
+    -enable-strip|--enable-strip)
+        enablestrip="yes";;
+    -disable-strip|--disable-strip)
+        enablestrip="no";;
+    -enable-upx|--enable-upx)
+        enableupx="yes";;
+    -disable-upx|--disable-upx)
+        enableupx="no";;
+
+    -username=*|--username=*)
+        username="$arg";;
+    -haddock-base=*|--haddock-base=*)
+        hdocbase="$arg";;
+    -haddock=*|--haddock=*)
+        hdoc="$arg";;
+
+    -wx-lib=*|--wx-lib=*)
+        wxwinlib="$arg";;
+    -wx-toolkit=*|--wx-toolkit=*)
+        wxtoolkit="$arg";;
+    -wx-config=*|--wx-config=*)
+        wxconfig="$arg";;
+
+    -dllext=*|--dllext=*)
+        dll="$arg"
+        wxclib_doc="<libdir>/${lib}wxc${dll}";;
+    -libprefix=*|--libprefix=*)
+        lib="$arg"
+        wxclib_doc="<libdir>/${lib}wxc${dll}";;
+    -extra-ld-opts=*|--extra-ld-opts=*)
+        extraldopts="$arg";;
+    -with-msc|--with-msc)
+        withmsc="yes"
+        lib=""
+        dll=".dll"
+        wxwinlib="";;
+    -wxc-libname=*|--wxc-libname=*)
+        if test "$withmsc"; then
+          wxclibname="$arg"
+        else
+          echo "warning:"
+          echo "  option --wxc-libname is only valid if preceded with --with-msc."
+        fi;;
+   *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
+       echo "" 1>&2
+       exit 2;;
+  esac
+
+  # process next argument
+  shift
+done
+
+#--------------------------------------------------------------------
+# directories
+#--------------------------------------------------------------------
+# complete arguments
+if test -z "$execprefix"; then
+  execprefix="$prefix"
+fi
+
+if test -z "$libdir"; then
+  libdir="$execprefix/lib"
+fi
+
+if test "$dll" = ".dll"; then
+  exe=".exe"
+fi
+
+
+# normalize the library and imports directory since ghc-pkg doesn't like unix names
+if test "$cygpathfound"; then
+  libdir="`cygpath -w $libdir | sed -e 's|\\\\|/|g'`"
+fi
+
+echo "install libraries at : $libdir"
+
+
+#--------------------------------------------------------------------
+# wxc: only initialized if not --with-msc
+#--------------------------------------------------------------------
+if test -z "$withmsc"; then
+  # we need wx-config
+  if sh ./config.search "$wxconfig"; then
+    echo "wx-config found"
+  else
+    echo "error:"
+    echo " Unable to find the 'wx-config' program: $wxconfig"
+    echo " Maybe you forgot to run 'make install' on wxWindows?"
+    echo " Otherwise, add the install directory of wx-config to your path."
+    if test "$WINDIR"; then
+      echo " Or maybe you are trying to compile with Microsoft Visual C++?"
+      echo " If so, you can specify that on the command line:"
+      echo " For example: ./configure --with-msc"
+    fi
+    echo ""
+    exit 2
+  fi
+
+  # initialize options for wxc
+  cxx="`$wxconfig --cxx`"
+  wxwincxxflags="`$wxconfig --cxxflags`"
+  wxwinlibs="`$wxconfig --libs`"
+
+  # extract the wxWindows wxtoolkit: MSW, MAC, GTK etc.
+  if test -z "$wxtoolkit"; then
+    wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
+  fi
+
+  # windows: we append $prefix/include to the include directories
+  if test "$wxtoolkit" = "MSW"; then
+    wxwincxxflags="-I$prefix/include $wxwincxxflags"
+  fi
+
+  # windows: we normalize $prefix and $exec-prefix include directories and libraries
+  if test "$cygpathfound"; then
+    wxprefix="`$wxconfig --prefix`"
+    wxexecprefix="`$wxconfig --exec-prefix`"
+    wwxprefix="`cygpath -w $wxprefix | sed -e 's|\\\\|/|g'`"
+    wwxexecprefix="`cygpath -w $wxexecprefix | sed -e 's|\\\\|/|g'`"
+
+    wxwincxxflags="`echo $wxwincxxflags | sed -e \"s|$wxprefix|$wwxprefix|g\"`"
+    wxwinlibs="`echo $wxwinlibs | sed -e \"s|$wxexecprefix|$wwxexecprefix|g\"`"
+  fi
+fi
+
+
+#--------------------------------------------------------------------
+# haskell compiler and package manager
+#--------------------------------------------------------------------
+
+# Do we have ghc?
+if sh ./config.search "$hc"; then
+  echo "$hc found"
+else
+  echo "error:"
+  echo " Unable to find: $hc"
+  echo " Pleasy specify the path to GHC."
+  echo " For example: ./configure --hc=/c/ghc/ghc-6.0/bin/ghc"
+  exit 2
+fi
+
+# check ghc version
+ghcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
+case "$ghcversion" in
+  0* | 1* |  2* |  3* |  4* |  5.*)
+      echo "WARNING:"
+      echo " You seem to have an older ghc installed, namely $ghcversion"
+      echo " Ghc versions prior to 6.0 have garbage collector bugs that make wxHaskell"
+      echo " applications *crash* and contain incompatible libraries."
+      echo " It is strongly advised to upgrade to a newer version."
+      echo "";;
+  6.*) ;;
+  7.*) ;;
+  8.*) ;;
+  9.*) ;;
+  *)  echo "warning:"
+      echo " Unable to recognise the ghc version ($ghcversion ?)"
+      echo " Be careful: ghc versions prior to 6.0 have bugs that make wxHaskell"
+      echo " applications *crash* and contain incompatible libraries."
+      echo "";;
+esac
+
+
+# Do we have ghc-pkg?
+if sh ./config.search "$hcpkg"; then
+  echo "$hcpkg found"
+else
+  echo "error:"
+  echo " Unable to find: $hcpkg"
+  echo " Pleasy specify the path to ghc-pkg."
+  echo " For example: ./configure --hcpkg=/c/ghc/ghc-6.0/bin/ghc-pkg"
+  hcpkg=echo
+  exit 2
+fi
+
+# Add local package flags
+if test "$hcpkglocal"; then
+  hc="$hc -package-conf $hcpkglocal"
+  hcpkg="$hcpkg -f $hcpkglocal"
+fi
+
+#--------------------------------------------------------------------
+# Haddock
+#--------------------------------------------------------------------
+# Do we have haddock?
+if sh ./config.search "$hdoc"; then
+  echo "$hdoc found"
+  hdocfound="yes"
+else
+  echo "warning:"
+  echo " Unable to find: $hdoc"
+  echo " You won't be able to generate documentation."
+  echo " You can specify the haddock executable on the command line."
+  echo " For example: ./configure --haddock=/usr/local/bin/haddock"
+  echo ""
+  hdocbase=""
+  hdocfound="no"
+fi
+
+# find  base.haddock
+if test "$hdocfound" = "yes"; then
+  if test "$cygpathfound"; then
+    hdocbase="`cygpath -w $hdocbase | sed -e 's|\\\\|/|g'`"
+  fi
+
+  if test -f "$hdocbase"; then
+    echo "base.haddock found"
+  else
+    echo "warning"
+    echo " Could not find haddock interface: $hdocbase"
+    echo " The haddock documentation will be incomplete"
+    echo " Please specify the haddock interface for the base libraries."
+    echo " For example: ./configure --haddock-base=/c/ghc/doc/html/base/base.haddock"
+    echo ""
+    hdocbase=""
+  fi
+fi
+
+
+#--------------------------------------------------------------------
+# wxWindows
+#--------------------------------------------------------------------
+# Find the wxwindows library (if it is specified).
+if test "$wxwinlib"; then
+  if test -f "$wxwinlib"; then
+    echo "wxwindows library found"
+  else
+    echo "error:"
+    echo " Unable to find the specified wxwindows library: $wxwinlib"
+    echo " Maybe you forgot to run 'make install' for wxWindows?"
+    echo " Otherwise, specify the path to the library on the command line."
+    echo " For example: ./configure --wx-lib=/usr/local/lib/wxmsw241.dll"
+    if test "$WINDIR"; then
+      echo " Or maybe you are trying to compile with Microsoft Visual C++?"
+      echo " For example: ./configure --with-msc"
+    fi
+    exit 2
+  fi
+fi
+
+#--------------------------------------------------------------------
+# install
+#--------------------------------------------------------------------
+if sh ./config.search "install"; then
+  echo "install program found"
+  installdir="install -d"
+  install="install -c"
+else
+  echo "warning:"
+  echo " Unable to find 'install' (using 'cp' and 'mkdir' instead)."
+  echo ""
+  installdir="mkdir -p"
+  install="cp -u"
+fi
+
+#--------------------------------------------------------------------
+# strip and upx
+#--------------------------------------------------------------------
+if test "$enablestrip" = "yes"; then
+ if sh ./config.search "strip"; then
+   echo "strip found"
+ else
+   echo "warning:"
+   echo " Unable to find 'strip'. Libraries will not be stripped."
+   echo ""
+   enablestrip="no"
+ fi
+fi
+
+if test "$enableupx" = "yes"; then
+ if sh ./config.search "upx"; then
+   echo "upx found"
+ else
+   echo "warning:"
+   echo " Unable to find 'upx'. Dynamic libraries will not be compressed."
+   echo ""
+   enableupx="no"
+ fi
+fi
+
+
+runcompress=":"
+if test "$enableupx" = "yes"; then
+  runcompress="config/compress \$(1)"
+else
+ if test "$enablestrip" = "yes"; then
+   runcompress="echo strip \$(1); strip \$(1)"
+ fi
+fi
+
+
+#--------------------------------------------------------------------
+# Generate configuration
+#--------------------------------------------------------------------
+
+# Create directories
+echo "creating build directories:"
+echo " - config"
+mkdir -p config
+
+# Finish generated files
+topdir="`pwd`"
+if sh ./config.search "date"; then
+  date="`date`"
+else
+  date="<unknown>"
+fi
+
+echo "creating makefile configuration"
+echo " - config/config.mk"
+cat > config/config.mk << EOF
+# Generated by configure on $date
+TOPDIR=$topdir
+VERSION=$version
+
+# The Haskell compiler
+HC=$hc
+HCFLAGS=
+HCPKG=$hcpkg
+
+# C compiler
+CXX=$cxx
+
+# Installation
+LIBDIR=$libdir
+
+# Compression function
+run-compress=$runcompress
+
+# Wxc
+WITHMSC=$withmsc
+WXC-LIBNAME=$wxclibname
+
+# WxWindows
+WXWINLIB=$wxwinlib
+WXWIN-LIBS=$wxwinlibs
+WXWIN-CXXFLAGS=$wxwincxxflags
+
+# Platform
+EXE=$exe
+DLL=$dll
+LIB=$lib
+
+# Documentation
+HDOC=$hdoc
+HDOCBASE=$hdocbase
+USERNAME=$username
+
+# Standard programs
+INSTALL=$install
+INSTALLDIR=$installdir
+AR=ar
+CP=cp -f
+MV=mv
+CD=cd
+RM=rm -f
+MKDIR=mkdir -p
+RMDIR=rmdir
+ZIP=zip
+TAR=tar
+GZIP=gzip
+EOF
+
+# put quotes around extra-ld-opts of non-empty
+if test "$extraldopts"; then
+  extraldopts="\"$extraldopts\""
+fi
+
+# create packages
+echo "creating package descriptions"
+echo " - config/wxh.pkg"
+cat > config/wxh.pkg << EOF
+Package
+  { name="wxh"
+  , import_dirs=["\${installdir}/imports"]
+  , library_dirs=["\${installdir}"]
+  , hs_libraries=["wxh","wxhcore"]
+  , extra_libraries=["$wxclibname"]
+  , package_deps = ["base","data"]
+  , extra_ld_opts=[$extraldopts]
+  }
+EOF
+
+echo " - config/wx.pkg"
+cat > config/wx.pkg << EOF
+Package
+  { name="wx"
+  , import_dirs=["\${installdir}/imports"]
+  , library_dirs=["\${installdir}"]
+  , hs_libraries=["wx"]
+  , package_deps=["wxh"]
+  }
+EOF
+
+# generate compress utility
+if test "$enableupx" = "yes"; then
+  echo " - config/compress"
+  echo "#!/bin/sh"                                      > config/compress
+  echo "upx -t \$1 > /dev/null 2> /dev/null"            >> config/compress
+  echo "if test \"\$?\" != \"0\"; then"                 >> config/compress
+  if test "$enablestrip" = "yes"; then
+    echo "  echo \"strip \$1\""                         >> config/compress
+    echo "  strip \$1"                                  >> config/compress
+  fi
+  echo "  upx \$1"                                      >> config/compress
+  echo "fi"                                             >> config/compress
+fi
+
+
+echo ""
+echo "done:"
+echo " - type 'make' to build the libraries."
+echo " - type 'make install' to install the libraries."
+echo ""

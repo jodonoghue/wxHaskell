@@ -1,0 +1,13 @@
+#!/bin/sh
+installdir="`pwd`"
+arg="`echo \"$1\" | sed -e 's|[-_a-zA-Z0-9]*=||'`"
+case $1 in
+  -installdir=*|--installdir=*)
+     installdir="$arg";;
+  -?|--help|*)
+     echo "usage:"
+     echo "  wxhaskell-register  [--installdir=<dir>]"
+     exit 1;;
+esac
+env installdir=${installdir} ghc-pkg -u -i ${installdir}/wxh.pkg
+env installdir=${installdir} ghc-pkg -u -i ${installdir}/wx.pkg

@@ -1,0 +1,22 @@
+wxHaskell is a Haskell binding to the portable wxWindows GUI library.
+See <http://wxhaskell.sourceforge.net> for the latest information.
+
+The WX library is a /middle-level/ Haskell library for writing graphical
+user interfaces. It is build on top the WXH library, the core interface
+to the wxWindows library. The wxWindows functions are not explained here.
+Please look at the original wxWindows documentation at <http://www.wxwindows.org>
+
+All operations of the WX library are within the 'IO' monad and the library
+doesn't offer an explicit state model besides mutable variables ('Graphics.UI.WX.Types.Var').
+The following example gives a taste of the general flavor. It is a resizeable
+GUI that displays a single, centered /Quit/ button. When clicked (or
+activated by the keyboard), it closes the window.
+
+> import Graphics.UI.WX
+>
+> main = start demo
+>
+> demo :: IO ()
+> demo = do f <- frame    [text := "Quit demo"]
+>           q <- button f [text := "Quit", on command := close f]
+>           set f [layout := margin 10 (floatCentre (widget q))]

@@ -1,0 +1,200 @@
+#!/bin/sh
+
+#------------------------------------------------------------------------
+#  Helper script to create a MacOS X application from a binary.
+#
+#  Daan Leijen and Arthur Baars.
+#
+#  Copyright (c) 2003, Daan Leijen, Arthur Baars
+#------------------------------------------------------------------------
+
+# $Id: macosx-app,v 1.1.1.1 2003/07/13 21:18:56 dleijen Exp $
+arg=""
+
+# variables
+program="a.out"
+rescomp="/Developer/Tools/Rez"
+libdir=""
+eprefix=""
+
+# Find a wx-config along the path
+wxconfigfound="no"
+if test -f wx-config; then
+  wxconfigfound="yes"
+else
+  IFS=':'
+  for dir in $PATH; do
+   if test -z "$dir"; then
+     dir=.
+   fi
+   if test -f "$dir/wx-config"; then
+     wxconfigfound="yes"
+   fi
+  done
+fi
+
+# guess prefix & version
+if test "$wxconfigfound" = "yes"; then
+  prefix="`wx-config --exec-prefix`"
+  version="`wx-config --version`"
+else
+  if test -d "/usr/local"; then
+    prefix="/usr/local"
+  else
+    prefix="/usr"
+  fi
+  version="2.4.1"
+fi
+
+# wxwindows library name
+mainversion="`echo \"$version\" | sed -e \"s|\\.[0-9]\$||\"`"
+libname="libwx_mac-$mainversion"
+
+# Parse command-line arguments
+while : ; do
+  # put optional argument in the $arg variable
+  case "$1" in
+   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+   *)    arg= ;;
+  esac
+
+  # match on the arguments
+  case "$1" in
+    "") break;;
+    -?|--help)
+        echo "usage:"
+        echo "   macosx-app [options]"
+        echo ""
+    echo "options: [defaults in brackets]"
+        echo " --help              show this information"
+        echo " --program=<name>    binary to upgrade into a MacOS X application [$program]"
+        echo ""
+        echo "options to find installed wxWindows libraries:"
+        echo " --prefix=<dir>      platform independent install directory [$prefix]"
+        echo " --exec-prefix=<dir> platform dependent install directory [<prefix>]"
+        echo " --libdir=<dir>      library files install directory [<exec-prefix>/lib]"
+        echo " --libname=<name>    base name the wxWindows library [$libname]"
+        echo " --rescomp=<name>    the resource compiler [$rescomp]"
+        echo ""
+        exit 1;;
+    -program=*|--program=*)
+        program="$arg";;
+    -rescomp=*|--rescomp=*)
+        rescomp="$arg";;
+    -prefix=*|--prefix=*)
+        prefix="$arg";;
+    -exec-prefix=*|--exec-prefix=*)
+        eprefix="$arg";;
+    -libdir=*|--libdir=*)
+        libdir="$arg";;
+    -libname=*|--libname=*)
+        libname="$arg";;
+    *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
+       echo "" 1>&2
+       exit 2;;
+  esac
+  shift
+done
+
+# complete arguments
+if test -z "$eprefix"; then
+  eprefix="$prefix"
+fi
+
+if test -z "$libdir"; then
+  libdir="$eprefix/lib"
+fi
+
+# test on binary
+if test -f "$program"; then :; else
+  echo "error:"
+  echo "  Unable to find the binary: $program"
+  echo "  Please specify the correct binary at the command line."
+  echo "  For example: ./macosx-app --program=mybinary"
+  echo ""
+  exit 2
+fi
+
+# test on resource files
+if test -f "$libdir/$libname.r"; then :; else
+  echo "error:"
+  echo "  Unable to find wxWindows resources at: $libdir"
+  echo "  Maybe you have forgotten to run 'make install' for wxWindows?"
+  echo "  Otherwise, specify the correct library directory or library name:"
+  echo "  For example: ./macosx-app --prefix=/usr/local"
+  echo "  Or         : ./macosx-app --libname=libwx_mac-2.4.0"
+  echo ""
+  exit 2
+fi
+
+# link with default resources
+$rescomp -t APPL Carbon.r "$libdir"/"$libname".r -o $program
+
+# create a bundle
+bundle="$program.app/Contents"
+
+# create bundle directories
+mkdir $program.app
+mkdir $bundle
+mkdir $bundle/MacOS
+mkdir $bundle/Resources
+
+# standard files
+cp -f "$libdir"/"$libname".rsrc $bundle/Resources/$program.rsrc
+cp -f $program $bundle/MacOS/
+
+# no icons for now :-(
+# cp -f $wxwinsrc/mac/wxmac.icns $bundle/Resources/wxmac.icns
+
+# package info
+echo -n "APPL????" > $bundle/PgkInfo
+
+
+#sed -e "s/IDENTIFIER/`echo $programdir | sed 's,/,.,g'`/" \
+#    -e "s/EXECUTABLE/$program/" \
+#    -e "s/VERSION/$majorversion.$minorversion.$release/" $wxwinsrc/mac/Info.plist.in > $bundle/Info.plist
+
+# program identifier & version
+curdir="`pwd`"
+identifier="`echo $curdir | sed 's|/|.|g'`"
+programversion="$version"
+
+# create program information file
+cat > $bundle/Info.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleIdentifier</key>
+        <string>org.wxwindows.$identifier</string>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleExecutable</key>
+        <string>$program</string>
+        <key>CFBundleIconFile</key>
+        <string>wxmac.icns</string>
+        <key>CFBundleName</key>
+        <string>$program</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleVersion</key>
+        <string>$programversion</string>
+        <key>CFBundleShortVersionString</key>
+        <string>$programversion</string>
+        <key>CFBundleGetInfoString</key>
+        <string>$program version $programversion, (c) 2002 wxWindows</string>
+        <key>CFBundleLongVersionString</key>
+        <string>$programversion, (c) 2002 wxWindows</string>
+        <key>NSHumanReadableCopyright</key>
+        <string>Copyright 2002 wxWindows</string>
+        <key>LSRequiresCarbon</key>
+        <true/>
+        <key>CSResourcesFileMapped</key>
+        <true/>
+</dict>
+</plist>
+EOF
