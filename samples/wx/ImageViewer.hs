@@ -43,8 +43,8 @@ imageViewer
 
        -- create file menu
        file   <- menuPane      [text := "&File"]
-       mclose <- menuItem file "&Close\tCtrl+C" [help := "Close the image", enable := False]
-       open   <- menuItem file "&Open\tCtrl+O"  [help := "Open an image"]
+       mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the image", enable := False]
+       open   <- menuItem file [text := "&Open\tCtrl+O",  help := "Open an image"]
        menuLine file
        quit   <- menuQuit file [help := "Quit the demo"]
 

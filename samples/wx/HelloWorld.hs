@@ -14,18 +14,18 @@ hello
 
        -- create file menu  
        file   <- menuPane      [text := "&File"]
-       quit   <- menuQuit file [text := "&Quit\tCtrl+Q", help := "Quit the demo", on command := close f]
+       quit   <- menuQuit file [help := "Quit the demo", on command := close f]
 
        -- create Help menu
-       hlp    <- menuHelp      [text := "&Help"]
-       about  <- menuAbout hlp [text := "&About...", help := "About wxHaskell"]
+       hlp    <- menuHelp      []
+       about  <- menuAbout hlp [help := "About wxHaskell"]
 
        -- create statusbar field
        status <- statusField   [text := "Welcome to wxHaskell"]
 
        -- set the statusbar and menubar
-       set f [statusBar := [status]
-             ,menuBar   := [file,hlp]
+       set f [ statusBar := [status]
+             , menuBar   := [file,hlp]
              -- as an example, put the menu event handler for an about box on the frame.
              ,on (menu about) := infoDialog f "About wxHaskell" "This is a wxHaskell demo"
              ]

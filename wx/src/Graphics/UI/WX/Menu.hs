@@ -17,14 +17,12 @@
     in the context of the active window instead of the context of the
     entire application. 
 
-   > do frame <- frame    [text := "Demo"]
-   >    file  <- menuPane [text := "&File"]
-   >    quit  <- menuItem file "&Quit\tCtrl+Q" [help := "Quit the application"] 
-   >    set frame [menuBar        := [file] 
-   >              ,on (menu quit) := close frame] 
+   > do frame  <- frame    [text := "Demo"]
+   >    file   <- menuPane [text := "&File"]
+   >    mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the document"] 
+   >    set frame [menuBar          := [file] 
+   >              ,on (menu mclose) := ...] 
 
-    Note: Unfortunately, the 'text' of menu items must be given at creation time
-    due to restrictions on GTK.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Menu
@@ -34,7 +32,7 @@ module Graphics.UI.WX.Menu
     -- ** Menu events
     , menu, menuId
       -- ** Menu items
-    , MenuItem, menuItem, menuCheckItem, menuQuit, menuAbout
+    , MenuItem, menuItem, menuQuit, menuAbout, menuItemEx
     , menuLine, menuSub
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
@@ -126,10 +124,17 @@ instance Textual (Menu a) where
   Menu items
 --------------------------------------------------------------------------------}
 -- | Create a submenu item.
-menuSub :: Menu b -> String -> Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuSub parent lab m props
+menuSub :: Menu b -> Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuSub parent menu props
   = do id <- idCreate
-       menuAppendSub parent id lab m ""
+       label <- case (unsafeGetPropValue text props) of 
+                  Just txt -> return txt
+                  Nothing  -> do title <- menuGetTitle menu
+                                 if (null title) 
+                                  then return "<empty>"
+                                  else return title                  
+       menuSetTitle menu "" -- remove title on submenus
+       menuAppendSub parent id label menu ""
        item <- menuFindItem parent id objectNull
        set item props
        return item
@@ -144,18 +149,22 @@ menuLine menu
 -- menu accellerators by using an ampersand. It can also contain keyboard accellerators
 -- after a tab (@'\\t'@) character.
 --
--- > menuItem menu "&Open\tCtrl+O" [help := "Opens an existing document"] 
+-- > menuItem menu [text := "&Open\tCtrl+O", help := "Opens an existing document"] 
 --
-menuItem :: Menu a -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuItem menu label props
+-- You can create a checkable menu item by setting 'checkable' to 'True' in the
+-- properties of a menu item.
+--
+-- Note: on GTK, it is required to set the 'text' attribute immediately at creation time.
+menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuItem menu props
   = do id <- idCreate
-       menuItemId menu id label props
-
--- | Append a checkable menu item with a certain title (corresponds with 'text' attribute).
-menuCheckItem :: Menu a -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuCheckItem menu label props
-  = do id <- idCreate
-       menuItemEx menu id label True props
+       let label = case (unsafeGetPropValue text props) of 
+                     Nothing  -> "<empty>"
+                     Just txt -> txt
+           check = case (unsafeGetPropValue checkable props) of
+                     Nothing  -> False
+                     Just b   -> b
+       menuItemEx menu id label check props
 
 -- | Append an /about/ menu item (@"&About..."@). On some platforms,
 -- the /about/ menu is handled specially.
@@ -187,13 +196,13 @@ instance Able (MenuItem a) where
 
 instance Textual (MenuItem a) where
   text
-    = newAttr "text" menuItemGetText menuItemSetText
+    = reflectiveAttr "text" menuItemGetText menuItemSetText
 
 instance Help (MenuItem a) where
   help  = newAttr "help" menuItemGetHelp menuItemSetHelp
 
 instance Checkable (MenuItem a) where
-  checkable = newAttr "checkable" menuItemIsCheckable (\m c -> menuItemSetCheckable m (intFromBool c))
+  checkable = reflectiveAttr "checkable" menuItemIsCheckable (\m c -> menuItemSetCheckable m (intFromBool c))
   checked   = newAttr "checked"   menuItemIsChecked menuItemCheck
 
 instance Identity (MenuItem a) where
@@ -229,7 +238,6 @@ menuId id
   top level menu. When the menu is set as part of a menubar, we install the
   handlers on the associated frame.
 --------------------------------------------------------------------------------}
-
 instance Commanding (MenuItem a) where
   command
     = newEvent "command" menuItemGetOnCommand menuItemOnCommand

@@ -52,9 +52,9 @@ timeFlows
        mquit    <- menuQuit mfile [help := "Exit the demo", on command := close f]
 
        medit    <- menuPane       [text := "&Edit"]
-       mshowline<- menuCheckItem medit "&Show mouse track\tCtrl+S" [checked := True]
-       mfont    <- menuItem medit "&Font...\tCtrl+F"    [help := "Set the font"]
-       moptions <- menuItem medit "&Options...\tCtrl+O" [help := "Edit demo options"]
+       mshowline<- menuItem medit [text := "&Show mouse track\tCtrl+S", checkable := True, checked := True]
+       mfont    <- menuItem medit [text := "&Font...\tCtrl+F", help := "Set the font"]
+       moptions <- menuItem medit [text := "&Options...\tCtrl+O", help := "Edit demo options"]
        
        mhelp    <- menuHelp        []
        mabout   <- menuAbout mhelp [help := "Information about this demo."]

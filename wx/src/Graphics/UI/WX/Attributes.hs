@@ -66,7 +66,11 @@ module Graphics.UI.WX.Attributes
     , newAttr, readAttr, writeAttr, nullAttr, constAttr
     -- ** Reflection
     , attrName, propName, containsProp
+    -- ** Reflective attributes
+    , reflectiveAttr, unsafeGetPropValue
     ) where
+
+import Data.Dynamic
 
 infixr 0 :=,:~,::=,::~
 
@@ -85,23 +89,29 @@ type ReadAttr w a = Attr w a
 type WriteAttr w a = Attr w a
 
 -- | Widgets @w@ can have attributes of type @a@.
-data Attr w a   = Attr String (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
+data Attr w a   = Attr String (Maybe (a -> Dynamic)) (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
 
+
+-- | Create a /reflective/ attribute with a specified name: value can possibly
+-- retrieved using 'getPropValue'.
+reflectiveAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
+reflectiveAttr name getter setter
+  = Attr name (Just toDyn) getter setter
 
 -- | Create a new attribute with a specified name, getter and setter function.
 newAttr :: String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 newAttr name getter setter
-  = Attr name getter setter
+  = Attr name Nothing getter setter
 
 -- | Define a read-only attribute.
 readAttr :: String -> (w -> IO a) -> ReadAttr w a
 readAttr name getter
-  = Attr name getter (\w x -> ioError (userError ("attribute '" ++ name ++ "' is read-only.")))
+  = newAttr name getter (\w x -> ioError (userError ("attribute '" ++ name ++ "' is read-only.")))
 
 -- | Define a write-only attribute.
 writeAttr :: String -> (w -> a -> IO ()) -> WriteAttr w a
 writeAttr name setter
-  = Attr name (\w -> ioError (userError ("attribute '" ++ name ++ "' is write-only."))) setter
+  = newAttr name (\w -> ioError (userError ("attribute '" ++ name ++ "' is write-only."))) setter
 
 -- | A dummy attribute.
 nullAttr :: String -> WriteAttr w a
@@ -109,7 +119,7 @@ nullAttr name
   = writeAttr name (\w x -> return ())
 
 -- | A constant attribute.
-constAttr :: String -> a -> Attr w a
+constAttr :: Typeable a => String -> a -> Attr w a
 constAttr name x
   = newAttr name (\w -> return x) (\w x -> return ())
 
@@ -119,8 +129,9 @@ constAttr name x
 -- requested and (@set :: a -> b -> a@) is applied to current
 -- value when the attribute is set.
 mapAttr :: (a -> b) -> (a -> b -> a) -> Attr w a -> Attr w b
-mapAttr get set (Attr name getter setter)
-    = Attr name (\w   -> do a <- getter w; return (get a))
+mapAttr get set (Attr name reflect getter setter)
+    = Attr name Nothing
+                (\w   -> do a <- getter w; return (get a))
                 (\w b -> do a <- getter w; setter w (set a b))
 
 
@@ -128,8 +139,8 @@ mapAttr get set (Attr name getter setter)
 -- @Attr v a@ where (@conv :: v -> w@) is used to convert a widget
 -- @v@ into a widget of type @w@.
 mapAttrW :: (v -> w) -> Attr w a -> Attr v a
-mapAttrW f (Attr name getter setter)
-  = Attr name (\v -> getter (f v)) (\v x -> setter (f v) x)
+mapAttrW f (Attr name reflect getter setter)
+  = Attr name reflect (\v -> getter (f v)) (\v x -> setter (f v) x)
 
 
 -- | Get the value of an attribute
@@ -137,7 +148,7 @@ mapAttrW f (Attr name getter setter)
 -- > t <- get w text
 --
 get :: w -> Attr w a -> IO a
-get w (Attr name getter setter)
+get w (Attr name reflect getter setter)
   = getter w
 
 -- | Set a list of properties.
@@ -148,21 +159,21 @@ set :: w -> [Prop w] -> IO ()
 set w props
   = mapM_ setprop props
   where
-    setprop ((Attr name getter setter) := x)
+    setprop ((Attr name reflect getter setter) := x)
       = setter w x
-    setprop ((Attr name getter setter) :~ f)
+    setprop ((Attr name reflect getter setter) :~ f)
       = do x <- getter w
            setter w (f x)
-    setprop ((Attr name getter setter) ::= f)
+    setprop ((Attr name reflect getter setter) ::= f)
       = setter w (f w)
-    setprop ((Attr name getter setter) ::~ f)
+    setprop ((Attr name reflect getter setter) ::~ f)
       = do x <- getter w
            setter w (f w x)
 
 
 -- | Retrieve the name of an attribute
 attrName :: Attr w a -> String
-attrName (Attr name _ _)
+attrName (Attr name _ _ _)
   = name
 
 -- | Retrieve the name of a property.
@@ -176,3 +187,13 @@ propName (attr ::~ f)   = attrName attr
 containsProp :: String -> [Prop w] -> Bool
 containsProp name props
   = any (\p -> propName p == name) props
+
+-- | Get a value of a reflective property. Only works on attributes
+-- created with 'reflectiveAttr' and when the property is set using ':='.
+unsafeGetPropValue :: Typeable a => Attr w a -> [Prop w] -> Maybe a
+unsafeGetPropValue (Attr name1 (Just todyn1) _ _) ((Attr name2 (Just todyn2) _ _ := x):props)
+  | name1 == name2  = fromDynamic (todyn2 x)
+unsafeGetPropValue attr (prop:props)
+  = unsafeGetPropValue attr props
+unsafeGetPropValue attr []
+  = Nothing
