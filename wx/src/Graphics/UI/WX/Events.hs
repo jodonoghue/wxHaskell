@@ -35,7 +35,7 @@
 
     But in the following program, only the handler for 'mouse' will be called:
 
-    > set w [on click := ..., on mouse := ...]
+      > set w [on click := ..., on mouse := ...]
 
     If you want to set the 'mouse' later but retain the old event filters,
     you can first read the current 'mouse' handler and call it in the 

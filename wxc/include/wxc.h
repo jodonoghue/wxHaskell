@@ -333,6 +333,11 @@ void wxcInitPixelsRGB( void* buffer, TSize(width,height), int rgb );
 void* wxcMalloc(int size );
 void  wxcFree( void* p );
 
+/* application directory */
+TStringLen wxGetApplicationDir( TStringOut buffer);
+TStringLen wxGetApplicationPath( TStringOut buffer);
+
+
 
 /* ELJApp */
 void  ELJApp_InitializeC( TClass(wxClosure) closure, int _argc, TChar** _argv );
