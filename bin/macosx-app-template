@@ -1,5 +1,3 @@
-#!/bin/sh
-
 #------------------------------------------------------------------------
 #  Helper script to create a MacOS X application from a binary.
 #
@@ -8,21 +6,21 @@
 #  Copyright (c) 2003, Daan Leijen, Arthur Baars
 #------------------------------------------------------------------------
 
-# $Id: macosx-app,v 1.4 2003/09/29 14:13:21 dleijen Exp $
+# $Id: macosx-app-template,v 1.1 2003/09/29 14:16:18 dleijen Exp $
 arg=""
 
 # variables
-program="a.out"
-rescomp="/Developer/Tools/Rez"
-libdir=""
-eprefix=""
-prefix="/usr/local/wxhaskell"
-libname="libwx_mac-2.4.0"
+program=""
+verbose="no"
 
-# nicely shown names
-eprefix_doc="<prefix>"
-libdir_doc="<exec-prefix>/lib"
+if test -z "$rezfile"; then
+ rezfile="/usr/local/wxhaskell/lib/libwx_mac-2.4.0.r"
+fi
 
+if test -z "$rezcomp"; then
+ rezcomp="/Developer/Tools/Rez -t APPL Carbon.r $rezfile -o"
+fi
+ 
 # Parse command-line arguments
 while : ; do
   # put optional argument in the $arg variable
@@ -34,94 +32,74 @@ while : ; do
   # match on the arguments
   case "$1" in
     "") break;;
-    -?|--help)
+    -\?|--help)
         echo "usage:"
-        echo "   macosx-app [options]"
+        echo "  macosx-app [options] <program (a.out)>"
         echo ""
-    echo "options: [defaults in brackets]"
-        echo " --help              show this information"
-        echo " --program=<name>    binary to upgrade into a MacOS X application [$program]"
-        echo ""
-        echo "options to find installed wxWindows libraries:"
-        echo " --prefix=<dir>      platform independent install directory [$prefix]"
-        echo " --exec-prefix=<dir> platform dependent install directory [$eprefix_doc]"
-        echo " --libdir=<dir>      library files install directory [$libdir_doc]"
-        echo " --libname=<name>    base name the wxWindows library [$libname]"
-        echo " --rescomp=<name>    the resource compiler [$rescomp]"
+        echo "options: [defaults in brackets]"
+        echo "  --help | -?         show this information"
+	echo "  --verbose | -v      be verbose"
         echo ""
         exit 1;;
-    -program=*|--program=*)
-        program="$arg";;
-    -rescomp=*|--rescomp=*)
-        rescomp="$arg";;
-    -prefix=*|--prefix=*)
-        prefix="$arg";;
-    -exec-prefix=*|--exec-prefix=*)
-        eprefix="$arg"
-	eprefix_doc="$arg";;
-    -libdir=*|--libdir=*)
-        libdir="$arg"
-	libdir_doc="$arg";;
-    -libname=*|--libname=*)
-        libname="$arg";;
-    *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
-       echo "" 1>&2
-       exit 2;;
+    -v|--verbose)
+        verbose="yes";;
+    -*) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
+        echo "" 1>&2
+        exit 2;;
+    *)  if test "$program"; then
+         echo "error: [program] is specified twice. Use \"--help\" to show valid options." 1>&2
+	 echo ""1>&2
+	 exit 2
+	fi
+	program="$1";;
   esac
   shift
 done
 
-# complete arguments
-if test -z "$eprefix"; then
-  eprefix="$prefix"
-fi
-
-if test -z "$libdir"; then
-  libdir="$eprefix/lib"
-fi
-
-# test on binary
-if test -f "$program"; then :; else
-  echo "error:"
-  echo "  Unable to find the binary: $program"
-  echo "  Please specify the correct binary at the command line."
-  echo "  For example: ./macosx-app --program=mybinary"
-  echo ""
+# default program
+if test -z "$program"; then
+  echo "error: you need to specify a program. Use \"--help\" to show valid options." 1>&2
+  echo "" 1>&2
   exit 2
 fi
 
-# test on resource files
-if test -f "$libdir/$libname.r"; then :; else
-  echo "error:"
-  echo "  Unable to find wxWindows resources at: $libdir"
-  echo "  Maybe you have forgotten to run 'make install' for wxWindows?"
-  echo "  Otherwise, specify the correct library directory or library name:"
-  echo "  For example: ./macosx-app --prefix=/usr/local"
-  echo "  Or         : ./macosx-app --libname=libwx_mac-2.4.0"
-  echo ""
-  exit 2
-fi
+# show when verbose is true.
+show()
+{
+  if test "$verbose" = "yes"; then 
+    echo "$1"
+  fi
+}
 
 # link with default resources
-$rescomp -t APPL Carbon.r "$libdir"/"$libname".r -o $program
+show "creating resource:" 
+show " > $rezcomp $program"
+$rezcomp $program
 
 # create a bundle
 bundle="$program.app/Contents"
 
 # create bundle directories
+show "creating app directories:"
+show " - $program.app"
 mkdir -p $program.app
+show " - $bundle"
 mkdir -p $bundle
+show " - $bundle/MacOS"
 mkdir -p $bundle/MacOS
+show " - $bundle/Resources"
 mkdir -p $bundle/Resources
 
 # standard files
-cp -f "$libdir"/"$libname".rsrc $bundle/Resources/$program.rsrc
+cp -f ${rezfile}src $bundle/Resources/$program.rsrc
 cp -f $program $bundle/MacOS/
 
 # no icons for now :-(
 # cp -f $wxwinsrc/mac/wxmac.icns $bundle/Resources/wxmac.icns
 
 # package info
+show "creating package info:"
+show " - $bundle/PkgInfo"
 echo -n "APPL????" > $bundle/PgkInfo
 
 
@@ -173,3 +151,6 @@ cat > $bundle/Info.plist << EOF
 </dict>
 </plist>
 EOF
+
+show "done."
+show ""
