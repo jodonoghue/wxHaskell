@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.57 2004/02/12 08:38:16 dleijen Exp $
+# $Id: makefile,v 1.58 2004/02/19 11:20:09 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -683,6 +683,9 @@ $(WXCORE-CORE-OBJS) $(WXCORE-OBJS): $(WXCORE-IMPORTSDIR)/%.o: $(WXCORE-SRCDIR)/%
 
 #--------------------------------------------------------------------------
 # WXC: the C wrapper of the (C++) wxWindows API
+#
+# $(WXC-LIBNAME) is set in config/config.mk as it can be
+# either "wxc" or "wxcd" for a debug version.
 #--------------------------------------------------------------------------
 WXC		=wxc
 WXC-CPATH	=ewxw
@@ -744,9 +747,7 @@ wxc-uninstall:
 
 # dynamic link library on mingw32/cygwin: generates wxc.dll and a libwxc.a import library
 ifeq ($(WITHMSC),yes)
-$(basename $(WXC-LIB)).dll: $(MSC-LIB)
-	$(CP) $(MSC-LIB) $(WXC-LIB)
-	$(CP) $(MSC-ARCHIVE) $(WXC-ARCHIVE)
+ # it must be generated already
 else
 $(basename $(WXC-LIB)).dll: $(WXC-OBJS)
 	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl,--output-def,$(WXC-OUTDIR)/$(WXC).def,--out-implib,$(WXC-ARCHIVE)
