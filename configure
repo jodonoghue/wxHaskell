@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.19 2003/10/15 18:31:01 dleijen Exp $
+# $Id: configure,v 1.20 2003/10/15 18:34:42 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -591,7 +591,6 @@ WXWIN-CXXFLAGS=$wxwincxxflags
 EXE=$exe
 DLL=$dll
 LIB=$lib
-BAT=$bat
 
 # Documentation
 HDOCFOUND=$hdocfound

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.39 2003/10/15 18:31:01 dleijen Exp $
+# $Id: makefile,v 1.40 2003/10/15 18:34:42 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -429,7 +429,11 @@ srcdist-clean:
 # generic binary distribution as a zip
 bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
-	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register$(BAT) config/wxhaskell-unregister$(BAT))
+ifeq ($(TOOLKIT),msw)
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat)
+else
+	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register bin/wxhaskell-unregister)
+endif
 ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/macosx-app)
 endif
