@@ -24,6 +24,7 @@ module Graphics.UI.WXCore.Frame
         , windowGetFrameParent
         , windowGetMousePosition
         , windowGetScreenPosition
+        , windowChildren
           -- * Dialog
         , dialogDefaultStyle
           -- * Status bar
@@ -121,6 +122,16 @@ windowGetScreenPosition :: Window a -> IO Point
 windowGetScreenPosition w
   = windowClientToScreen w pointZero
 
+
+-- | Get the children of a window
+windowChildren :: Window a -> IO [Window ()]
+windowChildren w
+  = do count <- windowGetChildren w ptrNull 0
+       if count <= 0
+        then return []
+        else withArray (replicate count ptrNull) $ \ptrs ->
+             do windowGetChildren w ptrs count
+                peekArray count ptrs
 
 ------------------------------------------------------------------------------------------
 -- Statusbar

@@ -20,6 +20,11 @@ Non backward compatible changes:
   work correctly).
 
 Backward compatible additions:
+- Added custom control demo.
+- Made "refresh" erase the background too.
+- Added "children" attribute for windows.
+- Added "border" attribute for windows.
+- Added "tabTraversal" attribute for windows.
 - Added wxGrid events and demo (samples/wx/Grid.hs).
 - Improved signatures for wxGrid.
 - Added "changes.txt" file :-)

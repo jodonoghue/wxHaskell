@@ -62,10 +62,13 @@ module Graphics.UI.WX.Attributes
 
 
     -- * Internal
+
     -- ** Attributes
     , newAttr, readAttr, writeAttr, nullAttr, constAttr
+    
     -- ** Reflection
     , attrName, propName, containsProperty
+    
     -- ** Reflective attributes
     , reflectiveAttr, createAttr, withProperty, findProperty
     , withStyleProperty, withStylePropertyNot
@@ -73,6 +76,9 @@ module Graphics.UI.WX.Attributes
     -- *** Filter
     , PropValue(..)
     , filterProperty 
+
+    -- ** Cast
+    , castAttr, castProp, castProps
     ) where
 
 import Graphics.UI.WX.Types
@@ -100,6 +106,25 @@ type WriteAttr w a = Attr w a
 -- | Widgets @w@ can have attributes of type @a@.
 data Attr w a   = Attr String (Maybe (a -> Dynamic, Dynamic -> Maybe a)) (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
 
+
+-- | Cast attributes.
+castAttr :: (v -> w) -> Attr w a -> Attr v a
+castAttr coerce (Attr name mbdyn getter setter)
+  = Attr name mbdyn (\v -> getter (coerce v)) (\v x -> (setter (coerce v) x))
+
+-- | Cast properties
+castProp :: (v -> w) -> Prop w -> Prop v
+castProp coerce prop
+  = case prop of
+      (attr := x)   -> (castAttr coerce attr) := x
+      (attr :~ f)   -> (castAttr coerce attr) :~ f
+      (attr ::= f)  -> (castAttr coerce attr) ::= (\v -> f (coerce v))
+      (attr ::~ f)  -> (castAttr coerce attr) ::~ (\v x -> f (coerce v) x)
+
+-- | Cast a list of properties.
+castProps :: (v -> w) -> [Prop w] -> [Prop v]
+castProps coerce props
+  = map (castProp coerce) props
 
 -- | Create a /reflective/ attribute with a specified name: value can possibly
 -- retrieved using 'getPropValue'. Note: the use of this function is discouraged

@@ -23,16 +23,21 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Classes
     ( 
+      -- * Data types
+      Border(..)
+
       -- * Text
-      Textual(text,appendText)
+    , Textual(text,appendText)
     , Literate(font ,fontFamily, fontFace, fontSize, fontWeight, fontUnderline, fontShape
               ,textColor,textBgcolor)
       -- * Rendering
     , Dimensions(..)
     , Colored(..)
     , Visible(..)
+    , Bordered(..)
       -- * Hierarchy
     , Child(..)
+    , Parent(..)
     , Closeable(..)
       -- * Containers
     , Selection( selection )
@@ -50,6 +55,7 @@ module Graphics.UI.WX.Classes
     , HasImage( image )
     ) where
 
+import Data.Dynamic
 import Graphics.UI.WXCore
 
 import Graphics.UI.WX.Types
@@ -176,17 +182,50 @@ class Visible w where
   fullRepaintOnResize
     = nullAttr "fullRepaintOnResize"
 
+  -- defaults
+  visible
+    = nullAttr "visible"
+  refresh w
+    = return ()
+
+-- | Parent widgets.
+class Parent w where
+  -- | Get the child widgets of a window.
+  children :: ReadAttr w [Window ()]
+  children = nullAttr "window"
+
   -- | Reduce flicker by not redrawing the background under child controls.
   -- This attribute has to be set at creation time. ('True' by default)
   clipChildren :: Attr w Bool
   clipChildren
     = nullAttr "clipChildren"
 
-  -- defaults
-  visible
-    = nullAttr "visible"
-  refresh w
-    = return ()
+
+-- | Window borders
+data Border = BorderSimple    -- ^ Displays a thin border around the window.  
+            | BorderDouble    -- ^ Displays a double border. Windows only.  
+            | BorderSunken    -- ^ Displays a sunken border.  
+            | BorderRaised    -- ^ Displays a raised border.
+            | BorderStatic    -- ^ Displays a border suitable for a static control. Windows only 
+            | BorderNone      -- ^ No border
+            deriving (Eq,Show,Read,Typeable)
+
+instance BitMask Border where
+  assocBitMask
+    = [(BorderSimple, wxBORDER)
+      ,(BorderDouble, wxDOUBLE_BORDER)
+      ,(BorderSunken, wxSUNKEN_BORDER)
+      ,(BorderRaised, wxRAISED_BORDER)
+      ,(BorderStatic, wxSTATIC_BORDER)
+      ,(BorderNone,   0)]
+
+
+-- | Widgets with a border.
+class Bordered w where
+  -- | Specify the border of a widget.
+  border :: Attr w Border
+  border = nullAttr "border"
+
 
 -- | Widgets that are part of a hierarchical order.
 class Child w where

@@ -403,7 +403,7 @@ data SystemColor
   | ColorInactiveBorder   -- ^ Inactive window border.  
   | ColorAppWorkspace     -- ^ Background colour MDI -- ^applications.  
   | ColorHighlight        -- ^ Item(s) selected in a control.  
-  | ColorHighlichtText    -- ^ Text of item(s) selected in a control.  
+  | ColorHighlightText    -- ^ Text of item(s) selected in a control.  
   | ColorBtnFace          -- ^ Face shading on push buttons.  
   | ColorBtnShadow        -- ^ Edge shading on push buttons.  
   | ColorGrayText         -- ^ Greyed (disabled) text.  
@@ -441,7 +441,7 @@ instance Enum SystemColor where
         ColorInactiveBorder   -> wxSYS_COLOUR_INACTIVEBORDER
         ColorAppWorkspace     -> wxSYS_COLOUR_APPWORKSPACE 
         ColorHighlight        -> wxSYS_COLOUR_HIGHLIGHT
-        ColorHighlichtText    -> wxSYS_COLOUR_HIGHLIGHTTEXT
+        ColorHighlightText    -> wxSYS_COLOUR_HIGHLIGHTTEXT
         ColorBtnFace          -> wxSYS_COLOUR_BTNFACE
         ColorBtnShadow        -> wxSYS_COLOUR_BTNSHADOW
         ColorGrayText         -> wxSYS_COLOUR_GRAYTEXT

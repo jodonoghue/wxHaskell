@@ -16,7 +16,7 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Window
         ( -- * Window
-          Window, refit, refitMinimal, rootParent, frameParent      
+          Window, window, refit, refitMinimal, rootParent, frameParent, tabTraversal      
           -- * ScrolledWindow
         , ScrolledWindow, scrolledWindow, scrollRate
           -- * Internal
@@ -42,8 +42,7 @@ import Graphics.UI.WX.Events
 --
 -- * Attributes: 'scrollRate'
 --
--- * Instances: 'HasImage', 'Form', 'Closable' -- 
---             'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
@@ -68,6 +67,25 @@ scrollRate
     setter sw size
       = scrolledWindowSetScrollRate sw (sizeW size) (sizeH size)
 
+
+{--------------------------------------------------------------------------------
+  Plain window
+--------------------------------------------------------------------------------}
+-- | Create a plain window. Can be used to define custom controls for example.
+--
+-- * Attributes: 'rootParent', 'frameParent', 'tabTraversal'
+--
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+window :: Window a -> [Prop (Window ())] -> IO (Window ())
+window parent props
+  = feed2 props 0 $
+    initialWindow $ \id rect -> \props flags ->
+    do w <- windowCreate parent id rect flags
+       set w props
+       return w
+
+
 {--------------------------------------------------------------------------------
   Properties
 --------------------------------------------------------------------------------}
@@ -78,6 +96,7 @@ initialWindow cont
   = initialIdentity $ \id ->
     initialArea     $ \rect ->
     initialStyle    $ 
+    initialBorder   $
     cont id rect 
 
 -- | Helper function that retrieves initial window settings, including |clipChildren|
@@ -263,7 +282,7 @@ instance Visible (Window a) where
            else unitIO (windowHide w)
 
   refresh w
-    = windowRefresh w False
+    = windowRefresh w True
 
   fullRepaintOnResize
     = reflectiveAttr "fullRepaintOnResize" getFlag setFlag
@@ -276,6 +295,10 @@ instance Visible (Window a) where
         = set w [style :~ \stl -> if repaint 
                                    then stl .-. wxNO_FULL_REPAINT_ON_RESIZE 
                                    else stl .+. wxNO_FULL_REPAINT_ON_RESIZE]
+
+instance Parent (Window a) where
+  children
+    = readAttr "children" windowChildren
 
   clipChildren
     = reflectiveAttr "clipChildren" getFlag setFlag
@@ -298,7 +321,7 @@ initialFullRepaintOnResize
 
 -- | Helper function that transforms the style accordding
 -- to the 'clipChildren' flag out of the properties
-initialClipChildren :: Visible w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialClipChildren :: Parent w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
 initialClipChildren 
   = withStyleProperty clipChildren wxCLIP_CHILDREN
 
@@ -335,6 +358,18 @@ frameParent
   = readAttr "frameParent" windowGetFrameParent 
 
 
+-- | Enable (or disable) tab-traversal. (= wxTAB_TRAVERSAL)
+tabTraversal :: Attr (Window a) Bool
+tabTraversal
+  = newAttr "tabTraversal" getter setter
+  where
+    getter w
+      = do st <- get w style
+           return (bitsSet wxTAB_TRAVERSAL st)
+    setter w enable
+      = set w [style :~ \stl -> if enable then stl .+. wxTAB_TRAVERSAL else stl .-. wxTAB_TRAVERSAL]
+
+
 instance Identity (Window a) where
   identity
     = reflectiveAttr "identity" windowGetId windowSetId
@@ -362,6 +397,25 @@ instance Help (Window a) where
   help
     = newAttr "help" windowSetHelpText windowGetHelpText
 -}
+
+{--------------------------------------------------------------------------------
+  Borders
+--------------------------------------------------------------------------------}
+instance Bordered (Window a) where
+  border 
+    = reflectiveAttr "border" getter setter
+    where
+      getter w
+        = do st <- get w style
+             return (fromBitMask st)
+      setter w b
+        = set w [style :~ \stl -> setBitMask b stl]
+
+initialBorder cont props style
+  = case filterProperty border props of
+      (PropValue x, ps)  -> cont ps (setBitMask x style) 
+      (PropModify f, ps) -> cont ps (setBitMask (f (fromBitMask style)) style)
+      (PropNone, ps)     -> cont ps style
 
 {--------------------------------------------------------------------------------
   Events

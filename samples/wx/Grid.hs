@@ -11,7 +11,7 @@ main
 
 gui :: IO ()
 gui 
-  = do f <- frame [text := "Grid test", style :~ \stl -> stl .-. wxTAB_TRAVERSAL] 
+  = do f <- frame [text := "Grid test"] 
            
        -- use text control as logger
        textlog <- textCtrl f [enabled := False, wrap := WrapNone] 
@@ -20,6 +20,8 @@ gui
 
        -- grids
        g <- gridCtrl f []
+       gridSetGridLineColour g (colorSystem Color3DFace)
+       gridSetCellHighlightColour g black
        appendColumns g (head names)
        appendRows    g (map show [1..length (tail names)])
        mapM_ (setRow g) (zip [0..] (tail names))
@@ -63,9 +65,9 @@ setRow g (row,values)
 
 gridCtrl :: Window a -> [Prop (Grid ())] -> IO (Grid ())
 gridCtrl parent props
-  = do g <- gridCreate parent idAny rectNull 0
-       e <- gridCellTextEnterEditorCtor
-       gridSetDefaultEditor g e
+  = feed2 props 0 $
+    initialWindow $ \id rect -> \props flags ->
+    do g <- gridCreate parent id rect flags
        gridCreateGrid g 0 0 0
        set g props
        return g
