@@ -33,7 +33,7 @@ module Graphics.UI.WX.Menu
     , menu, menuId
       -- ** Menu items
     , MenuItem, menuItem, menuQuit, menuAbout, menuItemEx
-    , menuLine, menuSub
+    , menuLine, menuSub, menuRadioItem
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
     , ToolBarItem, toolMenu, toolItem, toolControl, tool
@@ -164,14 +164,27 @@ menuLine menu
 --
 menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItem menu props
+  = do let kind = case (getPropValue checkable props) of
+                    Just True  -> wxITEM_CHECK
+                    _          -> wxITEM_NORMAL
+       menuItemKind menu kind props                     
+
+-- | Append a radio menu item. These items are 'checkable' by default.
+-- A sequence of radio menu items form automatically a group. 
+-- A different kind of menu item, like  a 'menuLine', terminates the group.
+-- See 'menuItem' for specifics about menu items.
+menuRadioItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuRadioItem menu props
+  = menuItemKind menu wxITEM_RADIO ([checked := True] ++ props)
+
+menuItemKind menu kind props
   = do id <- idCreate
        let label = case (getPropValue text props) of 
                      Nothing  -> "<empty>"
                      Just txt -> txt
-           check = case (getPropValue checkable props) of
-                     Nothing  -> False
-                     Just b   -> b
-       menuItemEx menu id label check props
+       menuItemEx menu id label kind props
+       
+
 
 -- | Append an /about/ menu item (@"&About..."@). On some platforms,
 -- the /about/ menu is handled specially.
@@ -203,17 +216,19 @@ menuQuit menu props
 --
 menuItemId :: Menu a -> Id -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItemId menu id label props
-  = menuItemEx menu id label False props
+  = menuItemEx menu id label wxITEM_NORMAL props
 
--- | Append a menu item with a specific id, label, and whether it is checkable.
+-- | Append a menu item with a specific id, label, and kind (like 'wxITEM_CHECK').
 --
 -- * Events: 'menu', 'menuId'
 --
 -- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
 --
-menuItemEx :: Menu a -> Id -> String -> Bool -> [Prop (MenuItem ())] -> IO (MenuItem ())
-menuItemEx menu id label isCheck props
-  = do menuAppend menu id label "" isCheck
+menuItemEx :: Menu a -> Id -> String -> Int -> [Prop (MenuItem ())] -> IO (MenuItem ())
+menuItemEx menu id label kind props
+  = do if (kind == wxITEM_RADIO)
+        then menuAppendRadioItem menu id label ""
+        else menuAppend menu id label "" (kind == wxITEM_CHECK)
        item <- menuFindItem menu id objectNull
        set item props
        return item

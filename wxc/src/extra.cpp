@@ -1146,6 +1146,11 @@ static const char* useDefs[] = {
 };
 
 
+static const char* hasDefs[] = {
+#ifdef wxHAS_RADIO_MENU_ITEMS
+  "RADIO_MENU_ITEMS",
+#endif
+};
 
 /*-----------------------------------------------------------------------------
   EXTERN C
@@ -1174,6 +1179,13 @@ EWXWEXPORT(int, wxIsDefined)( char* s )
     const char* t = s+6;
     for( i=0; useDefs[i] != NULL; i++ ) {
       if (strcmp(t,useDefs[i]) == 0) return 1;
+    }
+  }
+  /* check wxHAS_XXX */
+  if (strncmp(s,"wxHAS_",6) == 0) {
+    const char* t = s+6;
+    for( i=0; hasDefs[i] != NULL; i++ ) {
+      if (strcmp(t,hasDefs[i]) == 0) return 1;
     }
   }
   return 0;
@@ -1555,6 +1567,15 @@ EWXWEXPORT(void*, wxMenuItem_CreateEx)(int id, char* text, char* helpstr, int it
   return (void*) new wxMenuItem( NULL, id, text, helpstr, (wxItemKind)itemkind, (wxMenu*)submenu );
 }
 
+
+EWXWEXPORT(void, wxMenu_AppendRadioItem)(wxMenu* self, int id, char* text, char* help)
+{
+#ifdef wxHAS_RADIO_MENU_ITEMS
+  self->AppendRadioItem(id, text, help);
+#else
+  self->AppendCheckItem(id, text, help);
+#endif
+}
 
 
 /*------------------------------------------------------------------------------

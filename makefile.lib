@@ -49,8 +49,9 @@ DESTDIR=$(patsubst %/,%,$(DESTDIR))/
 endif
 
 #--------------------------------------------------------------------------
-# Functions  ($(1) means first argument etc.)
+# Functions  on files and directories
 #--------------------------------------------------------------------------
+
 # create derived file from base name
 # usage: $(call make-hs,<source root path>,<file base names>)
 # usage: $(call make-objs,<object root path>,<file base names>)
@@ -94,12 +95,21 @@ safe-remove-files=$(foreach file,$(1),$(call safe-remove-file,$(file)) &&) :
 silent-move-file=if test -f $(1); then $(MV) $(1) $(2); fi
 silent-remove-file=if test -f $(1); then $(RM) $(1); fi
 
+#--------------------------------------------------------------------------
+# C compilation
+#--------------------------------------------------------------------------
+
 # make-c-obj(<output .o>,<input .c>,<compile flags>)
 make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
 
 # compile-c(<output .o>,<input .c>,<compile flags>)
 compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
 		 $(call silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
+
+
+#--------------------------------------------------------------------------
+# Haskell compilation
+#--------------------------------------------------------------------------
 
 # silent-move-stubs(<output .o>,<input .c>)
 silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
@@ -119,6 +129,10 @@ compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)) && \
 		 $(call make-hs-deps,$(1),$(2),$(3))
 
 
+#--------------------------------------------------------------------------
+# Linking
+#--------------------------------------------------------------------------
+
 # make single-object file
 # combine-objs(<output .o>,<input .o files>)
 ifeq ($(TOOLKIT),mac)
@@ -135,6 +149,9 @@ make-archive	=$(AR) -sr $(1) $(2)
 # make-archive-index(<archive>)
 make-archive-index=$(AR) -s $(1)
 
+#--------------------------------------------------------------------------
+# Installation
+#--------------------------------------------------------------------------
 
 # install files, keeping directory structure intact (that is why we use 'foreach').
 # we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
@@ -171,6 +188,11 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(patsubst 
 # usage: $(call uninstall-pkg,<package name>)
 install-pkg=env wxhlibdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
+
+
+#--------------------------------------------------------------------------
+# Packaging
+#--------------------------------------------------------------------------
 
 # copy files.
 # usage: cp-bindist<dirprefix,target-dir,source files>

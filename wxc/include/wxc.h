@@ -161,6 +161,10 @@ void               wxTimerEx_Connect( TSelf(wxTimerEx) _obj, TClass(wxClosure) c
 TClass(wxTimerEx)  wxTimerEx_Create(  );
 TClass(wxClosure)  wxTimerEx_GetClosure( TSelf(wxTimerEx) _obj );
 
+/* Menu */
+void  wxMenu_AppendRadioItem( TSelf(wxMenu) self, int id, TString text, TString help);
+
+
 /* Menu Item */
 TClass(wxMenuItem)  wxMenuItem_CreateSeparator();
 TClass(wxMenuItem)  wxMenuItem_CreateEx(int id, TString label, TString help, int itemkind, TClass(wxMenu) submenu);
