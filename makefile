@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.36 2003/10/01 09:18:52 dleijen Exp $
+# $Id: makefile,v 1.37 2003/10/15 16:01:00 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -370,24 +370,19 @@ endif
 .PHONY: dist srcdist bindist docdist dist-dirs macdist
 #.PHONY: wxc-dist wxd-dist wxcore-dist wx-dist
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
+WXHASKELLVER    =wxhaskell-$(VERSION)
+BIN-VERSION	=$(HC)$(HCVERSION)-$(VERSION)
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
-DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).zip
+DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(BIN-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
 BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
-ifeq ($(TOOLKIT),msw)
-BINDIST-LIBDIR  =$(BINDIST-OUTDIR)
-BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/bin
-BINDIST-BINDIR  =$(BINDIST-OUTDIR)/bin
-else
-BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/lib
-BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/lib
-BINDIST-BINDIR  =$(BINDIST-OUTDIR)/bin
-endif
-
+BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
+BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
+BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
 
 # extract toplevel directory name  (=wxhaskell)
 TOPDIRS   =$(subst \, ,$(subst /, ,$(TOPDIR)))
@@ -416,32 +411,36 @@ srcdist: dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 	@$(call zip-srcdist, $(SAMPLE-SOURCES))
 
 # generic binary distribution as a zip
-bindist: all dist-dirs wxc-bindist wxcore-bindist wx-bindist
-	@$(call cp-bindist,config,$(BINDIST-LIBDIR),config/wxcore.pkg config/wx.pkg)
+bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
 ifeq ($(TOOLKIT),msw)
-	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat)
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register$(BAT) config/wxhaskell-unregister$(BAT))
 else
-	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
+	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register)
 endif
 ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/macosx-app)
 endif
 	@$(RM) $(DIST-BIN)
 	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
-	
+
+bindist-clean:
+	-@$(call full-remove-dir,$(BINDIST-OUTDIR))
+	-@$(call safe-remove-file,$(DIST-BIN))
+
+
 # specific binary distributions
 WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).dmg
-WXHASKELLVER=wxhaskell-$(VERSION)
 RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLVER)
 INFOFILE=$(PACKAGEDIR).info
 
-macdist: 
+macdist: bindist
 	@$(call ensure-dir,$(RESOURCEDIR))
 	@$(call ensure-dir,$(PACKAGEDIR))
 	# copy packages
-	@$(call cp-echo,$(BINDIST-LIBDIR)/wxcore.pkg,$(RESOURCEDIR)/wxcore.pkg)
-	@$(call cp-echo,$(BINDIST-LIBDIR)/wx.pkg,$(RESOURCEDIR)/wx.pkg)
+	@$(call cp-echo,$(BINDIST-BINDIR)/wxcore.pkg,$(RESOURCEDIR)/wxcore.pkg)
+	@$(call cp-echo,$(BINDIST-BINDIR)/wx.pkg,$(RESOURCEDIR)/wx.pkg)
 	# copy post install scripts
 	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLVER).post_install)
 	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLVER).post_upgrade)
@@ -485,13 +484,13 @@ wx-dirs:
 wx-clean:
 	-@$(call full-remove-dir,$(WX-OUTDIR))
 
-# bindist
-wx-bindist: wx
-	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
-
 # source dist
 wx-dist: $(WX-HS)
 	@$(call zip-srcdist, $^)
+
+# bindist
+wx-bindist: wx
+	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
 
 # install
 wx-install: wx wxcore-install
@@ -596,13 +595,13 @@ wxcore-clean:
 wxcore-realclean: wxcore-clean
 	-@$(call safe-remove-files,$(WXCORE-GEN-HS))
 
-# bindist
-wxcore-bindist: wxcore
-	@$(call cp-bindist,$(WXCORE-OUTDIR),$(BINDIST-LIBDIR),$(WXCORE-BINS))
-
 # source dist
 wxcore-dist: $(WXCORE-NONGEN-HS)
 	@$(call zip-srcdist, $^)
+
+# bindist
+wxcore-bindist: wxcore
+	@$(call cp-bindist,$(WXCORE-OUTDIR),$(BINDIST-LIBDIR),$(WXCORE-BINS))
 
 # install
 wxcore-install: wxcore wxc-install
@@ -684,9 +683,11 @@ wxc-clean:
 wxc-compress: wxc
 	@$(call run-compress,$(WXC-LIB))
 
-# binary distribution. A bit complicated since on windows, we want to put .dll modules
-# in a lib/bin directory so that they are probably in the PATH when installed on the
-# ghc directory. Further complication is that sometimes wxWindows is in a separate dll
+# source dist
+wxc-dist: $(WXC-SRCS)
+	@$(call zip-srcdist, $^)
+
+# binary distribution. A complication is that sometimes wxWindows is in a separate dll
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).
 wxc-bindist: wxc-compress
 	@$(call cp-bindist,$(dir $(WXC-LIB)),$(BINDIST-DLLDIR),$(WXC-LIB))
@@ -700,10 +701,6 @@ ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.r)
 	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.rsrc)
 endif
-
-# source dist
-wxc-dist: $(WXC-SRCS)
-	@$(call zip-srcdist, $^)
 
 # install
 wxc-install: wxc-compress
