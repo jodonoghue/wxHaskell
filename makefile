@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.2 2003/07/13 21:40:59 dleijen Exp $
+# $Id: makefile,v 1.3 2003/07/14 12:08:20 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -157,7 +157,8 @@ WXC-SRCS=$(shell echo wxc/src/*.cpp)   $(shell echo wxc/src/ewxw/*.cpp) $(shell 
 WXHASKELL-SOURCES= \
 	config.search configure makefile \
 	prologue.txt \
-	bin/macosx-app bin/wxhaskell-register bin/wxhaskell-register.bat
+	bin/macosx-app bin/reimp.exe \
+	bin/wxhaskell-register bin/wxhaskell-register.bat
 
 SAMPLE-SOURCES= \
 	samples/wx/Camels.hs samples/wx/desert.bmp \
@@ -215,9 +216,9 @@ OUTDIR	= out
 all:		wx
 install:	wx-install
 uninstall:	wx-uninstall wxh-uninstall wxc-uninstall
-clean:		wxc-clean wxd-clean wxh-clean wx-clean
+clean:		wxc-clean wxd-clean wxh-clean wx-clean 
 
-realclean: wxhrealclean
+realclean: wxhrealclean 
 	-$(RM) -r $(OUTDIR)/*
 	-$(RMDIR) $(OUTDIR)
 
@@ -246,6 +247,9 @@ dist: dist-dirs all srcdist bindist docdist
 
 dist-dirs:
 	@$(call ensure-dir,$(OUTDIR))
+
+dist-clean:
+	$(RM) $(OUTDIR)/*.zip
 
 # source distribution
 srcdist: dist-dirs wxc-dist wxd-dist wxh-dist wx-dist
@@ -284,7 +288,7 @@ WX-DEPS		=$(call make-deps, $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
 WX-DOCS		=$(WX-HS)
-WX-BINS		=$(WX-OBJS) $(WX-HIS) $(WX-LIBS)
+WX-BINS		=$(WX-HIS) $(WX-LIBS)
 WX-HCFLAGS	=$(HCFLAGS) -package-name $(WX)
 
 # build main library
@@ -402,7 +406,7 @@ WXH-DEPS	=$(call make-deps, $(WXH-IMPORTSDIR), $(WXH-CORE-SOURCES) $(WXH-SOURCES
 WXH-HIS		=$(call make-his,  $(WXH-IMPORTSDIR), $(WXH-CORE-SOURCES) $(WXH-SOURCES))
 WXH-HS		=$(call make-hs,   $(WXH-SRCDIR),     $(WXH-SOURCES) $(WXH-CORE-SOURCES))
 WXH-NONGEN-HS   =$(call make-hs,   $(WXH-SRCDIR),     $(WXH-NONGEN-SOURCES)) 
-WXH-BINS	=$(WXH-OBJS) $(WXH-CORE-OBJS) $(WXH-HIS) $(WXH-LIBS)
+WXH-BINS	=$(WXH-HIS) $(WXH-LIBS)
 WXH-DOCS	=$(filter-out $(WXH-SRCDIR)/$(WXH-HPATH)/IntMap.hs,$(WXH-HS))
 WXH-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXH)
 
