@@ -1,6 +1,45 @@
 #include "wrapper.h"
 #ifdef __WXMSW__
 # include <windows.h>
+#elif defined(__WXMAC__)
+# ifdef __DARWIN__
+#  include <ApplicationServices/ApplicationServices.h>
+# else
+#  include <Types.h>
+#  include <Files.h>
+#  include <Processes.h> 
+# endif
+#endif
+
+#ifdef __WXMAC__
+void fss2path(char *path, FSSpec *fss)
+{
+  int l;             //fss->name contains name of last item in path
+  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1]; 
+  path[l] = 0;
+
+  if(fss->parID != fsRtParID) //path is more than just a volume name
+  { 
+    int i, len;
+    CInfoPBRec pb;
+    
+    pb.dirInfo.ioNamePtr = fss->name;
+    pb.dirInfo.ioVRefNum = fss->vRefNum;
+    pb.dirInfo.ioDrParID = fss->parID;
+    do
+    {
+      pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
+      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;   
+      if(PBGetCatInfoSync(&pb) != noErr) break;
+
+      len = fss->name[0] + 1;
+      for(i=l; i>=0;  i--) path[i + len] = path[i];
+      for(i=1; i<len; i++) path[i - 1] = fss->name[i]; //add to start of path
+      path[i - 1] = ':';
+      l += len;
+    } while(pb.dirInfo.ioDrDirID != fsRtDirID); //while more directory levels
+  }
+}
 #endif
 
 wxString GetApplicationPath()
@@ -18,6 +57,7 @@ wxString GetApplicationPath()
 
 /* MAC */
 #elif defined(__WXMAC__)
+	char buf[512] = "";
     ProcessInfoRec processinfo;
     ProcessSerialNumber procno ;
     FSSpec fsSpec;
@@ -29,8 +69,9 @@ wxString GetApplicationPath()
     processinfo.processAppSpec = &fsSpec;
 
     GetProcessInformation( &procno , &processinfo ) ;
-    path = wxMacFSSpec2MacFilename(&fsSpec);
-
+    fss2path(buf,&fsSpec);
+	path = buf;
+		
 /* UNIX */
 #else
     wxString argv0 = wxTheApp->argv[0];
