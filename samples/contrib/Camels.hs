@@ -63,7 +63,7 @@ main = start gui
 gui :: IO ()
 gui
   = do desert <- varCreate (newBoard 3)
-       b <- bitmapCreateLoad "desert.bmp" wxBITMAP_TYPE_ANY
+       b <- bitmapCreateLoad "../bitmaps/desert.bmp" wxBITMAP_TYPE_BMP
        f <- frame    [ text := "Camels", on closing := do bitmapDelete b; propagateEvent ]
        q <- button f [ text := "quit" , on command := close f ]
        h <- button f [ text := "help" , on command := chelp f ]

@@ -1,3 +1,9 @@
+{--------------------------------------------------------------------------------
+  Author: Daan Leijen
+  Demo that shows how one can manipulate pixels directly in an image
+  to do fast customized drawing.
+--------------------------------------------------------------------------------}
+
 module Main where
 
 import Graphics.UI.WXCore
