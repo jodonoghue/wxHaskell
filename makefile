@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.13 2003/07/21 00:11:31 dleijen Exp $
+# $Id: makefile,v 1.14 2003/07/21 08:48:14 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -233,7 +233,7 @@ make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
 
 # compile-c(<output .o>,<input .c>,<compile flags>)
 compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
-		 $(silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
+		 $(call silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
 
 # silent-move-stubs(<output .o>,<input .c>)
 silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
