@@ -51,12 +51,14 @@ module Graphics.UI.WXCore.Events
         , windowOnPaintRaw
         , windowOnContextMenu
         , windowOnScroll
+        , htmlWindowOnHtmlEvent
 
         -- ** Event handlers
         , evtHandlerOnMenuCommand
         , evtHandlerOnEndProcess
         , evtHandlerOnInput
         , evtHandlerOnInputSink
+
 
         -- * Get event handlers
         -- ** Controls
@@ -91,6 +93,7 @@ module Graphics.UI.WXCore.Events
         , windowGetOnPaintRaw
         , windowGetOnContextMenu
         , windowGetOnScroll
+        , htmlWindowGetOnHtmlEvent
 
         -- ** Event handlers
         , evtHandlerGetOnMenuCommand
@@ -131,6 +134,9 @@ module Graphics.UI.WXCore.Events
         
         -- ** List control events
         , EventList(..), ListIndex
+
+        -- ** Html window events
+        , EventHtml(..)
         
         -- * Current event
         , propagateEvent
@@ -407,6 +413,87 @@ windowGetOnScroll :: Window a -> IO (EventScroll -> IO ())
 windowGetOnScroll window
   = unsafeWindowGetHandlerState window wxEVT_SCROLLWIN_TOP (\scroll -> skipCurrentEvent)
 
+{--------------------------------------------------------------------------
+  Html event
+--------------------------------------------------------------------------}
+-- | Html window events
+data EventHtml  
+  = HtmlCellClicked String EventMouse  Point 
+      -- ^ A /cell/ is clicked. Contains the cell /id/ attribute value, the mouse event and the logical coordinates.
+  | HtmlCellHover String 
+      -- ^ The mouse hovers over a cell. Contains the cell /id/ attribute value.
+  | HtmlLinkClicked String String String EventMouse 
+     -- ^ A link is clicked. Contains the hyperlink, the frame target, the cell /id/ attribute value, and the mouse event.
+  | HtmlSetTitle String
+     -- ^ Called when a @<title>@ tag is parsed.
+  | HtmlUnknown 
+     -- ^ Unrecognised html event
+
+instance Show EventHtml where
+  show ev
+    = case ev of
+        HtmlCellClicked id mouse pnt         -> "Html Cell " ++ show id ++ " clicked: " ++ show mouse
+        HtmlLinkClicked href target id mouse -> "Html Link " ++ show id ++ " clicked: " ++ href
+        HtmlCellHover id                     -> "Html Cell " ++ show id ++ " hover"
+        HtmlSetTitle title                   -> "Html event title: " ++ title
+        HtmlUnknown                          -> "Html event unknown"
+
+fromHtmlEvent :: WXCHtmlEvent a -> IO EventHtml
+fromHtmlEvent event
+  = do tp <- eventGetEventType event
+       case lookup tp htmlEvents of
+         Nothing      -> return HtmlUnknown 
+         Just action  -> action event
+  where
+    htmlEvents  = [(wxEVT_HTML_CELL_MOUSE_HOVER,  htmlHover)
+                  ,(wxEVT_HTML_CELL_CLICKED,      htmlClicked)
+                  ,(wxEVT_HTML_LINK_CLICKED,      htmlLink)
+                  ,(wxEVT_HTML_SET_TITLE,         htmlTitle)]
+
+    htmlTitle event
+      = do title <- commandEventGetString event
+           return (HtmlSetTitle title)
+
+    htmlHover event
+      = do id      <- wxcHtmlEventGetHtmlCellId event
+           return (HtmlCellHover id)
+
+    htmlClicked event
+      = do id      <- wxcHtmlEventGetHtmlCellId event
+           mouseEv <- wxcHtmlEventGetMouseEvent event
+           mouse   <- fromMouseEvent mouseEv
+           pnt     <- wxcHtmlEventGetLogicalPosition event
+           return (HtmlCellClicked id mouse pnt)
+
+    htmlLink event
+      = do id      <- wxcHtmlEventGetHtmlCellId event
+           mouseEv <- wxcHtmlEventGetMouseEvent event
+           mouse   <- fromMouseEvent mouseEv
+           href    <- wxcHtmlEventGetHref event
+           target  <- wxcHtmlEventGetTarget event
+           return (HtmlLinkClicked href target id mouse)
+      
+-- | Set a html event handler for a html window. The first argument determines whether
+-- hover events ('HtmlCellHover') are handled or not.
+htmlWindowOnHtmlEvent :: WXCHtmlWindow a -> Bool -> (EventHtml -> IO ()) -> IO ()
+htmlWindowOnHtmlEvent window allowHover handler
+  = windowOnEvent window htmlEvents handler eventHandler
+  where
+    htmlEvents
+      = [wxEVT_HTML_CELL_CLICKED,wxEVT_HTML_LINK_CLICKED,wxEVT_HTML_SET_TITLE]
+        ++ (if allowHover then [wxEVT_HTML_CELL_MOUSE_HOVER] else [])
+
+    eventHandler event
+      = do eventHtml <- fromHtmlEvent (objectCast event)
+           handler eventHtml
+
+-- | Get the current html event handler of a html window.
+htmlWindowGetOnHtmlEvent :: WXCHtmlWindow a -> IO (EventHtml -> IO ())
+htmlWindowGetOnHtmlEvent window
+  = unsafeWindowGetHandlerState window wxEVT_HTML_CELL_CLICKED (\ev -> skipCurrentEvent)
+
+     
+          
 
 {-----------------------------------------------------------------------------------------
   Close, Destroy, Create
