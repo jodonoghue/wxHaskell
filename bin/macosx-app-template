@@ -6,7 +6,7 @@
 #  Copyright (c) 2003, Daan Leijen, Arthur Baars
 #------------------------------------------------------------------------
 
-# $Id: macosx-app-template,v 1.1 2003/09/29 14:16:18 dleijen Exp $
+# $Id: macosx-app-template,v 1.2 2003/09/29 14:21:26 dleijen Exp $
 arg=""
 
 # variables
