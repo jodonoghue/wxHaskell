@@ -604,9 +604,8 @@ EWXWEXPORT(int,wxDb_GetDataTimeStamp)(wxDb* db, int column, int* ctime, int* fra
 
   if (ctime)    *ctime = -1;
   if (fraction) *fraction = -1;
-printf("get timestamp\n" );
+
   ok = db->GetData( column, SQL_C_TYPE_TIMESTAMP, &date, sizeof(date), &used );
-printf("result: %i, year: %i\n", (ok ? 1 : 0), date.year );
   if (usedLen) *usedLen = used;
   if (ok && used != SQL_NULL_DATA) {
     struct tm datetm;
