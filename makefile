@@ -4,20 +4,26 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.68 2004/03/24 14:01:21 dleijen Exp $
+# $Id: makefile,v 1.69 2004/03/25 13:46:54 dleijen Exp $
 
 #--------------------------------------------------------------------------
-# make [all]	 - build the libraries (in "lib").
-# make install	 - install the libraries as packages.
-# make uninstall - uninstall the libraries
-# make doc	 - generate documentation (in "doc")
-# make clean	 - remove generated object files and binaries.
+# make [all]		- build the libraries (in "lib").
+#
+# make install		- install the libraries as packages.
+#      uninstall	- uninstall the libraries
+#      install-files	- just install files (no registration)
+#      uninstall-files
+#
+# make doc		- generate documentation (in "doc")
+# 
+# make clean		- remove generated object files and binaries.
 #       wx-clean
 #       wxcore-clean
 #       wxc-clean
 #	doc-clean
 #	dist-clean
-# make realclean - remove all generated files (including documentation)
+#      realclean - remove all generated files (including documentation)
+#
 # make dist	 - create distribution files
 #       srcdist
 #       docdist
@@ -248,12 +254,16 @@ realclean: wxcore-realclean
 #--------------------------------------------------------------------------
 # Install (unfortunately with extra clauses for the mac)
 #--------------------------------------------------------------------------
-install:	wx-install
+install:	install-files wxcore-register wx-register
+
+install-files:  wx-install-files
 ifeq ($(TOOLKIT),mac)
 	@$(call install-files,config,$(BINDIR),config/macosx-app)
 endif
 	
-uninstall:	wx-uninstall wxcore-uninstall wxc-uninstall
+uninstall: wx-unregister wxcore-unregister uninstall-files
+
+uninstall-files: wx-uninstall-files wxcore-uninstall-files wxc-uninstall-files 
 ifeq ($(TOOLKIT),mac)
 	-@$(call uninstall-files,config,$(BINDIR),config/macosx-app)
 endif
@@ -267,11 +277,12 @@ endif
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
 BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
-HCBIN-VERSION   =$(HCNAME)$(HCVERSION)-$(BIN-VERSION)
+REL-VERSION	=$(VERSION)-$(RELEASE)
+HCBIN-VERSION   =$(HCNAME)$(HCVERSION)-$(BIN-VERSION)-$(RELEASE)
 
 DIST-OUTDIR	=$(OUTDIR)
-DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
-DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
+DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(REL-VERSION).zip
+DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(REL-VERSION).zip
 DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
@@ -334,7 +345,7 @@ RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLINS)
 INFOFILE=$(PACKAGEDIR).info
 
-macdist: 
+macdist: docdist bindist
 	@$(call ensure-dir,$(RESOURCEDIR))
 	@$(call ensure-dir,$(PACKAGEDIR))
 	# copy packages
@@ -396,12 +407,16 @@ wx-bindist: wx
 	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
 
 # install
-wx-install: wx wxcore-install
-	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+wx-register:
 	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
 
-wx-uninstall:
+wx-install-files: wx wxcore-install-files
+	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+
+wx-unregister:
 	-@$(call uninstall-pkg  ,$(WX))
+
+wx-uninstall-files: 
 	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
 
 # build ghci object files
@@ -507,14 +522,17 @@ wxcore-bindist: wxcore
 	@$(call cp-bindist,$(WXCORE-OUTDIR),$(BINDIST-LIBDIR),$(WXCORE-BINS))
 
 # install
-wxcore-install: wxcore wxc-install
-	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+wxcore-register: 
 	@$(call install-pkg  ,$(LIBDIR),$(WXCORE-PKG))
 
-wxcore-uninstall:
+wxcore-install-files: wxcore wxc-install-files 
+	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+
+wxcore-unregister: 
 	-@$(call uninstall-pkg  ,$(WXCORE))
+
+wxcore-uninstall-files:	
 	-@$(call uninstall-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
-	
 
 # build marshall modules
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
@@ -598,7 +616,7 @@ endif
 
 
 # install
-wxc-install: wxc-compress
+wxc-install-files: wxc-compress
 	@$(call install-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB))
 ifeq ($(DLL),.dll)
 	@$(call install-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-ARCHIVE))
@@ -608,7 +626,7 @@ ifneq ($(WXWIN-REZFILE),)
 	@$(call install-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).r)
 endif
 
-wxc-uninstall: 
+wxc-uninstall-files: 
 	-@$(call uninstall-files,$(WXC-OUTDIR),$(LIBDIR),$(WXC-LIB) $(WXC-ARCHIVE))
 ifneq ($(WXWIN-REZFILE),)
 	-@$(call uninstall-files,$(dir $(WXWIN-REZFILE)),$(LIBDIR),$(basename $(WXWIN-REZFILE)).rsrc)
