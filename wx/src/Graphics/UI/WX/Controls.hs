@@ -364,7 +364,7 @@ instance Items (Choice a) String where
 -- It takes a boolean that determines if the list is sorted
 -- and a list of labels.
 --
--- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 choice :: Window a -> Bool -> [String] -> [Prop (Choice ())] -> IO (Choice ())
@@ -408,7 +408,7 @@ instance Items (ComboBox a) String where
 -- | Create a new combo box with a list of initial entries and a boolean
 -- that is 'True' when the entries should be sorted.
 --
--- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting', 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 comboBox :: Window a -> Bool -> [String] -> [Prop (ComboBox ())] -> IO (ComboBox ())
@@ -466,7 +466,7 @@ instance Selections (MultiListBox a) where
 -- | Create a single selection list box. Takes a boolean that determines if
 -- the entries are sorted.
 --
--- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 singleListBox :: Window a -> Bool -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
@@ -480,7 +480,7 @@ singleListBox parent sorted props
 -- | Create a multi selection list box with a boolean that determines if
 -- the entries are sorted.
 ----
--- * Instances: 'Commanding','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 multiListBox :: Window a -> Bool -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
@@ -519,7 +519,7 @@ instance Items (RadioBox a) String where
 -- | Create a new radio button group with an initial orientation and a list of
 -- labels. Use 'selection' to get the currently selected item.
 --
--- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+-- * Instances: 'Selecting','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 radioBox :: Window a -> Orientation -> [String] -> [Prop (RadioBox ())] -> IO (RadioBox ())
