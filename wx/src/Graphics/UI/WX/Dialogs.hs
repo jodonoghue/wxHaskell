@@ -1,3 +1,4 @@
+{-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
 {-| Module      :  Dialogs
     Copyright   :  (c) Daan Leijen 2003
@@ -11,8 +12,10 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Dialogs
-    ( -- * Messages
-      errorDialog, warningDialog, infoDialog
+    ( -- * Generic 
+      Dialog
+     -- * Messages
+    , errorDialog, warningDialog, infoDialog
     , confirmDialog, proceedDialog
       -- * Files
     , fileOpenDialog, filesOpenDialog
@@ -26,4 +29,15 @@ module Graphics.UI.WX.Dialogs
     , numberDialog
     ) where
 
+import Graphics.UI.WXH.WxcClasses
+import Graphics.UI.WXH.WxcDefs
 import Graphics.UI.WXH.Dialogs
+
+import Graphics.UI.WX.Types
+import Graphics.UI.WX.Attributes
+import Graphics.UI.WX.Layout
+import Graphics.UI.WX.Classes
+
+instance Form (Dialog a) where
+  layout
+    = writeAttr "layout" windowSetLayout

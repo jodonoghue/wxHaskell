@@ -61,7 +61,7 @@ import Graphics.UI.WX.Window
 -- navigation (ie. /Tab/ moves through the controls).
 panel :: Window a -> [Prop (Panel ())] -> IO (Panel ())
 panel parent props
-  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
+  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN) props -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a 'Panel' with a specific style.
 panelEx :: Window a -> Style -> [Prop (Panel ())] -> IO (Panel ())

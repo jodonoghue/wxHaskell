@@ -50,7 +50,9 @@ void  wxWindow_GetVirtualSize( TSelf(wxWindow) _obj, TSizeOut(_w,_h) );
 void  wxWindow_SetVirtualSize( TSelf(wxWindow) _obj, TSize(w,h) );
 void  wxWindow_FitInside(TSelf(wxWindow) _obj);
 
-
+/* menu */
+TClass(wxMenuBar) wxMenu_GetMenuBar( TSelf(wxMenu) _obj );
+TClass(wxFrame)   wxMenuBar_GetFrame( TSelf(wxMenuBar) _obj );
 
 /* scrolledwindow */
 void wxScrolledWindow_SetScrollRate( TSelf(wxScrolledWindow) _obj, int xstep, int ystep );

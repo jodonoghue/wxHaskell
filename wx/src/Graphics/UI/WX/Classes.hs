@@ -45,6 +45,7 @@ module Graphics.UI.WX.Classes
     , Tipped( tooltip )
     , Identity( identity )
     , Styled( style )   
+    , Dockable( dockable )
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -211,6 +212,10 @@ class Styled w where
   -- | The windows style.
   style :: Attr w Int
 
+-- | Dockable widgets.
+class Dockable w where
+  -- | Is the widget dockable?
+  dockable :: Attr w Bool
 
 -- | Widgets that have a tooltip
 class Tipped w where
@@ -259,3 +264,4 @@ class Items w a | w -> a where
   itemAppend w x
     = do xs <- get w items
          set w [items := xs ++ [x]]
+

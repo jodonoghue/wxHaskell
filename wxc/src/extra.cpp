@@ -1165,6 +1165,20 @@ EWXWEXPORT(void, wxNotebook_AssignImageList)( wxNotebook* _obj, wxImageList* ima
 }
 
 /*-----------------------------------------------------------------------------
+  menu
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxMenuBar*,wxMenu_GetMenuBar)(wxMenu* _obj)
+{
+  return _obj->GetMenuBar();
+}
+
+
+EWXWEXPORT(wxFrame*,wxMenuBar_GetFrame)(wxMenuBar* _obj)
+{
+  return _obj->GetFrame();
+}
+
+/*-----------------------------------------------------------------------------
   Object & static ClassInfo
 -----------------------------------------------------------------------------*/
 EWXWEXPORT(int,wxObject_IsKindOf)(void* _obj, void* classInfo )

@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.5 2003/07/21 00:05:19 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.6 2003/08/15 08:09:16 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -3033,7 +3033,7 @@ TClass(wxWindow) wxMenu_GetInvokingWindow( TSelf(wxMenu) _obj );
 TStringLen wxMenu_GetLabel( TSelf(wxMenu) _obj, int id, TStringOutVoid _buf );
 size_t     wxMenu_GetMenuItemCount( TSelf(wxMenu) _obj );
 int        wxMenu_GetMenuItems( TSelf(wxMenu) _obj, TClass(wxList) _lst );
-TClass(wxWindow) wxMenu_GetParent( TSelf(wxMenu) _obj );
+TClass(wxMenu) wxMenu_GetParent( TSelf(wxMenu) _obj );
 int        wxMenu_GetStyle( TSelf(wxMenu) _obj );
 TStringLen wxMenu_GetTitle( TSelf(wxMenu) _obj, TStringOutVoid _buf );
 void       wxMenu_Insert( TSelf(wxMenu) _obj, size_t pos, int id, TString text, TString help, TBool isCheckable );

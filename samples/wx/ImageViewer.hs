@@ -6,7 +6,7 @@
 -----------------------------------------------------------------------------------------}
 module Main where
 
-import Graphics.UI.WXH
+import Graphics.UI.WXH (bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear)
 import Graphics.UI.WX
 
 main :: IO ()
@@ -35,29 +35,29 @@ imageViewer
        sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap]
 
        -- create file menu
-       file   <- menuList  "&File" []
-       mclose <- menuItem file "&Close\tCtrl+C" "Close the image" [enable := False]
-       open   <- menuItem file "&Open\tCtrl+O" "Open an image" []
+       file   <- menuPane      [text := "&File"]
+       mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the image", enable := False]
+       open   <- menuItem file [text := "&Open\tCtrl+O",  help := "Open an image"]
        menuLine file
-       quit   <- menuQuit file "&Quit\tCtrl+Q" "Quit the demo" []
+       quit   <- menuQuit file [text := "&Quit\tCtrl+Q", help := "Quit the demo"]
 
        -- create Help menu
-       help   <- menuHelp "&Help" []
-       about  <- menuAbout help "&About" "About ImageViewer" []
+       hlp    <- menuHelp      [text := "&Help"]
+       about  <- menuAbout hlp [text := "&About...", help := "About ImageViewer"]
 
        -- create statusbar field
-       status <- statusField [text := "Welcome to the wxHaskell ImageViewer"]
+       status <- statusField   [text := "Welcome to the wxHaskell ImageViewer"]
 
        -- set the statusbar, menubar, layout, and add menu item event handlers
-       set f [statusbar       := [status]
-             ,menubar         := [file,help]
-             ,layout          := fill (widget sw)
-             ,clientSize      := sz 300 200
-             ,on (menu about) := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
-             ,on (menu quit)  := close f
-             ,on (menu open)  := onOpen f sw vbitmap mclose status 
-             ,on (menu mclose):= onClose  sw vbitmap mclose status
-             ,on closing      :~ \prev -> do closeImage vbitmap; prev 
+       set f [statusbar        := [status]
+             ,menubar          := [file,hlp]
+             ,layout           := fill (widget sw)
+             ,clientSize       := sz 300 200
+             ,on (menu about)  := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
+             ,on (menu quit)   := close f
+             ,on (menu open)   := onOpen f sw vbitmap mclose status 
+             ,on (menu mclose) := onClose  sw vbitmap mclose status
+             ,on closing       :~ \previous -> do{ closeImage vbitmap; previous }
              ]
 
   where

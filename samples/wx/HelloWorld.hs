@@ -9,22 +9,23 @@ main
 
 hello :: IO ()
 hello
-  = do f      <- frame [text := "Hello world!", clientSize := sz 300 200]
+  = do -- the application frame
+       f      <- frame         [text := "Hello world!", clientSize := sz 300 200]
 
-       -- create file menu
-       file   <- menuList  "&File" []
-       quit   <- menuQuit file "&Quit\tCtrl+Q" "Quit the demo" []
+       -- create file menu  
+       file   <- menuPane      [text := "&File"]
+       quit   <- menuQuit file [text := "&Quit\tCtrl+Q", help := "Quit the demo", on command := close f]
 
        -- create Help menu
-       help   <- menuHelp "&Help" []
-       about  <- menuAbout help "&About" "About wxHaskell" []
+       hlp    <- menuHelp      [text := "&Help"]
+       about  <- menuAbout hlp [text := "&About...", help := "About wxHaskell"]
 
        -- create statusbar field
-       status <- statusField [text := "Welcome to wxHaskell"]
+       status <- statusField   [text := "Welcome to wxHaskell"]
 
-       -- set the statusbar and menubar, and add menu item event handlers
-       set f [statusbar := [status]
-             ,menubar   := [file,help]
+       -- set the statusbar and menubar
+       set f [statusBar := [status]
+             ,menuBar   := [file,hlp]
+             -- as an example, put the menu event handler for an about box on the frame.
              ,on (menu about) := infoDialog f "About wxHaskell" "This is a wxHaskell demo"
-             ,on (menu quit)  := close f
              ]
