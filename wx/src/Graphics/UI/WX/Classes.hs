@@ -49,10 +49,7 @@ module Graphics.UI.WX.Classes
     , HasImage( image )
     ) where
 
--- for haddock, we import wxh module selectively
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses
-import Graphics.UI.WXCore.Draw
+import Graphics.UI.WXCore
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

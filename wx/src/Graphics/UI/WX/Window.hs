@@ -13,18 +13,12 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Window
         ( -- * Window
-          Window 
+          Window, refit, refitMinimal, rootParent, frameParent
           -- * ScrolledWindow
         , ScrolledWindow, scrolledWindow, scrollRate
         ) where
 
--- import selectively to circumvent bug in haddock
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses
-import Graphics.UI.WXCore.WxcClassTypes
-import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.Draw
-import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
@@ -108,7 +102,7 @@ instance Dimensions (Window a) where
         = windowSetSize w rect wxSIZE_USE_EXISTING
 
   bestSize
-    = readAttr "bestSize" windowGetBestSize
+    = readAttr "bestSize" windowGetAdjustedBestSize
 
   position
     = newAttr "position" windowGetPosition windowMove
@@ -217,6 +211,32 @@ instance Visible (Window a) where
 instance Child (Window a) where
   parent
     = readAttr "parent" windowGetParent
+
+-- | Ensure that a widget is refitted inside a window when
+-- its size changes, for example when the 'text' of a 
+-- 'staticText' control changes. (calls 'windowReFit')
+refit :: Window a -> IO ()
+refit w
+  = windowReFit w
+
+-- | Ensure that a widget is refitted inside a window when
+-- its size changes, for example when the 'text' of a 
+-- 'staticText' control changes. Always resizes the
+-- window to its minimal acceptable size. (calls 'windowReFitMinimal')
+refitMinimal :: Window a -> IO ()
+refitMinimal w
+  = windowReFitMinimal w
+
+-- | The ultimate root parent of the widget.
+rootParent :: ReadAttr (Window a) (Window ())
+rootParent 
+  = readAttr "rootParent" windowGetRootParent 
+
+-- | The parent frame or dialog of a widget.
+frameParent :: ReadAttr (Window a) (Window ())
+frameParent 
+  = readAttr "frameParent" windowGetFrameParent 
+
 
 instance Identity (Window a) where
   identity

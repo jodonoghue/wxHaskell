@@ -29,6 +29,13 @@ TClass(wxClosure)  wxObject_GetClientClosure( TSelf(wxObject) _obj );
 /** Set the reference data of an object as a closure. The closure data contains the data while the function is called on deletion. Returns 'True' on success. Only works if the reference data is unused by wxWindows! */
 void               wxObject_SetClientClosure( TSelf(wxObject) _obj, TClass(wxClosure) closure );
 
+/* extra class definitions for classInfo */
+TClassDefExtend(wxGauge95,wxGauge)
+TClassDefExtend(wxGaugeMSW,wxGauge)
+TClassDefExtend(wxSlider95,wxSlider)
+TClassDefExtend(wxSliderMSW,wxSlider)
+
+
 /* Object */
 void wxObject_Delete( TSelf(wxObject) obj );
 

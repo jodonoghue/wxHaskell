@@ -43,9 +43,9 @@ timeFlows
        -- show mouse track?
        vflowLine     <- varCreate True
 
-       -- create a frame.
+       -- create a frame and panel to draw in.
        f <- frame   [ text        := "Time flows"]
-       p <- panel f [ clientSize  := sz 300 300  ]
+       p <- panel f []
 
        -- create menus & status fields       
        mfile    <- menuPane       [text := "&File"]
@@ -59,7 +59,8 @@ timeFlows
        mhelp    <- menuHelp        []
        mabout   <- menuAbout mhelp [help := "Information about this demo."]
 
-       status   <- statusField []
+       flowText <- varGet vflowText
+       status   <- statusField [text := flowText]
 
        -- set menu and status bar
        set f [ menuBar     := [mfile,medit,mhelp]
@@ -67,7 +68,7 @@ timeFlows
              , on (menu mabout)    := infoDialog f "About Time flows.." "This is an idle event application."
              , on (menu mshowline) := do showit <- get mshowline checked                                 
                                          varSet vflowLine showit
-             , on (menu moptions)  := showOptionDialog f vtimeSpan vflowText 
+             , on (menu moptions)  := showOptionDialog f vtimeSpan vflowText status
              , on (menu mfont)     := showFontDialog f vflowFont
              , on (charKey '+')    := do varUpdate vtimeSpan (\n -> min 10 (n+1)); return ()
              , on (charKey '-')    := do varUpdate vtimeSpan (\n -> max  1 (n-1)); return ()
@@ -80,7 +81,9 @@ timeFlows
              ]
 
        -- set layout
-       set f [ layout      := fill $ widget p]
+       set f [ layout      := fill $ widget p
+             , clientSize  := sz 300 300        --initial size
+             ]
        return ()
 
 {-------------------------------------------------------------------------
@@ -93,7 +96,7 @@ showFontDialog frame vflowFont
          Nothing   -> return ()
          Just font -> varSet vflowFont font
 
-showOptionDialog frame vtimeSpan vflowText 
+showOptionDialog frame vtimeSpan vflowText status
   = do flowText <- varGet vflowText
        timeSpan <- varGet vtimeSpan
       
@@ -127,6 +130,7 @@ showOptionDialog frame vtimeSpan vflowText
          Nothing -> return ()
          Just (flowText,timeSpan)
                  -> do varSet vflowText flowText
+                       set status [text := flowText]
                        varSet vtimeSpan timeSpan
 
 

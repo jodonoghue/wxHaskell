@@ -26,18 +26,21 @@ import Classes
 compileClassTypes :: Bool -> String -> String -> String -> FilePath -> IO ()
 compileClassTypes verbose moduleRoot moduleClassesName moduleName outputFile
   = do let classNames  = sortBy cmpName objectClassNames
-           (haskellExports,haskellDefs)  = unzip (map toHaskellClassType classNames)
+           (classExports,classDefs)      = unzip (map toHaskellClassType classNames) 
+           (downcExports,downcDefs)      = unzip (map toHaskellDowncast classNames)
 
            defCount = length classNames
 
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
                                 , "    ( -- * Class Info"
-                                , "      ClassType, classInfo, instanceOf"
+                                , "      ClassType, classInfo, instanceOf, instanceOfName"
                                 , "      -- * Safe casts"
                                 , "    , safeCast, ifInstanceOf, whenInstanceOf, whenValidInstanceOf"
                                 , "      -- * Class Types"
                                 ]
-                              , map (exportComma++) haskellExports
+                              , map (exportComma++) classExports
+                              , [ "      -- * Down casts" ]
+                              , map (exportComma++) downcExports
                               , [ "    ) where"
                                 , ""
                                 , "import System.IO.Unsafe( unsafePerformIO )"
@@ -59,6 +62,18 @@ compileClassTypes verbose moduleRoot moduleClassesName moduleName outputFile
                                 , "  = if (obj==objectNull)"
                                 , "     then True"
                                 , "     else unsafePerformIO (objectIsKindOf obj classInfo)"
+                                , ""
+                                , "-- | Test if an object is of a certain kind, based on a full wxWindows class name. (Use with care)." 
+                                , "{-# NOINLINE instanceOfName #-}"
+                                , "instanceOfName :: WxObject a -> String -> Bool"
+                                , "instanceOfName obj className "
+                                , "  = if (objectIsNull obj)"
+                                , "     then True"
+                                , "     else unsafePerformIO ("
+                                , "          do classInfo <- classInfoFindClass className"
+                                , "             if (objectIsNull classInfo)"
+                                , "              then return False" 
+                                , "              else objectIsKindOf obj classInfo)"
                                 , ""
                                 , "-- | A safe object cast. Returns 'Nothing' if the object is of the wrong type. Note that a null object can always be cast."
                                 , "safeCast :: WxObject b -> ClassType (WxObject a) -> Maybe (WxObject a)"
@@ -90,7 +105,7 @@ compileClassTypes verbose moduleRoot moduleClassesName moduleName outputFile
                                     (show defCount ++ " class type definitions.") []
 
        putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile (unlines (prologue ++ export ++ haskellDefs))
+       writeFile outputFile (unlines (prologue ++ export ++ classDefs ++ downcDefs))
        putStrLn ("generated " ++ show defCount ++ " class type definitions")
        putStrLn "ok."
 
@@ -118,3 +133,17 @@ toHaskellClassType className
     classTypeDeclName = haskellDeclName ("class" ++ classTypeName)
     classTypeName     = haskellTypeName className
     classTypeString   = "\"" ++ className ++ "\""
+
+
+{-----------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------}
+toHaskellDowncast :: String -> (String,String)
+toHaskellDowncast className
+  = (downcastName
+    ,downcastName ++ " :: " ++ classTypeName ++ " a -> " ++ classTypeName ++ " ()\n" ++
+     downcastName ++ " obj = objectCast obj\n\n"
+    )
+  where
+    classTypeName     = haskellTypeName className
+    downcastName      = haskellDeclName ("downcast" ++ classTypeName)

@@ -15,7 +15,7 @@ module Graphics.UI.WX.Draw
     -- * Classes
       Drawn, pen, penKind, penWidth, penCap, penJoin, penColor
     , Brushed, brush, brushKind, brushColor
-      -- * Types
+    -- * Types
     , DC, Bitmap
       -- * Drawing
     , circle, arc, ellipse, ellipticArc
@@ -26,12 +26,7 @@ module Graphics.UI.WX.Draw
     , dcWith
     ) where
 
--- for haddock, we import wxh module selectively
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses
-import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.Events
-import Graphics.UI.WXCore.Draw
+import Graphics.UI.WXCore
 
 
 import Graphics.UI.WX.Types

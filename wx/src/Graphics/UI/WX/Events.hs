@@ -100,11 +100,7 @@ module Graphics.UI.WX.Events
              , newEvent
             ) where
 
--- for haddock, we import wxh module selectively
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses hiding (Event)
-import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.Events
+import Graphics.UI.WXCore hiding (Event)
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes

@@ -10,8 +10,8 @@
     The WX module just re-exports functionality from helper modules and
     defines the 'start' function.
 
-    The WX library provides a somewhat nicer interface to the raw wxWindows
-    functionality provided by the "Graphics.UI.WXH" library.
+    The WX library provides a /haskellized/ interface to the raw wxWindows
+    functionality provided by the "Graphics.UI.WXCore" library.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX

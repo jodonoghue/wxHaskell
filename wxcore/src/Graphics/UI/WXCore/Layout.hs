@@ -121,10 +121,14 @@
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Layout( -- * Types
-                               Layout, windowSetLayout, sizerFromLayout
-                               -- * Layouts
+                               Layout, sizerFromLayout
+                               -- * Window
+                             , windowSetLayout, layoutFromWindow
+                             , windowReFit, windowReFitMinimal
+                             , windowReLayout, windowReLayoutMinimal
+                               -- * Layouts                               
                                -- ** Widgets
-                             , Widget, widget, label, rule, hrule, vrule, sizer, layoutFromWindow
+                             , Widget, widget, label, rule, hrule, vrule, sizer
                                -- ** Containers
                              , row, column
                              , grid, boxed, container, tab, imageTab, tabs
@@ -166,7 +170,9 @@ import List( transpose )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcClassTypes
 import Graphics.UI.WXCore.Types
+import Graphics.UI.WXCore.Frame
 
 {-----------------------------------------------------------------------------------------
   Classes
@@ -673,12 +679,16 @@ tabs notebook pages
     hashstretch  = all stretchH [options layout | (_,_,layout) <- pages]
     hasfill      = if (hasvstretch || hashstretch) then Fill else FillNone
 
--- | Add a sash bar between two stacked windows. 
+-- | Add a horizontal sash bar between two windows. The two integer
+-- arguments specify the width of the sash bar (5) and the initial
+-- height of the top pane respectively.
 hsplit :: SplitterWindow a -> Int -> Int -> Layout -> Layout -> Layout
 hsplit
   = split True
 
--- | Add a sash bar between two windows beside each other. 
+-- | Add a vertical sash bar between two windows. The two integer
+-- arguments specify the width of the sash bar (5) and the initial
+-- width of the left pane respectively. 
 vsplit :: SplitterWindow a -> Int -> Int -> Layout -> Layout -> Layout
 vsplit
   = split False
@@ -730,6 +740,44 @@ data VAlign   = AlignTop | AlignBottom | AlignVCentre
 data Margin   = MarginTop | MarginLeft | MarginRight | MarginBottom
 
 
+-- | Fits a widget properly by calling 'windowReLayout' on
+-- the parent frame or dialog ('windowGetFrameParent').
+windowReFit :: Window a -> IO ()
+windowReFit w
+  = do p <- windowGetFrameParent w
+       windowReLayout p
+
+-- | Fits a widget properly by calling 'windowReLayout' on
+-- the parent frame or dialog ('windowGetFrameParent').
+windowReFitMinimal :: Window a -> IO ()
+windowReFitMinimal w
+  = do p <- windowGetFrameParent w
+       windowReLayoutMinimal p
+
+-- | Re-invoke layout algorithm to fit a window around its
+-- children. It will enlarge when the current
+-- client size is too small, but not shrink when the window
+-- is already large enough. (in contrast, 'windowReLayoutMinimal' will
+-- also shrink a window so that it always minimally sized).
+windowReLayout :: Window a -> IO ()
+windowReLayout w
+  = do windowLayout w
+       old <- windowGetClientSize w
+       szr <- windowGetSizer w
+       when (not (objectIsNull szr)) (sizerSetSizeHints szr w)
+       windowFit w
+       new <- windowGetClientSize w
+       windowSetClientSize w (sizeMax old new)
+
+-- | Re-invoke layout algorithm to fit a window around its
+-- children. It will resize the window to its minimal 
+-- acceptable size ('windowFit').
+windowReLayoutMinimal w
+  = do windowLayout w
+       szr <- windowGetSizer w
+       when (not (objectIsNull szr)) (sizerSetSizeHints szr w)
+       windowFit w
+
 -- | Set the layout of a window (automatically calls 'sizerFromLayout').
 windowSetLayout :: Window a -> Layout -> IO ()
 windowSetLayout window layout
@@ -746,7 +794,7 @@ sizerFromLayout parent layout
   where
     insert :: Sizer () -> Layout -> IO (Sizer ())
     insert container (Spacer options sz)
-      = do sizerAddWithOptions (sizerAdd container sz) (\sz -> return ()) options
+      = do sizerAddWithOptions 0 (sizerAdd container sz) (\sz -> return ()) options
            return container
 
     insert container (Widget options win)
@@ -768,7 +816,7 @@ sizerFromLayout parent layout
            return container
 
     insert container (TextBox options txt layout)
-      = do box   <- staticBoxCreate parent idAny txt rectNull 0
+      = do box   <- staticBoxCreate parent idAny txt rectNull (wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE)
            sizer <- staticBoxSizerCreate box wxVERTICAL
            insert (downcastSizer sizer) layout
            when (container /= objectNull) 
@@ -872,16 +920,17 @@ sizerFromLayout parent layout
 
     sizerAddWindowWithOptions :: Sizer a -> Window b -> LayoutOptions -> IO ()
     sizerAddWindowWithOptions container window options
-      = sizerAddWithOptions (sizerAddWindow container window) (sizerSetItemMinSizeWindow container window) options
+      = sizerAddWithOptions (flagsAdjustMinSize window options) 
+                            (sizerAddWindow container window) (sizerSetItemMinSizeWindow container window) options
 
     sizerAddSizerWithOptions :: Sizer a -> Sizer b -> LayoutOptions -> IO ()
     sizerAddSizerWithOptions container sizer options
-      = sizerAddWithOptions (sizerAddSizer container sizer) (sizerSetItemMinSizeSizer container sizer) options
+      = sizerAddWithOptions 0 (sizerAddSizer container sizer) (sizerSetItemMinSizeSizer container sizer) options
            
 
-    sizerAddWithOptions :: (Int -> Int -> Int -> Ptr p -> IO ()) -> (Size -> IO ()) -> LayoutOptions -> IO ()
-    sizerAddWithOptions addSizer setMinSize options
-      = do addSizer 1 (flags options) (marginW options) objectNull
+    sizerAddWithOptions :: Int -> (Int -> Int -> Int -> Ptr p -> IO ()) -> (Size -> IO ()) -> LayoutOptions -> IO ()
+    sizerAddWithOptions miscflags addSizer setMinSize options
+      = do addSizer 1 (flags options .+. miscflags) (marginW options) objectNull
            case minSize options of
              Nothing -> return ()
              Just sz -> setMinSize sz
@@ -889,7 +938,6 @@ sizerFromLayout parent layout
     flags options
       = flagsFillMode (fillMode options) .+. flagsMargins (margins options)
         .+. flagsHAlign (alignH options) .+. flagsVAlign (alignV options)
-        .+. wxADJUST_MINSIZE
 
     flagsFillMode fillMode
       = case fillMode of
@@ -918,17 +966,14 @@ sizerFromLayout parent layout
           MarginLeft   -> wxLEFT
           MarginBottom -> wxBOTTOM
           MarginRight  -> wxRIGHT
+    
+    flagsAdjustMinSize window options
+      = case minSize options of
+          Nothing | -- dleijen: unfortunately, wxADJUST_MINSIZE has bugs for certain controls:
+                    not ( instanceOf window classGauge || instanceOf window classGauge95 
+                         || instanceOf window classGaugeMSW 
+                         || instanceOf window classSlider || instanceOf window classSlider95 
+                         || instanceOf window classSliderMSW )
+                  -> wxADJUST_MINSIZE
+          other   -> 0
 
-
-downcastSizer :: Sizer a -> Sizer ()
-downcastSizer sizer  = objectCast sizer
-
-
-downcastWindow :: Window a -> Window ()
-downcastWindow window  = objectCast window
-
-downcastNotebook :: Notebook a -> Notebook ()
-downcastNotebook notebook = objectCast notebook
-
-downcastSplitterWindow :: SplitterWindow a -> SplitterWindow ()
-downcastSplitterWindow splitter = objectCast splitter

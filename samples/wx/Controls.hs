@@ -98,3 +98,13 @@ gui
       = do set w [enable :~ not]
            enabled <- get w enable
            set b [text := (if enabled then "disable" else "enable")]
+
+-- kindof :: Object a -> String -> IO ()
+kindof obj className
+  = do classInfo <- classInfoFindClass className
+       if (objectIsNull classInfo)
+        then logMessage ("kindof " ++ className ++ ": no such class")
+        else if (objectIsNull obj)
+              then logMessage ("kindof " ++ className ++ ": null object")
+              else do haskind <- objectIsKindOf obj classInfo
+                      logMessage ("kindof " ++ className ++ ": " ++ show haskind)

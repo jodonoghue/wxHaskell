@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.12 2003/09/30 13:38:21 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.13 2003/10/21 10:56:34 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4562,6 +4562,8 @@ TBoolInt   wxWindow_Enable( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindFocus( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindWindow( TSelf(wxWindow) _obj, TString name );
 void       wxWindow_Fit( TSelf(wxWindow) _obj );
+void       wxWindow_Freeze( TSelf(wxWindow) _obj );
+void       wxWindow_GetAdjustedBestSize( TSelf(wxWindow) _obj, TSizeOutVoid(_w,_h) );
 int        wxWindow_GetAutoLayout( TSelf(wxWindow) _obj );
 void       wxWindow_GetBackgroundColour( TSelf(wxWindow) _obj, TClassRef(wxColour) _ref );
 void       wxWindow_GetBestSize( TSelf(wxWindow) _obj, TSizeOutVoid(_w,_h) );
@@ -4661,8 +4663,9 @@ void       wxWindow_SetToolTip( TSelf(wxWindow) _obj, TString tip );
 void       wxWindow_SetValidator( TSelf(wxWindow) _obj, TClass(wxValidator) validator );
 void       wxWindow_SetWindowStyleFlag( TSelf(wxWindow) _obj, long style );
 TBool      wxWindow_Show( TSelf(wxWindow) _obj );
-int        wxWindow_TransferDataFromWindow( TSelf(wxWindow) _obj );
-int        wxWindow_TransferDataToWindow( TSelf(wxWindow) _obj );
+void       wxWindow_Thaw( TSelf(wxWindow) _obj );
+TBoolInt   wxWindow_TransferDataFromWindow( TSelf(wxWindow) _obj );
+TBoolInt   wxWindow_TransferDataToWindow( TSelf(wxWindow) _obj );
 void       wxWindow_UnsetConstraints( TSelf(wxWindow) _obj, void* c );
 void       wxWindow_UpdateWindowUI( TSelf(wxWindow) _obj );
 TBool      wxWindow_Validate( TSelf(wxWindow) _obj );

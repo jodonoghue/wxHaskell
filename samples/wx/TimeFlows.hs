@@ -48,7 +48,7 @@ timeFlows
 
        -- create a frame.
        f <- frame   [ text        := flowText]      
-       p <- panel f [ clientSize  := sz 300 300]  -- draw in a panel
+       p <- panel f []                          -- draw in a panel
 
        -- set event handlers
        set p        [ on paint    := onPaint  vmouseHistory 
@@ -57,7 +57,9 @@ timeFlows
                     ]
 
        -- set layout
-       set f        [ layout      := fill $ widget p]
+       set f        [ layout      := fill $ widget p
+                    , clientSize  := sz 300 300       -- initial size
+                    ]
        return ()
 
 {-------------------------------------------------------------------------

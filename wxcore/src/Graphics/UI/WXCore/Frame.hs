@@ -11,11 +11,17 @@
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Frame
-        ( frameCreateTopFrame
+        ( -- * Frame
+          frameCreateTopFrame
         , frameCreateDefault
         , frameSetTopFrame
         , frameDefaultStyle
+          -- * Window
+        , windowGetRootParent
+        , windowGetFrameParent
+          -- * Dialog
         , dialogDefaultStyle
+          -- * Status bar
         , statusBarCreateFields
         ) where
 
@@ -24,20 +30,19 @@ import Foreign.Marshal.Array
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcClassTypes
 import Graphics.UI.WXCore.Types
 
 
 -- | The default frame style for a normal top-level 'Frame'.
 frameDefaultStyle :: Int
 frameDefaultStyle
-  = wxDEFAULT_FRAME_STYLE .|. wxNO_FULL_REPAINT_ON_RESIZE .|. wxCLIP_CHILDREN
+  = wxDEFAULT_FRAME_STYLE .|. wxCLIP_CHILDREN .|. wxNO_FULL_REPAINT_ON_RESIZE 
 
 -- | The default frame style for a normal 'Dialog'.
 dialogDefaultStyle :: Int
 dialogDefaultStyle
-  = wxCAPTION .|. wxSYSTEM_MENU .|. wxTAB_TRAVERSAL .|. wxNO_FULL_REPAINT_ON_RESIZE .|. wxCLIP_CHILDREN
-
-
+  = wxCAPTION .|. wxSYSTEM_MENU .|. wxTAB_TRAVERSAL .|. wxCLIP_CHILDREN .|. wxNO_FULL_REPAINT_ON_RESIZE 
 
 ------------------------------------------------------------------------------------------
 --
@@ -58,6 +63,31 @@ frameSetTopFrame frame
 frameCreateDefault :: String -> IO (Frame ())
 frameCreateDefault title
   = frameCreate objectNull idAny title rectNull frameDefaultStyle
+
+------------------------------------------------------------------------------------------
+-- Window
+------------------------------------------------------------------------------------------
+-- | The parent frame or dialog of a widget.
+windowGetFrameParent :: Window a -> IO (Window ())
+windowGetFrameParent w
+  = if (instanceOf w classFrame || instanceOf w classDialog)
+     then return (downcastWindow w)
+     else do p <- windowGetParent w
+             if (objectIsNull p)
+              then return (downcastWindow w)
+              else windowGetFrameParent p
+
+
+-- | The ultimate root parent of the widget.
+windowGetRootParent :: Window a -> IO (Window ())
+windowGetRootParent w
+  = do p <- windowGetParent w
+       if (objectIsNull p)
+        then return (downcastWindow w)
+        else windowGetRootParent p
+       
+
+
 
 ------------------------------------------------------------------------------------------
 -- Statusbar

@@ -365,7 +365,7 @@ isClassName s
 objectClassNames :: [String]
 objectClassNames
   = case filter isObject classes of
-      [classObject] -> flatten classObject
+      [classObject] -> filter (/="wxColour") $ flatten classObject
       other         -> []
   where
     flatten (Class name derived)

@@ -14,12 +14,7 @@ module Graphics.UI.WX.Frame
     ( Frame, frame, frameFixed, frameTool, frameEx
     ) where
 
--- for haddock, we import wxh module selectively
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses
-import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.Image
-import Graphics.UI.WXCore.Frame
+import Graphics.UI.WXCore
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
@@ -30,17 +25,17 @@ import Graphics.UI.WX.Window
 -- | Create a top-level frame window.
 frame :: [Prop (Frame ())]  -> IO (Frame ())
 frame props
-  = frameEx frameDefaultStyle props objectNull
+  = frameEx defaultStyle props objectNull
 
 -- | Create a top-level frame window that is not resizeable.
 frameFixed :: [Prop (Frame ())]  -> IO (Frame ())
 frameFixed props
-  = frameEx (frameDefaultStyle .-. wxMAXIMIZE_BOX .-. wxRESIZE_BORDER)  props objectNull
+  = frameEx (defaultStyle .-. wxMAXIMIZE_BOX .-. wxRESIZE_BORDER)  props objectNull
 
 -- | Create a tool window; floats on the parent and has a small caption.
 frameTool :: [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameTool props parent
-  = frameEx (frameDefaultStyle .-. wxFRAME_TOOL_WINDOW .-. wxFRAME_FLOAT_ON_PARENT)  props parent
+  = frameEx (defaultStyle .-. wxFRAME_TOOL_WINDOW .-. wxFRAME_FLOAT_ON_PARENT)  props parent
 
 
 -- | Create a top-level frame window in a custom style.
@@ -51,6 +46,10 @@ frameEx style props parent
        set f [bgcolor := white, visible := True,clientSize := sizeZero]
        set f props
        return f
+
+defaultStyle :: Style
+defaultStyle
+  = wxDEFAULT_FRAME_STYLE .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE
 
 -- The image of a frame. 
 instance HasImage (Frame a) where

@@ -22,7 +22,7 @@ module Graphics.UI.WX.Controls
       , BitmapButton, bitmapButton
       -- ** Text entry
       , Align(..), Wrap(..)
-      , textEntry, textCtrl, textCtrlRich, textCtrlEx
+      , TextCtrl, textEntry, textCtrl, textCtrlRich, textCtrlEx
       -- ** CheckBox
       , CheckBox, checkBox
       -- ** Choice
@@ -30,7 +30,7 @@ module Graphics.UI.WX.Controls
       -- ** ComboBox
       , ComboBox, comboBox
       -- ** ListBox
-      , ListBox, singleListBox, multiListBox
+      , ListBox, SingleListBox, MultiListBox, singleListBox, multiListBox
       -- ** RadioBox
       , RadioBox, radioBox
       -- ** Spin Control
@@ -46,18 +46,12 @@ module Graphics.UI.WX.Controls
       -- ** Static text
       , StaticText, staticText
       -- ** SplitterWindow
-      , splitterWindow      
+      , SplitterWindow, splitterWindow      
       -- ** ImageList
-      , imageList, imageListFromFiles
+      , ImageList, imageList, imageListFromFiles
     ) where
 
--- for haddock, we import wxh module selectively
--- import Graphics.UI.WXCore
-import Graphics.UI.WXCore.WxcClasses hiding (Event)
-import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.Events
-import Graphics.UI.WXCore.Controls
-import Graphics.UI.WXCore.Image
+import Graphics.UI.WXCore hiding (Event)
 
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
@@ -71,7 +65,7 @@ import Graphics.UI.WX.Window
 -- navigation (ie. /Tab/ moves through the controls).
 panel :: Window a -> [Prop (Panel ())] -> IO (Panel ())
 panel parent props
-  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN) props -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props
+  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a 'Panel' with a specific style.
 panelEx :: Window a -> Style -> [Prop (Panel ())] -> IO (Panel ())
@@ -550,7 +544,7 @@ treeEvent
 -- | Create a single-selection tree control with buttons (i.e. + and - signs).
 treeCtrl :: Window a -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrl parent props
-  = treeCtrlEx parent wxTR_HAS_BUTTONS props
+  = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a tree control.
 treeCtrlEx :: Window a -> Style -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
@@ -603,7 +597,7 @@ listEvent
 -- | Create a report-style list control.
 listCtrl :: Window a -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrl parent props
-  = listCtrlEx parent wxLC_REPORT props
+  = listCtrlEx parent (wxLC_REPORT .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a list control.
 listCtrlEx :: Window a -> Style -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
@@ -618,7 +612,7 @@ listCtrlEx parent style props
 -- | Create a splitter window.
 splitterWindow :: Window a -> [Prop (SplitterWindow ())] -> IO (SplitterWindow ())
 splitterWindow parent props
-  = do s <- splitterWindowCreate parent idAny rectNull wxSP_LIVE_UPDATE
+  = do s <- splitterWindowCreate parent idAny rectNull (wxSP_LIVE_UPDATE .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE)
        set s props
        return s
 

@@ -654,5 +654,23 @@ EWXWEXPORT(int, wxWindow_Reparent)(void* _obj, void* _par)
 {
 	return (int)((wxWindow*)_obj)->Reparent((wxWindow*)_par);
 }
+
+EWXWEXPORT(void, wxWindow_GetAdjustedBestSize)(void* _obj, void* _w, void* _h)
+{
+	wxSize sz = ((wxWindow*)_obj)->GetAdjustedBestSize();
+        *((int*)_w) = sz.GetWidth();
+        *((int*)_h) = sz.GetHeight();
+}
+
+EWXWEXPORT(void, wxWindow_Freeze)(void* _obj)
+{
+	((wxWindow*)_obj)->Freeze();
+}
+
+EWXWEXPORT(void, wxWindow_Thaw)(void* _obj)
+{
+	((wxWindow*)_obj)->Thaw();
+}
+
 	
 }
