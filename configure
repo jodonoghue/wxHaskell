@@ -412,7 +412,6 @@ if test "$withmsc" != "yes"; then
 fi
 
 if test "$wxrezfile"; then
-  echo "resource file: $wxrezfile"
   wxrezdir="`echo $wxrezfile | sed -e 's|\(.*\)/libwx_mac.*|\1|'`"
   wxinstallrezcomp="`echo \"${wxrezcomp}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
   wxinstallrezfile="`echo \"${wxrezfile}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
@@ -837,6 +836,10 @@ echo " compiler:    $hcbasename-$hcversion"
 echo " wxwidgets:   $wxtoolkit-$wxversion"
 echo " with openGL: $withopengl"
 echo " library dir: $libdir"
+
+if test "$wxrezfile"; then
+echo " resource:    $wxrezfile"
+fi  
 
 # we are done.
 echo ""
