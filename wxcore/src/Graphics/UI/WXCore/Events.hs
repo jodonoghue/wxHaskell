@@ -116,6 +116,7 @@ module Graphics.UI.WXCore.Events
         , Modifiers(..)
         , showModifiers
         , noneDown, justShift, justAlt, justControl, justMeta, isNoneDown
+        , isNoShiftAltControlDown
 
         -- ** Mouse events
         , EventMouse (..)
@@ -898,6 +899,10 @@ justMeta = noneDown{ metaDown = True }
 -- | Test if no meta key was pressed.
 isNoneDown :: Modifiers -> Bool
 isNoneDown (Modifiers shift control alt meta) = not (shift || control || alt || meta)
+
+-- | Test if no shift, alt, or control key was pressed.
+isNoShiftAltControlDown :: Modifiers -> Bool
+isNoShiftAltControlDown (Modifiers shift control alt meta) = not (shift || control || alt)
 
 -- | Tranform modifiers into an accelerator modifiers code.
 modifiersToAccelFlags :: Modifiers -> Int

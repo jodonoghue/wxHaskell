@@ -88,6 +88,7 @@ module Graphics.UI.WX.Events
             , Modifiers(..)
             , showModifiers
             , noneDown, justShift, justAlt, justControl, justMeta, isNoneDown
+            , isNoShiftAltControlDown
 
             -- ** Mouse events
             , EventMouse (..)
@@ -171,63 +172,63 @@ click :: Reactive w => Event w (Point -> IO ())
 click
   = mouseFilter "click" filter
   where
-    filter (MouseLeftDown point mod)  = isNoneDown mod
+    filter (MouseLeftDown point mod)  = isNoShiftAltControlDown mod
     filter other                      = False
 
 unclick :: Reactive w => Event w (Point -> IO ())
 unclick
   = mouseFilter "unclick" filter
   where
-    filter (MouseLeftUp point mod)  = isNoneDown mod
+    filter (MouseLeftUp point mod)  = isNoShiftAltControlDown mod
     filter other                    = False
 
 doubleClick :: Reactive w => Event w (Point -> IO ())
 doubleClick
   = mouseFilter "doubleClick" filter
   where
-    filter (MouseLeftDClick point mod) = isNoneDown mod
+    filter (MouseLeftDClick point mod) = isNoShiftAltControlDown mod
     filter other                       = False
 
 drag :: Reactive w => Event w (Point -> IO ())
 drag
   = mouseFilter "drag" filter
   where
-    filter (MouseLeftDrag point mod)  = isNoneDown mod
+    filter (MouseLeftDrag point mod)  = isNoShiftAltControlDown mod
     filter other                      = False
 
 motion :: Reactive w => Event w (Point -> IO ())
 motion
   = mouseFilter "motion" filter
   where
-    filter (MouseMotion point mod)  = isNoneDown mod
+    filter (MouseMotion point mod)  = isNoShiftAltControlDown mod
     filter other                    = False
 
 clickRight :: Reactive w => Event w (Point -> IO ())
 clickRight
   = mouseFilter "clickRight" filter
   where
-    filter (MouseRightDown point mod)  = isNoneDown mod
+    filter (MouseRightDown point mod)  = isNoShiftAltControlDown mod
     filter other                       = False
 
 unclickRight :: Reactive w => Event w (Point -> IO ())
 unclickRight
   = mouseFilter "unclickRight" filter
   where
-    filter (MouseRightUp point mod)  = isNoneDown mod
+    filter (MouseRightUp point mod)  = isNoShiftAltControlDown mod
     filter other                     = False
 
 enter :: Reactive w => Event w (Point -> IO ())
 enter
   = mouseFilter "enter" filter
   where
-    filter (MouseEnter point mod)  = isNoneDown mod
+    filter (MouseEnter point mod)  = True
     filter other                   = False
 
 leave :: Reactive w => Event w (Point -> IO ())
 leave
   = mouseFilter "leave" filter
   where
-    filter (MouseLeave point mod)  = isNoneDown mod
+    filter (MouseLeave point mod)  = True
     filter other                   = False
 
 mouseFilter :: Reactive w => String -> (EventMouse -> Bool) -> Event w (Point -> IO ())
