@@ -334,7 +334,9 @@ void* wxcMalloc(int size );
 void  wxcFree( void* p );
 
 /* application directory */
+/** Return the directory of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. Therefore, the APPDIR environment variable is returned first if it is defined. */
 TStringLen wxGetApplicationDir( TStringOut buffer);
+/** Return the full path of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. */
 TStringLen wxGetApplicationPath( TStringOut buffer);
 
 

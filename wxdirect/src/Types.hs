@@ -110,6 +110,7 @@ data Type = Int CBaseType
           | Rect CBaseType
           | RefObject String    -- for "GetFont" etc. returns the font via an indirect reference!
           | Fun String          -- function pointers
+          | ColorRGB CBaseType
           deriving (Eq,Show)
 
 

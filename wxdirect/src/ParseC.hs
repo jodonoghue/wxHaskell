@@ -138,6 +138,10 @@ pargTypes
        argnames <- parens pargs2
        return (Arg argnames tp)
   <|>
+    do tp       <- pargType3
+       argnames <- parens pargs3
+       return (Arg argnames tp)
+  <|>
     do tp       <- pargType4
        argnames <- parens pargs4
        return (Arg argnames tp)
@@ -155,6 +159,14 @@ pargs2
        comma
        a2 <- identifier
        return [a1,a2]
+
+pargs3
+  = do a1 <- identifier
+       comma
+       a2 <- identifier
+       comma
+       a3 <- identifier
+       return [a1,a2,a3]
 
 pargs4
   = do a1 <- identifier
@@ -181,7 +193,8 @@ pargType2
   <|> do reserved "TArrayString"; return (ArrayString CChar)
   <|> do reserved "TArrayInt"; return (ArrayInt CInt)
 
-
+pargType3
+  =   do reserved "TColorRGB"; return (ColorRGB CChar)
 
 pargType4
   =   do reserved "TRect"; return (Rect CInt)
@@ -213,6 +226,7 @@ lexer
                       ,"TClosureFun"
                       ,"TPointLong"
                       ,"TArrayLen","TArrayStringOut","TArrayStringOutVoid","TArrayObjectOut","TArrayObjectOutVoid"
+                      ,"TColorRGB"
                       ]
     }
 

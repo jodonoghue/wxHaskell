@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.13 2003/10/21 10:56:34 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.14 2003/10/21 21:02:03 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -2575,26 +2575,26 @@ TChar      wxImage_GetMaskBlue( TSelf(wxImage) _obj );
 TChar      wxImage_GetMaskGreen( TSelf(wxImage) _obj );
 TChar      wxImage_GetMaskRed( TSelf(wxImage) _obj );
 TChar      wxImage_GetRed( TSelf(wxImage) _obj, TPoint(x,y) );
-void       wxImage_GetSubImage( TSelf(wxImage) _obj, TRect(x,y,w,h), TClass(wxImage) image );
+void       wxImage_GetSubImage( TSelf(wxImage) _obj, TRect(x,y,w,h), TClassRef(wxImage) image );
 int        wxImage_GetWidth( TSelf(wxImage) _obj );
 TBool      wxImage_HasMask( TSelf(wxImage) _obj );
 void       wxImage_Initialize( TSelf(wxImage) _obj, TSize(width,height) );
 void       wxImage_InitializeFromData( TSelf(wxImage) _obj, TSize(width,height), void* data );
-int        wxImage_LoadFile( TSelf(wxImage) _obj, TStringVoid name, int type );
-void       wxImage_Mirror( TSelf(wxImage) _obj, int horizontally, TClass(wxImage) image );
+TBoolInt   wxImage_LoadFile( TSelf(wxImage) _obj, TStringVoid name, int type );
+void       wxImage_Mirror( TSelf(wxImage) _obj, TBoolInt horizontally, TClassRef(wxImage) image );
 TBool      wxImage_Ok( TSelf(wxImage) _obj );
 void       wxImage_Paste( TSelf(wxImage) _obj, TClass(wxImage) image, TPoint(x,y) );
-void       wxImage_Replace( TSelf(wxImage) _obj, TChar r1, TChar g1, TChar b1, TChar r2, TChar g2, TChar b2 );
+void       wxImage_Replace( TSelf(wxImage) _obj, TColorRGB(r1,g1,b1), TColorRGB(r2,g2,b2) );
 void       wxImage_Rescale( TSelf(wxImage) _obj, TSize(width,height) );
-void       wxImage_Rotate( TSelf(wxImage) _obj, double angle, int c_x, int c_y, int interpolating, void* offset_after_rotation, TClass(wxImage) image );
-void       wxImage_Rotate90( TSelf(wxImage) _obj, int clockwise, TClass(wxImage) image );
-int        wxImage_SaveFile( TSelf(wxImage) _obj, TStringVoid name, int type );
-void       wxImage_Scale( TSelf(wxImage) _obj, TSize(width,height), TClass(wxImage) image );
+void       wxImage_Rotate( TSelf(wxImage) _obj, double angle, TPoint(c_x,c_y), TBoolInt interpolating, void* offset_after_rotation, TClassRef(wxImage) image );
+void       wxImage_Rotate90( TSelf(wxImage) _obj, TBoolInt clockwise, TClassRef(wxImage) image );
+TBoolInt   wxImage_SaveFile( TSelf(wxImage) _obj, TStringVoid name, int type );
+void       wxImage_Scale( TSelf(wxImage) _obj, TSize(width,height), TClassRef(wxImage) image );
 void       wxImage_SetData( TSelf(wxImage) _obj, void* data );
-void       wxImage_SetDataAndSize( TSelf(wxImage) _obj, TString data, int new_width, int new_height );
+void       wxImage_SetDataAndSize( TSelf(wxImage) _obj, void* data, TSize(new_width,new_height) );
 void       wxImage_SetMask( TSelf(wxImage) _obj, int mask );
-void       wxImage_SetMaskColour( TSelf(wxImage) _obj, TChar r, TChar g, TChar b );
-void       wxImage_SetRGB( TSelf(wxImage) _obj, TPoint(x,y), TChar r, TChar g, TChar b );
+void       wxImage_SetMaskColour( TSelf(wxImage) _obj, TColorRGB(r,g,b) );
+void       wxImage_SetRGB( TSelf(wxImage) _obj, TPoint(x,y), TColorRGB(r,g,b) );
 
 /* wxImageHandler */
 TClassDefExtend(wxImageHandler,wxObject)

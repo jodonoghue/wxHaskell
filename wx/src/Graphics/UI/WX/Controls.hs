@@ -142,7 +142,8 @@ instance HasImage (BitmapButton a) where
     = writeAttr "image" setter
     where
       setter w fname
-        = withBitmapFromFile fname (bitmapButtonSetBitmapLabel w)
+        = do fpath <- getAbsoluteFilePath fname
+             withBitmapFromFile fpath (bitmapButtonSetBitmapLabel w)
 
 
 {--------------------------------------------------------------------------------
@@ -629,5 +630,5 @@ imageList size
 imageListFromFiles :: Size -> [FilePath] -> IO (ImageList ())
 imageListFromFiles size files
   = do images <- imageListCreate size True (length files)
-       imageListAddIconsFromFiles images files
+       imageListAddIconsFromFiles images size files
        return images

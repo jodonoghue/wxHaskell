@@ -47,6 +47,7 @@
 #undef TArrayStringOutVoid
 #undef TArrayObjectOut
 #undef TArrayObjectOutVoid
+#undef TColorRGB
 
 /* Class definitions */
 #define TClassDef(tp)     
@@ -90,6 +91,7 @@
 #define TSizeOut(w,h)     int* w, int* h
 #define TRect(x,y,w,h)    int x,  int y,  int w,  int h
 #define TRectOut(x,y,w,h) int* x, int* y, int* w, int* h
+#define TColorRGB(r,g,b)  char r, char g, char b
 
 /* arrays */
 #define TArrayLen               int

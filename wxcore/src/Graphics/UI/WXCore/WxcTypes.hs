@@ -53,6 +53,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , Colour, ColourObject
             , colourFromColor, colorFromColour
             , colourCreate, colourCreateRGB, colourDelete, colourRed, colourGreen, colourBlue
+            , toCCharColorRed, toCCharColorGreen, toCCharColorBlue
 
             , TreeItem, treeItemInvalid, treeItemIsOk, treeItemFromInt
             , withRefTreeItemId, withTreeItemId, withTreeItemIdResult
@@ -62,6 +63,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , withRefColour, withManagedColourResult, withManagedColour
             , withRefBitmap
             , withRefCursor
+            , withRefImage
             , withRefIcon
             , withRefPen
             , withRefBrush
@@ -670,6 +672,10 @@ withRefIcon f
   = assignRef wxIcon_Create  f
 foreign import ccall "wxIcon_CreateDefault" wxIcon_Create :: IO (Object a)
 
+withRefImage :: (Object a -> IO ()) -> IO (Object a)
+withRefImage f
+  = assignRef wxImage_Create  f
+foreign import ccall "wxImage_CreateDefault" wxImage_Create :: IO (Object a)
 
 withRefFont :: (Object a -> IO ()) -> IO (Object a)
 withRefFont f
@@ -828,7 +834,17 @@ colorOk :: Color -> Bool
 colorOk (Color rgb)
   = (rgb >= 0)
 
--- marshalling
+
+-- marshalling 1
+toCCharColorRed, toCCharColorGreen, toCCharColorBlue :: Color -> CChar
+toCCharColorRed c    = toCCharInt (colorRed c)
+toCCharColorGreen c  = toCCharInt (colorGreen c)
+toCCharColorBlue c   = toCCharInt (colorBlue c)
+
+toCCharInt :: Int -> CChar
+toCCharInt i         = fromIntegral i
+
+-- marshalling 2
 type Colour a        = Managed (CColour a)
 type ColourObject a  = Object (CColour a)
 data CColour a       = CColour

@@ -45,7 +45,28 @@ import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.Types
+import Graphics.UI.WXCore.Defines
 
+
+{-----------------------------------------------------------------------------------------
+  ImageList
+-----------------------------------------------------------------------------------------}
+-- | Initialize an image list with icons from files. Use a 'sizeNull' to
+-- use the native size of the loaded icons.
+imageListAddIconsFromFiles :: ImageList a -> Size -> [FilePath] -> IO ()
+imageListAddIconsFromFiles images desiredSize fnames
+  = mapM_ (imageListAddIconFromFile images desiredSize) fnames
+
+-- | Add an icon from a file to an imagelist.
+imageListAddIconFromFile :: ImageList a -> Size -> FilePath -> IO ()
+imageListAddIconFromFile images desiredSize fname
+  = do image <- imageCreateFromFile fname
+       imageRescale image desiredSize
+       bitmap <- imageConvertToBitmap image
+       imageListAddBitmap images bitmap nullBitmap
+       bitmapDelete bitmap
+       imageDelete image
+       return ()
 
 {-----------------------------------------------------------------------------------------
   Icons
@@ -55,21 +76,6 @@ import Graphics.UI.WXCore.Types
 frameSetIconFromFile :: Frame a -> FilePath -> IO ()
 frameSetIconFromFile f fname
   = withIconFromFile fname sizeNull (frameSetIcon f)
-
-
--- | Initialize an image list with icons from files.
-imageListAddIconsFromFiles :: ImageList a -> [FilePath] -> IO ()
-imageListAddIconsFromFiles images fnames
-  = mapM_ (imageListAddIconFromFile images) fnames
-
--- | Add an icon from a file to an imagelist.
-imageListAddIconFromFile :: ImageList a -> FilePath -> IO ()
-imageListAddIconFromFile images fname
-  = do desiredSize <- imageListGetSize images 0
-       withIconFromFile fname desiredSize (imageListAddIcon images)
-       return ()
-
-
 
 
 -- | Load an icon (see 'iconCreateFromFile') and automatically delete it

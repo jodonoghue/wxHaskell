@@ -124,6 +124,10 @@ SOURCE=.\src\wxc.rc
 # PROP Default_Filter "*.cpp"
 # Begin Source File
 
+SOURCE=.\src\apppath.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\eljevent.cpp
 # End Source File
 # Begin Source File

@@ -77,7 +77,8 @@ gui
        p <- panel f []
       
        -- image list
-       images  <- imageListFromFiles (sz 16 16) imageFiles
+       imagePaths <- mapM getAbsoluteFilePath imageFiles  -- make relative to application
+       images     <- imageListFromFiles (sz 16 16) imagePaths
 
        -- splitter window between directory tree and file view.
        s <- splitterWindow p []
