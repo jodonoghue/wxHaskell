@@ -12,12 +12,16 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.OpenGL
    ( 
-   -- * Attributes
-     GLAttribute(..)
+   -- * Types
+     GLCanvas, GLAttribute(..)
    -- * Creation
    , glCanvasCreateDefault
    , glCanvasCreateEx
    , glCanvasCreateSharedEx
+   -- * Usage
+   , glCanvasSetCurrent
+   , glCanvasSwapBuffers
+   , glCanvasSetColour
    ) where
 
 

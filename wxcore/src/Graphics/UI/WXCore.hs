@@ -45,7 +45,12 @@ module Graphics.UI.WXCore
 import System.Mem( performGC )
 
 import Graphics.UI.WXCore.WxcDefs
-import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcClasses 
+  hiding ( GLCanvas
+         , glCanvasSetCurrent
+         , glCanvasSwapBuffers
+         , glCanvasSetColour )
+
 import Graphics.UI.WXCore.WxcClassTypes
 
 import Graphics.UI.WXCore.Types

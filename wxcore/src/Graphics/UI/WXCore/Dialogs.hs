@@ -6,12 +6,18 @@
     Maintainer  :  daan@cs.uu.nl
     Stability   :  provisional
     Portability :  portable
+
+    Standard dialogs and (non modal) tip windows.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Dialogs
-    ( -- * Messages
+    ( 
+    -- * Messages
       errorDialog, warningDialog, infoDialog
     , confirmDialog, proceedDialog
+    -- ** Non-modal
+    , tipWindowMessage, tipWindowMessageBounded
+
     -- * Files
     , fileOpenDialog
     , filesOpenDialog
@@ -33,6 +39,23 @@ import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Draw
+
+
+-- | Opens a non-modal tip window with a text. The window is closed automatically
+-- when the user clicks the window or when it loses the focus.
+tipWindowMessage :: Window a -> String -> IO ()
+tipWindowMessage parent message
+  = do tipWindowCreate parent message 100
+       return ()
+
+-- | Opens a non-modal tip window with a text. The window is closed automatically
+-- when the mouse leaves the specified area, or when the user clicks the window,
+-- or when the window loses the focus.
+tipWindowMessageBounded :: Window a -> String -> Rect -> IO ()
+tipWindowMessageBounded parent message boundingBox
+  = do tipWindow <- tipWindowCreate parent message 100
+       tipWindowSetBoundingRect tipWindow boundingBox
+       return ()
 
 -- | Opens a dialog that lets the user select multiple files. See 'fileOpenDialog' for a description
 -- of the arguments. Returns the empty list when the user selected no files or pressed the cancel button.
