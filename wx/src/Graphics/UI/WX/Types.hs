@@ -59,6 +59,7 @@ module Graphics.UI.WX.Types
     , BrushStyle(..), BrushKind(..)
     , HatchStyle(..)
     , brushDefault
+    , brushTransparent
    
     -- ** Pen
     , PenStyle(..), PenKind(..), CapStyle(..), JoinStyle(..), DashStyle(..)

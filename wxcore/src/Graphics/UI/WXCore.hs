@@ -28,6 +28,7 @@ module Graphics.UI.WXCore
         , module Graphics.UI.WXCore.Defines
         , module Graphics.UI.WXCore.Types
         , module Graphics.UI.WXCore.Process
+        , module Graphics.UI.WXCore.Print
         , module Graphics.UI.WXCore.Draw
         , module Graphics.UI.WXCore.Events
         , module Graphics.UI.WXCore.Frame
@@ -56,6 +57,7 @@ import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Defines
 import Graphics.UI.WXCore.Process
+import Graphics.UI.WXCore.Print
 import Graphics.UI.WXCore.Events hiding ( StreamStatus(..) )
 import Graphics.UI.WXCore.Draw
 import Graphics.UI.WXCore.Frame

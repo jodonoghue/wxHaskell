@@ -89,6 +89,7 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/Frame \
 	Graphics/UI/WXCore/Layout \
 	Graphics/UI/WXCore/Process \
+	Graphics/UI/WXCore/Print \
 	Graphics/UI/WXCore/Dialogs \
 	Graphics/UI/WXCore/Image \
 	Graphics/UI/WXCore/Controls \
