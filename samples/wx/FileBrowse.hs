@@ -15,6 +15,7 @@ import List( zip3 )
 import Graphics.UI.WX
 import Graphics.UI.WXCore 
 
+
 main :: IO ()
 main 
   = start gui
@@ -128,12 +129,12 @@ gui
 onTreeEvent :: TreeCtrl a -> ListCtrl b -> StatusField -> EventTree -> IO ()
 onTreeEvent t l status event
   = case event of
-      TreeItemExpanding item veto
+      TreeItemExpanding item veto  | treeItemIsOk item
         -> do wxcBeginBusyCursor
               treeCtrlChildrenAddSubDirs t item
               wxcEndBusyCursor
               propagateEvent
-      TreeSelChanged item olditem
+      TreeSelChanged item olditem  | treeItemIsOk item
         -> do wxcBeginBusyCursor
               path <- treeCtrlGetItemPath t item
               set status [text := path]

@@ -34,7 +34,7 @@ module Graphics.UI.WXCore.Types(
             -- * Misc.
             , Style
             , EventId
-            , TreeItem
+            , TreeItem, treeItemInvalid, treeItemIsOk
 
             -- * Basic types
 

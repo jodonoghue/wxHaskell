@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.13 2003/09/29 14:21:24 dleijen Exp $
+# $Id: configure,v 1.14 2003/09/29 14:27:58 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -363,26 +363,27 @@ else
 fi
 
 # check ghc version
-ghcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
-case "$ghcversion" in
-  0* | 1* |  2* |  3* |  4* |  5.*)
-      echo "WARNING:"
-      echo " You seem to have an older ghc installed, namely $ghcversion"
-      echo " Ghc versions prior to 6.0 have garbage collector bugs that make wxHaskell"
-      echo " applications *crash* and contain incompatible libraries."
-      echo " It is strongly advised to upgrade to a newer version."
-      echo "";;
-  6.*) ;;
-  7.*) ;;
-  8.*) ;;
-  9.*) ;;
-  *)  echo "warning:"
-      echo " Unable to recognise the ghc version ($ghcversion ?)"
-      echo " Be careful: ghc versions prior to 6.0 have bugs that make wxHaskell"
-      echo " applications *crash* and contain incompatible libraries."
-      echo "";;
-esac
-
+hcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
+if test "$hc" = "ghc"; then
+  case "$hcversion" in
+    0* | 1* |  2* |  3* |  4* |  5.*)
+	echo "WARNING:"
+	echo " You seem to have an older ghc installed, namely $hcversion"
+	echo " Ghc versions prior to 6.0 have garbage collector bugs that make wxHaskell"
+	echo " applications *crash* and may contain incompatible libraries."
+	echo " It is strongly advised to upgrade to a newer version."
+	echo "";;
+    6.*) ;;
+    7.*) ;;
+    8.*) ;;
+    9.*) ;;
+    *)  echo "warning:"
+	echo " Unable to recognise the ghc version ($hcversion ?)"
+	echo " Be careful: ghc versions prior to 6.0 have bugs that make wxHaskell"
+	echo " applications *crash* and may contain incompatible libraries."
+	echo "";;
+  esac
+fi
 
 # Do we have ghc-pkg?
 if sh ./config.search "$hcpkg"; then
@@ -391,7 +392,7 @@ else
   echo "error:"
   echo " Unable to find: $hcpkg"
   echo " Pleasy specify the path to ghc-pkg."
-  echo " For example: ./configure --hcpkg=/c/ghc/ghc-6.0/bin/ghc-pkg"
+  echo " For example: ./configure --hcpkg=/c/ghc/ghc-6.0.1/bin/ghc-pkg"
   hcpkg=echo
   exit 2
 fi
@@ -552,6 +553,7 @@ TOOLKIT=$wxtoolkit
 
 # The Haskell compiler
 HC=$hc
+HCVERSION=$hcversion
 HCFLAGS=
 HCPKG=$hcpkg
 

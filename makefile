@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.32 2003/09/29 14:24:50 dleijen Exp $
+# $Id: makefile,v 1.33 2003/09/29 14:27:58 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -369,7 +369,7 @@ endif
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
-DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(VERSION).zip
+DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
 BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
