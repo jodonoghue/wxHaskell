@@ -19,6 +19,7 @@ IF NOT EXIST %installdir%\bin\wx.pkg GOTO notfound
 
 :install
 ECHO - register packages
+SET wxhlibdir=%installdir%\lib
 ghc-pkg -u -i "%installdir%\bin\wxcore.pkg"
 ghc-pkg -u -i "%installdir%\bin\wx.pkg"
 

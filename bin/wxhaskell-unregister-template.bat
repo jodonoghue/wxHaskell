@@ -4,19 +4,8 @@ IF "%1"==""       GOTO noarg
 IF "%1"=="--help" GOTO help
 IF "%1"=="-?"     GOTO help
 IF "%1"=="/?"     GOTO help
-GOTO installarg
-
-:installarg
-SET installdir=%1
-GOTO check
 
 :noarg
-SET installdir=%CD%\..
-GOTO check
-
-:check
-IF NOT EXIST %installdir%\bin\wx.pkg GOTO notfound
-
 ECHO uninstall wxhaskell:
 
 ECHO - unregister packages
@@ -43,14 +32,6 @@ ECHO.
 ECHO - done! You can now safely remove the wxhaskell install directory.
 ECHO.
 GOTO end
-
-:notfound
-ECHO error:
-ECHO   Unable to find the wxHaskell packages (wx.pkg). You have already
-ECHO   uninstalled wxHaskell or are trying to uninstall from another
-ECHO   directory than the install directory.
-ECHO.
-GOTO help
 
 :help
 ECHO usage:

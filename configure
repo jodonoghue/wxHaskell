@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.20 2003/10/15 18:34:42 dleijen Exp $
+# $Id: configure,v 1.21 2003/10/17 12:33:13 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -625,8 +625,8 @@ echo " - config/wxcore.pkg"
 cat > config/wxcore.pkg << EOF
 Package
   { name="wxcore"
-  , import_dirs=["\${installdir}/lib/imports"]
-  , library_dirs=["\${installdir}/lib"]
+  , import_dirs=["\${wxhlibdir}/imports"]
+  , library_dirs=["\${wxhlibdir}"]
   , hs_libraries=["wxcore","wxcore0"]
   , extra_libraries=["$wxclibname"]
   , package_deps = ["base","data"]
@@ -638,8 +638,8 @@ echo " - config/wx.pkg"
 cat > config/wx.pkg << EOF
 Package
   { name="wx"
-  , import_dirs=["\${installdir}/lib/imports"]
-  , library_dirs=["\${installdir}/lib"]
+  , import_dirs=["\${wxhlibdir}"]
+  , library_dirs=["\${wxhlibdir}"]
   , hs_libraries=["wx"]
   , package_deps=["wxcore"]
   }
@@ -701,8 +701,8 @@ EOF
 echo " - config/macosx-postinstall"
 cat > config/macosx-postinstall << EOF
 #!/bin/sh      
-env installdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
-env installdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
+env wxhlibdir="$libdir/lib" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
+env wxhlibdir="$libdir/lib" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
 EOF
 chmod a+x config/macosx-postinstall
 

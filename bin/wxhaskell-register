@@ -38,17 +38,20 @@ while : ; do
   shift
 done
 
+# set libdir/bindir
+libdir="${installdir}/lib"
+bindir="${installdir}/bin"
 
 # test if package files are found.
-if test ! -e "${installdir}/bin/wx.pkg"; then
+if test ! -e "${bindir}/wx.pkg"; then
   echo "error: " 1>&2
-  echo "  Unable to find wxhaskell packages: ${installdir}/bin/wx.pkg" 1>&2
+  echo "  Unable to find wxhaskell packages: ${bindir}/wx.pkg" 1>&2
   echo "  Please specify the installation directory on the command line." 1>&2
-  echo "  For example: wxhaskell-register --installdir=/usr/local/lib" 1>&2
+  echo "  For example: wxhaskell-register --installdir=/usr/local/wxhaskell" 1>&2
   echo "" 1>&2
   exit 2
 fi
 
 # register the packages.
-env installdir=${installdir} ghc-pkg -u -i ${installdir}/wxcore.pkg
-env installdir=${installdir} ghc-pkg -u -i ${installdir}/wx.pkg
+env wxhlibdir=${libdir} ghc-pkg -u -i ${bindir}/wxcore.pkg
+env wxhlibdir=${libdir} ghc-pkg -u -i ${bindir}/wx.pkg

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.41 2003/10/17 06:16:48 dleijen Exp $
+# $Id: makefile,v 1.42 2003/10/17 12:33:13 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -320,7 +320,7 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$
 # install packages
 # usage: $(call install-pkg,<install dir>,<package file>)
 # usage: $(call uninstall-pkg,<package name>)
-install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
+install-pkg=env wxhlibdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 # copy files.
