@@ -123,7 +123,8 @@ fi
 case "$1" in
   -wx-config=*|--wx-config=*)
     wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
-    wxconfig=`eval echo $wxconfig`;;   #expand ~ 
+    wxconfig=`eval echo $wxconfig`   #expand ~ 
+    shift;;  # remove --wx-config argument
 esac
 
 
