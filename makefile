@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.44 2003/10/21 10:56:32 dleijen Exp $
+# $Id: makefile,v 1.45 2003/10/21 15:04:09 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -125,7 +125,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image
+	treectrl image apppath
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
