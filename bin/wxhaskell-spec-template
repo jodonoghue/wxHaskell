@@ -22,7 +22,7 @@ Summary: A Haskell library for wxWidgets
 Group: Development/Libraries
 BuildRequires: %{hcomp} = %{hcversion}
 Requires: %{hcomp} = %{hcversion}
-Requires(post,preun): %{hcpkg}-%{hcversion}
+Requires(post,preun): %{hcomp} = %{hcversion}
 
 %description %{wxhpackage}
 wxHaskell is a portable GUI library for Haskell that uses wxWidgets.
