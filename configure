@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.9 2003/09/12 12:36:39 dleijen Exp $
+# $Id: configure,v 1.10 2003/09/16 09:51:00 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -47,6 +47,11 @@ wxtoolkit=""
 wxwinlib=""
 extraldopts=""
 
+# see if wx-config is the first argument
+case "$1" in
+  -wx-config=*|--wx-config=*)
+    wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`;;
+esac
 
 #--------------------------------------------------------------------
 # Improve guesses
@@ -104,13 +109,13 @@ if sh ./config.search "$wxconfig"; then
   # guess wxwindows library
   # extraction process is a bit flaky: it expects a single -llibname option.
   # wxwinlibdir="`wx-config --libs | sed -e 's|.*-L\([^ ]*\).*|\1|'`"
-  wxwinexecprefix="`wx-config --exec-prefix`"
-  wxwinlibname="`wx-config --libs | sed -e 's|.*-lwx\([^ ]*\).*|wx\1|'`"
+  wxwinexecprefix="`$wxconfig --exec-prefix`"
+  wxwinlibname="`$wxconfig --libs | sed -e 's|.*-lwx\([^ ]*\).*|wx\1|'`"
   wxwinlib="$wxwinexecprefix/lib/$lib$wxwinlibname$dll"
 
   # guess extra link options
-  extraldopts="`wx-config --ldflags`"
-  pthread="`wx-config --libs | sed -e \"s|.* -pthread .*|yes|\"`"
+  extraldopts="`$wxconfig --ldflags`"
+  pthread="`$wxconfig --libs | sed -e \"s|.* -pthread .*|yes|\"`"
   if test "$pthread" = "yes"; then
     if test -z "$extraldopts"; then
       extraldopts="-pthread"
@@ -164,9 +169,10 @@ while : ; do
         echo "                        [$hdocbase]"
         echo ""
         echo "wxwindows options:"
-        echo " --wx-lib=<library>     the wxWindows library [$wxwinlib]"
-        echo " --wx-config=<program>  the wxWindows configure utility [$wxconfig]"
-        echo " --wx-toolkit=<name>    the wxWindows gui toolkit [$wxtoolkit]"
+        echo " --wx-lib=<library>     wxWindows library [$wxwinlib]"
+        echo " --wx-toolkit=<name>    wxWindows gui toolkit [$wxtoolkit]"
+        echo " --wx-config=<program>  wxWindows configure script (must be the first option!)"
+        echo "                        [$wxconfig]"
         echo ""
         echo "platform options:"
         echo " --dllext=<extension>   dynamic link library extension [$dll]"
