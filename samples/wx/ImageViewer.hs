@@ -57,7 +57,9 @@ imageViewer
              ,on (menu open)  := onOpen f sw vbitmap mclose status 
              ,on (menu mclose):= onClose  sw vbitmap mclose status
              ,on closing      :~ \prev -> do closeImage vbitmap; prev 
+             ,clientSize       := sz 300 200
              ]
+
   where
     onOpen :: Frame a -> ScrolledWindow b -> Var (Maybe (Bitmap ())) -> MenuItem c -> StatusField -> IO ()
     onOpen f sw vbitmap mclose status
@@ -87,7 +89,7 @@ imageViewer
            set mclose [enable := True]
            set status [text := fname]
            -- reset the scrollbars 
-           bmsize <- bitmapGetSize bitmap
+           bmsize <- bitmapGetSize bm
            set sw [virtualSize := bmsize]
            repaint sw
        `catch` \err -> repaint sw
