@@ -11,6 +11,7 @@
 
   An efficient implementation of maps from integer keys to values.
   This module belongs to the DData library, <http://www.cs.uu.nl/~daan/ddata.html>.
+  (Aug 19 2003: But is slightly modified for wxHaskell)
 
   1) The module exports some names that clash with the "Prelude" -- 'lookup', 'map', and 'filter'.
       If you want to use "IntMap" unqualified, these functions should be hidden.
@@ -51,7 +52,7 @@ module Graphics.UI.WXH.IntMap  (
               IntMap, Key          -- instance Eq,Show
 
             -- * Operators
-            , (!), (\\)
+            , (!)
 
             -- * Query
             , isEmpty
@@ -165,8 +166,6 @@ import Word
 import GlaExts ( Word(..), Int(..), shiftRL# )
 -}
 
-infixl 9 \\
-
 type Nat = Word
 
 natFromInt :: Key -> Nat
@@ -189,9 +188,6 @@ shiftRL (W# x) (I# i)
 (!) :: IntMap a -> Key -> a
 m ! k    = find k m
 
--- | /O(n+m)/. See 'difference'.
-(\\) :: IntMap a -> IntMap a -> IntMap a
-m1 \\ m2 = difference m1 m2
 
 {--------------------------------------------------------------------
   Types

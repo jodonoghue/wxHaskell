@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.16 2003/08/19 12:09:52 dleijen Exp $
+# $Id: makefile,v 1.17 2003/08/19 19:50:34 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -215,7 +215,8 @@ dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
 # usage: $(call ensure-dir,<directory>)
 # usage: $(call ensure-dirs-of-files,<files>)
 ensure-dir	=if test -d "$(1)" -o "$(1)" = "./"; then :; else $(MKDIR) $(1); fi
-ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,$(dir)) &&) :
+ensure-dirs	=$(foreach dir,$(1),$(call ensure-dir,$(dir)) &&) :
+ensure-dirs-of-files=$(call ensure-dirs,$(call dirs-of-files,$(1)))
 
 # full-remove-dir
 # safe-remove-dir
@@ -300,6 +301,11 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$
 install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
+# copy files
+cp-echo		=echo  "copy $(1) to $(2)" && $(CP) $(1) $(2)
+cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
+		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
+cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
 
 #--------------------------------------------------------------------------
 # The main targets.
@@ -336,6 +342,18 @@ DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
 DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
+BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
+ifeq ($(TOOLKIT),msw)
+BINDIST-LIBDIR  =$(BINDIST-OUTDIR)
+BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/bin
+BINDIST-BINDIR  =$(BINDIST-OUTDIR)/bin
+else
+BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/lib
+BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/lib
+BINDIST-BINDIR  =$(BINDIST-OUTDIR)/bin
+endif
+
+
 # extract toplevel directory name  (=wxhaskell)
 TOPDIRS   =$(subst \, ,$(subst /, ,$(TOPDIR)))
 ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
@@ -344,9 +362,8 @@ ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
 # usage: $(call zip-bindist,<relative directory>,<files>)
 # usage: $(call zip-srcdist,<local files>)
 zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
-
+zip-add-rec     =echo zipping: $(1); $(ZIP) -r -y -9 $(TOPDIR)/$(1) $(2)
 zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
-zip-bindist	=$(CD) $(1); $(call zip-add,$(DIST-BIN), $(call relative-to,$(1),$(2)))
 zip-srcdist	=$(CD) ..;   $(call zip-add,$(DIST-SRC), $(patsubst %,$(ROOTDIR)/%, $(1)))
 
 # full distribution
@@ -365,14 +382,17 @@ srcdist: dist-dirs wxc-dist wxd-dist wxh-dist wx-dist
 
 # binary distribution
 bindist: all dist-dirs wxc-bindist wxh-bindist wx-bindist
-	@$(call zip-bindist,config, wxh.pkg wx.pkg)
-	@$(call zip-bindist,bin,wxhaskell-register)
-ifeq ($(DLL),.dll)
-	@$(call zip-bindist,bin,wxhaskell-register.bat)
+	@$(call cp-bindist,config,$(BINDIST-LIBDIR),config/wxh.pkg config/wx.pkg)
+	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
+ifeq ($(TOOLKIT),msw)
+	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register.bat)
 endif
-ifeq ($(DLL),.dylib)
-	@$(call zip-bindist,bin,macosx-app)
+ifeq ($(TOOLKIT),mac)
+	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/macosx-app)
 endif
+	@$(RM) $(DIST-BIN)
+	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
+	
 
 
 
@@ -408,7 +428,7 @@ wx-clean:
 
 # bindist
 wx-bindist: wx
-	@$(call zip-bindist,$(WX-OUTDIR),$(WX-BINS))
+	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
 
 # source dist
 wx-dist: $(WX-HS)
@@ -519,7 +539,7 @@ wxhrealclean: wxh-clean
 
 # bindist
 wxh-bindist: wxh
-	@$(call zip-bindist,$(WXH-OUTDIR), $(WXH-BINS))
+	@$(call cp-bindist,$(WXH-OUTDIR),$(BINDIST-LIBDIR),$(WXH-BINS))
 
 # source dist
 wxh-dist: $(WXH-NONGEN-HS)
@@ -584,6 +604,7 @@ WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC).a
 WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC)$(DLL)
 endif
 
+
 WXC-OBJS	=$(call make-objs, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-DEPS	=$(call make-deps, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-LIBS	=$(WXWIN-LIBS)
@@ -609,26 +630,16 @@ wxc-compress: wxc
 # ghc directory. Further complication is that sometimes wxWindows is in a separate dll
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).
 wxc-bindist: wxc-compress
+	@$(call cp-bindist,$(dir $(WXC-LIB)),$(BINDIST-DLLDIR),$(WXC-LIB))
+ifneq ($(WXWINLIB),)
+	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*$(DLL))
+endif
 ifeq ($(DLL),.dll)
-	@#put the dll in a temporary "bin" dir so that it can be put in the ghc bin directory on installation
-	@$(MKDIR) $(WXC-OUTDIR)/bin
-	@$(CP) $(WXC-LIB) $(WXC-OUTDIR)/bin
-ifneq ($(WXWINLIB),)
-	@$(CP) $(WXWINLIB) $(WXC-OUTDIR)/bin
-	@$(call zip-bindist,$(WXC-OUTDIR), bin/$(notdir $(WXWINLIB)))
+	@$(call cp-bindist,$(dir $(WXC-ARCHIVE)),$(BINDIST-LIBDIR),$(WXC-ARCHIVE))
 endif
-	@$(call zip-bindist,$(WXC-OUTDIR), bin/$(notdir $(WXC-LIB)) $(WXC-ARCHIVE))
-	@-$(RM) $(WXC-OUTDIR)/bin/*
-	@-$(RMDIR) $(WXC-OUTDIR)/bin
-else
-ifneq ($(WXWINLIB),)
-	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*$(DLL))
 ifeq ($(TOOLKIT),mac)
-	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*.r)
-	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*.rsrc)
-endif		
-endif
-	@$(call zip-bindist,$(WXC-OUTDIR), $(WXC-LIB))
+	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.r)
+	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.rsrc)
 endif
 
 # source dist
@@ -656,7 +667,7 @@ $(basename $(WXC-LIB)).so: $(WXC-OBJS)
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^
-	$(CXX) -dynamiclib -install_name $@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
+	$(CXX) -dynamiclib -install_name /usr/local/wxhaskell/lib/$(notdir $@) -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
 # create an object file from source files
