@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "unregistering wxhaskell:"
+
+# unregister the packages.
+ghc-pkg -r wx
+ghc-pkg -r wxcore
+echo ""
+echo "done. you can now safely remove the wxhaskell libraries."
+

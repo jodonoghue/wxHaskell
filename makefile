@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.37 2003/10/15 16:01:00 dleijen Exp $
+# $Id: makefile,v 1.38 2003/10/15 18:26:40 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -169,8 +169,8 @@ WXHASKELL-SOURCES= \
 	prologue.txt license.txt \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
-	bin/wxhaskell-register \
-	bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat
+	bin/wxhaskell-register bin/wxhaskell-unregister \
+	bin/wxhaskell-register-template.bat bin/wxhaskell-unregister-template.bat
 
 SAMPLE-SOURCES= \
 	samples/wx/BouncingBalls.hs \
@@ -324,12 +324,24 @@ install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 # copy files.
+# usage: cp-bindist<dirprefix,target-dir,source files>
 # use -R switch to copy symbolic links literally instead of following the links.
 # use -p to preserve file dates to avoid linker bug on macosX with .a files.
 cp-echo		=echo  "copy $(1) to $(2)" && $(CP) -p -R $(1) $(2)
 cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
 		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
 cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
+
+# usage: $(call cp-relative,<out topdir>,<local files>)
+cp-relative	=$(call ensure-dirs-of-files,$(patsubst %,$(1)/%,$(2))) && \
+		 $(foreach file,$(2),$(call cp-echo,$(file),$(1)/$(patsubst %/,%,$(dir $(file)))) && ):
+
+cp-srcdist	=$(call cp-relative,$(TOPDIR)/$(SRCDIST-SRCDIR),$(1))
+cp-docdist	=$(CD) $(1) && $(call cp-relative,$(TOPDIR)/$(DOCDIST-SRCDIR),$(patsubst $(1)/%,%,$(2)))
+
+# zip commands
+zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
+zip-add-rec     =echo zipping: $(1); $(ZIP) -r -y -9 $(TOPDIR)/$(1) $(2)
 
 #--------------------------------------------------------------------------
 # The main targets.
@@ -379,22 +391,20 @@ DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
 DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(BIN-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
+SRCDIST-OUTDIR  =$(DIST-OUTDIR)/srcdist
+SRCDIST-SRCDIR  =$(SRCDIST-OUTDIR)/$(WXHASKELLVER)
+
+DOCDIST-OUTDIR  =$(DIST-OUTDIR)/docdist
+DOCDIST-SRCDIR  =$(DOCDIST-OUTDIR)/$(WXHASKELLVER)
+
+
 BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
 BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
 
-# extract toplevel directory name  (=wxhaskell)
-TOPDIRS   =$(subst \, ,$(subst /, ,$(TOPDIR)))
-ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
+#zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
 
-# zip commands
-# usage: $(call zip-bindist,<relative directory>,<files>)
-# usage: $(call zip-srcdist,<local files>)
-zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
-zip-add-rec     =echo zipping: $(1); $(ZIP) -r -y -9 $(TOPDIR)/$(1) $(2)
-zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
-zip-srcdist	=$(CD) ..;   $(call zip-add,$(DIST-SRC), $(patsubst %,$(ROOTDIR)/%, $(1)))
 
 # full distribution
 dist: dist-dirs all srcdist bindist docdist
@@ -402,22 +412,24 @@ dist: dist-dirs all srcdist bindist docdist
 dist-dirs:
 	@$(call ensure-dirs-of-files,$(DISTS))
 
-dist-clean:
+dist-clean: srcdist-clean bindist-clean
 	-@$(call safe-remove-files,$(DISTS))
 
 # source distribution
-srcdist: dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
-	@$(call zip-srcdist, $(WXHASKELL-SOURCES))
-	@$(call zip-srcdist, $(SAMPLE-SOURCES))
+srcdist: srcdist-clean dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
+	@$(call cp-srcdist, $(WXHASKELL-SOURCES))
+	@$(call cp-srcdist, $(SAMPLE-SOURCES))
+	@echo zipping: $(DIST-SRC)
+	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),*)
+
+srcdist-clean:
+	-@$(call full-remove-dir,$(SRCDIST-OUTDIR))
+	-@$(call safe-remove-file,$(DIST-SRC))
 
 # generic binary distribution as a zip
 bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
-ifeq ($(TOOLKIT),msw)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register$(BAT) config/wxhaskell-unregister$(BAT))
-else
-	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register)
-endif
 ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/macosx-app)
 endif
@@ -486,7 +498,7 @@ wx-clean:
 
 # source dist
 wx-dist: $(WX-HS)
-	@$(call zip-srcdist, $^)
+	@$(call cp-srcdist, $^)
 
 # bindist
 wx-bindist: wx
@@ -541,7 +553,7 @@ wxd-clean:
 
 # source dist
 wxd-dist: $(WXD-HS)
-	@$(call zip-srcdist, $^)
+	@$(call cp-srcdist, $^)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
@@ -597,7 +609,7 @@ wxcore-realclean: wxcore-clean
 
 # source dist
 wxcore-dist: $(WXCORE-NONGEN-HS)
-	@$(call zip-srcdist, $^)
+	@$(call cp-srcdist, $^)
 
 # bindist
 wxcore-bindist: wxcore
@@ -685,7 +697,7 @@ wxc-compress: wxc
 
 # source dist
 wxc-dist: $(WXC-SRCS)
-	@$(call zip-srcdist, $^)
+	@$(call cp-srcdist, $^)
 
 # binary distribution. A complication is that sometimes wxWindows is in a separate dll
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).
@@ -761,16 +773,22 @@ webdoc: doc
 
 # documentation distribution
 ifeq ($(HDOCFOUND),yes)
-docdist: doc
+docdist: docdist-clean doc
 	@echo "-- adding documentation"
-	@$(call zip-docdist,$(OUTDIR), $(DOC-OUTDIR)/*)
+	@$(call cp-docdist,$(OUTDIR),$(wildcard $(DOC-OUTDIR)/*))
 else
 docdist:
 	@echo "-- haddock not available: documentation can not be added"
 endif
 	@echo "-- adding samples"
-	@$(call zip-docdist,., $(SAMPLE-SOURCES))
+	@$(call cp-docdist,.,$(SAMPLE-SOURCES))
+	@$(CD) $(DOCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-DOC),*)
 	
+docdist-clean:
+	-@$(call full-remove-dir,$(DOCDIST-OUTDIR))
+	-@$(call safe-remove-file,$(DIST-DOC))
+	
+
 # generate documentation with haddock
 $(DOCFILE): prologue.txt $(DOCSOURCES)
 	$(HDOC) $(HDOCFLAGS) $(DOCSOURCES)

@@ -1,7 +1,14 @@
 #!/bin/sh
 
-# default installation directory
-installdir="/usr/local/lib"
+# guess installation directory
+if test -e "/usr/local/wxhaskell/bin/wx.pkg"; then
+  installdir="/usr/local/wxhaskell"
+else if test -e "./wx.pkg"; then
+  installdir=".."
+else
+  installdir="/usr/local"
+fi
+fi
 
 # parse command-line arguments
 while : ; do
@@ -33,9 +40,9 @@ done
 
 
 # test if package files are found.
-if test ! -e "${installdir}/wxh.pkg"; then
+if test ! -e "${installdir}/bin/wx.pkg"; then
   echo "error: " 1>&2
-  echo "  Unable to find: ${installdir}/wxh.pkg" 1>&2
+  echo "  Unable to find wxhaskell packages: ${installdir}/bin/wx.pkg" 1>&2
   echo "  Please specify the installation directory on the command line." 1>&2
   echo "  For example: wxhaskell-register --installdir=/usr/local/lib" 1>&2
   echo "" 1>&2
