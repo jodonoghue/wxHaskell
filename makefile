@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.8 2003/07/15 23:12:38 dleijen Exp $
+# $Id: makefile,v 1.9 2003/07/15 23:23:58 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -264,7 +264,7 @@ install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),
 
 uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
 uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi;
-uninstall-filesx=$(foreach file,$(2),$(call safe-remove-file,$(file))) \
+uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file))) \
 		 $(CD) $(1); \
 		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)))
 uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
