@@ -19,6 +19,7 @@ module Graphics.UI.WX.Controls
       -- * Controls
       -- ** Button
       , Button, button, buttonEx, smallButton
+      , BitmapButton, bitmapButton
       -- ** Text entry
       , Align(..), Wrap(..)
       , textEntry, textCtrl, textCtrlRich, textCtrlEx
@@ -133,6 +134,22 @@ buttonEx parent flags props
 
 instance Commanding (Button a) where
   command  = newEvent "command" buttonGetOnCommand buttonOnCommand
+
+-- | Create a bitmap button. Use the 'image' attribute to set the
+-- bitmap.
+bitmapButton :: Window a -> [Prop (BitmapButton ())] -> IO (BitmapButton ())
+bitmapButton parent props
+  = do bb <- bitmapButtonCreate parent idAny nullBitmap rectNull wxBU_AUTODRAW 
+       set bb props
+       return bb
+
+instance HasImage (BitmapButton a) where
+  image 
+    = writeAttr "image" setter
+    where
+      setter w fname
+        = withBitmapFromFile fname (bitmapButtonSetBitmapLabel w)
+
 
 {--------------------------------------------------------------------------------
   Text entry

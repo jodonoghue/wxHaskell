@@ -11,7 +11,7 @@
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Frame
-    ( Frame, frame, frameFixed, frameTool, frameEx, image
+    ( Frame, frame, frameFixed, frameTool, frameEx
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -52,11 +52,11 @@ frameEx style props parent
        set f props
        return f
 
--- TODO: generalize this into a class.
--- | The image of a frame. 
-image :: WriteAttr (Frame a) FilePath
-image
-  = writeAttr "image"  frameSetIconFromFile
+-- The image of a frame. 
+instance HasImage (Frame a) where
+  image
+    = writeAttr "image"  frameSetIconFromFile
+
 
 {-
 instance Labeled (Frame a) where

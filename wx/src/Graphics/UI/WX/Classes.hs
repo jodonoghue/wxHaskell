@@ -46,6 +46,7 @@ module Graphics.UI.WX.Classes
     , Identity( identity )
     , Styled( style )   
     , Dockable( dockable )
+    , HasImage( image )
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -68,6 +69,12 @@ class Textual w where
 
   appendText w s
     = set w [text :~ (++s)]
+
+
+-- | Widgets with an image.
+class HasImage w where
+  -- | The image of a widget.
+  image :: Attr w FilePath
 
 
 -- | Widgets with a font.

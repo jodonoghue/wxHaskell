@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.22 2003/09/14 18:59:23 dleijen Exp $
+# $Id: makefile,v 1.23 2003/09/15 08:45:36 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -168,7 +168,8 @@ WXHASKELL-SOURCES= \
 	config.search configure makefile \
 	prologue.txt license.txt \
 	bin/macosx-app bin/reimp.exe \
-	bin/wxhaskell-register bin/wxhaskell-register.bat
+	bin/wxhaskell-register bin/wxhaskell-register.bat \
+	bin/wxhaskell-uninstall.bat
 
 SAMPLE-SOURCES= \
 	samples/wx/Camels.hs samples/wx/desert.bmp \
@@ -389,7 +390,7 @@ bindist: all dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call cp-bindist,config,$(BINDIST-LIBDIR),config/wxcore.pkg config/wx.pkg)
 	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
 ifeq ($(TOOLKIT),msw)
-	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register.bat)
+	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat)
 endif
 ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/macosx-app)
