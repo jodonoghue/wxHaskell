@@ -144,7 +144,7 @@ WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
 	treectrl image apppath db glcanvas wave managed	\
-	printout previewframe
+	printout previewframe textstream
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
