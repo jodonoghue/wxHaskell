@@ -346,6 +346,9 @@ TClass(wxColour) wxColour_CreateFromInt(int rgb);
 /** Return colors as an rgb int. */
 int wxColour_GetInt( TSelf(wxColour) colour);
 
+/** Create from system colour. */
+TClass(wxColour) wxcSystemSettingsGetColour( int systemColour );
+
 
 /* basic pixel manipulation */
 void wxcSetPixelRGB( void* buffer, int width, TPoint(x,y), int rgb  );

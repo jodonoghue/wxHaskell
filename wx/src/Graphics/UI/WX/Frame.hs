@@ -70,10 +70,11 @@ frameEx style props parent
               $ closeableFlags props
               $ fullRepaintOnResizeFlags props style)
        wxcAppSetTopWindow f
-       let initProps = if (containsProp "visible" props)
-                        then [] else [visible := True] ++
-                       if (containsProp "clientSize" props)
-                        then [] else [clientSize := sizeZero]
+       let initProps = (if (containsProp "visible" props)
+                         then [] else [visible := True]) ++
+                       (if (containsProp "clientSize" props)
+                         then [] else [clientSize := sizeZero]) ++
+                       [bgcolor := colorSystem Color3DFace]
        set f initProps
        set f props
        return f

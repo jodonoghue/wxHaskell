@@ -46,6 +46,8 @@ module Graphics.UI.WXCore.Types(
             , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
             , red, green, blue
             , cyan, magenta, yellow
+            -- *** System colors
+            , SystemColor(..), colorSystem
 
             -- ** Points
             , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
@@ -71,6 +73,7 @@ module Graphics.UI.WXCore.Types(
 import List( (\\) )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.WxcClasses( wxcSystemSettingsGetColour )
 import System.IO.Unsafe( unsafePerformIO )
 
 -- utility
@@ -378,3 +381,86 @@ blue      = colorRGB 0x00 0x00 0xFF
 yellow    = colorRGB 0xFF 0xFF 0x00
 magenta   = colorRGB 0xFF 0x00 0xFF
 cyan      = colorRGB 0x00 0xFF 0xFF
+
+
+{--------------------------------------------------------------------------
+  System colors
+--------------------------------------------------------------------------}
+-- | System Colors.
+data SystemColor
+  = ColorScrollBar        -- ^ The scrollbar grey area.  
+  | ColorBackground       -- ^ The desktop colour.  
+  | ColorActiveCaption    -- ^ Active window caption.  
+  | ColorInactiveCaption  -- ^ Inactive window caption.  
+  | ColorMenu             -- ^ Menu background.  
+  | ColorWindow           -- ^ Window background.  
+  | ColorWindowFrame      -- ^ Window frame.  
+  | ColorMenuText         -- ^ Menu text.  
+  | ColorWindowText       -- ^ Text in windows.  
+  | ColorCaptionText      -- ^ Text in caption, size box and scrollbar arrow box.  
+  | ColorActiveBorder     -- ^ Active window border.  
+  | ColorInactiveBorder   -- ^ Inactive window border.  
+  | ColorAppWorkspace     -- ^ Background colour MDI -- ^applications.  
+  | ColorHighlight        -- ^ Item(s) selected in a control.  
+  | ColorHighlichtText    -- ^ Text of item(s) selected in a control.  
+  | ColorBtnFace          -- ^ Face shading on push buttons.  
+  | ColorBtnShadow        -- ^ Edge shading on push buttons.  
+  | ColorGrayText         -- ^ Greyed (disabled) text.  
+  | ColorBtnText          -- ^ Text on push buttons.  
+  | ColorInactiveCaptionText -- ^ Colour of text in active captions.  
+  | ColorBtnHighlight     -- ^ Highlight colour for buttons (same as 3DHILIGHT).  
+  | Color3DDkShadow       -- ^ Dark shadow for three-dimensional display elements.  
+  | Color3DLight          -- ^ Light colour for three-dimensional display elements.  
+  | ColorInfoText         -- ^ Text colour for tooltip controls.  
+  | ColorInfoBk           -- ^ Background colour for tooltip controls.  
+  | ColorDesktop          -- ^ Same as BACKGROUND.  
+  | Color3DFace           -- ^ Same as BTNFACE.  
+  | Color3DShadow         -- ^ Same as BTNSHADOW.  
+  | Color3DHighlight      -- ^ Same as BTNHIGHLIGHT.  
+  | Color3DHilight        -- ^ Same as BTNHIGHLIGHT.  
+  | ColorBtnHilight       -- ^ Same as BTNHIGHLIGHT.  
+
+instance Enum SystemColor where
+  toEnum i
+    = error "Graphics.UI.WXCore.Types.SytemColor.toEnum: can not convert integers to system colors."
+
+  fromEnum systemColor
+    = case systemColor of
+        ColorScrollBar        -> wxSYS_COLOUR_SCROLLBAR
+        ColorBackground       -> wxSYS_COLOUR_BACKGROUND
+        ColorActiveCaption    -> wxSYS_COLOUR_ACTIVECAPTION
+        ColorInactiveCaption  -> wxSYS_COLOUR_INACTIVECAPTION
+        ColorMenu             -> wxSYS_COLOUR_MENU
+        ColorWindow           -> wxSYS_COLOUR_WINDOW
+        ColorWindowFrame      -> wxSYS_COLOUR_WINDOWFRAME
+        ColorMenuText         -> wxSYS_COLOUR_MENUTEXT
+        ColorWindowText       -> wxSYS_COLOUR_WINDOWTEXT
+        ColorCaptionText      -> wxSYS_COLOUR_CAPTIONTEXT
+        ColorActiveBorder     -> wxSYS_COLOUR_ACTIVEBORDER
+        ColorInactiveBorder   -> wxSYS_COLOUR_INACTIVEBORDER
+        ColorAppWorkspace     -> wxSYS_COLOUR_APPWORKSPACE 
+        ColorHighlight        -> wxSYS_COLOUR_HIGHLIGHT
+        ColorHighlichtText    -> wxSYS_COLOUR_HIGHLIGHTTEXT
+        ColorBtnFace          -> wxSYS_COLOUR_BTNFACE
+        ColorBtnShadow        -> wxSYS_COLOUR_BTNSHADOW
+        ColorGrayText         -> wxSYS_COLOUR_GRAYTEXT
+        ColorBtnText          -> wxSYS_COLOUR_BTNTEXT
+        ColorInactiveCaptionText -> wxSYS_COLOUR_INACTIVECAPTIONTEXT
+        ColorBtnHighlight     -> wxSYS_COLOUR_BTNHIGHLIGHT
+        Color3DDkShadow       -> wxSYS_COLOUR_3DDKSHADOW
+        Color3DLight          -> wxSYS_COLOUR_3DLIGHT
+        ColorInfoText         -> wxSYS_COLOUR_INFOTEXT
+        ColorInfoBk           -> wxSYS_COLOUR_INFOBK
+        ColorDesktop          -> wxSYS_COLOUR_DESKTOP
+        Color3DFace           -> wxSYS_COLOUR_3DFACE
+        Color3DShadow         -> wxSYS_COLOUR_3DSHADOW
+        Color3DHighlight      -> wxSYS_COLOUR_3DHIGHLIGHT
+        Color3DHilight        -> wxSYS_COLOUR_3DHILIGHT
+        ColorBtnHilight       -> wxSYS_COLOUR_BTNHILIGHT
+
+      
+-- | Convert a system color to a color. 
+colorSystem :: SystemColor -> Color
+colorSystem systemColor
+  = unsafePerformIO $ 
+    wxcSystemSettingsGetColour (fromEnum systemColor)

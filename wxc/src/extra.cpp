@@ -1201,6 +1201,13 @@ EWXWEXPORT(void, wxcFree)( void* p )
   if (p!=NULL) free(p);
 }
 
+EWXWEXPORT(wxColour*, wxcSystemSettingsGetColour)( int systemColour )
+{
+   wxColour* colour = new wxColour();
+   *colour = wxSystemSettings::GetColour( (wxSystemColour)systemColour );
+   return colour;
+}
+
 /*-----------------------------------------------------------------------------
   delete
 -----------------------------------------------------------------------------*/

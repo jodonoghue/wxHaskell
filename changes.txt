@@ -29,6 +29,8 @@ Backward compatible additions:
 - Added "creation time" attributes that use reflective attributes
   not compositional (and thus not so nice), but very convenient!
 - Added "entry" as shorthand for "textEntry"
+- Added "SystemColor" and "colorSystem" to get standard system colors.
+- Defaulted background color of "Frame"s to Color3DFace (as a Panel).
 
 Bug fixes:
 - Fixed bug that crashed wxHaskell when a tree control had the focus

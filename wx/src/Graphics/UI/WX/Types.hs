@@ -44,6 +44,8 @@ module Graphics.UI.WX.Types
     , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
     , red, green, blue
     , cyan, magenta, yellow
+    -- *** System colors
+    , SystemColor(..), colorSystem
 
     -- ** Font
     , FontStyle(..), FontFamily(..), FontShape(..), FontWeight(..)
