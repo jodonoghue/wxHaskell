@@ -12,6 +12,7 @@
 -----------------------------------------------------------------------------------------
 module ParseC( parseC ) where
 
+import Char( isSpace )
 import List( isPrefixOf )
 import Text.ParserCombinators.Parsec
 import qualified Text.ParserCombinators.Parsec.Token as P
@@ -24,11 +25,42 @@ import Types
 -----------------------------------------------------------------------------------------}
 parseC :: FilePath -> IO [Decl]
 parseC fname
-  = do putStrLn ("parsing: " ++ fname)
-       input  <- readFile fname
-       declss <- mapM (parseDecl fname) (pairComments (lines input))
+  = do lines  <- readHeaderFile fname
+       declss <- mapM (parseDecl fname) (pairComments lines)
        -- putStrLn ("ok.")
        return (concat declss)
+
+-- flaky but suitable.
+readHeaderFile :: FilePath -> IO [String]
+readHeaderFile fname
+  = do putStrLn ("parsing: " ++ fname)
+       input <- readFile fname
+       lls   <- mapM readIncludeFile (flattenComments (lines input))
+       return (concat lls)
+  where
+    pathName
+      = reverse $ dropWhile (\c -> not (elem c "/\\")) $ reverse fname
+
+    readIncludeFile line
+      | isPrefixOf "#include \"" line  
+      = readHeaderFile (pathName ++ includePath)
+      where
+        includePath = takeWhile (/='"') $ tail $ dropWhile (/='"') line
+
+    readIncludeFile line
+      = return [line]
+                        
+-- flaky, but suitable
+flattenComments :: [String] -> [String]
+flattenComments lines
+  = case lines of
+      (('/':'*':xs):xss) -> let (incomment,comment:rest) = span (not . endsComment) lines
+                         in (concat (incomment ++ [comment]) : flattenComments rest)
+      xs : xss        -> xs : flattenComments xss
+      []              -> []
+  where
+    endsComment line  = isPrefixOf "/*" (dropWhile isSpace (reverse line))
+                     
 
 pairComments :: [String] -> [(String,String)]
 pairComments lines

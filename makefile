@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.45 2003/10/21 15:04:09 dleijen Exp $
+# $Id: makefile,v 1.46 2003/10/23 09:08:09 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -153,7 +153,8 @@ WXC-SPECS-EIFFEL = \
 	wxc/eiffel/wxc_defs.e  wxc/eiffel/ewxw/wx_defs.e
 
 WXC-SPECS-HEADER = \
-	wxc/include/wxc.h wxc/include/ewxw/wxc_glue.h
+	wxc/include/wxc.h 
+	# wxc/include/ewxw/wxc_glue.h 
 
 # distributed in a source distribution
 WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard wxc/src/ewxw/*.h)\
