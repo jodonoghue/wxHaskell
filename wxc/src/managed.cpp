@@ -90,7 +90,7 @@ static void _cdecl deleteManagedPtr( wxManagedPtr* mp )
 
 EWXWEXPORT(void*,wxManagedPtr_GetDeleteFunction)()
 {
-  return &deleteManagedPtr;  
+  return (void*)&deleteManagedPtr;  
 }
 
 

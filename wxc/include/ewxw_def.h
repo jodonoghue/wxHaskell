@@ -1,7 +1,7 @@
 #ifndef __EWXW_DEF_H
 #define __EWXW_DEF_H
 
-#define EXPORT
+#define EXPORT extern "C"
 
 #ifdef __WATCOMC__
   #include <windows.h>
