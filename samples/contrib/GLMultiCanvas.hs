@@ -1,20 +1,8 @@
-{-
-   Author :  shelarcy 2004
-   Advised by: Sean Seefried
+{- 
+  Demos multiple OpenGL canvas's
 
-   Adapted from: BezCurve.hs
-   By: (c) Sven Panne 2003 <sven_panne@yahoo.com>
-   
-   "BezCurve.hs (adapted from fog.c which is (c) Silicon Graphics, Inc)
-   This file is part of HOpenGL and distributed under a BSD-style license
-   See the file libraries/GLUT/LICENSE"
-
-   This program renders a lighted, filled Bezier surface, using two-dimensional
-   evaluators.
+  Sample contributed by Patrick Scheibe 
 -}
-
--- ghci -package wx -package OpenGL
-
 module Main
 where
     
@@ -35,32 +23,51 @@ defaultHeight = 200
 
 gui = do
    f <- frame [ text := "Simple OpenGL" ]
+
+-- We just create two glCanvas
+
    glCanvas <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight)
         0 "GLCanvas" [GL_RGBA] nullPalette
-   let glWidgetLayout = fill $ widget glCanvas
+   glCanvas2 <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight)
+        0 "GLCanvas" [GL_RGBA] nullPalette
+
+   let glWidgetLayout = fill $ row 5 [widget glCanvas2,  widget glCanvas]
+
+-- Hint: You have to use the paintRaw event. For switching between the two
+--   glwindows you can give both of them as parameter
    WX.set f [ layout := glWidgetLayout
--- you have to use the paintRaw event. Otherwise the OpenGL window won't
--- show anything!
-            , on paintRaw := paintGL glCanvas
+            , on paintRaw := paintGL glCanvas glCanvas2
             ]
 
 
 convWG (WX.Size w h) = (GL.Size (convInt32  w) (convInt32  h))
 convInt32 = fromInteger . toInteger
 
--- This paint function gets the current glCanvas for knowing where to draw in.
--- It is possible to have multiple GL windows in your application.
-paintGL :: GLCanvas a -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
-paintGL glWindow dc myrect _ = do
+paintGL :: GLCanvas a -> GLCanvas a -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
+paintGL gl1 gl2 dc myrect _ = do
 
--- This sets the current gl device context
-   glCanvasSetCurrent glWindow
+-- Now we switch to the first one
+-- and do all init and painting stuff
+-- Hint: I changed the backgroundcolor for clearance
+
+   glCanvasSetCurrent gl1
    myInit
    reshape $ convWG $ rectSize myrect
    -- Or not reshape the size.
    reshape (GL.Size 320 200)
+   GL.clearColor GL.$= GL.Color4 1 0 0 0
    display
-   glCanvasSwapBuffers glWindow
+   glCanvasSwapBuffers gl1
+
+-- All the same for the second one
+   glCanvasSetCurrent gl2
+   myInit
+   reshape $ convWG $ rectSize myrect
+   -- Or not reshape the size.
+   reshape (GL.Size 320 200)
+   GL.clearColor GL.$= GL.Color4 0 2 0 0
+   display
+   glCanvasSwapBuffers gl2
    return ()
 
 
@@ -89,7 +96,7 @@ initlights = do
 
 myInit :: IO ()
 myInit = do
-   GL.clearColor GL.$= GL.Color4 0.1 0.1 0.6 0
+--   GL.clearColor GL.$= GL.Color4 1 0 0 0
    GL.depthFunc GL.$= Just GL.Less
    m <- GL.newMap2 (0, 1) (0, 1) (transpose ctrlPoints)
    GL.map2 GL.$= Just (m :: GLmap2 GL.Vertex3 GL.GLfloat)
@@ -115,4 +122,3 @@ reshape mysize@(GL.Size w h) = do
       else GL.ortho (-4.0*wf/hf) (4.0*wf/hf) (-4.0) 4.0 (-4.0) 4.0
    GL.matrixMode GL.$= GL.Modelview 0
    GL.loadIdentity
-

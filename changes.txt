@@ -10,6 +10,13 @@ Non backward compatible changes:
 - Changed "image" attribute to "picture"
 
 Backward compatible additions:
+- Added Multiple OpenGL Canvas example and fixed old example.
+- Much improved process support in WXCore.Process. Use 
+  "processExecAsyncTimed" instead of "processExecASync".
+- Full printing support in WXCore.Print
+- Added SpintControl events.
+- Fixed bug in MultiListBoxes where selections would only be
+  added.
 - Added "pixelBufferGetPixels" and "pixelBufferSetPixels" and
   according functions for images.
 - Added "image" and made it an instance of the "Sized" class

@@ -242,7 +242,9 @@ SAMPLE-SOURCES= \
 	samples/contrib/Camels.hs \
 	samples/contrib/PaintDirect.hs \
 	samples/contrib/NotebookRight.hs \
-	samples/contrib/GLCanvas.hs 
+	samples/contrib/GLCanvas.hs \
+	samples/contrib/GLMultiCanvas.hs 
+
 	
 #--------------------------------------------------------------------------
 # The main targets.

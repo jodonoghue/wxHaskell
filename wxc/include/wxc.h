@@ -361,6 +361,12 @@ void      wxTextAttr_SetTextColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colo
 void      wxTextAttr_SetBackgroundColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colour );
 void      wxTextAttr_SetFont(TSelf(wxTextAttr) _obj, TClass(wxFont) font );
 
+/* ConfigBase */
+TClassDefExtend(wxFileConfig,wxConfigBase)
+
+TClass(wxConfigBase) wxConfigBase_Get();
+void                 wxConfigBase_Set( TClass(wxConfigBase) self );
+TClass(wxFileConfig) wxFileConfig_Create( TClass(wxInputStream) inp );
 
 /* Image.cpp */
 TClass(wxBitmap) wxBitmap_CreateFromImage( TClass(wxImage) image, int depth );

@@ -596,7 +596,7 @@ instance Selection (SingleListBox a) where
 type MultiListBox a   = ListBox (CMultiListBox a)
 
 -- | Abstract type of the 'MultiListBox' class.
-data CMultiListBox a  = CMultiListBox
+data CMultiListBox a  = CMultiListBox           
 
 instance Selections (MultiListBox a) where
   selections
@@ -792,7 +792,7 @@ instance Selection (Slider a) where
 -- | Create a spin control: a text field with up\/down buttons. The value ('selection')
 -- is always between a specified minimum and maximum.
 --
--- * Instances: 'Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+-- * Instances: 'Selection', 'Selecting' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --
 spinCtrl :: Window a -> Int -> Int -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
@@ -818,6 +818,11 @@ instance Selection (SpinCtrl a) where
         = do lo <- spinCtrlGetMin sc
              hi <- spinCtrlGetMax sc
              spinCtrlSetValue sc (max lo (min hi i))
+
+
+instance Selecting (SpinCtrl a) where
+  select 
+    = newEvent "select" spinCtrlGetOnCommand spinCtrlOnCommand
 
 
 {--------------------------------------------------------------------------------

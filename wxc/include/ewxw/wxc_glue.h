@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.22 2005/01/21 15:47:23 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.23 2005/02/25 11:14:58 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -1214,43 +1214,43 @@ int        wxCondition_WaitFor( TSelf(wxCondition) _obj, int sec, int nsec );
 TClassDef(wxConfigBase)
 TClass(wxConfigBase) wxConfigBase_Create(  );
 void       wxConfigBase_Delete( TSelf(wxConfigBase) _obj );
-int        wxConfigBase_DeleteAll( TSelf(wxConfigBase) _obj );
-int        wxConfigBase_DeleteEntry( TSelf(wxConfigBase) _obj, void* key, int bDeleteGroupIfEmpty );
-int        wxConfigBase_DeleteGroup( TSelf(wxConfigBase) _obj, void* key );
-int        wxConfigBase_Exists( TSelf(wxConfigBase) _obj, void* strName );
+TBool      wxConfigBase_DeleteAll( TSelf(wxConfigBase) _obj );
+TBool      wxConfigBase_DeleteEntry( TSelf(wxConfigBase) _obj, TStringVoid key, TBoolInt bDeleteGroupIfEmpty );
+TBool      wxConfigBase_DeleteGroup( TSelf(wxConfigBase) _obj, TStringVoid key );
+TBool      wxConfigBase_Exists( TSelf(wxConfigBase) _obj, TStringVoid strName );
 TStringLen wxConfigBase_ExpandEnvVars( TSelf(wxConfigBase) _obj, TStringVoid str, TStringOutVoid _buf );
-int        wxConfigBase_Flush( TSelf(wxConfigBase) _obj, int bCurrentOnly );
+TBool      wxConfigBase_Flush( TSelf(wxConfigBase) _obj, TBool bCurrentOnly );
 TStringLen wxConfigBase_GetAppName( TSelf(wxConfigBase) _obj, TStringOutVoid _buf );
 int        wxConfigBase_GetEntryType( TSelf(wxConfigBase) _obj, TStringVoid name );
-int        wxConfigBase_GetFirstEntry( TSelf(wxConfigBase) _obj, TStringVoid str, void* lIndex, int len );
-int        wxConfigBase_GetFirstGroup( TSelf(wxConfigBase) _obj, TStringVoid str, void* lIndex, int len );
-int        wxConfigBase_GetNextEntry( TSelf(wxConfigBase) _obj, TStringVoid str, void* lIndex, int len );
-int        wxConfigBase_GetNextGroup( TSelf(wxConfigBase) _obj, TStringVoid str, void* lIndex, int len );
-int        wxConfigBase_GetNumberOfEntries( TSelf(wxConfigBase) _obj, int bRecursive );
-int        wxConfigBase_GetNumberOfGroups( TSelf(wxConfigBase) _obj, int bRecursive );
+TClass(wxString) wxConfigBase_GetFirstEntry( TSelf(wxConfigBase) _obj, void* lIndex );
+TClass(wxString) wxConfigBase_GetFirstGroup( TSelf(wxConfigBase) _obj, void* lIndex );
+TClass(wxString) wxConfigBase_GetNextEntry( TSelf(wxConfigBase) _obj, void* lIndex);
+TClass(wxString) wxConfigBase_GetNextGroup( TSelf(wxConfigBase) _obj, void* lIndex);
+int        wxConfigBase_GetNumberOfEntries( TSelf(wxConfigBase) _obj, TBoolInt bRecursive );
+int        wxConfigBase_GetNumberOfGroups( TSelf(wxConfigBase) _obj, TBoolInt bRecursive );
 TStringLen wxConfigBase_GetPath( TSelf(wxConfigBase) _obj, TStringOutVoid _buf );
 int        wxConfigBase_GetStyle( TSelf(wxConfigBase) _obj );
 TStringLen wxConfigBase_GetVendorName( TSelf(wxConfigBase) _obj, TStringOutVoid _buf );
-TBool      wxConfigBase_HasEntry( TSelf(wxConfigBase) _obj, void* strName );
-TBool      wxConfigBase_HasGroup( TSelf(wxConfigBase) _obj, void* strName );
+TBool      wxConfigBase_HasEntry( TSelf(wxConfigBase) _obj, TStringVoid strName );
+TBool      wxConfigBase_HasGroup( TSelf(wxConfigBase) _obj, TStringVoid strName );
 TBool      wxConfigBase_IsExpandingEnvVars( TSelf(wxConfigBase) _obj );
 TBool      wxConfigBase_IsRecordingDefaults( TSelf(wxConfigBase) _obj );
-int        wxConfigBase_ReadBool( TSelf(wxConfigBase) _obj, void* key, int defVal );
-double     wxConfigBase_ReadDouble( TSelf(wxConfigBase) _obj, void* key, double defVal );
-int        wxConfigBase_ReadInteger( TSelf(wxConfigBase) _obj, void* key, int defVal );
-int        wxConfigBase_ReadString( TSelf(wxConfigBase) _obj, void* key, void* pStr, void* defVal, int len );
-int        wxConfigBase_RenameEntry( TSelf(wxConfigBase) _obj, void* oldName, void* newName );
-int        wxConfigBase_RenameGroup( TSelf(wxConfigBase) _obj, void* oldName, void* newName );
-void       wxConfigBase_SetAppName( TSelf(wxConfigBase) _obj, void* appName );
-void       wxConfigBase_SetExpandEnvVars( TSelf(wxConfigBase) _obj, int bDoIt );
-void       wxConfigBase_SetPath( TSelf(wxConfigBase) _obj, void* strPath );
-void       wxConfigBase_SetRecordDefaults( TSelf(wxConfigBase) _obj, int bDoIt );
+TBoolInt   wxConfigBase_ReadBool( TSelf(wxConfigBase) _obj, TStringVoid key, TBoolInt defVal );
+double     wxConfigBase_ReadDouble( TSelf(wxConfigBase) _obj, TStringVoid key, double defVal );
+int        wxConfigBase_ReadInteger( TSelf(wxConfigBase) _obj, TStringVoid key, int defVal );
+TClass(wxString) wxConfigBase_ReadString( TSelf(wxConfigBase) _obj, TStringVoid key, TStringVoid defVal );
+TBoolInt   wxConfigBase_RenameEntry( TSelf(wxConfigBase) _obj, TStringVoid oldName, TStringVoid newName );
+TBoolInt   wxConfigBase_RenameGroup( TSelf(wxConfigBase) _obj, TStringVoid oldName, TStringVoid newName );
+void       wxConfigBase_SetAppName( TSelf(wxConfigBase) _obj, TStringVoid appName );
+void       wxConfigBase_SetExpandEnvVars( TSelf(wxConfigBase) _obj, TBoolInt bDoIt );
+void       wxConfigBase_SetPath( TSelf(wxConfigBase) _obj, TStringVoid strPath );
+void       wxConfigBase_SetRecordDefaults( TSelf(wxConfigBase) _obj, TBoolInt bDoIt );
 void       wxConfigBase_SetStyle( TSelf(wxConfigBase) _obj, int style );
-void       wxConfigBase_SetVendorName( TSelf(wxConfigBase) _obj, void* vendorName );
-int        wxConfigBase_WriteBool( TSelf(wxConfigBase) _obj, void* key, int value );
-int        wxConfigBase_WriteDouble( TSelf(wxConfigBase) _obj, void* key, double value );
-int        wxConfigBase_WriteInteger( TSelf(wxConfigBase) _obj, void* key, int value );
-int        wxConfigBase_WriteString( TSelf(wxConfigBase) _obj, void* key, void* value );
+void       wxConfigBase_SetVendorName( TSelf(wxConfigBase) _obj, TStringVoid vendorName );
+TBoolInt   wxConfigBase_WriteBool( TSelf(wxConfigBase) _obj, TStringVoid key, TBoolInt value );
+TBoolInt   wxConfigBase_WriteDouble( TSelf(wxConfigBase) _obj, TStringVoid key, double value );
+TBoolInt   wxConfigBase_WriteInteger( TSelf(wxConfigBase) _obj, TStringVoid key, int value );
+TBoolInt   wxConfigBase_WriteString( TSelf(wxConfigBase) _obj, TStringVoid key, TStringVoid value );
 
 /* wxConnection */
 TClassDefExtend(wxConnection,wxConnectionBase)

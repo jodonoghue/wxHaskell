@@ -25,56 +25,45 @@ EWXWEXPORT(int, wxConfigBase_GetPath)(void* _obj, void* _buf)
 	return result.Length();
 }
 	
-EWXWEXPORT(int, wxConfigBase_GetFirstGroup)(void* _obj, void* str, void* lIndex, int len)
+EWXWEXPORT(wxString*, wxConfigBase_GetFirstGroup)(wxConfigBase* _obj, long* lIndex)
 {
-	wxString tmp;
-	if (((wxConfigBase*)_obj)->GetFirstGroup(tmp, *((long*)lIndex)))
-	{
-		if ((unsigned int)len >= tmp.Length())
-			memcpy(str, tmp.c_str(), tmp.Length());
-		return tmp.Length();
-	}
-	else
-		return 0;
+	wxString* tmp;
+        tmp = new wxString("");
+        if (_obj->GetFirstGroup(*tmp, *lIndex)) {
+          *lIndex = -1;
+        }         
+	return tmp;
 }
 	
-EWXWEXPORT(int, wxConfigBase_GetNextGroup) (void* _obj, void* str, void* lIndex, int len)
+EWXWEXPORT(wxString*, wxConfigBase_GetNextGroup) (wxConfigBase* _obj, long* lIndex )
 {
-	wxString tmp;
-	if (((wxConfigBase*)_obj)->GetNextGroup(tmp, *((long*)lIndex)))
-	{
-		if ((unsigned int)len >= tmp.Length())
-			memcpy(str, tmp.c_str(), tmp.Length());
-		return tmp.Length();
-	}
-	else
-		return 0;
+	wxString* tmp;
+        tmp = new wxString("");
+        if (_obj->GetNextGroup(*tmp, *lIndex)) {
+          *lIndex = -1;
+        }         
+	return tmp;
+}
+
+	
+EWXWEXPORT(wxString*, wxConfigBase_GetFirstEntry)(wxConfigBase* _obj, long* lIndex)
+{
+	wxString* tmp;
+        tmp = new wxString("");
+        if (_obj->GetFirstEntry(*tmp, *lIndex)) {
+          *lIndex = -1;
+        }         
+	return tmp;
 }
 	
-EWXWEXPORT(int, wxConfigBase_GetFirstEntry)(void* _obj, void* str, void* lIndex, int len)
+EWXWEXPORT(wxString*, wxConfigBase_GetNextEntry) (wxConfigBase* _obj, long* lIndex)
 {
-	wxString tmp;
-	if (((wxConfigBase*)_obj)->GetFirstEntry(tmp, *((long*)lIndex)))
-	{
-		if ((unsigned int)len >= tmp.Length())
-			memcpy(str, tmp.c_str(), tmp.Length());
-		return tmp.Length();
-	}
-	else
-		return 0;
-}
-	
-EWXWEXPORT(int, wxConfigBase_GetNextEntry) (void* _obj, void* str, void* lIndex, int len)
-{
-	wxString tmp;
-	if (((wxConfigBase*)_obj)->GetNextEntry(tmp, *((long*)lIndex)))
-	{
-		if ((unsigned int)len >= tmp.Length())
-			memcpy(str, tmp.c_str(), tmp.Length());
-		return tmp.Length();
-	}
-	else
-		return 0;
+	wxString* tmp;
+        tmp = new wxString("");
+        if (_obj->GetNextEntry(*tmp, *lIndex)) {
+          *lIndex = -1;
+        }         
+	return tmp;
 }
 	
 EWXWEXPORT(int, wxConfigBase_GetNumberOfEntries)(void* _obj, int bRecursive)
@@ -107,17 +96,11 @@ EWXWEXPORT(int, wxConfigBase_GetEntryType)(void* _obj, void* name)
 	return (int)((wxConfigBase*)_obj)->GetEntryType((char*)name);
 }
 	
-EWXWEXPORT(int, wxConfigBase_ReadString)(void* _obj, void* key, void* pStr, void* defVal, int len)
+EWXWEXPORT(wxString*, wxConfigBase_ReadString)(wxConfigBase* _obj, void* key, void* defVal)
 {
 	wxString tmp;
-	if (((wxConfigBase*)_obj)->Read((char*)key, &tmp, (char*)defVal))
-	{
-		if ((unsigned int)len >= tmp.Length())
-			memcpy(pStr, tmp.c_str(), tmp.Length());
-		return tmp.Length();
-	}
-	else
-		return 0;
+        tmp = ((wxConfigBase*)_obj)->Read((char*)key, (char*)defVal);
+	return new wxString(tmp);
 }
 	
 EWXWEXPORT(int, wxConfigBase_ReadInteger)(void* _obj, void* key, int defVal)

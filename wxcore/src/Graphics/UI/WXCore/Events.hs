@@ -25,6 +25,7 @@ module Graphics.UI.WXCore.Events
         , comboBoxOnTextEnter
         , controlOnText
         , listBoxOnCommand
+        , spinCtrlOnCommand
         -- , listBoxOnDClick
         , radioBoxOnCommand
         , sliderOnCommand
@@ -74,6 +75,7 @@ module Graphics.UI.WXCore.Events
         , comboBoxGetOnTextEnter
         , controlGetOnText
         , listBoxGetOnCommand
+        , spinCtrlGetOnCommand
         -- , listBoxGetOnDClick
         , radioBoxGetOnCommand
         , sliderGetOnCommand
@@ -357,6 +359,15 @@ checkBoxGetOnCommand :: CheckBox a -> IO (IO ())
 checkBoxGetOnCommand checkBox
   = unsafeWindowGetHandlerState checkBox wxEVT_COMMAND_CHECKBOX_CLICKED (skipCurrentEvent)
 
+-- | Set an event handler for when a spinCtrl clicked.
+spinCtrlOnCommand :: SpinCtrl a -> (IO ()) -> IO ()
+spinCtrlOnCommand spinCtrl eventHandler
+  = windowOnEvent spinCtrl [wxEVT_COMMAND_SPINCTRL_UPDATED] eventHandler (\evt -> eventHandler)
+
+-- | Get the current check box event handler.
+spinCtrlGetOnCommand :: SpinCtrl a -> IO (IO ())
+spinCtrlGetOnCommand spinCtrl
+  = unsafeWindowGetHandlerState spinCtrl wxEVT_COMMAND_SPINCTRL_UPDATED (skipCurrentEvent)
 
 
 

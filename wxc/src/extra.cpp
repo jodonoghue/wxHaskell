@@ -4,6 +4,8 @@
 #include "wx/progdlg.h"
 #include "wx/listctrl.h"
 #include "wx/grid.h"
+#include "wx/fileconf.h"
+#include "wx/spinctrl.h"
 
 /*-----------------------------------------------------------------------------
   new events
@@ -96,7 +98,6 @@ EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_END_DRAG)()
 {
   return (int)wxEVT_COMMAND_LIST_COL_END_DRAG;
 }
-
 
 } /* extern "C" */
 
@@ -2304,6 +2305,24 @@ EWXWEXPORT(void,LogTrace)(void* mask, void* _msg)
 EWXWEXPORT(wxGridCellTextEnterEditor*,wxGridCellTextEnterEditor_Ctor)()
 {
   return new wxGridCellTextEnterEditor();
+}
+
+/*-----------------------------------------------------------------------------
+  ConfigBase
+-----------------------------------------------------------------------------*/
+EWXWEXPORT( wxConfigBase*, wxConfigBase_Get)()
+{
+  return wxConfigBase::Get();
+}
+
+EWXWEXPORT( void, wxConfigBase_Set)( wxConfigBase* self )
+{
+  wxConfigBase::Set( self );
+}
+
+EWXWEXPORT( wxFileConfig*, wxFileConfig_Create)( wxInputStream* inp )
+{
+  return new wxFileConfig( *inp );
 }
 
 
