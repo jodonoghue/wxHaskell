@@ -3,6 +3,9 @@
 #  This file is distributed under the wxWindows library license.
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
+ifeq ($(RPM-SOURCE-DIR),)
+RPM-SOURCE-DIR=$(HOME)/rpm/SOURCES
+endif
 
 # main target
 all:	wx
@@ -37,7 +40,8 @@ help:
 	@echo " wxc-clean       clean the wxc wrapper only"
 	@echo ""
 	@echo "macros:"
-	@echo " DESTDIR=<dir>   prefix the installation directories with <dir>"
+	@echo " DESTDIR=<dir>        prefix the installation directories with <dir>"
+	@echo " RPM-SOURCE-DIR=<dir> rpm sources directory [$(RPM-SOURCE-DIR)]"
 	@echo ""
 
 depend:
@@ -325,6 +329,7 @@ bindist-clean:
 
 # RPM dist
 rpmdist: srcdist
+	$(CP) -f $(DIST-SRC) $(RPM-SOURCE-DIR)
 	rpmbuild -ba config/wxhaskell.spec
 
 

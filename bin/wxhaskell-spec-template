@@ -43,17 +43,7 @@ We would like to thank the people of the ELJ Eiffel project, and in
 particular Uwe Sanders, for providing the basic C interface to wxWidgets.
 
 %prep
-# we don't use setup as we can't specify the exact source zip file.
-# %setup -q
-cd $RPM_BUILD_DIR
-rm -rf %{name}-%{version}
-unzip -o %{sourceroot}%{source}.zip
-if [ $? -ne 0 ]; then
-  exit $?
-fi
-cd %{name}-%{version}
-chown -R root.root .
-chmod -R a+rX,g-w,o-w .
+%setup -q
 
 %build
 # - set the "shared-prefix" to null, such that wxHaskell apps are 
