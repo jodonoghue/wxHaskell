@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.54 2003/11/07 14:44:56 dleijen Exp $
+# $Id: makefile,v 1.55 2003/11/10 12:30:46 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -464,29 +464,30 @@ bindist-clean:
 
 
 # specific binary distributions
+WXHASKELLINS=wxhaskell
 WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).dmg
 RESOURCEDIR=$(OUTDIR)/macdist/recources
-PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLVER)
+PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLINS)
 INFOFILE=$(PACKAGEDIR).info
 
-macdist: bindist
+macdist: 
 	@$(call ensure-dir,$(RESOURCEDIR))
 	@$(call ensure-dir,$(PACKAGEDIR))
 	# copy packages
 	@$(call cp-echo,$(BINDIST-BINDIR)/wxcore.pkg,$(RESOURCEDIR)/wxcore.pkg)
 	@$(call cp-echo,$(BINDIST-BINDIR)/wx.pkg,$(RESOURCEDIR)/wx.pkg)
 	# copy post install scripts
-	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLVER).post_install)
-	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLVER).post_upgrade)
+	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLINS).post_install)
+	@$(call cp-echo,config/macosx-postinstall,$(RESOURCEDIR)/$(WXHASKELLINS).post_upgrade)
 	# copy info file for installer
 	@$(call cp-echo,config/macosx-install.info,$(INFOFILE))
 	# license and readme
 	@$(call cp-echo,license.txt,$(RESOURCEDIR)/License.txt)
 	@echo "See <http://wxhaskell.sourceforge.net> for more information." > $(RESOURCEDIR)/Readme.txt
 	# create package
-	bin/macosx-package $(BINDIST-OUTDIR) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
+	bin/macosx-package $(BINDIST-OUTDIR)/$(WXHASKELLVER) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
-	@mv -f $(OUTDIR)/$(WXHASKELLVER).dmg $(WXHASKELLDMG)
+	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
 
 #--------------------------------------------------------------------------
