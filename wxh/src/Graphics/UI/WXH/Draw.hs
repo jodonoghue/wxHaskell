@@ -18,14 +18,14 @@ module Graphics.UI.WXH.Draw
         -- ** Creation
         , withPaintDC, withClientDC, dcDraw
         -- ** Draw state
-        , DrawState, dcRestoreDrawState, dcGetDrawState, dcSetDrawState, drawStateDelete
+        , DrawState, dcEncapsulate, dcGetDrawState, dcSetDrawState, drawStateDelete
         -- ** Double buffering
         , dcBuffer, dcBufferWithRef
         -- * Scrolled windows
         , windowGetViewStart, windowGetViewRect, windowCalcUnscrolledPosition
         -- * Font
         , FontInfo(..), FontFamily(..), FontStyle(..), FontWeight(..)
-        , fontNormal, fontSwiss, fontSmall, fontItalic
+        , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
         , withFontInfo, dcWithFontInfo
         , dcSetFontInfo, dcGetFontInfo
         , fontCreateFromInfo, fontGetFontInfo
@@ -130,25 +130,29 @@ data FontInfo
   deriving (Eq,Show)
 
 -- | Default 10pt font.
-fontNormal :: FontInfo
-fontNormal
+fontDefault :: FontInfo
+fontDefault
   = FontInfo 10 FontDefault StyleNormal WeightNormal False "" wxFONTENCODING_DEFAULT
 
 -- | Default 10pt sans-serif font.
 fontSwiss :: FontInfo
 fontSwiss
-  = fontNormal{ fontFamily = FontSwiss }
+  = fontDefault{ fontFamily = FontSwiss }
 
 -- | Default 8pt font.
 fontSmall :: FontInfo
 fontSmall
-  = fontNormal{ fontSize = 8 }
+  = fontDefault{ fontSize = 8 }
 
 -- | Default 10pt italic.
 fontItalic :: FontInfo
 fontItalic
-  = fontNormal{ fontStyle = StyleItalic }
+  = fontDefault{ fontStyle = StyleItalic }
 
+-- | Monospaced font, 10pt.
+fontFixed :: FontInfo
+fontFixed 
+  = fontDefault{ fontFamily = FontModern }
 
 -- | Standard font families.
 data FontFamily
@@ -237,16 +241,18 @@ fontCreateFromInfo (FontInfo size family style weight underline face encoding)
 
 
 -- | Get the 'FontInfo' from a 'Font' object.
-fontGetFontInfo :: Font a -> IO FontInfo
+fontGetFontInfo :: Font () -> IO FontInfo
 fontGetFontInfo font
-  = do size    <- fontGetPointSize font
-       cfamily <- fontGetFamily font
-       cstyle  <- fontGetStyle font
-       cweight <- fontGetWeight font
-       cunderl <- fontGetUnderlined font
-       face    <- fontGetFaceName font
-       enc     <- fontGetEncoding font
-       return (FontInfo size (toFamily cfamily) (toStyle cstyle) (toWeight cweight) (cunderl /= 0) face enc)
+  = if (objectIsNull font || font == nullFont)
+     then return fontDefault
+     else do size    <- fontGetPointSize font
+             cfamily <- fontGetFamily font
+             cstyle  <- fontGetStyle font
+             cweight <- fontGetWeight font
+             cunderl <- fontGetUnderlined font
+             face    <- fontGetFaceName font
+             enc     <- fontGetEncoding font
+             return (FontInfo size (toFamily cfamily) (toStyle cstyle) (toWeight cweight) (cunderl /= 0) face enc)
    where
     toFamily f
       | f == wxDECORATIVE   = FontDecorative
@@ -348,25 +354,19 @@ data BrushKind
 
 
 -- | Set a pen that is automatically deleted at the end of the computation.
--- The text color will also be adapted.
 dcWithPenStyle :: DC a -> PenStyle -> IO b -> IO b
 dcWithPenStyle dc penStyle io
   = withPenStyle penStyle $ \pen ->
     dcWithPen dc pen io
 
 -- | Set a pen that is used during a certain computation.
--- The text color will also be adapted.
 dcWithPen :: DC a -> Pen p -> IO b -> IO b
 dcWithPen dc pen io
   = bracket  (do oldPen <- dcGetPen dc
-                 oldTextColor <- dcGetTextForeground dc
                  dcSetPen dc pen
-                 textColor <- penGetColour pen
-                 dcSetTextForeground dc textColor
-                 return (oldPen,oldTextColor))
-             (\(oldPen,oldTextColor) ->
+                 return oldPen)
+             (\oldPen ->
               do dcSetPen dc oldPen   -- restore previous pen
-                 dcSetTextForeground dc oldTextColor
                  penDelete oldPen)
              (const io)
 
@@ -374,9 +374,7 @@ dcWithPen dc pen io
 -- | Set the current pen style. The text color is also adapted.
 dcSetPenStyle :: DC a -> PenStyle -> IO ()
 dcSetPenStyle dc penStyle
-  = withPenStyle penStyle $ \pen ->
-    do dcSetPen dc pen
-       dcSetTextForeground dc (penColor penStyle)
+  = withPenStyle penStyle (dcSetPen dc)
 
 -- | Get the current pen style.
 dcGetPenStyle :: DC a -> IO PenStyle
@@ -497,7 +495,6 @@ brushDefault
 
 
 -- | Use a brush that is automatically deleted at the end of the computation.
--- The text back ground color is also set.
 dcWithBrushStyle :: DC a -> BrushStyle -> IO b -> IO b
 dcWithBrushStyle dc brushStyle io
   = withBrushStyle brushStyle $ \brush ->
@@ -506,23 +503,17 @@ dcWithBrushStyle dc brushStyle io
 dcWithBrush :: DC b -> Brush a -> IO c -> IO c
 dcWithBrush dc brush io
   = bracket  (do oldBrush <- dcGetBrush dc
-                 oldTextColor <- dcGetTextBackground dc
                  dcSetBrush dc brush
-                 textColor <- brushGetColour brush
-                 dcSetTextBackground dc textColor
-                 return (oldBrush,oldTextColor))
-             (\(oldBrush,oldTextColor) ->
+                 return oldBrush)
+             (\oldBrush ->
               do dcSetBrush dc oldBrush -- restore previous brush
-                 dcSetTextBackground dc oldTextColor
                  brushDelete oldBrush)
              (const io)
 
 -- | Set the brush style (and text background color) of a device context.
 dcSetBrushStyle :: DC a -> BrushStyle -> IO ()
 dcSetBrushStyle dc brushStyle
-  = withBrushStyle brushStyle $ \brush ->
-    do dcSetBrush dc brush
-       dcSetTextBackground dc (brushColor brushStyle)
+  = withBrushStyle brushStyle (dcSetBrush dc)
        
 -- | Get the current brush of a device context.
 dcGetBrushStyle :: DC a -> IO BrushStyle
@@ -598,12 +589,12 @@ brushGetBrushStyle brush
 {--------------------------------------------------------------------------------
   DC drawing state
 --------------------------------------------------------------------------------}
--- | The drawing state (pen,brush,font) of a device context.
+-- | The drawing state (pen,brush,font,text color,text background color) of a device context.
 data DrawState  = DrawState (Pen ()) (Brush ()) (Font ()) Color Color
 
 -- | Run a computation after which the original drawing state of the 'DC' is restored.
-dcRestoreDrawState :: DC a -> IO b -> IO b
-dcRestoreDrawState dc io
+dcEncapsulate :: DC a -> IO b -> IO b
+dcEncapsulate dc io
   = bracket (dcGetDrawState dc)
             (\drawState ->
              do dcSetDrawState dc drawState

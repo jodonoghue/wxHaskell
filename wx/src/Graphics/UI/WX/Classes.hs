@@ -14,7 +14,8 @@ module Graphics.UI.WX.Classes
     ( 
       -- * Attributes
       Textual(text,appendText)
-    , Literate(font)
+    , Literate(font ,fontfamily, fontface, fontencoding,fontsize, fontweight, fontunderline, fontstyle
+              ,textcolor,textbgcolor)
     , Dimensions(..)
     , Colored(..)
     , Visible(..)
@@ -29,7 +30,7 @@ module Graphics.UI.WX.Classes
     , Selection( selection )
     , Selections( selections )
     -- * Types
-    , FontInfo
+    , FontInfo(..)
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -59,6 +60,43 @@ class Literate w where
   -- | The font of the widget.
   font       :: Attr w FontInfo
 
+  -- | The font size.
+  fontsize   :: Attr w Int
+
+  -- | The font weight.
+  fontweight :: Attr w FontWeight
+
+  -- | The font family.
+  fontfamily :: Attr w FontFamily
+
+  -- | The font style.
+  fontstyle  :: Attr w FontStyle
+
+  -- | The font /face/: determines a platform dependent font.
+  fontface   :: Attr w String
+
+  -- | Is the font underlined?
+  fontunderline :: Attr w Bool
+
+  -- | Font encoding.
+  fontencoding  :: Attr w Int
+
+  -- | Text color.
+  textcolor  :: Attr w Color
+
+  -- | Text background color
+  textbgcolor:: Attr w Color 
+
+  fontsize      = mapAttr fontSize   (\finfo x -> finfo{ fontSize = x }) font
+  fontweight    = mapAttr fontWeight (\finfo x -> finfo{ fontWeight = x }) font
+  fontfamily    = mapAttr fontFamily (\finfo x -> finfo{ fontFamily = x }) font
+  fontstyle     = mapAttr fontStyle  (\finfo x -> finfo{ fontStyle = x }) font
+  fontface      = mapAttr fontFace   (\finfo x -> finfo{ fontFace = x }) font
+  fontunderline = mapAttr fontUnderline (\finfo x -> finfo{ fontUnderline = x }) font
+  fontencoding  = mapAttr fontEncoding  (\finfo x -> finfo{ fontEncoding = x }) font
+
+  
+
 -- | Widgets that have a size.
 class Dimensions w where
   -- | The size of a widget (in pixels).
@@ -74,9 +112,9 @@ class Dimensions w where
 
   -- defaults
   size
-    = mapAttr rectSize (\sz r -> rect (topLeft r) sz) area
+    = mapAttr rectSize (\r sz -> rect (topLeft r) sz) area
   position
-    = mapAttr topLeft (\pt r -> rect pt (rectSize r)) area
+      = mapAttr topLeft (\r pt -> rect pt (rectSize r)) area
   area
     = newAttr "area" getArea setArea
     where

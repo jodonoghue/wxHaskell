@@ -26,14 +26,14 @@ module Graphics.UI.WX.Draw
     -- ** Font
     -- , FontInfo(..)
     , FontFamily(..), FontStyle(..), FontWeight(..)
-    , fontNormal, fontSwiss, fontSmall, fontItalic
+    , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
     -- * Drawing
     , circle, arc, ellipse, ellipticArc
     , line, polyline, polygon
     , drawPoint, drawRect, roundedRect
     , drawText, rotatedText, drawBitmap
     -- * Internal
-    , dcWithProps
+    , dcWith
     ) where
 
 -- for haddock, we import wxh module selectively
@@ -61,57 +61,69 @@ class Drawn w where
   penwidth  :: Attr w Int
   pencap    :: Attr w CapStyle
   penjoin   :: Attr w JoinStyle
+  pencolor  :: Attr w Color
 
 class Brushed w where
   brushStyle :: Attr w BrushStyle
   brush      :: Attr w BrushKind
+  brushcolor :: Attr w Color
 
 instance Drawn (DC a) where
   penStyle 
     = newAttr "penStyle" dcGetPenStyle dcSetPenStyle
   pen
-      = mapAttr penKind (\x pstyle -> pstyle{ penKind = x }) penStyle
+      = mapAttr penKind (\pstyle x -> pstyle{ penKind = x }) penStyle
 
   penwidth
-    = mapAttr penWidth (\x pstyle -> pstyle{ penWidth = x }) penStyle
+    = mapAttr penWidth (\pstyle x -> pstyle{ penWidth = x }) penStyle
 
   pencap
-    = mapAttr penCap (\x pstyle -> pstyle{ penCap = x }) penStyle
+    = mapAttr penCap (\pstyle x -> pstyle{ penCap = x }) penStyle
   
   penjoin
-    = mapAttr penJoin (\x pstyle -> pstyle{ penJoin = x }) penStyle
+    = mapAttr penJoin (\pstyle x -> pstyle{ penJoin = x }) penStyle
 
+  pencolor
+    = mapAttr penColor (\pstyle color -> pstyle{ penColor = color }) penStyle
 
 instance Brushed (DC a) where
   brushStyle
     = newAttr "brushStyle" dcGetBrushStyle dcSetBrushStyle
 
   brush
-    = mapAttr brushKind (\x bstyle -> bstyle{ brushKind = x }) brushStyle
+    = mapAttr brushKind (\bstyle x -> bstyle{ brushKind = x }) brushStyle
 
+  brushcolor
+    = mapAttr brushColor (\bstyle color -> bstyle{ brushColor = color }) brushStyle
 
 instance Literate (DC a) where
   font
     = newAttr "font" dcGetFontInfo dcSetFontInfo
 
+  textcolor
+    = newAttr "textcolor" dcGetTextForeground dcSetTextForeground
+
+  textbgcolor
+    = newAttr "textbgcolor" dcGetTextBackground dcSetTextForeground
+
 instance Colored (DC a) where
   color
-    = mapAttr penColor (\color pstyle -> pstyle{ penColor = color }) penStyle
+    = newAttr "color" (\dc -> get dc pencolor) (\dc c -> set dc [pencolor := c, textcolor := c])
 
   bgcolor
-    = mapAttr brushColor (\color bstyle -> bstyle{ brushColor = color }) brushStyle
+    = newAttr "bgcolor" (\dc -> get dc brushcolor) (\dc c -> set dc [brushcolor := c, textbgcolor := c])
 
 
 -- Save pen/font/brush efficiently.
-dcWithProps :: DC a -> [Prop (DC a)] -> IO b -> IO b
-dcWithProps dc props io
+dcWith :: DC a -> [Prop (DC a)] -> IO b -> IO b
+dcWith dc props io
   | null props = io
-  | otherwise  = dcRestoreDrawState dc (do set dc props; io)
+  | otherwise  = dcEncapsulate dc (do set dc props; io)
 
 -- | Draw a circle given a center point and radius.
 circle :: DC a -> Point -> Int -> [Prop (DC a)] -> IO ()
 circle dc center radius props
-  = dcWithProps dc props (dcDrawCircle dc center radius)
+  = dcWith dc props (dcDrawCircle dc center radius)
 
 -- | Draw an arc of a circle. Takes the center of the circle, 
 -- its radius and a starting and ending point relative to the
@@ -125,7 +137,7 @@ arc dc center radius start end props
     bounds 
       = rect (pt (px center - radius) (py center - radius)) (sz (2*radius) (2*radius))
 {-
-  = dcWithProps dc props (dcDrawArc dc center (point start) (point end) )
+  = dcWith dc props (dcDrawArc dc center (point start) (point end) )
   where
     point angle
       = let radians = (2*pi*angle)/360
@@ -137,7 +149,7 @@ arc dc center radius start end props
 -- | Draw an ellipse, bounded by a certain rectangle.
 ellipse :: DC a -> Rect -> [Prop (DC a)] -> IO ()
 ellipse dc rect props
-  = dcWithProps dc props (dcDrawEllipse dc rect)
+  = dcWith dc props (dcDrawEllipse dc rect)
 
 -- | Draw an elliptic arc. Takes the bounding rectangle, 
 -- and a starting and ending point relative to the
@@ -147,34 +159,34 @@ ellipse dc rect props
 -- equal, an entire ellipse is drawn.
 ellipticArc :: DC a -> Rect -> Double -> Double -> [Prop (DC a)] -> IO ()
 ellipticArc dc rect start end props
-  = dcWithProps dc props (dcDrawEllipticArc dc rect start end)
+  = dcWith dc props (dcDrawEllipticArc dc rect start end)
 
 -- | Draw a line.
 line :: DC a -> Point -> Point -> [Prop (DC a)] -> IO ()
 line dc start end props
-  = dcWithProps dc props (dcDrawLine dc start end)
+  = dcWith dc props (dcDrawLine dc start end)
 
 -- | Draw a polyline.
 polyline :: DC a -> [Point] -> [Prop (DC a)] -> IO ()
 polyline dc points props
-  = dcWithProps dc props (drawLines dc points)
+  = dcWith dc props (drawLines dc points)
 
 -- | Draw a polygon. The polygon is filled with the odd-even rule.
 -- Note that the polygon is automatically closed.
 polygon :: DC a -> [Point] -> [Prop (DC a)] -> IO ()
 polygon dc points props
-  = dcWithProps dc props (drawPolygon dc points)
+  = dcWith dc props (drawPolygon dc points)
 
 
 -- | Draw a single point. 
 drawPoint :: DC a -> Point -> [Prop (DC a)] -> IO ()
 drawPoint dc center props
-  = dcWithProps dc props (dcDrawPoint dc center)
+  = dcWith dc props (dcDrawPoint dc center)
 
 -- | Draw a rectangle.
 drawRect :: DC a -> Rect -> [Prop (DC a)] -> IO ()
 drawRect dc rect props
-  = dcWithProps dc props (dcDrawRectangle dc rect)
+  = dcWith dc props (dcDrawRectangle dc rect)
 
 -- | Draw a rectangle with rounded corners. The corners are
 -- quarter circles with the given radius.
@@ -185,18 +197,18 @@ drawRect dc rect props
 -- are too big for the rectangle.
 roundedRect :: DC a -> Rect -> Double -> [Prop (DC a)] -> IO ()
 roundedRect dc rect radius props
-  = dcWithProps dc props (dcDrawRoundedRectangle dc rect radius)
+  = dcWith dc props (dcDrawRoundedRectangle dc rect radius)
 
 -- | Draw text.
 drawText :: DC a -> String -> Point -> [Prop (DC a)] -> IO ()
 drawText dc text point props
-  = dcWithProps dc props (dcDrawText dc text point)
+  = dcWith dc props (dcDrawText dc text point)
 
 -- | Draw rotated text. Takes an angle in degrees relative to the
 -- three-o\'clock position.
 rotatedText :: DC a -> String -> Point -> Double -> [Prop (DC a)] -> IO ()
 rotatedText dc text point angle props
-  = dcWithProps dc props (dcDrawRotatedText dc text point angle)
+  = dcWith dc props (dcDrawRotatedText dc text point angle)
 
 -- | Draw a bitmap. Takes a bitmap, a point and a boolean
 -- that is 'True' when the bitmap is drawn with a transparency mask.
@@ -207,4 +219,4 @@ drawBitmap dc bitmap point transparent props
      else do ok <- bitmapOk bitmap
              if not ok 
               then return ()
-              else dcWithProps dc props (dcDrawBitmap dc bitmap point transparent)
+              else dcWith dc props (dcDrawBitmap dc bitmap point transparent)

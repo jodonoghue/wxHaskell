@@ -110,10 +110,10 @@ constAttr name x
 -- @Attr w b@ where (@get :: a -> b@) is used when the attribute is
 -- requested and (@set :: b -> a -> a@) is applied to current
 -- value when the attribute is set.
-mapAttr :: (a -> b) -> (b -> a -> a) -> Attr w a -> Attr w b
+mapAttr :: (a -> b) -> (a -> b -> a) -> Attr w a -> Attr w b
 mapAttr get set (Attr name getter setter)
     = Attr name (\w   -> do a <- getter w; return (get a))
-                (\w b -> do a <- getter w; setter w (set b a))
+                (\w b -> do a <- getter w; setter w (set a b))
 
 
 -- | (@mapAttrW conv attr@) maps an attribute of @Attr w a@ to

@@ -30,7 +30,8 @@ import Graphics.UI.WX.Events
 --------------------------------------------------------------------------------}
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
-  = do sw <- scrolledWindowCreate parent idAny rectNull 0
+  = do sw <- scrolledWindowCreate parent idAny rectNull 
+              (wxNO_FULL_REPAINT_ON_RESIZE .+. wxCLIP_CHILDREN)
        set sw props
        return sw
 
@@ -100,22 +101,7 @@ instance Colored (Window a) where
     = newAttr "bgcolor" windowGetBackgroundColour (\w x -> do{ windowSetBackgroundColour w x; return ()})
 
   color
-    = newAttr "color" getter setter
-    where
-      getter w
-        = ifInstanceOf w classTextCtrl
-           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl) 
-                                 (textAttrDelete)
-                                 (textAttrGetTextColour))
-           (windowGetForegroundColour w)
-      setter w clr
-        = ifInstanceOf w classTextCtrl
-           (\textCtrl -> bracket (textAttrCreateDefault)
-                                 (textAttrDelete)
-                                 (\attr -> do textAttrSetTextColour attr clr
-                                              textCtrlSetDefaultStyle textCtrl attr
-                                              return ()))
-           (unitIO (windowSetForegroundColour w clr))
+    = newAttr "color" windowGetForegroundColour (\w x -> do windowSetForegroundColour w x; return ())
 
 
 instance Literate (Window a) where
@@ -124,10 +110,16 @@ instance Literate (Window a) where
     where
       getter w
         = ifInstanceOf w classTextCtrl
-           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl) 
+           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl)
                                  (textAttrDelete)
-                                 (\attr -> bracket (textAttrGetFont attr) fontDelete fontGetFontInfo))
-           (bracket (windowGetFont w) fontDelete fontGetFontInfo)
+                                 (\attr -> do hasFont <- textAttrHasFont attr
+                                              if (hasFont) 
+                                                then getFont (textAttrGetFont attr) 
+                                                else getFont (windowGetFont w)))
+           (getFont (windowGetFont w))
+        where
+          getFont io
+            = bracket io fontDelete fontGetFontInfo 
 
       setter w info
         = ifInstanceOf w classTextCtrl
@@ -137,8 +129,53 @@ instance Literate (Window a) where
                                            do textAttrSetFont attr fnt
                                               textCtrlSetDefaultStyle textCtrl attr
                                               return ()))
-           (withFontInfo info (unitIO . windowSetFont w))
+           (withFontInfo info $ \fnt ->
+            do windowSetFont w fnt
+               return ())
 
+  textcolor
+    = newAttr "textcolor" getter setter
+    where
+      getter w
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl)
+                                 (textAttrDelete)
+                                 (\attr -> do hasColor <- textAttrHasTextColour attr
+                                              if (hasColor) then textAttrGetTextColour attr
+                                                            else get w color))
+           (get w color)
+
+      setter w c
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textAttrCreateDefault)
+                                 (textAttrDelete)
+                                 (\attr -> do textAttrSetTextColour attr c
+                                              textCtrlSetDefaultStyle textCtrl attr
+                                              return ()))
+           (set w [color := c])
+
+  textbgcolor
+    = newAttr "textbgcolor" getter setter
+    where
+      getter w
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl)
+                                 (textAttrDelete)
+                                 (\attr -> do hasColor <- textAttrHasBackgroundColour attr
+                                              if (hasColor) then textAttrGetBackgroundColour attr
+                                                            else get w bgcolor))
+           (get w bgcolor)
+
+      setter w c
+       = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textAttrCreateDefault)
+                                 (textAttrDelete)
+                                 (\attr -> do textAttrSetBackgroundColour attr c
+                                              textCtrlSetDefaultStyle textCtrl attr
+                                              return ()))
+           (set w [bgcolor := c])
+
+  
 
 instance Visible (Window a) where
   visible

@@ -78,7 +78,7 @@ on (Event attr)
   = attr
 
 -- | Change the event type.
-mapEvent :: (a -> b) -> (b -> a -> a) -> Event w a -> Event w b
+mapEvent :: (a -> b) -> (a -> b -> a) -> Event w a -> Event w b
 mapEvent get set (Event attr)
   = Event (mapAttr get set attr)
 
@@ -186,7 +186,7 @@ mouseFilter name filter
     get prev x
       = ioError (userError ("WX.Events: the " ++ name ++ " event is write-only."))
 
-    set new prev mouseEvent
+    set prev new mouseEvent
       = do when (filter mouseEvent) (new (mousePos mouseEvent))
            prev mouseEvent
 
@@ -242,7 +242,7 @@ keyboardFilter name filter
     get prev
       = ioError (userError ("WX.Events: the " ++ name ++ " event is write-only."))
 
-    set new prev keyboardEvent
+    set prev new keyboardEvent
       = do when (filter keyboardEvent) new
            prev keyboardEvent
 
@@ -253,7 +253,7 @@ keyboardFilter1 name filter
     get prev key
       = ioError (userError ("WX.Events: the " ++ name ++ " event is write-only."))
 
-    set new prev keyboardEvent
+    set prev new keyboardEvent
       = do when(filter keyboardEvent) (new (keyKey keyboardEvent))
            prev keyboardEvent
 
