@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.18 2004/02/20 15:07:09 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.19 2004/07/20 11:02:29 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -2074,9 +2074,9 @@ void       wxGrid_AutoSizeRow( TSelf(wxGrid) _obj, int row, TBoolInt setAsMin );
 void       wxGrid_AutoSizeRows( TSelf(wxGrid) _obj, TBoolInt setAsMin );
 void       wxGrid_BeginBatch( TSelf(wxGrid) _obj );
 void       wxGrid_BlockToDeviceRect( TSelf(wxGrid) _obj, int top, int left, int bottom, int right, TRectOut(_x,_y,_w,_h) );
-void       wxGrid_CalcCellsExposed( TSelf(wxGrid) _obj, void* reg );
-void       wxGrid_CalcColLabelsExposed( TSelf(wxGrid) _obj, void* reg );
-void       wxGrid_CalcRowLabelsExposed( TSelf(wxGrid) _obj, void* reg );
+void       wxGrid_CalcCellsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
+void       wxGrid_CalcColLabelsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
+void       wxGrid_CalcRowLabelsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
 TBool      wxGrid_CanDragColSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragGridSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragRowSize( TSelf(wxGrid) _obj );
@@ -2094,7 +2094,7 @@ void       wxGrid_DisableDragGridSize( TSelf(wxGrid) _obj );
 void       wxGrid_DisableDragRowSize( TSelf(wxGrid) _obj );
 void       wxGrid_DoEndDragResizeCol( TSelf(wxGrid) _obj );
 void       wxGrid_DoEndDragResizeRow( TSelf(wxGrid) _obj );
-void       wxGrid_DrawAllGridLines( TSelf(wxGrid) _obj, TClass(wxDC) dc, void* reg );
+void       wxGrid_DrawAllGridLines( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxRegion) reg );
 void       wxGrid_DrawCell( TSelf(wxGrid) _obj, TClass(wxDC) dc, int _row, int _col );
 void       wxGrid_DrawCellBorder( TSelf(wxGrid) _obj, TClass(wxDC) dc, int _row, int _col );
 void       wxGrid_DrawCellHighlight( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxGridCellAttr) attr );
@@ -2116,10 +2116,10 @@ void       wxGrid_EndBatch( TSelf(wxGrid) _obj );
 int        wxGrid_GetBatchCount( TSelf(wxGrid) _obj );
 void       wxGrid_GetCellAlignment( TSelf(wxGrid) _obj, int row, int col, TSizeOut(horiz, vert) );
 void       wxGrid_GetCellBackgroundColour( TSelf(wxGrid) _obj, int row, int col, TClass(wxColour) colour );
-void*      wxGrid_GetCellEditor( TSelf(wxGrid) _obj, int row, int col );
+TClass(wxGridCellEditor) wxGrid_GetCellEditor( TSelf(wxGrid) _obj, int row, int col );
 void       wxGrid_GetCellFont( TSelf(wxGrid) _obj, int row, int col, TClass(wxFont) font );
 void       wxGrid_GetCellHighlightColour( TSelf(wxGrid) _obj, TClassRef(wxColour) _ref );
-void*      wxGrid_GetCellRenderer( TSelf(wxGrid) _obj, int row, int col );
+TClass(wxGridCellRenderer) wxGrid_GetCellRenderer( TSelf(wxGrid) _obj, int row, int col );
 void       wxGrid_GetCellTextColour( TSelf(wxGrid) _obj, int row, int col, TClass(wxColour) colour );
 TStringLen wxGrid_GetCellValue( TSelf(wxGrid) _obj, int row, int col, TStringOutVoid _buf );
 void       wxGrid_GetColLabelAlignment( TSelf(wxGrid) _obj, TSizeOut(horiz, vert)  );
@@ -2234,7 +2234,7 @@ void       wxGrid_SetSelectionForeground( TSelf(wxGrid) _obj, TClass(wxColour) c
 void       wxGrid_SetSelectionMode( TSelf(wxGrid) _obj, int selmode );
 TBoolInt   wxGrid_SetTable( TSelf(wxGrid) _obj, TClass(wxGridTableBase) table, TBoolInt takeOwnership, int selmode );
 void       wxGrid_ShowCellEditControl( TSelf(wxGrid) _obj );
-int        wxGrid_StringToLines( TSelf(wxGrid) _obj, void* value, void* lines );
+int        wxGrid_StringToLines( TSelf(wxGrid) _obj, TStringVoid value, void* lines );
 int        wxGrid_XToCol( TSelf(wxGrid) _obj, int x );
 int        wxGrid_XToEdgeOfCol( TSelf(wxGrid) _obj, int x );
 void       wxGrid_XYToCell( TSelf(wxGrid) _obj, TPoint(x,y), TPointOut(row,col) );

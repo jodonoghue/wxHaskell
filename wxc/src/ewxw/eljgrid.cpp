@@ -258,7 +258,7 @@ EWXWEXPORT(void, wxGridCellAttr_SetDefAttr)(void* _obj, void* defAttr)
 	
 EWXWEXPORT(void*, wxGrid_Create) (void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
-	return (void*) new wxGrid ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl);
+	return (void*) new wxGrid ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl | wxWANTS_CHARS);
 }
 
 EWXWEXPORT(void, wxGrid_CreateGrid) (void* _obj, int rows, int cols, int selmode)

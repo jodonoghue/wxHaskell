@@ -250,6 +250,10 @@ void                 wxHtmlWindow_SetRelatedFrame( TSelf(wxHtmlWindow) _obj , TC
 void                 wxHtmlWindow_SetRelatedStatusBar( TSelf(wxHtmlWindow) _obj, int bar);
 void                 wxHtmlWindow_WriteCustomization( TSelf(wxHtmlWindow) _obj, TClass(wxConfigBase) cfg, TString path );
 
+/* wxGridCellTextEnterEditor */
+TClassDefExtend(wxGridCellTextEnterEditor,wxGridCellTextEditor)
+TClass(wxGridCellTextEnterEditor) wxGridCellTextEnterEditor_Ctor();
+
 /* logger */
 TClass(wxLogStderr)   wxLogStderr_Create();
 TClass(wxLogStderr)   wxLogStderr_CreateStdOut();

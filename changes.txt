@@ -17,7 +17,10 @@ Not backward compatible changes:
   such layout gets at least all available space assigned.
 - (un)set "maximize box" when "resizeable" is set.
 
+
 Backward compatible additions:
+- Added wxGrid events.
+- Improved signatures for wxGrid.
 - Added "changes.txt" file :-)
 - Added "HAS_RADIO_MENU_ITEMS" to "isDefined".
 - Added support for radio menu items.
@@ -43,4 +46,9 @@ Bug fixes:
   item and disregarded the parameter. Thanks to Olivier Spier for 
   sending a fix.
 
+WxWindows patches:
+- changed line 565 of src/generic/grid.cpp:
+                                , wxTE_PROCESS_TAB | wxTE_AUTO_SCROLL 
+  to
+                              , wxTE_PROCESS_TAB | wxTE_AUTO_SCROLL | wxTE_PROCESS_ENTER
 

@@ -3,6 +3,7 @@
 #include "wx/textctrl.h"
 #include "wx/progdlg.h"
 #include "wx/listctrl.h"
+#include "wx/grid.h"
 
 /*-----------------------------------------------------------------------------
   new events
@@ -445,6 +446,33 @@ wxPoint wxcHtmlEvent::GetLogicalPosition()
 {
     return m_logicalPosition;
 }
+
+/*-----------------------------------------------------------------------------
+  wxGridCellTextEnterEditor
+-----------------------------------------------------------------------------*/
+class wxGridCellTextEnterEditor : public wxGridCellTextEditor
+{
+public:
+  wxGridCellTextEnterEditor() : wxGridCellTextEditor() {}
+
+  void Create(wxWindow* parent,
+                        wxWindowID id,
+                        wxEvtHandler* evtHandler);
+
+};
+
+void wxGridCellTextEnterEditor::Create(wxWindow* parent,
+                                       wxWindowID id,
+                                       wxEvtHandler* evtHandler)
+{
+    wxGridCellTextEditor::Create(parent, id, evtHandler);
+    
+    {
+      long style = m_control->GetWindowStyle();
+      m_control->SetWindowStyle( style | wxTE_PROCESS_ENTER );
+    }
+}
+
 
 /*-----------------------------------------------------------------------------
   pre processor definitions
@@ -2238,6 +2266,13 @@ EWXWEXPORT(void,LogTrace)(void* mask, void* _msg)
         wxLogTrace((char*) mask, (char*)_msg);
 }
 
+/*-----------------------------------------------------------------------------
+  Grid text editor
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxGridCellTextEnterEditor*,wxGridCellTextEnterEditor_Ctor)()
+{
+  return new wxGridCellTextEnterEditor();
+}
 
 
 } /* extern "C" */

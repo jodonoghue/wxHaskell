@@ -31,6 +31,7 @@ module Graphics.UI.WXCore.Events
         , textCtrlOnTextEnter
         , listCtrlOnListEvent
         , treeCtrlOnTreeEvent
+        , gridOnGridEvent
 
         -- ** Windows
         , windowOnMouse
@@ -76,6 +77,7 @@ module Graphics.UI.WXCore.Events
         , textCtrlGetOnTextEnter
         , listCtrlGetOnListEvent
         , treeCtrlGetOnTreeEvent
+        , gridGetOnGridEvent
 
         -- ** Windows
         , windowGetOnMouse
@@ -137,6 +139,9 @@ module Graphics.UI.WXCore.Events
         
         -- ** List control events
         , EventList(..), ListIndex
+
+        -- ** Grid control events
+        , EventGrid(..), Row, Column
 
         -- ** Html window events
         , EventHtml(..)
@@ -1584,6 +1589,89 @@ showKey key
       KeyF24          -> "F24"
       KeyNumLock      -> "Numlock"
       KeyScroll       -> "Scroll"
+
+{-----------------------------------------------------------------------------------------
+  Grid events
+-----------------------------------------------------------------------------------------}
+type Column     = Int
+type Row        = Int
+
+-- | Grid events. 
+data EventGrid  = GridCellMouse        !Row !Column !EventMouse
+                | GridLabelMouse       !Row !Column !EventMouse
+                | GridCellChange       !Row !Column !(IO ())
+                | GridCellSelect       !Row !Column !(IO ())
+                | GridCellDeSelect     !Row !Column
+                | GridEditorHidden     !Row !Column
+                | GridEditorShown      !Row !Column
+                | GridEditorCreated    !Row !Column (IO (Control ())) 
+                | GridColSize          !Column !Point !Modifiers (IO ())
+                | GridRowSize          !Row !Point !Modifiers (IO ())
+                | GridRangeSelect      !Row !Column !Row !Column !Rect !Modifiers !(IO ())
+                | GridRangeDeSelect    !Row !Column !Row !Column !Rect !Modifiers
+                | GridUnknown          !Row !Column !Int
+
+fromGridEvent :: GridEvent a -> IO EventGrid
+fromGridEvent gridEvent
+  = do tp  <- eventGetEventType gridEvent
+       row <- gridEventGetCol gridEvent
+       col <- gridEventGetRow gridEvent
+       case lookup tp gridEvents of
+         Just make  -> make gridEvent row col 
+         Nothing    -> return (GridUnknown row col tp)
+
+gridEvents :: [(Int, GridEvent a -> Int -> Int -> IO EventGrid)]
+gridEvents
+  = [(wxEVT_GRID_CELL_LEFT_CLICK,    gridMouse GridCellMouse MouseLeftDown)
+    ,(wxEVT_GRID_CELL_LEFT_DCLICK,   gridMouse GridCellMouse MouseLeftDClick)
+    ,(wxEVT_GRID_CELL_RIGHT_CLICK,   gridMouse GridCellMouse MouseRightDown)
+    ,(wxEVT_GRID_CELL_RIGHT_DCLICK,  gridMouse GridCellMouse MouseRightDClick)
+    ,(wxEVT_GRID_LABEL_LEFT_CLICK,   gridMouse GridLabelMouse MouseLeftDown)
+    ,(wxEVT_GRID_LABEL_LEFT_DCLICK,  gridMouse GridLabelMouse MouseLeftDClick)
+    ,(wxEVT_GRID_LABEL_RIGHT_CLICK,  gridMouse GridLabelMouse MouseRightDown)
+    ,(wxEVT_GRID_LABEL_RIGHT_DCLICK, gridMouse GridLabelMouse MouseRightDClick)
+    ,(wxEVT_GRID_CELL_CHANGE,        gridVeto  GridCellChange)
+    ,(wxEVT_GRID_SELECT_CELL,        gridSelect)
+    ,(wxEVT_GRID_EDITOR_SHOWN,       gridNormal GridEditorShown)
+    ,(wxEVT_GRID_EDITOR_HIDDEN,      gridNormal GridEditorHidden)
+    ]
+  where
+    gridMouse make makeMouse gridEvent row col
+      = do pt          <- gridEventGetPosition gridEvent
+           altDown     <- gridEventAltDown gridEvent
+           controlDown <- gridEventControlDown gridEvent
+           shiftDown   <- gridEventShiftDown gridEvent
+           metaDown    <- gridEventMetaDown gridEvent
+           let modifiers = Modifiers altDown shiftDown controlDown metaDown
+           return (make row col (makeMouse pt modifiers))
+
+    gridVeto make gridEvent row col
+      = return (make row col (notifyEventVeto gridEvent))
+
+    gridSelect gridEvent row col
+      = do selecting <- gridEventSelecting gridEvent
+           if selecting
+            then return (GridCellSelect row col (notifyEventVeto gridEvent))
+            else return (GridCellDeSelect row col)
+
+    gridNormal make gridEvent row col
+      = return (make row col)
+
+
+
+-- | Set a grid event handler.
+gridOnGridEvent :: Grid a -> (EventGrid -> IO ()) -> IO ()
+gridOnGridEvent grid eventHandler
+  = windowOnEvent grid (map fst gridEvents) eventHandler gridHandler
+  where
+    gridHandler event
+      = do eventGrid <- fromGridEvent (objectCast event)
+           eventHandler eventGrid
+
+-- | Get the current grid event handler of a window.
+gridGetOnGridEvent :: Grid a -> IO (EventGrid -> IO ())
+gridGetOnGridEvent grid
+  = unsafeWindowGetHandlerState grid wxEVT_GRID_CELL_CHANGE (\event -> skipCurrentEvent)
 
 
 {-----------------------------------------------------------------------------------------
