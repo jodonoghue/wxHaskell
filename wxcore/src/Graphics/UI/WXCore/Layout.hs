@@ -95,6 +95,10 @@
     >                      , glue
     >                      , row 0 [hglue, widget ok, hspace 5, widget cancel]]
 
+    Splitter windows can also be specified with layout; you get somewhat less functionality
+    but it is quite convenient for most applications. A horizontal split is done using
+    'hsplit' while a vertical split is specified with a 'vsplit'.
+
     The layout for notebooks is specified with the 'tabs' combinator. The following
     example shows this (and note also how we use 'container' to set the layout of panels):
 
@@ -125,6 +129,7 @@ module Graphics.UI.WXCore.Layout( -- * Types
                                -- ** Containers
                              , row, column
                              , grid, boxed, container, tabs, imageTabs
+                             , hsplit, vsplit
                                -- ** Glue
                              , glue, hglue, vglue
                                -- ** Whitespace
@@ -665,9 +670,30 @@ imageTabs notebook pages
     hashstretch  = all stretchH [options layout | (_,_,layout) <- pages]
     hasfill      = if (hasvstretch || hashstretch) then Fill else FillNone
 
+-- | Add a sash bar between two stacked windows. 
+hsplit :: SplitterWindow a -> Int -> Int -> Layout -> Layout -> Layout
+hsplit
+  = split True
+
+-- | Add a sash bar between two windows beside each other. 
+vsplit :: SplitterWindow a -> Int -> Int -> Layout -> Layout -> Layout
+vsplit
+  = split False
+
+
+split :: Bool -> SplitterWindow a -> Int -> Int -> Layout -> Layout -> Layout
+split splitHorizontal splitter sashWidth paneWidth pane1 pane2
+  = Splitter optionsDefault (downcastSplitterWindow splitter) pane1 pane2 splitHorizontal sashWidth paneWidth
+
+
+
+
 optionsDefault :: LayoutOptions
 optionsDefault
   = LayoutOptions False False [] 10 AlignLeft AlignTop FillNone Nothing
+
+
+
 
 
 {-----------------------------------------------------------------------------------------
@@ -683,6 +709,9 @@ data Layout = Grid      { options :: LayoutOptions, gap  :: Size, rows :: [[Layo
             | XSizer    { options :: LayoutOptions, xsizer :: Sizer () }
             | WidgetContainer{ options :: LayoutOptions, win :: Window (), content :: Layout }
             | XNotebook { options :: LayoutOptions, nbook :: Notebook (), pages :: [(String,Bitmap (),Layout)] }
+            | Splitter  { options :: LayoutOptions, splitter :: SplitterWindow ()
+                        , pane1 :: Layout, pane2 :: Layout
+                        , splitHorizontal :: Bool, sashWidth :: Int, paneWidth :: Int }
 
 data LayoutOptions
            = LayoutOptions{ stretchH :: Bool, stretchV :: Bool
@@ -757,6 +786,34 @@ sizerFromLayout parent layout
       = do windowSetLayout win layout -- recursively set the layout in the window itself
            sizerAddWindowWithOptions container win options
            return container
+
+    insert container (Splitter options splitter pane1 pane2 splitHorizontal sashWidth paneWidth)
+      = do splitterWindowSetMinimumPaneSize splitter 20
+           splitterWindowSetSashSize splitter sashWidth
+           sizerAddWindowWithOptions container splitter options
+           if splitHorizontal
+            then splitterWindowSplitHorizontally splitter win1 win2 paneWidth
+            else splitterWindowSplitVertically splitter win1 win2 paneWidth
+           paneSetLayout pane1
+           paneSetLayout pane2
+           
+           return container
+      where
+        win1  = getWinFromLayout pane1
+        win2  = getWinFromLayout pane2
+
+        getWinFromLayout layout
+          = case layout of
+              Widget _ win            -> downcastWindow win
+              WidgetContainer _ win _ -> downcastWindow win
+              other                   -> error "Layout: hsplit/vsplit need widgets or containers as arguments"
+
+        paneSetLayout layout
+          = case layout of
+              Widget _ win            -> return ()
+              WidgetContainer options win layout -> windowSetLayout win layout
+              other                   -> error "Layout: hsplit/vsplit need widgets or containers as arguments"
+
 
     insert container (XNotebook options nbook pages)
       = do pages' <- addImages ptrNull pages
@@ -868,3 +925,6 @@ downcastWindow window  = objectCast window
 
 downcastNotebook :: Notebook a -> Notebook ()
 downcastNotebook notebook = objectCast notebook
+
+downcastSplitterWindow :: SplitterWindow a -> SplitterWindow ()
+downcastSplitterWindow splitter = objectCast splitter

@@ -22,23 +22,28 @@ imgHFile      = "hsicon"
 imgFolder     = "f_closed"
 imgFolderOpen = "f_open"
 
+-- plain names of images
 imageNames    
   = [imgComputer,imgDisk,imgFile,imgHFile,imgFolder,imgFolderOpen]
 
+-- file names of the images
 imageFiles
   = map (\name -> "../bitmaps/" ++ name ++ ".ico") imageNames
 
+-- get the index of an image
 imageIndex :: String -> Int
 imageIndex name 
   = case lookup name (zip imageNames [0..]) of
       Just idx  -> idx
       Nothing   -> imageNone
 
+-- (-1) means no image present
 imageNone :: Int
 imageNone     = (-1)
 
 {--------------------------------------------------------------------------------
-   wrap the "unsafe" calls in to safe wrappers.
+   The client data of the directory tree is the full path of the
+   tree node. Here we wrap the "unsafe" basic calls into safe wrappers.
 --------------------------------------------------------------------------------}
 treeCtrlSetItemPath :: TreeCtrl a -> TreeItem -> FilePath -> IO ()
 treeCtrlSetItemPath t item path
@@ -58,17 +63,16 @@ treeCtrlGetItemPath t item
 gui :: IO ()
 gui
   = do -- main gui elements: frame, panel
-       f       <- frame [text := "File browser"]
+       f <- frame [text := "File browser"]
        -- panel: just for the nice grey color
-       p       <- panel f []
+       p <- panel f []
       
        -- image list
        images  <- imageListCreate (sz 16 16) True 2
        imageListAddIconsFromFiles images imageFiles
 
+       -- splitter window between directory tree and file view.
        s <- splitterWindowCreate p idAny rectNull wxSP_LIVE_UPDATE
-       splitterWindowSetMinimumPaneSize s 20
-       splitterWindowSetSashSize s 5
 
        -- initialize tree control
        t <- treeCtrlCreate2 s idAny rectNull wxTR_HAS_BUTTONS
@@ -90,12 +94,12 @@ gui
        -- list control
        l  <- listCtrlCreate s idAny rectNull wxLC_REPORT
        listCtrlSetImageList l images wxIMAGE_LIST_SMALL
-       listCtrlInsertColumn l 0 "Name" wxLIST_FORMAT_LEFT 140
-       listCtrlInsertColumn l 1 "Permissions" wxLIST_FORMAT_LEFT 80
-       listCtrlInsertColumn l 2 "Date" wxLIST_FORMAT_LEFT 100
+       listCtrlInsertColumn l 0 {-first-}  "Name"        wxLIST_FORMAT_LEFT 140 {- width -}
+       listCtrlInsertColumn l 1 {-second-} "Permissions" wxLIST_FORMAT_LEFT  80
+       listCtrlInsertColumn l 2 {-third-}  "Date"        wxLIST_FORMAT_LEFT 100
 
        -- status bar
-       status <- statusField []
+       status <- statusField [text := "wxHaskell file browser example"]
 
        -- install event handlers
        treeCtrlOnTreeEvent t (onTreeEvent t l status)
@@ -103,27 +107,15 @@ gui
 
        -- specify layout
        set f [layout     := container p $ margin 5 $ 
-                            fill  $ widget s
+                            fill  $ vsplit s 5 {- sash width -} 160 {- left pane width -} (widget t) (widget l)
              ,statusBar  := [status]
              ,clientSize := sz 500 300
              ]
-       
+{-       
+       -- Give the tree control 1/3 of the view
        ssize <- get s clientSize
        splitterWindowSplitVertically s t l ((sizeW ssize) `div` 3)
-
-       return ()
-
-
-{--------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------}
-imageListAddIconsFromFiles images fnames
-  = mapM_ (imageListAddIconFromFile images) fnames
-
-imageListAddIconFromFile images fname
-  = do icon <- iconCreateLoad fname (imageTypeFromFileName fname) (sz 16 16)
-       imageListAddIcon images icon
-       iconDelete icon
+-}
        return ()
 
 {--------------------------------------------------------------------------------
@@ -171,9 +163,7 @@ listCtrlShowDir listCtrl path
 
 listCtrlAddFile l (idx,fname,fpath)
   = do isdir <- doesDirectoryExist fpath `catch` \err -> return False
-       perm  <- if isdir
-                 then return (Permissions False False False False)
-                 else getPermissions fpath
+       perm  <- getPermissions fpath
        time  <- getModificationTime fpath
        let image = imageIndex (if isdir 
                                 then imgFolder 
