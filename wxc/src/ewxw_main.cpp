@@ -15,13 +15,19 @@ extern int APPTerminating;
 
 #include <windows.h>
 
-extern int wxEntry(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *pCmdLine, int nCmdShow);
+#if wxCHECK_VERSION(2,5,0)
+ #define wxHANDLE  HINSTANCE
+ extern int wxEntry(wxHANDLE hInstance, wxHANDLE hPrevInstance, char *pCmdLine, int nCmdShow);
+#else
+ #define wxHANDLE  WXHINSTANCE
+#endif
+
 
 extern "C"
 {
 EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _argv)
 {
-  HINSTANCE wxhInstance = GetModuleHandle(NULL);
+  wxHANDLE wxhInstance = GetModuleHandle(NULL);
   
 
 /* check memory leaks with visual C++ */
@@ -39,7 +45,6 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   initClosure = closure;
   APPTerminating = 0;
   wxEntry(wxhInstance, NULL, (_argc > 0 ? _argv[0] : NULL), SW_SHOWNORMAL);
-  wxEntryCleanup();
   APPTerminating = 1;
  
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
