@@ -11,7 +11,7 @@ gui :: IO ()
 gui
   = do f  <- frame [text := "Paint demo"]
        sw <- scrolledWindow f [on paint := onpaint, virtualSize := sz 500 500, scrollRate := sz 10 10]
-       set f [clientSize := sz 150 150, layout := widget sw]
+       set f [clientSize := sz 150 150, layout := fill $ widget sw]
        return ()
   where
     onpaint dc viewRect updateAreas
