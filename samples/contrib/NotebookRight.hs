@@ -22,7 +22,7 @@ gui
        p       <- panel f []
        
        -- use text control as logger
-       textlog <- textCtrl p WrapLine [enable := False]
+       textlog <- textCtrl p WrapLine [enabled := False]
        textCtrlMakeLogActiveTarget textlog
        logMessage "logging enabled"              
        
