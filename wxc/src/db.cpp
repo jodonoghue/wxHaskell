@@ -288,11 +288,16 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMsg)(wxDb* db)
 EWXWEXPORT(int,wxDb_GetNumErrorMessages)( wxDb* db)
 {
 #ifdef wxUSE_ODBC
-  int i = 0;
-  for( i = 0; i < DB_MAX_ERROR_HISTORY; i++ ) {
-    if (db->errorList[i] == NULL || db->errorList[i][0] == 0) return i;
+  int n;
+  /* find the last non-empty entry */
+  for( n = DB_MAX_ERROR_HISTORY; n > 0; n-- ) {
+    if (db->errorList[n-1] != NULL && db->errorList[n-1][0] != 0) return n;
   }
-  return DB_MAX_ERROR_HISTORY;
+  /* hmm, nothing found, return the last non-null entry instead */
+  for( n = DB_MAX_ERROR_HISTORY; n > 0; n-- ) {
+    if (db->errorList[n-1] != NULL) return n;
+  } 
+  return 0;
 #else
   return 0;
 #endif
@@ -301,12 +306,16 @@ EWXWEXPORT(int,wxDb_GetNumErrorMessages)( wxDb* db)
 EWXWEXPORT(wxString*,wxDb_GetErrorMessage)(wxDb* db, int index)
 {
 #ifdef wxUSE_ODBC
-  int n;
+  int n,idx;
   if (db==NULL) return new wxString("");
   n = wxDb_GetNumErrorMessages(db);
   if (index >= n) index = n-1;
   if (index < 0)  index = 0;  
-  return new wxString(db->errorList[n - index - 1]);
+  idx = n - index - 1;
+  if (idx < 0 || idx >= DB_MAX_ERROR_HISTORY)
+    return new wxString("");
+  else
+    return new wxString(db->errorList[n - index - 1]);
 #else
   return new wxString("");
 #endif
@@ -580,7 +589,7 @@ EWXWEXPORT(bool,wxDb_Open)(wxDb* db, wxString* dsn, wxString* userId, wxString* 
 #ifdef wxUSE_ODBC
   return db->Open(*dsn,*userId,*password);
 #else
-  return NULL;
+  return false;
 #endif
 }
 

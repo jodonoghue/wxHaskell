@@ -496,18 +496,16 @@ dbGetDataSourceInfo dataSource userId password
             (dbConnectInfDelete)
             (\connectInf ->
              do henv <- dbConnectInfGetHenv connectInf
-                db   <- dbCreate henv True
-                if (objectIsNull db)
-                 then raiseDbConnect dataSource
-                 else do dbOpen db dataSource userId password
-                         opened <- dbIsOpen db
-                         if (not opened)
-                          then do dbDelete db
-                                  dbRaiseExn db
-                          else do info <- dbGetInfo db
-                                  dbClose db
-                                  dbDelete db
-                                  return info)
+                bracket (dbCreate henv True)
+                        (dbDelete)
+                        (\db -> if (objectIsNull db)
+                                 then raiseDbConnect dataSource
+                                 else do opened <- dbOpen db dataSource userId password
+                                         if (not opened)
+                                          then dbRaiseExn db
+                                          else do info <- dbGetInfo db
+                                                  dbClose db
+                                                  return info))
 
 -- | Get the complete meta information of a database.
 dbGetInfo :: Db a -> IO DbInfo

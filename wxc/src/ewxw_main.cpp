@@ -49,14 +49,13 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   if (_CrtMemDifference( &memDif, &memStart, &memEnd)
      && (memDif.lCounts[_NORMAL_BLOCK]>=-2 && memDif.lCounts[_NORMAL_BLOCK] <= 0))
   {
-    _RPT0(_CRT_WARN,"\n** memory leak detected **\n" );
-    _CrtMemDumpStatistics(&memDif); 
-    _CrtMemDumpAllObjectsSince(&memStart); 
+    _RPT0(_CRT_WARN,"\n** memory leak detected (**\n" );
+    _CrtMemDumpStatistics(&memDif);  
+    /* _CrtMemDumpAllObjectsSince(&memStart);  */
     _RPT0(_CRT_WARN,"** memory leak report done **\n\n" );
 
   }
 #endif
-
 }
 
 EWXWEXPORT(void, ELJApp_initialize)(void* _obj, AppInitFunc _func, char* _cmd, void* _inst)
