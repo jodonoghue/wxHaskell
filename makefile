@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.53 2003/11/07 09:50:42 dleijen Exp $
+# $Id: makefile,v 1.54 2003/11/07 14:44:56 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -347,7 +347,8 @@ uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister pack
 # usage: cp-bindist<dirprefix,target-dir,source files>
 # use -R switch to copy symbolic links literally instead of following the links.
 # use -p to preserve file dates to avoid linker bug on macosX with .a files.
-cp-echo		=echo  "copy $(1) to $(2)" && $(CP) -p -R $(1) $(2)
+cp-echox	=echo  "copy $(1) to $(2)" && $(CP) -p -R $(1) $(2) && :
+cp-echo         =$(foreach file,$(wildcard $(1)),$(call cp-echox,$(file),$(2)))
 cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
 		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
 cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
