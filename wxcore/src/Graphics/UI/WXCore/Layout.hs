@@ -889,6 +889,7 @@ sizerFromLayout parent layout
     flags options
       = flagsFillMode (fillMode options) .+. flagsMargins (margins options)
         .+. flagsHAlign (alignH options) .+. flagsVAlign (alignV options)
+        .+. wxADJUST_MINSIZE
 
     flagsFillMode fillMode
       = case fillMode of
