@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 {--------------------------------------------------------------------------------
   Copyright (c) 2003 Daan Leijen.
 
@@ -67,7 +66,7 @@ timeFlows
        set f [ menuBar     := [mfile,medit,mhelp]
              , statusBar   := [status]
              , on (menu mabout)    := infoDialog f "About Time flows.." "This is an idle event application."
-             , on (menu mshowline) := do showit <- get mshowline checked
+             , on (menu mshowline) := do showit <- get mshowline checked                                 
                                          varSet vflowLine showit
              , on (menu moptions)  := showOptionDialog f vtimeSpan vflowText 
              , on (menu mfont)     := showFontDialog f vflowFont

@@ -8,7 +8,9 @@
     Stability   :  provisional
     Portability :  portable
 
-    Define menus. The function 'menuPane' is used to create a menu
+    Defines Menus, toolbars, and statusbars.
+    
+    The function 'menuPane' is used to create a menu
     that can contain 'menuItem's. Menu items can contain event handlers
     using ('on' 'command'), but they can also be set, using the 'menu'
     function, on a frame or (mdi) window so that the menu command is handled
@@ -34,7 +36,7 @@ module Graphics.UI.WX.Menu
     , menuLine, menuSub
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
-    , ToolBarItem, toolMenu, toolItem, tool
+    , ToolBarItem, toolMenu, toolItem, toolControl, tool
     -- * Status bar
     , StatusField, statusBar, statusField, statusWidth
     -- * Deprecated
@@ -292,6 +294,13 @@ menuSetEvtHandlers menu hs
   Toolbar
 --------------------------------------------------------------------------------}
 -- | Create a toolbar window with a divider and text labels.
+-- Normally, you can use 'toolMenu' to add tools in the toolbar
+-- that behave like normal menu items.
+--
+-- >  tbar   <- toolBar f []
+-- >  toolMenu tbar open  "Open"  "open.png"  []
+-- >  toolMenu tbar about "About" "about.png" []
+--
 toolBar :: Frame a -> [Prop (ToolBar ())] -> IO (ToolBar ())
 toolBar parent props
   = toolBarEx parent True True props
@@ -310,7 +319,7 @@ toolBarEx parent showText showDivider props
        frameSetToolBar parent t
        return t
 
-
+-- | A tool in a toolbar.
 data ToolBarItem  = ToolBarItem (ToolBar ()) Id Bool
 
 instance Able ToolBarItem  where
@@ -391,11 +400,15 @@ tool (ToolBarItem toolbar id isToggle)
     setter w io
       = evtHandlerOnMenuCommand w id io
 
--- | Create a tool bar item based on a menu. Takes a label, the relevant menu
--- item and a bitmap file (or png,gif,ico,etc.) as arguments. The toolbar item will fire the relevant
--- menu items just as if the menu has been selected.
-toolMenu :: ToolBar a -> String -> MenuItem a -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
-toolMenu toolbar label menuitem bitmapPath props
+-- | Create a tool bar item based on a menu. Takes a a relevant menu
+-- item, a label and an image file (bmp,png,gif,ico,etc.) as arguments. The image
+-- file is normally 16x15 pixels.
+-- The toolbar item will fire the relevant menu items just as if the menu has been selected.
+-- Checkable menus will give a checkable toolbar item. Beware though that checkable tools
+-- normally require a specific @on command@ handler to keep them synchronised with the 
+-- corresponding menu item.
+toolMenu :: ToolBar a -> MenuItem a -> String -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
+toolMenu toolbar menuitem label bitmapPath props
   = do isToggle <- get menuitem checkable
        id       <- get menuitem identity
        lhelp    <- get menuitem help
@@ -410,8 +423,8 @@ toolMenu toolbar label menuitem bitmapPath props
             return t
        
 -- | Create an /orphan/ toolbar item that is unassociated with a menu. Takes a 
--- label, a flag that is 'True' when the item is 'checkable' and a path to a bitmap
--- (or png,gif,ico,etc.) as arguments.
+-- label, a flag that is 'True' when the item is 'checkable' and a path to an image
+-- (bmp,png,gif,ico,etc.) as arguments.
 toolItem :: ToolBar a -> String -> Bool -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
 toolItem toolbar label isCheckable bitmapPath props
   = withBitmapFromFile bitmapPath $ \bitmap ->
@@ -423,6 +436,13 @@ toolItem toolbar label isCheckable bitmapPath props
        set t props
        toolBarRealize toolbar
        return t
+
+-- | Add an arbitrary control to a toolbar (typically a 'ComboBox'). The control
+-- must be created with the toolbar as the parent.
+toolControl :: ToolBar a -> Control b -> IO ()
+toolControl toolbar control
+  = do toolBarAddControl toolbar control
+       return ()
    
 downcastToolBar :: ToolBar a -> ToolBar ()
 downcastToolBar t  = objectCast t

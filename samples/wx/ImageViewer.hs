@@ -3,17 +3,23 @@
  wxWindows License.
 
  An image viewer in wxHaskell.
+ Demonstrates: 
+ - menus, toolbars and the statusbar
+ - standard file dialogs
+ - scrollable windows
+ - drawing on DC's (device contexts)
+ - image handling
 -----------------------------------------------------------------------------------------}
 module Main where
 
-import Graphics.UI.WXCore( bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear )
-import Graphics.UI.WX
+import Graphics.UI.WXCore ( bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear )
+import Graphics.UI.WX 
 
 main :: IO ()
 main
   = start imageViewer
 
--- Specify image files.
+-- Specify image files for the file open dialog.
 imageFiles
    = [("Image files",["*.bmp","*.jpg","*.gif","*.png"])
      ,("Portable Network Graphics (*.png)",["*.png"])
@@ -22,17 +28,18 @@ imageFiles
      ,("GIF files (*.gif)",["*.gif"])
      ]
 
+
 -- The image viewer.
 imageViewer :: IO ()
 imageViewer
   = do -- the main frame
-       f      <- frame [text := "ImageViewer"]
+       f      <- frame [text := "ImageViewer", image := "../bitmaps/eye.ico"]
 
        -- use a mutable variable to hold the image
        vbitmap <- varCreate Nothing
 
        -- add a scrollable window widget in the frame
-       sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap]
+       sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap, bgcolor := white]
 
        -- create file menu
        file   <- menuPane      [text := "&File"]
@@ -47,8 +54,8 @@ imageViewer
 
        -- create Toolbar
        tbar   <- toolBar f []
-       toolMenu tbar "open" open "../bitmaps/fileopen16.png" []
-       toolMenu tbar "about" about "../bitmaps/wxwin16.png"   []
+       toolMenu tbar open  "Open"  "../bitmaps/fileopen16.png" []
+       toolMenu tbar about "About" "../bitmaps/wxwin16.png"    []
 
        -- create statusbar field
        status <- statusField   [text := "Welcome to the wxHaskell ImageViewer"]
@@ -56,7 +63,8 @@ imageViewer
        -- set the statusbar, menubar, layout, and add menu item event handlers
        set f [statusbar        := [status]
              ,menubar          := [file,hlp]
-             ,layout           := fill (widget sw)
+             ,layout           := column 1 [hfill $ hrule 1  -- add divider between toolbar and scrolledWindow
+                                           ,fill (widget sw)]
              ,clientSize       := sz 300 200
              ,on (menu about)  := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
              ,on (menu quit)   := close f
@@ -68,7 +76,7 @@ imageViewer
   where
     onOpen :: Frame a -> ScrolledWindow b -> Var (Maybe (Bitmap ())) -> MenuItem c -> StatusField -> IO ()
     onOpen f sw vbitmap mclose status
-      = do mbfname <- fileOpenDialog f True True "Open image" imageFiles "" ""
+      = do mbfname <- fileOpenDialog f False {- change current directory -} True "Open image" imageFiles "" ""
            case mbfname of
              Nothing    -> return ()
              Just fname -> openImage sw vbitmap mclose status fname

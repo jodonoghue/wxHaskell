@@ -1,5 +1,12 @@
 {--------------------------------------------------------------------------------
-   List control demo.
+ Copyright (c) Daan Leijen 2003
+ wxWindows License.
+
+ A file browser in wxHaskell.
+ Demonstrates: 
+ - tree control and list control
+ - image lists
+ - basic directory handling in Haskell 
 --------------------------------------------------------------------------------}
 module Main where
 
@@ -19,7 +26,7 @@ imgComputer   = "computer"
 imgDisk       = "disk"
 imgFile       = "file"
 imgHFile      = "hsicon"
-imgFolder     = "f_closed2"
+imgFolder     = "f_closed"
 imgFolderOpen = "f_open"
 
 -- plain names of images
@@ -63,7 +70,7 @@ treeCtrlGetItemPath t item
 gui :: IO ()
 gui
   = do -- main gui elements: frame, panel
-       f <- frame [text := "File browser"]
+       f <- frame [text := "File browser", image := "../bitmaps/wxwin.ico"]
        
        -- panel: just for the nice grey color
        p <- panel f []
@@ -100,7 +107,7 @@ gui
 
        -- install event handlers
        set t [on treeEvent := onTreeEvent t l status]
-       set l [on listEvent := onListEvent l t status]
+       set l [on listEvent := onListEvent l status]
 
        -- specify layout
        set f [layout     := container p $ margin 5 $ 
@@ -136,13 +143,12 @@ onTreeEvent t l status event
       other
         -> propagateEvent
 
-onListEvent :: ListCtrl a -> TreeCtrl b -> StatusField -> EventList -> IO ()
-onListEvent l t status event
+onListEvent :: ListCtrl a -> StatusField -> EventList -> IO ()
+onListEvent l status event
   = case event of
       ListItemSelected item
-        -> do fpath <- do{ idx <- treeCtrlGetSelection t; treeCtrlGetItemPath t idx }
-              fname <- listCtrlGetItemText l item
-              set status [text := fpath ++ fname]
+        -> do count <- listCtrlGetSelectedItemCount l
+              set status [text := (show count ++ " item" ++ (if count /= 1 then "s" else "") ++ " selected") ]
               propagateEvent
       other
         -> propagateEvent
