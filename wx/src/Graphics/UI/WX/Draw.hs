@@ -14,20 +14,10 @@ module Graphics.UI.WX.Draw
     ( 
     -- * Classes
       Drawn, pen, penKind, penWidth, penCap, penJoin, penColor
-    , Brushed, brush, brushKind
+    , Brushed, brush, brushKind, brushColor
       -- * Types
     , DC, Bitmap
-    -- ** Brushes
-    , BrushStyle(..), BrushKind(..), brushDefault, brushColor
-    -- ** Pens
-    , PenKind(..), penDefault, penColored, penTransparent
-    -- ** Draw styles
-    , HatchStyle(..), CapStyle(..), JoinStyle(..), DashStyle(..)
-    -- ** Font
-    -- , FontInfo(..)
-    , FontFamily(..), FontShape(..), FontWeight(..)
-    , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
-    -- * Drawing
+      -- * Drawing
     , circle, arc, ellipse, ellipticArc
     , line, polyline, polygon
     , drawPoint, drawRect, roundedRect

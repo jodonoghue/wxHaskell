@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------
 {-| Module      :  Types
     Copyright   :  (c) Daan Leijen 2003
-    License     :  BSD-style
+    License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
     Stability   :  provisional
@@ -56,7 +56,7 @@ module Graphics.UI.WXH.Types(
 
             -- ** Vectors
             , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
-            , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecDistance
+            , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecBetween, vecLength
 
             -- ** Rectangles
             , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
@@ -216,8 +216,8 @@ pointMove :: Vector -> Point -> Point
 pointMove (Vector dx dy) (Point x y)
   = Point (x+dx) (y+dy)
 
-pointMoveBySize :: Size -> Point -> Point
-pointMoveBySize (Size w h) (Point x y) = Point (x + w) (y + h)
+pointMoveBySize :: Point -> Size -> Point
+pointMoveBySize (Point x y) (Size w h)  = Point (x + w) (y + h)
 
 pointAdd :: Point -> Point -> Point
 pointAdd (Point x1 y1) (Point x2 y2) = Point (x1+x2) (y1+y2)
@@ -225,8 +225,8 @@ pointAdd (Point x1 y1) (Point x2 y2) = Point (x1+x2) (y1+y2)
 pointSub :: Point -> Point -> Point
 pointSub (Point x1 y1) (Point x2 y2) = Point (x1-x2) (y1-y2)
 
-pointScale :: Int -> Point -> Point
-pointScale v (Point x y) = Point (v*x) (v*y)
+pointScale :: Point -> Int -> Point
+pointScale (Point x y) v = Point (v*x) (v*y)
 
 
 {-----------------------------------------------------------------------------------------
@@ -273,21 +273,25 @@ vecAdd (Vector x1 y1) (Vector x2 y2) = Vector (x1+x2) (y1+y2)
 vecSub :: Vector -> Vector -> Vector
 vecSub (Vector x1 y1) (Vector x2 y2) = Vector (x1-x2) (y1-y2)
 
-vecScale :: Int -> Vector -> Vector
-vecScale v (Vector x y) = Vector (v*x) (v*y)
+vecScale :: Vector -> Int -> Vector
+vecScale (Vector x y) v = Vector (v*x) (v*y)
 
-vecDistance :: Point -> Point -> Vector
-vecDistance (Point x1 y1) (Point x2 y2) = Vector (x2-x1) (y2-y1)
+vecBetween :: Point -> Point -> Vector
+vecBetween (Point x1 y1) (Point x2 y2) = Vector (x2-x1) (y2-y1)
+
+vecLength :: Vector -> Double
+vecLength (Vector x y)
+  = sqrt (fromIntegral (x*x + y*y))
 
 {-----------------------------------------------------------------------------------------
   Rectangle
 -----------------------------------------------------------------------------------------}
-rectContains :: Point -> Rect -> Bool
-rectContains (Point x y) (Rect l t w h)
+rectContains :: Rect -> Point -> Bool
+rectContains (Rect l t w h) (Point x y) 
   = (x >= l && x <= (l+w) && y >= t && y <= (t+h))
 
-rectMoveTo :: Point -> Rect -> Rect
-rectMoveTo p r
+rectMoveTo :: Rect -> Point -> Rect
+rectMoveTo r p
   = rect p (rectSize r)
 
 rectFromPoint :: Point -> Rect
@@ -304,12 +308,12 @@ rectCentralRect r@(Rect l t rw rh) (Size w h)
     in Rect (pointX c - (w - div w 2)) (pointY c - (h - div h 2)) w h
 
 
-rectStretchTo :: Size -> Rect -> Rect
-rectStretchTo (Size w h) (Rect l t _ _)
+rectStretchTo :: Rect -> Size -> Rect
+rectStretchTo (Rect l t _ _) (Size w h)
   = Rect l t w h
 
-rectMove :: Vector -> Rect -> Rect
-rectMove (Vector dx dy) (Rect x y w h)
+rectMove :: Rect -> Vector -> Rect
+rectMove  (Rect x y w h) (Vector dx dy)
   = Rect (x+dx) (y+dy) w h
 
 rectOverlaps :: Rect -> Rect -> Bool

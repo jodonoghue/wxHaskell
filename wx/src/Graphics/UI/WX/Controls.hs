@@ -8,6 +8,7 @@
     Stability   :  provisional
     Portability :  portable
 
+   Defines common GUI controls.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Controls
@@ -201,7 +202,7 @@ instance Commanding (TextCtrl a) where
 {--------------------------------------------------------------------------------
   Static text
 --------------------------------------------------------------------------------}
--- | Create static text label, see also 'text'.
+-- | Create static text label, see also 'label'.
 staticText :: Window a -> [Prop (StaticText ())] -> IO (StaticText ())
 staticText parent props
   = do t <- staticTextCreate parent idAny "" rectNull 0 {- (wxALIGN_LEFT + wxST_NO_AUTORESIZE) -}

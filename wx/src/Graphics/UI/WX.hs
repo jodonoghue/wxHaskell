@@ -7,10 +7,18 @@
     Stability   :  provisional
     Portability :  portable
 
+    The WX module just re-exports functionality from helper modules and
+    defines the 'start' function.
+
+    The WX library provides a somewhat nicer interface to the raw wxWindows
+    functionality provided by the "Graphics.UI.WXH" library.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX
-  ( module Graphics.UI.WX.Types
+  ( -- * Functions
+    start
+    -- * Modules
+  , module Graphics.UI.WX.Types
   , module Graphics.UI.WX.Attributes
   , module Graphics.UI.WX.Classes
   , module Graphics.UI.WX.Layout
@@ -23,7 +31,6 @@ module Graphics.UI.WX
   , module Graphics.UI.WX.Controls
   , module Graphics.UI.WX.Dialogs
   , module Graphics.UI.WX.Draw
-  , start
   ) where
 
 import Graphics.UI.WX.Types

@@ -18,7 +18,14 @@ module Graphics.UI.WX.Window
         , ScrolledWindow, scrolledWindow, scrollRate
         ) where
 
-import Graphics.UI.WXH
+-- import selectively to circumvent bug in haddock
+-- import Graphics.UI.WXH
+import Graphics.UI.WXH.WxcClasses
+import Graphics.UI.WXH.WxcClassTypes
+import Graphics.UI.WXH.WxcDefs
+import Graphics.UI.WXH.Draw
+import Graphics.UI.WXH.Events
+
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout

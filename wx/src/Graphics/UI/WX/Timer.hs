@@ -7,13 +7,17 @@
     Maintainer  :  daan@cs.uu.nl
     Stability   :  provisional
     Portability :  portable
+
+    Support for milli-second timers.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Timer
             ( Timer, timer, interval
             ) where
 
-import Graphics.UI.WXH hiding (Timer)
+import Graphics.UI.WXH.WxcClasses hiding (Timer)
+import Graphics.UI.WXH.Events  
+
 import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout

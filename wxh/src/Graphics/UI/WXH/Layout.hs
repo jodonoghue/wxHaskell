@@ -141,21 +141,21 @@ module Graphics.UI.WXH.Layout( -- * Types
                              , marginLeft, marginTop, marginRight, marginBottom
                                -- ** Floating alignment
                              , floatTopLeft, floatTop, floatTopRight
-                             , floatLeft, floatCentre, floatRight
+                             , floatLeft, floatCentre, floatCenter, floatRight
                              , floatBottomLeft, floatBottom, floatBottomRight
                                -- ** Horizontal floating alignment
-                             , hfloatLeft, hfloatCentre, hfloatRight
+                             , hfloatLeft, hfloatCentre, hfloatCenter, hfloatRight
                                -- ** Vertical floating alignment
-                             , vfloatTop, vfloatCentre, vfloatBottom
+                             , vfloatTop, vfloatCentre, vfloatCenter, vfloatBottom
                                -- ** Alignment
                              , centre
                              , alignTopLeft, alignTop, alignTopRight
-                             , alignLeft, alignCentre, alignRight
+                             , alignLeft, alignCentre, alignCenter, alignRight
                              , alignBottomLeft, alignBottom, alignBottomRight
                                -- ** Horizontal alignment
-                             , halignLeft, halignCentre, halignRight
+                             , halignLeft, halignCentre, halignCenter, halignRight
                                -- ** Vertical alignment
-                             , valignTop, valignCentre, valignBottom
+                             , valignTop, valignCentre, valignCenter, valignBottom
                              ) where
 
 import List( transpose )
@@ -238,6 +238,11 @@ column h col
   Float
 -----------------------------------------------------------------------------------------}
 -- | Make the layout stretchable and align it in the center of the assigned area.
+floatCenter :: Layout -> Layout
+floatCenter
+  = floatCentre
+
+-- | Make the layout stretchable and align it in the center of the assigned area.
 floatCentre :: Layout -> Layout
 floatCentre
   = stretch . alignCentre
@@ -282,6 +287,10 @@ floatBottomRight :: Layout -> Layout
 floatBottomRight
   = stretch . alignBottomRight
 
+-- | Make the layout horizontally stretchable and align to the center.
+hfloatCenter :: Layout -> Layout
+hfloatCenter 
+  = hfloatCentre
 
 -- | Make the layout horizontally stretchable and align to the center.
 hfloatCentre :: Layout -> Layout
@@ -297,6 +306,11 @@ hfloatLeft
 hfloatRight :: Layout -> Layout
 hfloatRight
   = hstretch . alignRight
+
+-- | Make the layout vertically stretchable and align to the center.
+vfloatCenter :: Layout -> Layout
+vfloatCenter
+  = vfloatCentre
 
 -- | Make the layout vertically stretchable and align to the center.
 vfloatCentre :: Layout -> Layout
@@ -317,8 +331,18 @@ vfloatBottom
   Alignment
 -----------------------------------------------------------------------------------------}
 -- | Align the layout in the center of the assigned area.
+center :: Layout -> Layout
+center
+  = centre
+
+-- | Align the layout in the center of the assigned area.
 centre :: Layout -> Layout
 centre
+  = alignCentre
+
+-- | Align the layout in the center of the assigned area.
+alignCenter :: Layout -> Layout
+alignCenter
   = alignCentre
 
 -- | Align the layout in the center of the assigned area.
@@ -501,6 +525,11 @@ halignRight layout
   = updateOptions layout (\options -> options{ alignH = AlignRight })
 
 -- | (primitive) Center horizontally when assigned to a larger area.
+halignCenter :: Layout -> Layout
+halignCenter 
+  = halignCentre
+
+-- | (primitive) Center horizontally when assigned to a larger area.
 halignCentre :: Layout -> Layout
 halignCentre layout
   = updateOptions layout (\options -> options{ alignH = AlignHCentre })
@@ -514,6 +543,11 @@ valignTop layout
 valignBottom :: Layout -> Layout
 valignBottom layout
   = updateOptions layout (\options -> options{ alignV = AlignBottom })
+
+-- | (primitive) Center vertically when the layout is assigned to a larger area.
+valignCenter :: Layout -> Layout
+valignCenter layout
+  = valignCentre layout
 
 -- | (primitive) Center vertically when the layout is assigned to a larger area.
 valignCentre :: Layout -> Layout

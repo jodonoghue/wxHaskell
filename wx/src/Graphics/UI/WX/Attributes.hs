@@ -9,42 +9,48 @@
     Portability :  portable
 
 
-   Widgets @w@ can have attributes of type @a@ represented by the type @Attr w a@.
-   An attribute can set or read. An example of an attribute is @title@ with type:
+   Widgets @w@ can have attributes of type @a@ represented by the type 'Attr' @w a@.
+   An example of an attribute is 'Graphics.UI.WX.Classes.text' with type:
 
-   > title :: Attr (Frame a) String
+   > text :: Attr (Window a) String
 
-   This means that any object derived from 'Frame' has a 'title' attribute of type 'String'.
+   This means that any object derived from 'Window' has a 'Graphics.UI.WX.Classes.text' attribute of type 'String'.
    An attribute can be read with the 'get' function:
 
-   > frame # get title           :: IO String
+   > get w title           :: IO String
 
-   When an attribute is associated with a value, we call it a /property/ of type @Prop w@.
-   Properties are constructed with the (':=') constructor:
+   When an attribute is associated with a value, we call it a /property/ of type 'Prop' @w@.
+   Properties are constructed by assigning a value to an attribute with the (':=') constructor:
 
-   > title := "hello world"      :: Prop (Frame a)
+   > text := "hello world"      :: Prop (Window a)
 
-   Properties can be set with the 'set' function:
+   A list of properties can be set with the 'set' function:
 
-   > set frame [title := "Hi"]   :: IO ()
+   > set w [text := "Hi"]   :: IO ()
 
-   The (':~') constructor is used to transform an attribute with an update function.
-   For example, the 'interval' on a timer can be doubled with:
+   The (':~') constructor is used to transform an attribute value with an update function.
+   For example, the 'interval' on a timer can be doubled with the following expression.
 
    > set timer [interval :~ (*2)]
 
-   The function 'get', 'set', (':='), and (':~') are polymorphic and work for all widgets, but
-   the @title@ attribute just works for frames. Many attributes work for different kind
+   The functions 'get', 'set', (':='), and (':~') are polymorphic and work for all widgets, but
+   the @text@ attribute just works for windows. Many attributes work for different kind
    of objects and are organised into type classes. Actually, the real type of the
-   'title' attribute is:
+   'Graphics.UI.WX.Classes.text' attribute is:
 
-   > IsFrame w => Attr w String
+   > Textual w => Attr w String
 
-   and 'Frame' derived objects are part of this class:
+   and 'Window' derived objects are part of this class:
 
-   > instance IsFrame (Frame a)
+   > instance Textual (Window a)
 
+   But also menus and status fields:
 
+   > instance Textual (Menu a)
+   > instance Textual (StatusField)
+
+   Sometimes, it is convenient to also get a reference to the object itself when setting
+   a property. The operators ('::=') and ('::~') provide this reference.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Attributes
@@ -56,7 +62,9 @@ module Graphics.UI.WX.Attributes
 
 
     -- * Internal
+    -- ** Attributes
     , newAttr, readAttr, writeAttr, nullAttr, constAttr
+    -- ** Reflection
     , attrName, propName, containsProp
     ) where
 
@@ -108,7 +116,7 @@ constAttr name x
 
 -- | (@mapAttr get set attr@) maps an attribute of @Attr w a@ to
 -- @Attr w b@ where (@get :: a -> b@) is used when the attribute is
--- requested and (@set :: b -> a -> a@) is applied to current
+-- requested and (@set :: a -> b -> a@) is applied to current
 -- value when the attribute is set.
 mapAttr :: (a -> b) -> (a -> b -> a) -> Attr w a -> Attr w b
 mapAttr get set (Attr name getter setter)
@@ -126,7 +134,7 @@ mapAttrW f (Attr name getter setter)
 
 -- | Get the value of an attribute
 --
--- > t <- w # get title
+-- > t <- get w text
 --
 get :: w -> Attr w a -> IO a
 get w (Attr name getter setter)
@@ -134,7 +142,7 @@ get w (Attr name getter setter)
 
 -- | Set a list of properties.
 --
--- > w # set [title := "Hi"]
+-- > set w [text := "Hi"]
 --
 set :: w -> [Prop w] -> IO ()
 set w props
@@ -152,16 +160,19 @@ set w props
            setter w (f w x)
 
 
+-- | Retrieve the name of an attribute
 attrName :: Attr w a -> String
 attrName (Attr name _ _)
   = name
 
+-- | Retrieve the name of a property.
 propName :: Prop w -> String
 propName (attr := x)    = attrName attr
 propName (attr :~ f)    = attrName attr
 propName (attr ::= f)   = attrName attr
 propName (attr ::~ f)   = attrName attr
 
+-- | Is a certain property in a list of properties?
 containsProp :: String -> [Prop w] -> Bool
 containsProp name props
   = any (\p -> propName p == name) props

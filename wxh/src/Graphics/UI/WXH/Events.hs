@@ -1,4 +1,4 @@
-  {-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
 {-| Module      :  Events
     Copyright   :  (c) Daan Leijen 2003
@@ -8,7 +8,10 @@
     Stability   :  provisional
     Portability :  portable
 
-    Events.
+    Dynamically set (and get) Haskell event handlers for basic wxWindows events.
+    Note that one should always call 'skipCurrentEvent' when an event is not
+    processed in the event handler so that other eventhandlers can process the
+    event.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXH.Events
@@ -125,8 +128,11 @@ module Graphics.UI.WXH.Events
         , appOnInit
 
         -- ** Client data
+        , evtHandlerWithClientData
+        , evtHandlerSetClientData
+
         , objectWithClientData
-        , objectSetClientData
+        , objectSetClientData       
 
         -- ** Input sink
         , inputSinkEventLastString
@@ -145,6 +151,7 @@ module Graphics.UI.WXH.Events
         , evtHandlerOnEventConnect
 
         -- ** Unsafe
+        , unsafeEvtHandlerGetClientData
         , unsafeObjectGetClientData
         , unsafeGetHandlerState
         , unsafeWindowGetHandlerState
@@ -602,7 +609,7 @@ windowGetUpdateRects window
        rects  <- getRects iter
        regionIteratorDelete iter
        p <- windowGetViewStart window
-       return (map (rectMove (vecFromPoint p)) rects)
+       return (map (\r -> rectMove r (vecFromPoint p)) rects)
   where
     getRects iter
       = do more <- regionIteratorHaveRects iter
@@ -1505,7 +1512,30 @@ unsafeObjectGetClientData object
   = do closure <- objectGetClientClosure object 
        unsafeClosureGetData closure
                 
+-- | Use attached haskell data locally in a type-safe way.
+evtHandlerWithClientData :: EvtHandler a -> b -> ((b -> IO ()) -> IO b -> IO c) -> IO c
+evtHandlerWithClientData evtHandler initx fun
+  = do let setter x = evtHandlerSetClientData evtHandler (return ()) x
+           getter   = do mb <- unsafeEvtHandlerGetClientData evtHandler
+                         case mb of
+                           Nothing -> return initx
+                           Just x  -> return x
+       setter initx
+       fun setter getter
 
+-- | Attach a haskell value to an object derived from 'EvtHandler'. The 'IO' action
+-- executed when the object is deleted.
+evtHandlerSetClientData :: EvtHandler a -> IO () -> b -> IO ()
+evtHandlerSetClientData evtHandler onDelete x
+  = do closure <- createClosure x (const onDelete) (const (return ()))
+       evtHandlerSetClientClosure evtHandler closure
+       return ()
+
+-- | Retrieve an attached haskell value, previously attached with 'evtHandlerSetClientData'.
+unsafeEvtHandlerGetClientData :: EvtHandler a -> IO (Maybe b)
+unsafeEvtHandlerGetClientData evtHandler
+  = do closure <- evtHandlerGetClientClosure evtHandler
+       unsafeClosureGetData closure
 
 
 ------------------------------------------------------------------------------------------

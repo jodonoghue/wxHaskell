@@ -8,13 +8,13 @@
     Stability   :  provisional
     Portability :  portable
 
-Basic types.
+    Basic types.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Types
     (
 
-    -- * Types
+    -- * Basic Types
     -- ** Objects
       ( # )
     , Object, objectNull, objectIsNull, objectCast
@@ -23,29 +23,41 @@ module Graphics.UI.WX.Types
     -- ** Identifiers
     , Id, idAny, idCreate
 
+    -- ** Mutable variables
+    , Var, varCreate, varGet, varSet, varUpdate, varSwap
+
+    -- ** Bits
+    , BitMask(..), mask, (.+.), (.-.), bits, bitsSet
+
+    -- ** Booleans
+    , boolFromInt, intFromBool
+
     -- ** Misc.
     , Style
     , EventId
 
-    -- * Control
-    , unitIO, bracket, bracket_, finally, finalize, when
-
-    -- * Variables
-    , Var, varCreate, varGet, varSet, varUpdate, varSwap
-
-    -- * Bits
-    , BitMask(..), mask, (.+.), (.-.), bits, bitsSet
-
-    -- * Basic types
-
-    -- ** Booleans
-    , boolFromInt, intFromBool
+    -- * Graphical types
 
     -- ** Colors
     , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue
     , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
     , red, green, blue
     , cyan, magenta, yellow
+
+    -- ** Font
+    , FontStyle(..), FontFamily(..), FontShape(..), FontWeight(..)
+    , fontDefault, fontSwiss, fontSmall, fontItalic, fontFixed
+    
+    -- ** Brush
+    , BrushStyle(..), BrushKind(..)
+    , HatchStyle(..)
+    , brushDefault
+   
+    -- ** Pen
+    , PenStyle(..), PenKind(..), CapStyle(..), JoinStyle(..), DashStyle(..)
+    , penDefault, penColored, penTransparent
+   
+    -- * Geometrical types
 
     -- ** Points
     , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
@@ -57,7 +69,7 @@ module Graphics.UI.WX.Types
 
     -- ** Vectors
     , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
-    , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecDistance
+    , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecBetween, vecLength
 
     -- ** Rectangles
     , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
@@ -65,9 +77,14 @@ module Graphics.UI.WX.Types
     , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
     , rectContains, rectMoveTo, rectFromPoint, rectCentralPoint, rectCentralRect, rectStretchTo
     , rectMove, rectOverlaps, rectsDiff, rectUnion, rectOverlap, rectUnions
+
+    -- * IO Control
+    , unitIO, bracket, bracket_, finally, finalize, when
+
     ) where
 
 import Graphics.UI.WXH.Types
+import Graphics.UI.WXH.Draw
 
 -- | Data types that can be represented through a bit mask. Only the @assocBitMask@ method
 -- is required for a new instance.

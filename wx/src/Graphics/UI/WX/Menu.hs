@@ -8,6 +8,21 @@
     Stability   :  provisional
     Portability :  portable
 
+    Define menus. The function 'menuList' is used to create a menu
+    that can contain 'menuItem's. The function 'menu' is used to
+    define event handlers for menus. Normally these event handlers
+    are set on a frame or (mdi) window instead of a menu item itself.
+    This is done since one normally wants to handle a menu command
+    in the context of an active window, instead of in the context
+    of the entire application. Note that popup menus /can/ use an
+    'on' 'command' event handler in the menu items themself.
+
+   > do frame <- frame [text := "Demo"]
+   >    file  <- menuList "&File" []
+   >    quit  <- menuItem file "Quit\tCtrl+Q" "Quit the application" [] 
+   >    set frame [menubar        := [file] 
+   >              ,on (menu quit) := close frame] 
+
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Menu
@@ -175,14 +190,6 @@ menuLine menu
   Events
 --------------------------------------------------------------------------------}
 -- | React to menu events.
---
--- > do frame <- frame [text := "Demo"]
--- >    file  <- menuList "&File" []
--- >    quit  <- menuItem file "Quit\tCtrl+Q" "Quit the application" [] 
--- >    set frame [menubar := [file]] 
--- >    set frame [on (menu quit) := close frame] 
---
--- Note that popup menus can also use a 'command' handler on the menu item itself.
 menu :: MenuItem a -> Event (Window w) (IO ())
 menu item
   = let id = unsafePerformIO (get item identity)
@@ -212,7 +219,7 @@ data StatusField  = SF (Var Int) (Var (StatusBar ())) (Var Int) (Var String)
 -- > field1 <- statusField [statusWidth := -2]
 -- > field2 <- statusField [label := "hi"]
 -- > field3 <- statusField [statusWidth := 50]
--- > set [statusbar := [field1,field2,field3]] frame
+-- > set frame [statusbar := [field1,field2,field3]] 
 --
 statusWidth :: Attr StatusField Int
 statusWidth 

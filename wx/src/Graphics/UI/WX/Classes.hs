@@ -8,30 +8,43 @@
     Stability   :  provisional
     Portability :  portable
 
+    This modules defines attributes common to many widgets and
+    organizes them into Haskell classes. Look at the instance definitions
+    to see what kind of widgets support the attributes. 
+    
+    Sometimes it is
+    hard to find what attributes a certain widget supports since the instance
+    definitions might be on some class higher in the hierarchy. For example,
+    many instances are defined for 'Window' @a@ -- this means that all
+    those attributes are applicable to any kind of 'Window', i.e. frames,
+    buttons, panels etc. However, these attributes will not be explicitly
+    listed at the type definitions of those classes.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Classes
     ( 
-      -- * Attributes
+      -- * Text
       Textual(text,appendText)
     , Literate(font ,fontFamily, fontFace, fontSize, fontWeight, fontUnderline, fontShape
               ,textColor,textBgcolor)
+      -- * Rendering
     , Dimensions(..)
     , Colored(..)
     , Visible(..)
+      -- * Hierarchy
     , Child(..)
     , Closeable(..)
-    , Able( enable )
-    , Help( help )
-    , Checkable( checkable, checked )
-    , Identity( identity )
-    , Styled( style )
-    , Tipped( tooltip )
+      -- * Containers
     , Selection( selection )
     , Selections( selections )
     , Items( itemCount, item, items, itemAppend, itemDelete )
-    -- * Types
-    , FontStyle(..)
+      -- * Misc.
+    , Able( enable )
+    , Checkable( checkable, checked )
+    , Help( help )
+    , Tipped( tooltip )
+    , Identity( identity )
+    , Styled( style )   
     ) where
 
 -- for haddock, we import wxh module selectively

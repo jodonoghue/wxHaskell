@@ -8,7 +8,15 @@
     Stability   :  provisional
     Portability :  portable
 
-    Main import module. Re-exports functionality and defines the 'run' function.
+    The "WXH" module is the main interface to the core wxWindows functionality.
+    
+    The library contains the automatically generated interface to the raw
+    wxWindows API in "Graphics.UI.WXH.WxcClasses", "Graphics.UI.WXH.WxcClassTypes",
+    and "Graphics.UI.WXH.WxcDefs". 
+
+    The other helper modules contain convenient wrappers but only use functional
+    abstractions: no type classes or other fancy Haskell features. (The
+    higher-level "Graphics.UI.WX" module provides such abstractions.)
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXH

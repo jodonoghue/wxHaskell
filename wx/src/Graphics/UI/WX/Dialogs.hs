@@ -7,6 +7,7 @@
     Stability   :  provisional
     Portability :  portable
 
+    Defines common dialogs.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Dialogs

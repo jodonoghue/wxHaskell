@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------
 {-| Module      :  Types
     Copyright   :  (c) Daan Leijen 2003
-    License     :  BSD-style
+    License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
     Stability   :  provisional
@@ -111,26 +111,52 @@ type EventId = Int
 type Style = Int
 
 
--- | An @Object a@ is a pointer to an object of type @a@. The @a@ parameter is used
--- to encode the inheritance relation. For example, a @Window@ is derived from the
--- @EvtHandler@ object:
---
--- > type Window a  = EvtHandler (CWindow a)   -- == Object (CWxObject (CEvtHandler (CWindow a)))
---
--- While a @Frame@ is derived from a @Window@
---
--- > type Frame a   = Window (CFrame a)
---
--- Now, you can call functions that expect something of type @Window a@ with a
--- frame pointer too.
---
--- The inheritance relation is also seperately available as a type @TWindow@:
---
--- > type TWindow a  = TEvtHandler (CWindow a)  -- == CWxObject (CEvtHandler (CWindow a))
---
--- Objects are not automatically deleted. Normally you can use a delete function
--- like @windowDelete@ to delete an object. However, almost all objects in the
--- wxWindows library are automatically deleted by the library.
+{- | An @Object a@ is a pointer to an object of type @a@. The @a@ parameter is used
+   to encode the inheritance relation. When the type parameter is unit @()@, it denotes
+   an object of exactly that class, when the parameter is a type variable @a@, it
+   specifies an object that is at least an instance of that class. For example in 
+   wxWindows, we have the following class hierarchy:
+
+   > EvtHandler
+   >   |- Window
+   >        |- Frame
+   >        |- Control
+   >            |- Button
+   >            |- Radiobox
+
+   In wxHaskell, all the creation functions will return objects of exactly that
+   class and use the @()@ type:
+
+   > frameCreate :: Window a -> ... -> IO (Frame ())
+   > buttonCreate :: Window a -> ... -> IO (Button ())
+   > ...
+
+   In contrast, all the /this/ (or /self/) pointers of methods can take objects
+   of any instance of that class and have a type variable, for example:
+
+   > windowSetClientSize :: Window a -> Size -> IO ()
+   > controlSetLabel     :: Control a -> String -> IO ()
+   > buttonSetDefault    :: Button a -> IO ()
+
+   This means that we can use @windowSetClientSize@ on any window, including
+   buttons and frames, but we can only use @controlSetLabel@ on controls, not
+   includeing frames. 
+
+   In wxHaskell, this works since a @Frame ()@ is actually a type synonym for
+   @Window (CFrame ())@ (where @CFrame@ is an abstract data type). We can thus
+   pass a value of type @Frame ()@ to anything that expects some @Window a@.
+   For a button this works too, as it is a synonym for @Control (CButton ())@
+   which is in turn a synonym for @Window (CControl (CButton ()))@. Note that
+   we can\'t pass a frame to something that expects a value of type @Control a@.
+   Of course, a @Window a@ is actually a type synonym for @EvtHandler (CWindow a)@.
+   If you study the documentation in "Graphics.UI.WXH.WxcClasses" closely, you
+   can discover where this chain ends :-).  
+
+   Objects are not automatically deleted. Normally you can use a delete function
+   like @windowDelete@ to delete an object. However, almost all objects in the
+   wxWindows library are automatically deleted by the library. The only objects
+   that should be used with care are resources as bitmaps, fonts and brushes.
+-}
 type Object a   = Ptr a
 
 -- | A null object. Use with care.

@@ -8,6 +8,17 @@
     Stability   :  provisional
     Portability :  portable
 
+    Just re-exports functionality of "Graphics.UI.WXH.Layout". See that module
+    for a description of layout combinators. 
+
+    Any object in the 'Form' class has a 'layout' attribute to specify the 
+    layout. Here is a short example:
+
+    > do f <- frame [text := "layout demo"]
+    >    q <- button f [text := "quit", on command := close f]
+    >    set f [layout := margin 10 $
+    >                     floatCentre $
+    >                     column 5 [label "hi",widget q]]
 
 -}
 -----------------------------------------------------------------------------------------

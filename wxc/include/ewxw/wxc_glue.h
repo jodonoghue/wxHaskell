@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.4 2003/07/18 22:00:55 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.5 2003/07/21 00:05:19 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4558,7 +4558,7 @@ TBool      wxWindow_Destroy( TSelf(wxWindow) _obj );
 TBool      wxWindow_DestroyChildren( TSelf(wxWindow) _obj );
 TBool      wxWindow_Disable( TSelf(wxWindow) _obj );
 int        wxWindow_DoPhase( TSelf(wxWindow) _obj, int phase );
-int        wxWindow_Enable( TSelf(wxWindow) _obj );
+TBoolInt   wxWindow_Enable( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindFocus( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindWindow( TSelf(wxWindow) _obj, TString name );
 void       wxWindow_Fit( TSelf(wxWindow) _obj );
