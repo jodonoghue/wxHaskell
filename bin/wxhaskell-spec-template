@@ -43,7 +43,7 @@ This package contains the libraries compiled
 %setup -q
 
 %build
-./configure %{configargs} --shared-prefix="" --hc=%{hcomp}-%{hcversion} --hcpkg=%{hcpkg}-%{hcversion} --libdir=%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell 
+./configure %{configflags} --shared-prefix="" --hc=%{hcomp}-%{hcversion} --hcpkg=%{hcpkg}-%{hcversion} --libdir=%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell 
 make
 
 %install
