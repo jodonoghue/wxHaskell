@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.18 2003/10/15 16:01:00 dleijen Exp $
+# $Id: configure,v 1.19 2003/10/15 18:31:01 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -362,6 +362,9 @@ else
   exit 2
 fi
 
+# save haskell compiler name (as $hc also gets flags)
+hcname="$hc"
+
 # check ghc version
 hcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
 if test "$hc" = "ghc"; then
@@ -560,8 +563,10 @@ TOOLKIT=$wxtoolkit
 # The Haskell compiler
 HC=$hc
 HCVERSION=$hcversion
+HCNAME=$hcname
 HCFLAGS=
 HCPKG=$hcpkg
+
 
 # C compiler
 CXX=$cxx

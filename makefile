@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.38 2003/10/15 18:26:40 dleijen Exp $
+# $Id: makefile,v 1.39 2003/10/15 18:31:01 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -383,7 +383,7 @@ endif
 #.PHONY: wxc-dist wxd-dist wxcore-dist wx-dist
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
-BIN-VERSION	=$(HC)$(HCVERSION)-$(VERSION)
+BIN-VERSION	=$(HCNAME)$(HCVERSION)-$(VERSION)
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
