@@ -26,7 +26,7 @@ EWXWEXPORT(void, wxDC_FloodFill)(void* _obj, int x, int y, void* col, int style)
 	
 EWXWEXPORT(int, wxDC_GetPixel)(void* _obj, int x, int y, void* col)
 {
-	return (int)((wxDC*)_obj)->GetPixel((wxCoord)x, (wxCoord)y, (wxColour*)col);
+	return ((wxDC*)_obj)->GetPixel((wxCoord)x, (wxCoord)y, (wxColour*)col);
 }
 	
 EWXWEXPORT(void, wxDC_DrawLine)(void* _obj, int x1, int y1, int x2, int y2)

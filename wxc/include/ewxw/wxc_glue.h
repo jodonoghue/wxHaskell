@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.6 2003/08/15 08:09:16 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.7 2003/08/19 12:09:53 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -1343,7 +1343,7 @@ int        wxDC_GetMapMode( TSelf(wxDC) _obj );
 int        wxDC_GetOptimization( TSelf(wxDC) _obj );
 void       wxDC_GetPPI( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetPen( TSelf(wxDC) _obj, TClassRef(wxPen) _ref );
-int        wxDC_GetPixel( TSelf(wxDC) _obj, TPoint(x,y), TClass(wxColour) col );
+TBoolInt   wxDC_GetPixel( TSelf(wxDC) _obj, TPoint(x,y), TClass(wxColour) col );
 void       wxDC_GetSize( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetSizeMM( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetTextBackground( TSelf(wxDC) _obj, TClassRef(wxColour) _ref );
@@ -2601,18 +2601,18 @@ TClassDefExtend(wxImageHandler,wxObject)
 
 /* wxImageList */
 TClassDefExtend(wxImageList,wxObject)
-int        wxImageList_AddBitmap( TSelf(wxImageList) _obj, TClass(wxBitmap) bitmap, TClass(wxMask) mask );
+int        wxImageList_AddBitmap( TSelf(wxImageList) _obj, TClass(wxBitmap) bitmap, TClass(wxBitmap) mask );
 int        wxImageList_AddIcon( TSelf(wxImageList) _obj, TClass(wxIcon) icon );
-int        wxImageList_AddMasked( TSelf(wxImageList) _obj, TClass(wxBitmap) bitmap, void* maskColour );
+int        wxImageList_AddMasked( TSelf(wxImageList) _obj, TClass(wxBitmap) bitmap, TClass(wxColour) maskColour );
 TClass(wxImageList) wxImageList_Create( TSize(width,height), TBoolInt mask, int initialCount );
 void       wxImageList_Delete( TSelf(wxImageList) _obj );
-int        wxImageList_Draw( TSelf(wxImageList) _obj, int index, TClass(wxDC) dc, TPoint(x,y), int flags, int solidBackground );
+TBoolInt   wxImageList_Draw( TSelf(wxImageList) _obj, int index, TClass(wxDC) dc, TPoint(x,y), int flags, TBoolInt solidBackground );
 int        wxImageList_GetImageCount( TSelf(wxImageList) _obj );
-int        wxImageList_GetSize( TSelf(wxImageList) _obj, int index, int* width, int* height );
-int        wxImageList_Remove( TSelf(wxImageList) _obj, int index );
-int        wxImageList_RemoveAll( TSelf(wxImageList) _obj );
-int        wxImageList_Replace( TSelf(wxImageList) _obj, int index, TClass(wxBitmap) bitmap, TClass(wxMask) mask );
-int        wxImageList_ReplaceIcon( TSelf(wxImageList) _obj, int index, TClass(wxIcon) icon );
+void       wxImageList_GetSize( TSelf(wxImageList) _obj, int index, TSizeOut(width,height) );
+TBoolInt   wxImageList_Remove( TSelf(wxImageList) _obj, int index );
+TBoolInt   wxImageList_RemoveAll( TSelf(wxImageList) _obj );
+TBoolInt   wxImageList_Replace( TSelf(wxImageList) _obj, int index, TClass(wxBitmap) bitmap, TClass(wxBitmap) mask );
+TBoolInt   wxImageList_ReplaceIcon( TSelf(wxImageList) _obj, int index, TClass(wxIcon) icon );
 
 /* wxIndividualLayoutConstraint */
 TClassDefExtend(wxIndividualLayoutConstraint,wxObject)
@@ -2796,29 +2796,29 @@ void       wxListBox_SetStringSelection( TSelf(wxListBox) _obj, TString str, TBo
 
 /* wxListCtrl */
 TClassDefExtend(wxListCtrl,wxControl)
-int        wxListCtrl_Arrange( TSelf(wxListCtrl) _obj, int flag );
+TBoolInt   wxListCtrl_Arrange( TSelf(wxListCtrl) _obj, int flag );
 void       wxListCtrl_ClearAll( TSelf(wxListCtrl) _obj );
 TClass(wxListCtrl) wxListCtrl_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
-int        wxListCtrl_DeleteAllColumns( TSelf(wxListCtrl) _obj );
-int        wxListCtrl_DeleteAllItems( TSelf(wxListCtrl) _obj );
-int        wxListCtrl_DeleteColumn( TSelf(wxListCtrl) _obj, int col );
-int        wxListCtrl_DeleteItem( TSelf(wxListCtrl) _obj, int item );
+TBoolInt   wxListCtrl_DeleteAllColumns( TSelf(wxListCtrl) _obj );
+TBoolInt   wxListCtrl_DeleteAllItems( TSelf(wxListCtrl) _obj );
+TBoolInt   wxListCtrl_DeleteColumn( TSelf(wxListCtrl) _obj, int col );
+TBoolInt   wxListCtrl_DeleteItem( TSelf(wxListCtrl) _obj, int item );
 void       wxListCtrl_EditLabel( TSelf(wxListCtrl) _obj, int item );
-int        wxListCtrl_EndEditLabel( TSelf(wxListCtrl) _obj, int cancel );
-int        wxListCtrl_EnsureVisible( TSelf(wxListCtrl) _obj, int item );
-int        wxListCtrl_FindItem( TSelf(wxListCtrl) _obj, int start, TStringVoid str, int partial );
+TBoolInt   wxListCtrl_EndEditLabel( TSelf(wxListCtrl) _obj, int cancel );
+TBoolInt   wxListCtrl_EnsureVisible( TSelf(wxListCtrl) _obj, int item );
+int        wxListCtrl_FindItem( TSelf(wxListCtrl) _obj, int start, TStringVoid str, TBoolInt partial );
 int        wxListCtrl_FindItemByData( TSelf(wxListCtrl) _obj, int start, int data );
 int        wxListCtrl_FindItemByPosition( TSelf(wxListCtrl) _obj, int start, TPoint(x,y), int direction );
-int        wxListCtrl_GetColumn( TSelf(wxListCtrl) _obj, int col, void* item );
+TBoolInt   wxListCtrl_GetColumn( TSelf(wxListCtrl) _obj, int col, TClass(wxListItem) item );
 int        wxListCtrl_GetColumnCount( TSelf(wxListCtrl) _obj );
 int        wxListCtrl_GetColumnWidth( TSelf(wxListCtrl) _obj, int col );
 int        wxListCtrl_GetCountPerPage( TSelf(wxListCtrl) _obj );
-void*      wxListCtrl_GetEditControl( TSelf(wxListCtrl) _obj );
+TClass(wxTextCtrl)  wxListCtrl_GetEditControl( TSelf(wxListCtrl) _obj );
 TClass(wxImageList) wxListCtrl_GetImageList( TSelf(wxListCtrl) _obj, int which );
-int        wxListCtrl_GetItem( TSelf(wxListCtrl) _obj, void* info );
+TBoolInt   wxListCtrl_GetItem( TSelf(wxListCtrl) _obj, TClass(wxListItem) info );
 int        wxListCtrl_GetItemCount( TSelf(wxListCtrl) _obj );
 int        wxListCtrl_GetItemData( TSelf(wxListCtrl) _obj, int item );
-int        wxListCtrl_GetItemPosition( TSelf(wxListCtrl) _obj, int item, void* x, void* y );
+TBoolInt   wxListCtrl_GetItemPosition( TSelf(wxListCtrl) _obj, int item, int*x, int* y );
 int        wxListCtrl_GetItemRect( TSelf(wxListCtrl) _obj, int item, int code, TRectOutVoid(x,y,w,h) );
 int        wxListCtrl_GetItemSpacing( TSelf(wxListCtrl) _obj, TBool isSmall );
 int        wxListCtrl_GetItemState( TSelf(wxListCtrl) _obj, int item, int stateMask );
@@ -2829,28 +2829,28 @@ void       wxListCtrl_GetTextColour( TSelf(wxListCtrl) _obj, TClassRef(wxColour)
 int        wxListCtrl_GetTopItem( TSelf(wxListCtrl) _obj );
 int        wxListCtrl_HitTest( TSelf(wxListCtrl) _obj, TPoint(x,y), void* flags );
 int        wxListCtrl_InsertColumn( TSelf(wxListCtrl) _obj, int col, TStringVoid heading, int format, int width );
-int        wxListCtrl_InsertColumnFromInfo( TSelf(wxListCtrl) _obj, int col, void* info );
-int        wxListCtrl_InsertItem( TSelf(wxListCtrl) _obj, void* info );
+int        wxListCtrl_InsertColumnFromInfo( TSelf(wxListCtrl) _obj, int col, TClass(wxListItem) info );
+int        wxListCtrl_InsertItem( TSelf(wxListCtrl) _obj, TClass(wxListItem) info );
 int        wxListCtrl_InsertItemWithData( TSelf(wxListCtrl) _obj, int index, TStringVoid label );
 int        wxListCtrl_InsertItemWithImage( TSelf(wxListCtrl) _obj, int index, int imageIndex );
 int        wxListCtrl_InsertItemWithLabel( TSelf(wxListCtrl) _obj, int index, TStringVoid label, int imageIndex );
-int        wxListCtrl_ScrollList( TSelf(wxListCtrl) _obj, TVector(dx,dy) );
-int        wxListCtrl_SetBackgroundColour( TSelf(wxListCtrl) _obj, TClass(wxColour) col );
-int        wxListCtrl_SetColumn( TSelf(wxListCtrl) _obj, int col, TClass(wxListItem) item );
-int        wxListCtrl_SetColumnWidth( TSelf(wxListCtrl) _obj, int col, int width );
+TBoolInt   wxListCtrl_ScrollList( TSelf(wxListCtrl) _obj, TVector(dx,dy) );
+void       wxListCtrl_SetBackgroundColour( TSelf(wxListCtrl) _obj, TClass(wxColour) col );
+TBoolInt   wxListCtrl_SetColumn( TSelf(wxListCtrl) _obj, int col, TClass(wxListItem) item );
+TBoolInt   wxListCtrl_SetColumnWidth( TSelf(wxListCtrl) _obj, int col, int width );
 int        wxListCtrl_SetForegroundColour( TSelf(wxListCtrl) _obj, TClass(wxColour) col );
 void       wxListCtrl_SetImageList( TSelf(wxListCtrl) _obj, TClass(wxImageList) imageList, int which );
-int        wxListCtrl_SetItem( TSelf(wxListCtrl) _obj, int index, int col, TStringVoid label, int imageId );
-int        wxListCtrl_SetItemData( TSelf(wxListCtrl) _obj, int item, int data );
-int        wxListCtrl_SetItemFromInfo( TSelf(wxListCtrl) _obj, void* info );
-int        wxListCtrl_SetItemImage( TSelf(wxListCtrl) _obj, int item, int image, int selImage );
-int        wxListCtrl_SetItemPosition( TSelf(wxListCtrl) _obj, int item, TPoint(x,y) );
-int        wxListCtrl_SetItemState( TSelf(wxListCtrl) _obj, int item, int state, int stateMask );
+TBoolInt   wxListCtrl_SetItem( TSelf(wxListCtrl) _obj, int index, int col, TStringVoid label, int imageId );
+TBoolInt   wxListCtrl_SetItemData( TSelf(wxListCtrl) _obj, int item, int data );
+TBoolInt   wxListCtrl_SetItemFromInfo( TSelf(wxListCtrl) _obj, TClass(wxListItem) info );
+TBoolInt   wxListCtrl_SetItemImage( TSelf(wxListCtrl) _obj, int item, int image, int selImage );
+TBoolInt   wxListCtrl_SetItemPosition( TSelf(wxListCtrl) _obj, int item, TPoint(x,y) );
+TBoolInt   wxListCtrl_SetItemState( TSelf(wxListCtrl) _obj, int item, int state, int stateMask );
 void       wxListCtrl_SetItemText( TSelf(wxListCtrl) _obj, int item, TStringVoid str );
-void       wxListCtrl_SetSingleStyle( TSelf(wxListCtrl) _obj, int style, int add );
+void       wxListCtrl_SetSingleStyle( TSelf(wxListCtrl) _obj, int style, TBoolInt add );
 void       wxListCtrl_SetTextColour( TSelf(wxListCtrl) _obj, TClass(wxColour) col );
 void       wxListCtrl_SetWindowStyleFlag( TSelf(wxListCtrl) _obj, int style );
-int        wxListCtrl_SortItems( TSelf(wxListCtrl) _obj, void* fn, void* eif_obj );
+TBoolInt   wxListCtrl_SortItems( TSelf(wxListCtrl) _obj, void* fn, void* eif_obj );
 void       wxListCtrl_UpdateStyle( TSelf(wxListCtrl) _obj );
 
 /* wxListEvent */
@@ -2997,7 +2997,7 @@ TClassDefExtend(wxMaximizeEvent,wxEvent)
 /* wxMemoryDC */
 TClassDefExtend(wxMemoryDC,wxDC)
 TClass(wxMemoryDC) wxMemoryDC_Create(  );
-void*      wxMemoryDC_CreateCompatible( TClass(wxDC) dc );
+TClass(wxMemoryDC) wxMemoryDC_CreateCompatible( TClass(wxDC) dc );
 void       wxMemoryDC_Delete( TSelf(wxMemoryDC) _obj );
 void       wxMemoryDC_SelectObject( TSelf(wxMemoryDC) _obj, TClass(wxBitmap) bitmap );
 
@@ -4353,18 +4353,18 @@ void       wxToggleButton_SetValue( TSelf(wxToggleButton) _obj, int state );
 
 /* wxToolBar */
 TClassDefExtend(wxToolBar,wxToolBarBase)
-int        wxToolBar_AddControl( TSelf(wxToolBar) _obj, TClass(wxControl) ctrl );
+TBoolInt   wxToolBar_AddControl( TSelf(wxToolBar) _obj, TClass(wxControl) ctrl );
 void       wxToolBar_AddSeparator( TSelf(wxToolBar) _obj );
 void       wxToolBar_AddTool( TSelf(wxToolBar) _obj, int id, TClass(wxBitmap) bmp, TStringVoid shelp, TStringVoid lhelp );
-void       wxToolBar_AddToolEx( TSelf(wxToolBar) _obj, int id, TClass(wxBitmap) bmp1, TClass(wxBitmap) bmp2, int tgl, TPoint(x,y), void* dat, TStringVoid shelp, TStringVoid lhelp );
+void       wxToolBar_AddToolEx( TSelf(wxToolBar) _obj, int id, TClass(wxBitmap) bmp1, TClass(wxBitmap) bmp2, TBoolInt isToggle, TPoint(x,y), TClass(wxObject) data, TStringVoid shelp, TStringVoid lhelp );
 TClass(wxToolBar) wxToolBar_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
 void       wxToolBar_Delete( TSelf(wxToolBar) _obj );
-int        wxToolBar_DeleteTool( TSelf(wxToolBar) _obj, int id );
-int        wxToolBar_DeleteToolByPos( TSelf(wxToolBar) _obj, int pos );
-void       wxToolBar_EnableTool( TSelf(wxToolBar) _obj, int id, TBool enb );
-void       wxToolBar_GetMargins( TSelf(wxToolBar) _obj, TPointOutVoid(_x,_y) );
-void       wxToolBar_GetToolBitmapSize( TSelf(wxToolBar) _obj, TPointOutVoid(_x,_y) );
-TClass(wxClientData) wxToolBar_GetToolClientData( TSelf(wxToolBar) _obj, int id );
+TBoolInt   wxToolBar_DeleteTool( TSelf(wxToolBar) _obj, int id );
+TBoolInt   wxToolBar_DeleteToolByPos( TSelf(wxToolBar) _obj, int pos );
+void       wxToolBar_EnableTool( TSelf(wxToolBar) _obj, int id, TBool enable );
+void       wxToolBar_GetMargins( TSelf(wxToolBar) _obj, TPointOutVoid(x,y) );
+void       wxToolBar_GetToolBitmapSize( TSelf(wxToolBar) _obj, TSizeOutVoid(_x,_y) );
+TClass(wxObject) wxToolBar_GetToolClientData( TSelf(wxToolBar) _obj, int id );
 TBool      wxToolBar_GetToolEnabled( TSelf(wxToolBar) _obj, int id );
 TStringLen wxToolBar_GetToolLongHelp( TSelf(wxToolBar) _obj, int id, TStringOutVoid _buf );
 int        wxToolBar_GetToolPacking( TSelf(wxToolBar) _obj );
@@ -4373,17 +4373,17 @@ void       wxToolBar_GetToolSize( TSelf(wxToolBar) _obj, TPointOutVoid(_x,_y) );
 int        wxToolBar_GetToolState( TSelf(wxToolBar) _obj, int id );
 void       wxToolBar_InsertControl( TSelf(wxToolBar) _obj, int pos, TClass(wxControl) ctrl );
 void       wxToolBar_InsertSeparator( TSelf(wxToolBar) _obj, int pos );
-void       wxToolBar_InsertTool( TSelf(wxToolBar) _obj, int pos, int id, TClass(wxBitmap) bmp1, TClass(wxBitmap) bmp2, int tgl, void* dat, TStringVoid shelp, TStringVoid lhelp );
-int        wxToolBar_Realize( TSelf(wxToolBar) _obj );
+void       wxToolBar_InsertTool( TSelf(wxToolBar) _obj, int pos, int id, TClass(wxBitmap) bmp1, TClass(wxBitmap) bmp2, TBoolInt isToggle, TClass(wxObject) data, TStringVoid shelp, TStringVoid lhelp );
+TBoolInt   wxToolBar_Realize( TSelf(wxToolBar) _obj );
 void       wxToolBar_RemoveTool( TSelf(wxToolBar) _obj, int id );
 void       wxToolBar_SetMargins( TSelf(wxToolBar) _obj, TPoint(x,y) );
-void       wxToolBar_SetToolBitmapSize( TSelf(wxToolBar) _obj, TPoint(x,y) );
-void       wxToolBar_SetToolClientData( TSelf(wxToolBar) _obj, int id, TClass(wxClientData) dat );
+void       wxToolBar_SetToolBitmapSize( TSelf(wxToolBar) _obj, TSize(x,y) );
+void       wxToolBar_SetToolClientData( TSelf(wxToolBar) _obj, int id, TClass(wxObject) data );
 void       wxToolBar_SetToolLongHelp( TSelf(wxToolBar) _obj, int id, TStringVoid str );
-void       wxToolBar_SetToolPacking( TSelf(wxToolBar) _obj, int val );
-void       wxToolBar_SetToolSeparation( TSelf(wxToolBar) _obj, int val );
+void       wxToolBar_SetToolPacking( TSelf(wxToolBar) _obj, int packing );
+void       wxToolBar_SetToolSeparation( TSelf(wxToolBar) _obj, int separation );
 void       wxToolBar_SetToolShortHelp( TSelf(wxToolBar) _obj, int id, TStringVoid str );
-void       wxToolBar_ToggleTool( TSelf(wxToolBar) _obj, int id, int val );
+void       wxToolBar_ToggleTool( TSelf(wxToolBar) _obj, int id, TBoolInt toggle );
 
 /* wxToolBarBase */
 TClassDefExtend(wxToolBarBase,wxControl)
@@ -4433,7 +4433,7 @@ void       wxTreeCtrl_GetFirstChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId
 void       wxTreeCtrl_GetFirstVisibleItem( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );
 TClass(wxImageList) wxTreeCtrl_GetImageList( TSelf(wxTreeCtrl) _obj );
 int        wxTreeCtrl_GetIndent( TSelf(wxTreeCtrl) _obj );
-TClass(wxTreeItemData)  wxTreeCtrl_GetItemData( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
+void*      wxTreeCtrl_GetItemData( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 int        wxTreeCtrl_GetItemImage( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, int which );
 TStringLen wxTreeCtrl_GetItemText( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TStringOutVoid _buf );
 void       wxTreeCtrl_GetLastChild( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClassRef(wxTreeItemId) _item );

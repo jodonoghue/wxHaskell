@@ -417,7 +417,7 @@ instance Commanding (Slider a) where
 {--------------------------------------------------------------------------------
   SpinCtrl
 --------------------------------------------------------------------------------}
--- | Create a spin control: a text field with up/down buttons. The value ('selection')
+-- | Create a spin control: a text field with up\/down buttons. The value ('selection')
 -- is always between a specified minimum and maximum.
 spinCtrl :: Window a -> Int -> Int -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
 spinCtrl parent lo hi props

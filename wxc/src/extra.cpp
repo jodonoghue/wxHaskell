@@ -13,6 +13,7 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_HTML_LINK_CLICKED, 1003 )
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_HTML_SET_TITLE, 1004 )
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_INPUT_SINK, 1005 )
+    DECLARE_LOCAL_EVENT_TYPE(wxEVT_SORT, 1006 )
 END_DECLARE_EVENT_TYPES()
 
 
@@ -22,6 +23,7 @@ DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_CELL_MOUSE_HOVER )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_LINK_CLICKED )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_SET_TITLE )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_INPUT_SINK )
+DEFINE_LOCAL_EVENT_TYPE( wxEVT_SORT )
 
 /*-----------------------------------------------------------------------------
   event exports
@@ -59,6 +61,12 @@ EWXWEXPORT(int,expEVT_HTML_SET_TITLE)()
 EWXWEXPORT(int,expEVT_INPUT_SINK)()
 {
   return (int)wxEVT_INPUT_SINK;
+}
+
+
+EWXWEXPORT(int,expEVT_SORT)()
+{
+  return (int)wxEVT_SORT;
 }
 
 } /* extern "C" */
@@ -1177,6 +1185,69 @@ EWXWEXPORT(wxFrame*,wxMenuBar_GetFrame)(wxMenuBar* _obj)
 {
   return _obj->GetFrame();
 }
+
+
+EWXWEXPORT(void, wxListCtrl_GetColumn2)(wxListCtrl* _obj, int col, wxListItem* item)
+{
+  bool success = _obj->GetColumn(col, *item);
+  if (!success) item->SetId(-1);
+}
+
+EWXWEXPORT(void, wxListCtrl_GetItem2)(wxListCtrl* _obj, wxListItem* info)
+{
+  bool success = _obj->GetItem(*info);
+  if (!success) info->SetId(-1);
+}
+
+EWXWEXPORT(void, wxListCtrl_GetItemPosition2)(wxListCtrl* _obj, int item, int* x, int* y)
+{
+  wxPoint pos;
+  bool success = _obj->GetItemPosition((long)item, pos);
+  if (success) {
+    *x = pos.x;
+    *y = pos.y;
+  }
+  else {
+    *x = -1;
+    *y = -1;
+  }
+}
+
+
+struct SortData {
+  long id;
+  wxClosure* closure;
+};
+
+int wxCALLBACK sortCallBack( long item1, long item2, long data )
+{
+  wxClosure* closure = ((SortData*)data)->closure;
+  long       id      = ((SortData*)data)->id;
+
+  wxCommandEvent event( wxEVT_SORT, id );
+  event.SetInt(item1);
+  event.SetExtraLong(item2);
+  closure->Invoke(&event);
+  return event.GetInt();
+}
+
+EWXWEXPORT(int, wxListCtrl_SortItems2)(wxListCtrl* _obj, wxClosure* closure )
+{
+  SortData sortData = { _obj->GetId(), closure };
+  return (int)_obj->SortItems( sortCallBack, (long)&sortData );
+}
+
+
+
+/*-----------------------------------------------------------------------------
+  DC
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(void, wxDC_GetPixel2)(wxDC* _obj, int x, int y, wxColour* col)
+{
+  bool success = _obj->GetPixel((wxCoord)x, (wxCoord)y, col);
+  if (!success) *col = wxNullColour;
+}
+
 
 /*-----------------------------------------------------------------------------
   Object & static ClassInfo

@@ -140,6 +140,10 @@ SOURCE=.\src\extra.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\treectrl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\wrapper.cpp
 # End Source File
 # End Group
@@ -488,10 +492,6 @@ SOURCE=.\src\ewxw\eljtipwnd.cpp
 # Begin Source File
 
 SOURCE=.\src\ewxw\eljtoolbar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\ewxw\eljtreectrl.cpp
 # End Source File
 # Begin Source File
 

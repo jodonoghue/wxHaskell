@@ -18,9 +18,13 @@ EWXWEXPORT(int, wxImageList_GetImageCount)(void* _obj)
 	return ((wxImageList*)_obj)->GetImageCount();
 }
 	
-EWXWEXPORT(int, wxImageList_GetSize)(void* _obj, int index, int* width, int* height)
+EWXWEXPORT(void, wxImageList_GetSize)(void* _obj, int index, int* width, int* height)
 {
-	return (int)((wxImageList*)_obj)->GetSize(index, *((int*)width), *((int*)height));
+	bool success = ((wxImageList*)_obj)->GetSize(index, *((int*)width), *((int*)height));
+        if (!success) {
+          *width = -1;
+          *height = -1;
+        };
 }
 	
 EWXWEXPORT(int, wxImageList_AddBitmap)(void* _obj, void* bitmap, void* mask)

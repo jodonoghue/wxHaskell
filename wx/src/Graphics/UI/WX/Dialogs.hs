@@ -45,7 +45,7 @@ instance Form (Dialog a) where
     = writeAttr "layout" windowSetLayout
 
 -- | Create a dialog window. Use 'showModal' for a modal dialog. Use
--- the 'visible' property to show/hide a modeless dialog.
+-- the 'visible' property to show\/hide a modeless dialog.
 dialog :: Window a -> [Prop (Dialog ())] -> IO (Dialog ())
 dialog parent props
   = dialogEx parent (wxCAPTION .+. wxSYSTEM_MENU .+. wxRESIZE_BORDER) props

@@ -527,7 +527,7 @@ evtHandlerGetOnMenuCommand window id
   = unsafeGetHandlerState window id wxEVT_COMMAND_MENU_SELECTED skipCurrentEvent
 
 
--- | An idle vent is generated in idle time. The handler should return whether more
+-- | An idle event is generated in idle time. The handler should return whether more
 -- idle processing is needed ('True') or otherwise the event loop goes into a passive
 -- waiting state.
 windowOnIdle :: Window a -> IO Bool -> IO ()
@@ -766,7 +766,7 @@ modifiersToAccelFlags mod
 {-----------------------------------------------------------------------------------------
   MouseEvent
 -----------------------------------------------------------------------------------------}
--- | Mouse events. The position the logical (unscrolled) position.
+-- | Mouse events. The 'Point' gives the logical (unscrolled) position.
 data EventMouse
   =  MouseMotion      !Point !Modifiers -- ^ Mouse was moved over the client area of the window
   |  MouseEnter       !Point !Modifiers -- ^ Mouse enters in the client area of the window

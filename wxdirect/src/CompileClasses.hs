@@ -522,7 +522,8 @@ foreignResultType tp
       Vector _ -> "Ptr CInt -> Ptr CInt -> IO ()"
       Size _   -> "Ptr CInt -> Ptr CInt -> IO ()"
       Rect _   -> "Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()"
-      RefObject name -> foreignType 0 tp ++ " -> IO ()"
+      RefObject "wxColour"  -> "ColourObject () -> IO ()"
+      RefObject name        -> foreignType 0 tp ++ " -> IO ()"
       EventId -> "IO CInt"
       other   -> "IO " ++ foreignTypePar 0 tp
 
@@ -549,6 +550,8 @@ foreignType i tp
       ArrayObject name _ -> "CInt -> Ptr " ++ foreignTypePar i (Object name)
       ArrayString _      -> "CInt -> Ptr (Ptr CChar)"
       ArrayInt _         -> "CInt -> Ptr CInt"
+      RefObject "wxColour"  -> "ColourObject ()"
+      Object    "wxColour"  -> "ColourObject ()"
       RefObject name -> haskellUnManagedTypeName name ++ typeVar i
       Object name    -> haskellUnManagedTypeName name ++ typeVar i
 

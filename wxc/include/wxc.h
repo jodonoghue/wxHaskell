@@ -54,6 +54,27 @@ void  wxWindow_FitInside(TSelf(wxWindow) _obj);
 TClass(wxMenuBar) wxMenu_GetMenuBar( TSelf(wxMenu) _obj );
 TClass(wxFrame)   wxMenuBar_GetFrame( TSelf(wxMenuBar) _obj );
 
+/* listctrl */
+int expEVT_SORT();
+void wxListCtrl_GetColumn2( TSelf(wxListCtrl) _obj, int col, TClassRef(wxListItem) item);
+void wxListCtrl_GetItem2( TSelf(wxListCtrl) _obj, TClassRef(wxListItem) info);
+void wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item, TPointOut(x,y));
+/** Sort items in a list control. Takes a closure that is called with a 'CommandEvent' where the @Int@ is the item data of the first item and the @ExtraLong@ the item data of the second item. The event handler should set the @Int@ to 0 when the items are equal, -1 when the first is less, and 1 when the second is less. */
+TBoolInt wxListCtrl_SortItems2(TSelf(wxListCtrl) _obj, TClass(wxClosure) closure );
+
+/* tree ctrl */
+TClass(wxTreeCtrl) wxTreeCtrl_Create2( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
+void   wxTreeCtrl_InsertItem2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
+void   wxTreeCtrl_InsertItemByIndex2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
+TClass(wxClosure)  wxTreeCtrl_GetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
+void   wxTreeCtrl_SetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxClosure) closure );
+
+
+/* dc */
+/** Get the color of pixel. Note: this is not a portable method at the moment and its use is discouraged. */
+void wxDC_GetPixel2( TSelf(wxDC) _obj, TPoint(x,y), TClassRef(wxColour) col);
+
+
 /* scrolledwindow */
 void wxScrolledWindow_SetScrollRate( TSelf(wxScrolledWindow) _obj, int xstep, int ystep );
 

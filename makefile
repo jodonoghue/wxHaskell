@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.15 2003/07/22 14:24:39 dleijen Exp $
+# $Id: makefile,v 1.16 2003/08/19 12:09:52 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -122,7 +122,9 @@ WXD-SOURCES = \
 # wxc
 #--------------------------------------------------------------------------
 WXC-CORE= \
-	ewxw_main extra wrapper eljevent eljmime
+	ewxw_main extra wrapper \
+	eljevent eljmime \
+	treectrl
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -137,8 +139,11 @@ WXC-EWXW= \
 	regioniter sash scrollbar scrolledwindow sizer \
 	slider spinctrl splitterwindow staticbox staticline \
 	statictext statusbar systemsettings textctrl timer \
-	toolbar treectrl validator window wizard \
+	toolbar validator window wizard \
 	findrepldlg artprov tipwnd icnbndl ctxhelp singleinst
+
+# unused:
+# treectrl
 
 WXC-SOURCES = \
 	$(WXC-CORE) $(patsubst %,ewxw/elj%,$(WXC-EWXW))
