@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.64 2004/03/23 13:04:15 dleijen Exp $
+# $Id: makefile,v 1.65 2004/03/23 13:11:35 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -25,7 +25,7 @@
 #	macdist	 - macOSX installer
 #       
 #
-# Dependencies are handled fully automatic: no need for "make depend" :-)
+# Dependencies are handled (almost) automatically: no need for "make depend" :-)
 #
 # Makefile implementation notes:
 #
@@ -36,6 +36,11 @@
 # was 'discovered' by Tom Tromey, and described by Paul Smith,
 # see "advanced auto-dependency generation" at:
 # "http://make.paulandlesley.org/autodep.html"
+#
+# (Unfortunately, there are situations where this method doesn't work for Haskell
+#  modules -- but these situations are exteremely rare in practice, nothing that
+#  can't be solved by a "make clean; make" command. I believe that in the end
+#  this method is much more robust than "make depend".)
 #
 # We use a single makefile in order to correctly resolve dependencies
 # between the different projects -- a recursive make fails to do that,
@@ -54,6 +59,9 @@
 
 # system dependent stuff
 include config/config.mk
+
+# helper functions
+include makefile.lib
 
 #--------------------------------------------------------------------------
 # directories
@@ -220,160 +228,11 @@ SAMPLE-SOURCES= \
 	samples/contrib/PaintDirect.hs \
 	samples/contrib/NotebookRight.hs \
 	
-	
-#--------------------------------------------------------------------------
-# Functions  ($(1) means first argument etc.)
-#--------------------------------------------------------------------------
-# create derived file from base name
-# usage: $(call make-hs,<source root path>,<file base names>)
-# usage: $(call make-objs,<object root path>,<file base names>)
-make-hs		=$(patsubst %,$(1)/%.hs,$(2))
-make-objs	=$(patsubst %,$(1)/%.o,$(2))
-make-deps	=$(patsubst %,$(1)/%.d,$(2))
-make-his	=$(patsubst %,$(1)/%.hi,$(2))
-
-# usage: $(call run-silent,<command>)
-run-silent	=$(1) 1> /dev/null 2> /dev/null
-run-with-echo   =echo "$(1)" && $(1)
-
-# usage: $(call relative-to,<root-dir>,<relative files>)
-relative-to	=$(patsubst $(1)/%,%,$(2))
-
-# usage: $(call relative-fromto,<old-root-dir>,<new-root-dir>,<files>)
-relative-fromto	=$(patsubst $(1)%,$(2)%,$(3))
-
-# get directories of files (using 'sort' to get rid of duplicates)
-dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
-
-# usage: $(call ensure-dir,<directory>)
-# usage: $(call ensure-dirs-of-files,<files>)
-ensure-dir	=if test -d "$(1)" -o "$(1)" = "./"; then :; else $(MKDIR) $(1); fi
-ensure-dirs	=$(foreach dir,$(1),$(call ensure-dir,$(dir)) &&) :
-ensure-dirs-of-files=$(call ensure-dirs,$(call dirs-of-files,$(1)))
-
-# full-remove-dir
-# safe-remove-dir
-safe-remove-dir	=if test -d $(1); then $(call run-with-echo,$(RMDIR) $(1)); fi
-safe-remove-dir-contents = if test -d $(1); then $(call run-with-echo,$(RM) -r $(1)/*); fi
-full-remove-dir	=$(call safe-remove-dir-contents,$(1)); $(call safe-remove-dir,$(1))
-
-# safe-move-file(<source>,<destination (directory)>)
-# safe-remove-file(<file>)
-safe-move-file	=if test -f $(1); then $(call run-with-echo,$(MV) $(1) $(2)); fi
-safe-remove-file=if test -f $(1); then $(call run-with-echo,$(RM) $(1)); fi
-safe-remove-files=$(foreach file,$(1),$(call safe-remove-file,$(file)) &&) :
-
-# silent-move-file
-silent-move-file=if test -f $(1); then $(MV) $(1) $(2); fi
-silent-remove-file=if test -f $(1); then $(RM) $(1); fi
-
-# make-c-obj(<output .o>,<input .c>,<compile flags>)
-make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
-
-# compile-c(<output .o>,<input .c>,<compile flags>)
-compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
-		 $(call silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
-
-# silent-move-stubs(<output .o>,<input .c>)
-silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
-		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
-
-# make-hs-obj(<output .o>,<input .hs>,<compile flags>)
-make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
-
-# make-hs-deps(<output .o>,<input .hs>,<compile flags>)
-make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d.in && \
-		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d && \
-		 $(call silent-remove-file,$(basename $(1)).d.in)
-
-# compile-hs(<output .o>,<input .hs>,<compile flags>)
-compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)) && \
-		 $(call silent-move-stubs,$(1),$(2)) && \
-		 $(call make-hs-deps,$(1),$(2),$(3))
-
-
-# make single-object file
-# combine-objs(<output .o>,<input .o files>)
-ifeq ($(TOOLKIT),mac)
-combine-objs	=$(LD) -x -r -o $(1) $(2)
-else
-combine-objs	=$(LD) -r -o $(1) $(2)
-endif
-
-# create an archive
-# make-archive(<archive>,<input .o files>)
-make-archive	=$(AR) -sr $(1) $(2)
-
-# update the archive symbol index
-# make-archive-index(<archive>)
-make-archive-index=$(AR) -s $(1)
-
-
-# install files, keeping directory structure intact (that is why we use 'foreach').
-# we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
-# usage: $(call install-files,<local dir>,<install dir>,<files>)
-# usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
-install-file    =echo "install: $(2)" && $(INSTALL) $(1) $(dir $(2)) \
-	         $(if $(filter %.a,$(2)),&& $(call make-archive-index,$(basename $(2)).a))
-install-dir     =echo "install directory: $(1)" && $(INSTALLDIR) $(1)
-install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir)) &&) \
-	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))) &&) \
-		 :
-
-uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)" && $(RM) $(1); fi
-uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)" && $(call run-silent,$(RMDIR) -p $(2)); fi
-
-# extremely baroque way of reversing a list of (at most 10) items
-reverse10	=$(patsubst 9%,%,$(patsubst 8%,%,$(patsubst 7%,%,\
-		$(patsubst 6%,%,$(patsubst 5%,%,$(patsubst 4%,%,\
-		$(patsubst 3%,%,$(patsubst 2%,%,$(patsubst 1%,%,\
-		$(patsubst 0%,%,\
-		$(sort $(join $(wordlist 1,$(words $(1)),9 8 7 6 5 4 3 2 1 0),$(1)))\
-		))))))))))
-
-uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file)) &&) \
-		 $(CD) $(1) && \
-		 $(foreach dir,$(call reverse10,$(call dirs-of-files,$(call relative-to,$(1),$(2)))),$(call uninstall-dir,$(1),$(dir)) &&) \
-		 :
-
-uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
-
-# install packages
-# usage: $(call install-pkg,<install dir>,<package file>)
-# usage: $(call uninstall-pkg,<package name>)
-install-pkg=env wxhlibdir=$(1) $(HCPKG) -u -i $(2)
-uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
-
-# copy files.
-# usage: cp-bindist<dirprefix,target-dir,source files>
-# use -R switch to copy symbolic links literally instead of following the links.
-# use -p to preserve file dates to avoid linker bug on macosX with .a files.
-cp-echox	=echo  "copy $(1) to $(2)" && $(CP) -p -R $(1) $(2) && :
-cp-echo         =$(foreach file,$(wildcard $(1)),$(call cp-echox,$(file),$(2)))
-cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
-		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
-cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
-
-# usage: $(call cp-relative,<out topdir>,<local files>)
-cp-relative	=$(call ensure-dirs-of-files,$(patsubst %,$(1)/%,$(2))) && \
-		 $(foreach file,$(2),$(call cp-echox,$(file),$(1)/$(patsubst %/,%,$(dir $(file)))) && ):
-
-cp-srcdist	=$(call cp-relative,$(TOPDIR)/$(SRCDIST-SRCDIR),$(1))
-cp-docdist	=$(CD) $(1) && $(call cp-relative,$(TOPDIR)/$(DOCDIST-SRCDIR),$(patsubst $(1)/%,%,$(2)))
-
-# zip commands
-zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
-zip-add-rec     =echo zipping: $(1); $(ZIP) -r -y -9 $(TOPDIR)/$(1) $(2)
-
 #--------------------------------------------------------------------------
 # The main targets.
 #--------------------------------------------------------------------------
 .SUFFIXES: .hs .hi .o .c .cpp
 .PHONY: all install uninstall doc webdoc clean realclean
-#.PHONY: wxc wxd wxcore wx
-#.PHONY: wxc-install wxcore-install wx-install
-#.PHONY: wxc-uninstall wxcore-uninstall wx-uninstall
-#.PHONY: wxc-dirs wxd-dirs wxcore-dirs wx-dirs 
 
 # global variables
 OUTDIR	= out
@@ -384,6 +243,7 @@ clean:		wxc-clean wxd-clean wxcore-clean wx-clean
 
 realclean: wxcore-realclean 
 	-@$(call full-remove-dir,$(OUTDIR)) 
+
 
 #--------------------------------------------------------------------------
 # Install (unfortunately with extra clauses for the mac)
@@ -397,6 +257,7 @@ uninstall:	wx-uninstall wxcore-uninstall wxc-uninstall
 ifeq ($(TOOLKIT),mac)
 	-@$(call uninstall-files,config,$(BINDIR),config/macosx-app)
 endif
+
 
 #--------------------------------------------------------------------------
 # Distribution
@@ -492,6 +353,8 @@ macdist:
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
 	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
+
+
 
 #--------------------------------------------------------------------------
 # WX: the medium level abstraction on wxcore
