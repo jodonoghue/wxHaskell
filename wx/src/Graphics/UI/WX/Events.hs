@@ -45,13 +45,13 @@
 
     > set w [on closing :~ \previous -> do{ ...; previous }]
 
-    Note that you should call 'propegateEvent' (or 'Graphics.UI.WXH.Events.skipCurrentEvent') whenever
-    you do not process the event yourself in an event handler. This propegates
+    Note that you should call 'propagateEvent' (or 'Graphics.UI.WXH.Events.skipCurrentEvent') whenever
+    you do not process the event yourself in an event handler. This propagates
     the event to the parent event handlers and give them a chance to
     handle the event in an appropiate way. This gives another elegant way to install
     a 'closing' event handler:
 
-    > set w [on closing := do{ ...; propegateEvent }]
+    > set w [on closing := do{ ...; propagateEvent }]
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Events
@@ -59,7 +59,7 @@ module Graphics.UI.WX.Events
                Event
              , on
              , mapEvent
-             , propegateEvent
+             , propagateEvent
              -- * Basic events
              -- ** Commanding
              , Commanding, command
@@ -129,8 +129,8 @@ mapEvent get set (Event attr)
 
 -- | Pass the current event on to the default handlers and parent widgets. Always call
 -- this method when the event is not processed.
-propegateEvent :: IO ()
-propegateEvent
+propagateEvent :: IO ()
+propagateEvent
   = skipCurrentEvent
 
 
