@@ -23,6 +23,8 @@
 #include "glcanvas.h"
 #include "wave.h"
 #include "managed.h"
+#include "previewframe.h"
+#include "printout.h"
 
 /*-----------------------------------------------------------------------------
   Extra exports

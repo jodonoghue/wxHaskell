@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.20 2004/07/24 14:31:01 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.21 2004/11/12 16:08:43 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -431,6 +431,7 @@ void       ELJPreviewFrame_SetPreviewCanvas( TSelf(ELJPreviewFrame) _obj, TClass
 void       ELJPreviewFrame_SetPrintPreview( TSelf(ELJPreviewFrame) _obj, TClass(wxPrintPreview) obj );
 
 /* ELJPrintout */
+/*
 TClassDefExtend(ELJPrintout,wxPrintout)
 TClass(ELJPrintout) ELJPrintout_Create( void* title, void* _obj, void* _DoOnBeginDocument, void* _DoOnEndDocument, void* _DoOnBeginPrinting, void* _DoOnEndPrinting, void* _DoOnPreparePrinting, void* _DoOnPrintPage, void* _DoOnHasPage, void* _DoOnPageInfo );
 void       ELJPrintout_Delete( TSelf(ELJPrintout) _obj );
@@ -447,6 +448,7 @@ void       ELJPrintout_SetPPIPrinter( TSelf(ELJPrintout) _obj, TPoint(x,y) );
 void       ELJPrintout_SetPPIScreen( TSelf(ELJPrintout) _obj, TPoint(x,y) );
 void       ELJPrintout_SetPageSizeMM( TSelf(ELJPrintout) _obj, TSize(w,h) );
 void       ELJPrintout_SetPageSizePixels( TSelf(ELJPrintout) _obj, TSize(w,h) );
+*/
 
 /* ELJServer */
 TClassDefExtend(ELJServer,wxServer)
@@ -3513,7 +3515,7 @@ TClassDefExtend(wxPostScriptDC,wxDC)
 
 /* wxPreviewCanvas */
 TClassDefExtend(wxPreviewCanvas,wxScrolledWindow)
-TClass(wxPreviewCanvas) wxPreviewCanvas_Create( void* preview, TClass(wxWindow) parent, TRect(x,y,w,h), int style );
+TClass(wxPreviewCanvas) wxPreviewCanvas_Create( TClass(wxPrintPreview) preview, TClass(wxWindow) parent, TRect(x,y,w,h), int style );
 
 /* wxPreviewControlBar */
 TClassDefExtend(wxPreviewControlBar,wxPanel)
@@ -3523,32 +3525,32 @@ TClassDefExtend(wxPreviewFrame,wxFrame)
 
 /* wxPrintData */
 TClassDefExtend(wxPrintData,wxObject)
-void       wxPrintData_Assign( TSelf(wxPrintData) _obj, void* data );
+void       wxPrintData_Assign( TSelf(wxPrintData) _obj, TClass(wxPrintData) data );
 TClass(wxPrintData) wxPrintData_Create(  );
 void       wxPrintData_Delete( TSelf(wxPrintData) _obj );
-int        wxPrintData_GetCollate( TSelf(wxPrintData) _obj );
-int        wxPrintData_GetColour( TSelf(wxPrintData) _obj );
+TBool      wxPrintData_GetCollate( TSelf(wxPrintData) _obj );
+TBool      wxPrintData_GetColour( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetDuplex( TSelf(wxPrintData) _obj );
-int        wxPrintData_GetFilename( TSelf(wxPrintData) _obj, void* _ref );
-int        wxPrintData_GetFontMetricPath( TSelf(wxPrintData) _obj, void* _ref );
+TStringLen wxPrintData_GetFilename( TSelf(wxPrintData) _obj, TStringOutVoid _ref );
+TStringLen wxPrintData_GetFontMetricPath( TSelf(wxPrintData) _obj, TStringOutVoid _ref );
 int        wxPrintData_GetNoCopies( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetOrientation( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetPaperId( TSelf(wxPrintData) _obj );
 void       wxPrintData_GetPaperSize( TSelf(wxPrintData) _obj, TSizeOutVoid(_w,_h) );
-int        wxPrintData_GetPreviewCommand( TSelf(wxPrintData) _obj, void* _ref );
+TStringLen wxPrintData_GetPreviewCommand( TSelf(wxPrintData) _obj, TStringOutVoid _ref );
 int        wxPrintData_GetPrintMode( TSelf(wxPrintData) _obj );
-int        wxPrintData_GetPrinterCommand( TSelf(wxPrintData) _obj, void* _ref );
-int        wxPrintData_GetPrinterName( TSelf(wxPrintData) _obj, void* _ref );
-int        wxPrintData_GetPrinterOptions( TSelf(wxPrintData) _obj, void* _ref );
+TStringLen wxPrintData_GetPrinterCommand( TSelf(wxPrintData) _obj, TStringOutVoid  _ref );
+TStringLen wxPrintData_GetPrinterName( TSelf(wxPrintData) _obj, TStringOutVoid _ref );
+TStringLen wxPrintData_GetPrinterOptions( TSelf(wxPrintData) _obj, TStringOutVoid _ref );
 double     wxPrintData_GetPrinterScaleX( TSelf(wxPrintData) _obj );
 double     wxPrintData_GetPrinterScaleY( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetPrinterTranslateX( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetPrinterTranslateY( TSelf(wxPrintData) _obj );
 int        wxPrintData_GetQuality( TSelf(wxPrintData) _obj );
-void       wxPrintData_SetCollate( TSelf(wxPrintData) _obj, int flag );
-void       wxPrintData_SetColour( TSelf(wxPrintData) _obj, int colour );
+void       wxPrintData_SetCollate( TSelf(wxPrintData) _obj, TBoolInt flag );
+void       wxPrintData_SetColour( TSelf(wxPrintData) _obj, TBoolInt colour );
 void       wxPrintData_SetDuplex( TSelf(wxPrintData) _obj, int duplex );
-void       wxPrintData_SetFilename( TSelf(wxPrintData) _obj, void* filename );
+void       wxPrintData_SetFilename( TSelf(wxPrintData) _obj, TStringVoid filename );
 void       wxPrintData_SetFontMetricPath( TSelf(wxPrintData) _obj, TStringVoid path );
 void       wxPrintData_SetNoCopies( TSelf(wxPrintData) _obj, int v );
 void       wxPrintData_SetOrientation( TSelf(wxPrintData) _obj, int orient );
@@ -3558,7 +3560,7 @@ void       wxPrintData_SetPreviewCommand( TSelf(wxPrintData) _obj, TClass(wxComm
 void       wxPrintData_SetPrintMode( TSelf(wxPrintData) _obj, int printMode );
 void       wxPrintData_SetPrinterCommand( TSelf(wxPrintData) _obj, TClass(wxCommand) command );
 void       wxPrintData_SetPrinterName( TSelf(wxPrintData) _obj, TStringVoid name );
-void       wxPrintData_SetPrinterOptions( TSelf(wxPrintData) _obj, void* options );
+void       wxPrintData_SetPrinterOptions( TSelf(wxPrintData) _obj, TStringVoid options );
 void       wxPrintData_SetPrinterScaleX( TSelf(wxPrintData) _obj, double x );
 void       wxPrintData_SetPrinterScaleY( TSelf(wxPrintData) _obj, double y );
 void       wxPrintData_SetPrinterScaling( TSelf(wxPrintData) _obj, double x, double y );
@@ -3569,87 +3571,88 @@ void       wxPrintData_SetQuality( TSelf(wxPrintData) _obj, int quality );
 
 /* wxPrintDialog */
 TClassDefExtend(wxPrintDialog,wxDialog)
-TClass(wxPrintDialog) wxPrintDialog_Create( TClass(wxWindow) parent, void* data );
-void*      wxPrintDialog_GetPrintDC( TSelf(wxPrintDialog) _obj );
+TClass(wxPrintDialog) wxPrintDialog_Create( TClass(wxWindow) parent, TClass(wxPrintDialogData) data );
+TClass(wxDC)         wxPrintDialog_GetPrintDC( TSelf(wxPrintDialog) _obj );
 void       wxPrintDialog_GetPrintData( TSelf(wxPrintDialog) _obj, TClassRef(wxPrintData) _ref );
+TClass(wxPrintDialogData) wxPrintDialog_GetPrintDialogData( TSelf(wxPrintDialog) _obj );
 
 /* wxPrintDialogData */
 TClassDefExtend(wxPrintDialogData,wxObject)
-void       wxPrintDialogData_Assign( TSelf(wxPrintDialogData) _obj, void* data );
-void       wxPrintDialogData_AssignData( TSelf(wxPrintDialogData) _obj, void* data );
+void       wxPrintDialogData_Assign( TSelf(wxPrintDialogData) _obj, TClass(wxPrintDialogData) data );
+void       wxPrintDialogData_AssignData( TSelf(wxPrintDialogData) _obj, TClass(wxPrintData) data );
 TClass(wxPrintDialogData) wxPrintDialogData_CreateDefault(  );
 TClass(wxPrintDialogData) wxPrintDialogData_CreateFromData( TClass(wxPrintData) printData );
 void       wxPrintDialogData_Delete( TSelf(wxPrintDialogData) _obj );
-void       wxPrintDialogData_EnableHelp( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_EnablePageNumbers( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_EnablePrintToFile( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_EnableSelection( TSelf(wxPrintDialogData) _obj, int flag );
+void       wxPrintDialogData_EnableHelp( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_EnablePageNumbers( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_EnablePrintToFile( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_EnableSelection( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 int        wxPrintDialogData_GetAllPages( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetCollate( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetEnableHelp( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetEnablePageNumbers( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetEnablePrintToFile( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetEnableSelection( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetCollate( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetEnableHelp( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetEnablePageNumbers( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetEnablePrintToFile( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetEnableSelection( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetFromPage( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetMaxPage( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetMinPage( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetNoCopies( TSelf(wxPrintDialogData) _obj );
 void       wxPrintDialogData_GetPrintData( TSelf(wxPrintDialogData) _obj, TClassRef(wxPrintData) _ref );
-int        wxPrintDialogData_GetPrintToFile( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetSelection( TSelf(wxPrintDialogData) _obj );
-int        wxPrintDialogData_GetSetupDialog( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetPrintToFile( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetSelection( TSelf(wxPrintDialogData) _obj );
+TBoolInt   wxPrintDialogData_GetSetupDialog( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetToPage( TSelf(wxPrintDialogData) _obj );
-void       wxPrintDialogData_SetAllPages( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_SetCollate( TSelf(wxPrintDialogData) _obj, int flag );
+void       wxPrintDialogData_SetAllPages( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_SetCollate( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 void       wxPrintDialogData_SetFromPage( TSelf(wxPrintDialogData) _obj, int v );
 void       wxPrintDialogData_SetMaxPage( TSelf(wxPrintDialogData) _obj, int v );
 void       wxPrintDialogData_SetMinPage( TSelf(wxPrintDialogData) _obj, int v );
 void       wxPrintDialogData_SetNoCopies( TSelf(wxPrintDialogData) _obj, int v );
 void       wxPrintDialogData_SetPrintData( TSelf(wxPrintDialogData) _obj, TClass(wxPrintData) printData );
-void       wxPrintDialogData_SetPrintToFile( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_SetSelection( TSelf(wxPrintDialogData) _obj, int flag );
-void       wxPrintDialogData_SetSetupDialog( TSelf(wxPrintDialogData) _obj, int flag );
+void       wxPrintDialogData_SetPrintToFile( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_SetSelection( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
+void       wxPrintDialogData_SetSetupDialog( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 void       wxPrintDialogData_SetToPage( TSelf(wxPrintDialogData) _obj, int v );
 
 /* wxPrintPreview */
 TClassDefExtend(wxPrintPreview,wxObject)
-TClass(wxPrintPreview) wxPrintPreview_CreateFromData( TClass(wxPrintout) printout, void* printoutForPrinting, void* data );
-TClass(wxPrintPreview) wxPrintPreview_CreateFromDialogData( TClass(wxPrintout) printout, void* printoutForPrinting, void* data );
+TClass(wxPrintPreview) wxPrintPreview_CreateFromData( TClass(wxPrintout) printout, TClass(wxPrintout) printoutForPrinting, TClass(wxPrintData) data );
+TClass(wxPrintPreview) wxPrintPreview_CreateFromDialogData( TClass(wxPrintout) printout, TClass(wxPrintout) printoutForPrinting, TClass(wxPrintDialogData) data );
 void       wxPrintPreview_Delete( TSelf(wxPrintPreview) _obj );
 void       wxPrintPreview_DetermineScaling( TSelf(wxPrintPreview) _obj );
-int        wxPrintPreview_DrawBlankPage( TSelf(wxPrintPreview) _obj, void* canvas, TClass(wxDC) dc );
-void*      wxPrintPreview_GetCanvas( TSelf(wxPrintPreview) _obj );
+TBoolInt   wxPrintPreview_DrawBlankPage( TSelf(wxPrintPreview) _obj, TClass(wxPreviewCanvas) canvas, TClass(wxDC) dc );
+TClass(wxPreviewCanvas)  wxPrintPreview_GetCanvas( TSelf(wxPrintPreview) _obj );
 int        wxPrintPreview_GetCurrentPage( TSelf(wxPrintPreview) _obj );
 TClass(wxFrame) wxPrintPreview_GetFrame( TSelf(wxPrintPreview) _obj );
 int        wxPrintPreview_GetMaxPage( TSelf(wxPrintPreview) _obj );
 int        wxPrintPreview_GetMinPage( TSelf(wxPrintPreview) _obj );
 void       wxPrintPreview_GetPrintDialogData( TSelf(wxPrintPreview) _obj, TClassRef(wxPrintDialogData) _ref );
 TClass(wxPrintout) wxPrintPreview_GetPrintout( TSelf(wxPrintPreview) _obj );
-void*      wxPrintPreview_GetPrintoutForPrinting( TSelf(wxPrintPreview) _obj );
+TClass(wxPrintout) wxPrintPreview_GetPrintoutForPrinting( TSelf(wxPrintPreview) _obj );
 int        wxPrintPreview_GetZoom( TSelf(wxPrintPreview) _obj );
 TBool      wxPrintPreview_Ok( TSelf(wxPrintPreview) _obj );
-int        wxPrintPreview_PaintPage( TSelf(wxPrintPreview) _obj, void* canvas, TClass(wxDC) dc );
-int        wxPrintPreview_Print( TSelf(wxPrintPreview) _obj, int interactive );
-int        wxPrintPreview_RenderPage( TSelf(wxPrintPreview) _obj, int pageNum );
-void       wxPrintPreview_SetCanvas( TSelf(wxPrintPreview) _obj, void* canvas );
-int        wxPrintPreview_SetCurrentPage( TSelf(wxPrintPreview) _obj, int pageNum );
+TBoolInt   wxPrintPreview_PaintPage( TSelf(wxPrintPreview) _obj, TClass(wxPrintPreview) canvas, TClass(wxDC) dc );
+TBoolInt   wxPrintPreview_Print( TSelf(wxPrintPreview) _obj, TBoolInt interactive );
+TBoolInt   wxPrintPreview_RenderPage( TSelf(wxPrintPreview) _obj, int pageNum );
+void       wxPrintPreview_SetCanvas( TSelf(wxPrintPreview) _obj, TClass(wxPreviewCanvas) canvas );
+TBoolInt   wxPrintPreview_SetCurrentPage( TSelf(wxPrintPreview) _obj, int pageNum );
 void       wxPrintPreview_SetFrame( TSelf(wxPrintPreview) _obj, TClass(wxFrame) frame );
-void       wxPrintPreview_SetOk( TSelf(wxPrintPreview) _obj, int ok );
+void       wxPrintPreview_SetOk( TSelf(wxPrintPreview) _obj, TBoolInt ok );
 void       wxPrintPreview_SetPrintout( TSelf(wxPrintPreview) _obj, TClass(wxPrintout) printout );
 void       wxPrintPreview_SetZoom( TSelf(wxPrintPreview) _obj, int percent );
 
 /* wxPrinter */
 TClassDefExtend(wxPrinter,wxObject)
-TClass(wxPrinter) wxPrinter_Create( void* data );
-void*      wxPrinter_CreateAbortWindow( TSelf(wxPrinter) _obj, TClass(wxWindow) parent, TClass(wxPrintout) printout );
+TClass(wxPrinter) wxPrinter_Create( TClass(wxPrintDialogData) data );
+TClass(wxWindow)  wxPrinter_CreateAbortWindow( TSelf(wxPrinter) _obj, TClass(wxWindow) parent, TClass(wxPrintout) printout );
 void       wxPrinter_Delete( TSelf(wxPrinter) _obj );
-int        wxPrinter_GetAbort( TSelf(wxPrinter) _obj );
+TBoolInt   wxPrinter_GetAbort( TSelf(wxPrinter) _obj );
 int        wxPrinter_GetLastError( TSelf(wxPrinter) _obj );
 void       wxPrinter_GetPrintDialogData( TSelf(wxPrinter) _obj, TClassRef(wxPrintDialogData) _ref );
-int        wxPrinter_Print( TSelf(wxPrinter) _obj, TClass(wxWindow) parent, TClass(wxPrintout) printout, int prompt );
-void*      wxPrinter_PrintDialog( TSelf(wxPrinter) _obj, TClass(wxWindow) parent );
+TBoolInt   wxPrinter_Print( TSelf(wxPrinter) _obj, TClass(wxWindow) parent, TClass(wxPrintout) printout, TBoolInt prompt );
+TClass(wxDC)  wxPrinter_PrintDialog( TSelf(wxPrinter) _obj, TClass(wxWindow) parent );
 void       wxPrinter_ReportError( TSelf(wxPrinter) _obj, TClass(wxWindow) parent, TClass(wxPrintout) printout, TStringVoid message );
-int        wxPrinter_Setup( TSelf(wxPrinter) _obj, TClass(wxWindow) parent );
+TBoolInt   wxPrinter_Setup( TSelf(wxPrinter) _obj, TClass(wxWindow) parent );
 
 /* wxPrinterDC */
 TClassDefExtend(wxPrinterDC,wxDC)

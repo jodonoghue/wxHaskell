@@ -61,6 +61,9 @@ module Graphics.UI.WXCore.Events
         , evtHandlerOnInput
         , evtHandlerOnInputSink
 
+        -- ** Print events
+        , EventPrint(..)
+        , printOutOnPrint
 
         -- * Get event handlers
         -- ** Controls
@@ -103,6 +106,9 @@ module Graphics.UI.WXCore.Events
         , evtHandlerGetOnMenuCommand
         , evtHandlerGetOnEndProcess
         , evtHandlerGetOnInputSink
+
+        -- ** Printing
+        , printOutGetOnPrint
 
         -- * Timers
         , windowTimerAttach
@@ -347,6 +353,64 @@ checkBoxOnCommand checkBox eventHandler
 checkBoxGetOnCommand :: CheckBox a -> IO (IO ())
 checkBoxGetOnCommand checkBox
   = unsafeWindowGetHandlerState checkBox wxEVT_COMMAND_CHECKBOX_CLICKED (skipCurrentEvent)
+
+
+
+
+{-----------------------------------------------------------------------------------------
+  Printing
+-----------------------------------------------------------------------------------------}
+-- | Printer events.
+data EventPrint  = PrintBeginDoc (IO ()) Int Int    -- ^ Print a copy: cancel, start page, end page
+                 | PrintEndDoc
+                 | PrintBegin                       -- ^ Begin a print job.
+                 | PrintEnd
+                 | PrintPrepare                     -- ^ Prepare: chance to call 'printOutSetPageLimits' for example.
+                 | PrintPage (IO ()) (DC ()) Int    -- ^ Print a page: cancel, printer device context, page number.
+                 | PrintUnknown Int                 -- ^ Unknown print event with event code
+
+-- | Convert a 'PrintEvent' object to an 'EventPrint' value.
+fromPrintEvent :: WXCPrintEvent a -> IO EventPrint
+fromPrintEvent event
+  = do tp <- eventGetEventType event
+       case lookup tp printEvents of
+         Just f  -> f event
+         Nothing -> return (PrintUnknown tp)
+
+-- | Print event list.
+printEvents :: [(Int,WXCPrintEvent a -> IO EventPrint)]
+printEvents
+  = [(wxEVT_PRINT_PAGE,     \ev -> do page <- wxcPrintEventGetPage ev
+                                      pout <- wxcPrintEventGetPrintout ev
+                                      dc   <- printoutGetDC pout
+                                      let cancel = wxcPrintEventSetContinue ev False
+                                      return (PrintPage cancel dc page))
+    ,(wxEVT_PRINT_BEGIN_DOC,\ev -> do page <- wxcPrintEventGetPage ev
+                                      epage<- wxcPrintEventGetEndPage ev
+                                      let cancel = wxcPrintEventSetContinue ev False
+                                      return (PrintBeginDoc cancel page epage))
+    ,(wxEVT_PRINT_PREPARE,  \ev -> return PrintPrepare)
+    ,(wxEVT_PRINT_END_DOC,  \ev -> return PrintEndDoc)
+    ,(wxEVT_PRINT_BEGIN,    \ev -> return PrintBegin)
+    ,(wxEVT_PRINT_END,      \ev -> return PrintEnd)
+    ]
+
+-- | Set an event handler for printing.
+printOutOnPrint :: WXCPrintout a -> (EventPrint -> IO ()) -> IO ()
+printOutOnPrint printOut eventHandler
+  = do evtHandler <- wxcPrintoutGetEvtHandler printOut
+       evtHandlerOnEvent evtHandler idAny idAny (map fst printEvents)
+                         eventHandler (\_ -> return ()) printHandler
+  where
+    printHandler event
+      = do eventPrint <- fromPrintEvent (objectCast event)
+           eventHandler eventPrint
+
+-- | Get the current print handler
+printOutGetOnPrint :: WXCPrintout a -> IO (EventPrint -> IO ())
+printOutGetOnPrint printOut 
+  = do evtHandler <- wxcPrintoutGetEvtHandler printOut
+       unsafeGetHandlerState evtHandler idAny wxEVT_PRINT_PAGE (\ev -> skipCurrentEvent)
 
 
 {-----------------------------------------------------------------------------------------
@@ -638,7 +702,6 @@ windowOnContextMenu window eventHandler
 windowGetOnContextMenu :: Window a -> IO (IO ())
 windowGetOnContextMenu window
   = unsafeWindowGetHandlerState window wxEVT_CONTEXT_MENU skipCurrentEvent
-
 
 -- | A menu event is generated when the user selects a menu item.
 -- You should install this handler on the window that owns the menubar or a popup menu.

@@ -5,13 +5,14 @@ extern "C"
 
 EWXWEXPORT(void*, wxPrintDialog_Create) (void* parent, void* data)
 {
-    return (void*) new wxPrintDialog((wxWindow*)parent, (wxPrintData*)data);
+    return (void*) new wxPrintDialog((wxWindow*)parent, (wxPrintDialogData*)data);
 }
 
 EWXWEXPORT(void, wxPrintDialog_GetPrintData)(void* _obj, void* _ref)
 {
 	*((wxPrintData*)_ref) = ((wxPrintDialog*)_obj)->GetPrintData();
 }
+
 	
 EWXWEXPORT(void*, wxPrintDialog_GetPrintDC)(void* _obj)
 {

@@ -142,7 +142,8 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db glcanvas wave managed
+	treectrl image apppath db glcanvas wave managed	\
+	printout previewframe
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -173,6 +174,7 @@ WXC-SPECS-HEADER = \
 	wxc/include/wxc.h \
 	wxc/include/db.h wxc/include/glcanvas.h \
 	wxc/include/wave.h wxc/include/managed.h \
+	wxc/include/printout.h wxc/include/previewframe.h \
 	wxc/include/ewxw/wxc_glue.h 
 
 

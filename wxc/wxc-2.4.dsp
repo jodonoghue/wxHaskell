@@ -116,6 +116,14 @@ SOURCE=.\include\managed.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\previewframe.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\printout.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\wave.h
 # End Source File
 # Begin Source File
@@ -173,6 +181,14 @@ SOURCE=.\src\image.cpp
 # Begin Source File
 
 SOURCE=.\src\managed.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\previewframe.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\printout.cpp
 # End Source File
 # Begin Source File
 
