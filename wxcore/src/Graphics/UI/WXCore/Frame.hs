@@ -20,7 +20,6 @@ module Graphics.UI.WXCore.Frame
         , windowGetRootParent
         , windowGetFrameParent
         , windowGetMousePosition
-        , windowScreenToRelativePosition
         , windowGetScreenPosition
           -- * Dialog
         , dialogDefaultStyle
@@ -95,25 +94,12 @@ windowGetRootParent w
 windowGetMousePosition :: Window a -> IO Point
 windowGetMousePosition w
   = do p <- wxcGetMousePosition
-       windowScreenToRelativePosition w p
+       windowScreenToClient2 w p
   
--- | Translate a screen position to a position relative to a window.
-windowScreenToClient :: Window a -> Point -> IO Point
-windowScreenToClient w sp
-  = do sp0 <- windowClientToScreen w pointZero
-       return (pointSub sp sp0)
-
 -- | Get the window position relative to the origin of the display.
 windowGetScreenPosition :: Window a -> IO Point
 windowGetScreenPosition w
-  = do pt <- windowGetPosition w
-       if (instanceOf w classFrame || instanceOf w classDialog)
-        then return pt
-        else do parent <- windowGetParent w
-                if (objectIsNull parent)
-                 then return pt
-                 else do pos <- windowGetScreenPosition parent
-                         return (pointAdd pos pt)
+  = windowClientToScreen w pointZero
 
 
 ------------------------------------------------------------------------------------------

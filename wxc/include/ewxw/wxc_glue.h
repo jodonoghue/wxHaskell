@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.15 2003/10/28 10:47:47 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.16 2003/11/07 12:23:09 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4632,7 +4632,7 @@ void       wxWindow_RemoveChild( TSelf(wxWindow) _obj, TClass(wxWindow) child );
 void       wxWindow_RemoveConstraintReference( TSelf(wxWindow) _obj, TClass(wxWindow) otherWin );
 int        wxWindow_Reparent( TSelf(wxWindow) _obj, TClass(wxWindow) _par );
 void       wxWindow_ResetConstraints( TSelf(wxWindow) _obj );
-void       wxWindow_ScreenToClient( TSelf(wxWindow) _obj, TPointOut(_x,_y) );
+void       wxWindow_ScreenToClient( TSelf(wxWindow) _obj, int* x, int* y );
 void       wxWindow_ScrollWindow( TSelf(wxWindow) _obj, TVector(dx,dy) );
 void       wxWindow_ScrollWindowRect( TSelf(wxWindow) _obj, TVector(dx,dy), TRect(x,y,w,h) );
 void       wxWindow_SetAcceleratorTable( TSelf(wxWindow) _obj, TClass(wxAcceleratorTable) accel );

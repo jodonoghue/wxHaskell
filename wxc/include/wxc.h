@@ -65,6 +65,7 @@ void  wxWindow_GetVirtualSize( TSelf(wxWindow) _obj, TSizeOut(_w,_h) );
 void  wxWindow_SetVirtualSize( TSelf(wxWindow) _obj, TSize(w,h) );
 void  wxWindow_FitInside(TSelf(wxWindow) _obj);
 void  wxWindow_ClientToScreen(TSelf(wxWindow) self, TPoint(x,y), TPointOut(sx,sy));
+void  wxWindow_ScreenToClient2(TSelf(wxWindow) self, TPoint(x,y), TPointOut(cx,cy));
 
 /* wxString helpers */
 TClass(wxString) wxString_Create( TString buffer );
