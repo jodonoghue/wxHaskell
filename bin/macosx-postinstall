@@ -1,3 +1,0 @@
-#!/bin/sh      
-env wxhlibdir="$(LIBDIR)/lib" /usr/local/bin/ghc-pkg -u -i "$1/Contents/Resources/wxcore.pkg" 
-env wxhlibdir="$(LIBDIR)/lib" /usr/local/bin/ghc-pkg -u -i "$1/Contents/Resources/wx.pkg" 
