@@ -236,7 +236,7 @@ EWXWEXPORT(void, BitmapDataObject_GetBitmap)(void* _obj, void* _bmp)
 
 EWXWEXPORT(void*, DropSource_Create)(void* data, void* win, void* copy, void* move, void* none)
 {
-#if wxCHECK_VERSION(2,5,0) || defined(__WIN32__)
+#if (wxCHECK_VERSION(2,5,0) && defined(__WXMAC__)) || defined(__WIN32__)
 	return (void*) new wxDropSource(*((wxDataObject*)data), (wxWindow*)win, *((wxCursor*)copy), *((wxCursor*)move), *((wxCursor*)none));
 #else
 	return (void*) new wxDropSource(*((wxDataObject*)data), (wxWindow*)win, *((wxIcon*)copy), *((wxIcon*)move), *((wxIcon*)none));

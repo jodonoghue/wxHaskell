@@ -20,7 +20,7 @@ helloWorld
        menuBarAppend m fm "&File"
 
        -- create top frame
-       f  <- frameCreateTopFrame "Hello world"
+       f  <- frameCreate objectNull idAny "Hello world" rectZero 0
        windowSetBackgroundColour f white
        windowSetClientSize f (sz 300 250)
 
