@@ -57,7 +57,7 @@ wxString GetApplicationPath()
 
 /* MAC */
 #elif defined(__WXMAC__)
-	char buf[512] = "";
+    char buf[512] = "";
     ProcessInfoRec processinfo;
     ProcessSerialNumber procno ;
     FSSpec fsSpec;
@@ -70,7 +70,7 @@ wxString GetApplicationPath()
 
     GetProcessInformation( &procno , &processinfo ) ;
     fss2path(buf,&fsSpec);
-	path = buf;
+    path = buf;
 		
 /* UNIX */
 #else
@@ -82,7 +82,7 @@ wxString GetApplicationPath()
     }
     else {
       /* check relative path */
-      wxString fname = wxGetCwd + wxFILE_SEP_PATH + argv0;
+      wxString fname = wxGetCwd() + wxFILE_SEP_PATH + argv0;
       if (wxFileExists(fname)) {
         path = fname;
       } else {
