@@ -18,7 +18,6 @@
 
 extern "C" {
 
-
 /*-----------------------------------------------------------------------------
   HENV, HDBC, HSTMT
 -----------------------------------------------------------------------------*/
@@ -311,6 +310,452 @@ EWXWEXPORT(bool,wxDb_GetDataString)(wxDb* db, int column, char* buf, int bufLen,
   bool result = db->GetData( column, SQL_C_CHAR, buf, bufLen, &used );
   if (usedLen) *usedLen = used;
   return result;
+#else
+  return false;
+#endif
+}
+
+
+EWXWEXPORT(int,wxDb_Dbms)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return db->Dbms();
+#else
+  return 0;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_GetDatabaseName)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->GetDatabaseName());
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_GetDatasourceName)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->GetDatasourceName());
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_GetPassword)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->GetPassword());
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_GetUsername)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->GetUsername());
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(bool,wxDb_Grant)(wxDb* db, int privileges, wxString* tableName, wxString* userList )
+{
+#ifdef wxUSE_ODBC
+  return db->Grant(privileges, *tableName, *userList);
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(int,wxDb_GetTableCount)(wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  return db->GetTableCount();
+#else
+  return 0;
+#endif
+}
+EWXWEXPORT(wxDbInf*,wxDb_GetCatalog)( wxDb* db, wxString* userName )
+{
+#ifdef wxUSE_ODBC
+  if (userName!=NULL && userName->IsEmpty()) {
+    userName=NULL;
+  }
+  return db->GetCatalog(*userName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(int,wxDb_GetColumnCount)(wxDb* db, wxString* tableName, wxString* userName )
+{
+#ifdef wxUSE_ODBC
+  if (userName!=NULL && userName->IsEmpty()) {
+    userName=NULL;
+  }
+  return db->GetColumnCount(*tableName,*userName);
+#else
+  return 0;
+#endif
+}
+
+EWXWEXPORT(wxDbColInf*,wxDb_GetColumns)(wxDb* db, wxString* tableName, int* columnCount, wxString* userName)
+{
+#ifdef wxUSE_ODBC
+  USHORT      count  = 0;
+  wxDbColInf* result = NULL;
+  if (userName!=NULL && userName->IsEmpty()) {
+    userName=NULL;
+  }
+  result = db->GetColumns(*tableName,&count,*userName);
+  if (columnCount) *columnCount = count;
+  return result;
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(bool,wxDb_Open)(wxDb* db, wxString* dsn, wxString* userId, wxString* password)
+{
+#ifdef wxUSE_ODBC
+  return db->Open(*dsn,*userId,*password);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_SQLColumnName)(wxDb* db, wxString* columnName)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->SQLColumnName(*columnName));
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDb_SQLTableName)(wxDb* db, wxString* tableName)
+{
+#ifdef wxUSE_ODBC
+  return new wxString(db->SQLTableName(*tableName));
+#else
+  return NULL;
+#endif
+}
+
+
+EWXWEXPORT(bool,wxDb_TableExists)(wxDb* db, wxString* tableName, wxString* userName, wxString* path )
+{
+#ifdef wxUSE_ODBC
+  if (userName!=NULL && userName->IsEmpty()) {
+    userName=NULL;
+  }
+  return db->TableExists(*tableName,*userName,*path);
+#else
+  return false;
+#endif
+}
+
+
+EWXWEXPORT(bool,wxDb_TablePrivileges)(wxDb* db, wxString* tableName, wxString* privileges, wxString* userName, wxString* schema, wxString* path )
+{
+#ifdef wxUSE_ODBC
+  if (schema!=NULL && schema->IsEmpty()) {
+    schema=NULL;
+  }
+  return db->TablePrivileges(*tableName,*privileges,(userName==NULL ? "" : userName->c_str()),schema->c_str(),*path);
+#else
+  return false;
+#endif
+}
+
+
+EWXWEXPORT(int,wxDb_TranslateSqlState)(wxDb* db, wxString* sqlState)
+{
+#ifdef wxUSE_ODBC
+  return db->TranslateSqlState(*sqlState);
+#else
+  return NULL;
+#endif
+}
+
+
+EWXWEXPORT(wxDb*,wxDb_Create)( HENV henv, bool fwdOnlyCursors )
+{
+#ifdef wxUSE_ODBC
+  return new wxDb(henv,fwdOnlyCursors);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(void,wxDb_Delete)( wxDb* db )
+{
+#ifdef wxUSE_ODBC
+  if (db!=NULL) delete db;
+#endif
+}
+
+/*-----------------------------------------------------------------------------
+  DbInf
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxString*,wxDbInf_GetCatalogName)( wxDbInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->catalog);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbInf_GetSchemaName)( wxDbInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->schema);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(int,wxDbInf_GetNumTables)( wxDbInf* self )
+{
+#ifdef wxUSE_ODBC
+  return (self->numTables);
+#else
+  return 0;
+#endif
+}
+
+EWXWEXPORT(wxDbTableInf*,wxDbInf_GetTableInf)( wxDbInf* self, int index )
+{
+#ifdef wxUSE_ODBC
+  if (self && self->pTableInf && index >= 0 && index < self->numTables)
+    return &self->pTableInf[index];
+  else
+    return NULL;
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(void,wxDbInf_Delete)( wxDbInf* self )
+{
+#ifdef wxUSE_ODBC
+  if (self!=NULL) delete self;
+#endif
+}
+
+/*-----------------------------------------------------------------------------
+  DbTableInf
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxString*,wxDbTableInf_GetTableName)( wxDbTableInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->tableName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbTableInf_GetTableType)( wxDbTableInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->tableType);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbTableInf_GetTableRemarks)( wxDbTableInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->tableRemarks);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(int,wxDbTableInf_GetNumCols)( wxDbTableInf* self )
+{
+#ifdef wxUSE_ODBC
+  return (self->numCols);
+#else
+  return 0;
+#endif
+}
+
+/*-----------------------------------------------------------------------------
+  DbColInfArray
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxDbColInf*,wxDbColInfArray_GetColInf)( wxDbColInf* self, int index )
+{
+#ifdef wxUSE_ODBC
+  return &self[index];
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(void,wxDbColInfArray_Delete)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  if (self!=NULL) delete [] self;
+#endif
+}
+
+/*-----------------------------------------------------------------------------
+  DbColInf
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxString*,wxDbColInf_GetCatalog)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->catalog);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetSchema)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->schema);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetTableName)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->tableName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetColName)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->colName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetTypeName)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->typeName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetRemarks)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->remarks);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetPkTableName)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->PkTableName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(wxString*,wxDbColInf_GetFkTableName)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return new wxString(self->FkTableName);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetSqlDataType)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->sqlDataType;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetColumnSize)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->columnSize;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetBufferLength)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->bufferLength;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetDecimalDigits)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->decimalDigits;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetNumPrecRadix)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->numPrecRadix;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetDbDataType)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->dbDataType;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetPkCol)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->PkCol;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(int,wxDbColInf_GetFkCol)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return self->FkCol;
+#else
+  return (-1);
+#endif
+}
+
+EWXWEXPORT(bool,wxDbColInf_IsNullable)( wxDbColInf* self )
+{
+#ifdef wxUSE_ODBC
+  return (self->nullable != 0);
 #else
   return false;
 #endif

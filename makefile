@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.48 2003/10/25 09:47:51 dleijen Exp $
+# $Id: makefile,v 1.49 2003/10/25 13:20:16 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -109,8 +109,9 @@ WXCORE-STUBS = \
 #--------------------------------------------------------------------------
 WXD-SOURCES = \
 	Map Set MultiSet \
-	HaskellNames Types Classes \
+	HaskellNames Types \
 	ParseEiffel ParseC \
+	Classes \
 	DeriveTypes \
 	CompileHeader \
 	CompileClassTypes \

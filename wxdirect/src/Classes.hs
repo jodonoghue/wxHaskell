@@ -26,6 +26,7 @@ import Types
 
 -- to parse a class hierarchy
 import Text.ParserCombinators.Parsec
+import ParseC( readHeaderFile )
 
 -- unsafe hack :-(
 import System.IO.Unsafe( unsafePerformIO )
@@ -64,9 +65,10 @@ classes
        -}
        -- urk, ugly hack.
        wxcdir <- getWxcDir
-       cs <- parseClassDefs [wxcdir ++ "/include/ewxw/wxc_glue.h"
-                            ,wxcdir ++ "/include/wxc.h"
-                            ,wxcdir ++ "/include/db.h"]
+       cs <- parseClassDefs (wxcdir ++ "/include/wxc.h")
+                           -- ,wxcdir ++ "/include/ewxw/wxc_glue.h"
+                           -- ,wxcdir ++ "/include/db.h"
+                            
        -- writeFile "wxclasses.def" (showClasses cs)
        return cs
        -- return (mergeClasses xs ys) -- (mergeClasses zs (mergeClasses ys xs))
@@ -539,12 +541,11 @@ whiteSpace
   TClassDef(tp)
   TClassDefExtend(tp,parent)
 -----------------------------------------------------------------------------------------}
-parseClassDefs :: [FilePath] -> IO [Class]
-parseClassDefs fnames
-  = do putStrLn "reading class definitions from:"
-       putStr   (concatMap (\fname -> "  " ++ fname ++ "\n") fnames)
-       inputs <- mapM readFile fnames
-       let defs    = filter (not . null . fst) (map parseClassDef (lines (concat inputs)))
+parseClassDefs :: FilePath -> IO [Class]
+parseClassDefs fname
+  = do putStrLn "reading class definitions:"
+       lines  <- readHeaderFile fname
+       let defs    = filter (not . null . fst) (map parseClassDef lines)
            extends = Map.fromList defs
            extend name
                    = complete (Class name [])

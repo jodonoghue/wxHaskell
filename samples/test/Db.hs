@@ -81,7 +81,7 @@ dbGetDataSources
     loop henv isFirst
       = do mbSrc <- dbGetDataSourceEx henv isFirst
            case mbSrc of
-             Nothing  -> return [("test","test")]
+             Nothing  -> return []
              Just x   -> do xs <- loop henv False
                             return (x:xs)
 

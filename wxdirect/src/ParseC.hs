@@ -10,7 +10,7 @@
     Parse the wxc C header files.
 -}
 -----------------------------------------------------------------------------------------
-module ParseC( parseC ) where
+module ParseC( parseC, readHeaderFile ) where
 
 import Char( isSpace )
 import List( isPrefixOf )
