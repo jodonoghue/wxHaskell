@@ -9,6 +9,41 @@
 #------------------------------------------------------------------------
 
 #--------------------------------------------------------------------
+# Load the command line from the cache?
+#--------------------------------------------------------------------
+
+# see if --cache is the first argument
+case "$1" in
+  -cache|--cache)
+     if test -f "config/cache.txt"; then
+       # load from cache
+       cache=`cat config/cache.txt`
+       echo "using cached arguments:"
+       echo " $cache"
+       echo ""
+       $0 $cache
+       exit $?
+     else
+       # nothing cached yet
+       echo "warning:"
+       echo " Option --cache given, but no previous configuration was present."
+       echo ""
+       shift # remove --cache argument 
+     fi;;
+esac
+
+# save arguments
+arguments=$@
+
+# set cache argument for help options
+if test -f "config/cache.txt"; then
+ cache=`cat config/cache.txt`
+else
+ cache=""
+fi
+
+
+#--------------------------------------------------------------------
 # Variables
 #--------------------------------------------------------------------
 version="0.7.2"
@@ -68,7 +103,6 @@ findprogram () {
   IFS="$saveIFS"
   return 1
 }
-
 
 #--------------------------------------------------------------------
 # wx-config guess
@@ -163,11 +197,14 @@ if findprogram "$wxconfig"; then
   fi
 else
 #wxconfig not found!
-  echo "warning:"
-  echo " Unable to find wxWidgets configuration ($wxconfig)."
-#  echo " Either install wxWidgets or specify the location of wx-config."
-#  echo " For example: ./configure --wx-config=~/local/bin/wx-config"
-  echo ""
+  case "$1" in
+    -with-msc|--with-msc)
+	;;
+    *)
+      echo "warning:"
+      echo " Unable to find wxWidgets configuration ($wxconfig)."
+      echo "";;
+  esac
 fi
 
 # initial completion rules
@@ -202,6 +239,8 @@ while : ; do
         echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
         echo " --version=<version>    library version [$version]"
         echo " --release=<version>    library release version [$release]"
+	echo " --cache                use previous configure options (must come first!)"
+	echo "                        [$cache]"
         echo ""
         echo "install options:"
         echo " --prefix=<dir>         install directory [$prefix]"
@@ -229,6 +268,11 @@ while : ; do
         echo " --wxc-libname=<name>   wxc library base name [$wxclibname]"
         echo ""
         exit 1;;
+
+    -cache|--cache)
+	echo "warning:"
+	echo " Ignoring --cache option; this option must be the first (and only) option."
+	echo "";;
 
     -hc=*|--hc=*)
         hc="$arg";;
@@ -270,7 +314,9 @@ while : ; do
     -with-opengl|--with-opengl)
 	withopengl="yes";;
     -wx-config=*|--wx-config=*)
-        wxconfig="$arg";;
+	echo "warning:"
+	echo " Ignoring --wx-config option; this option must be the first option."
+	echo "";;
 
     -dllext=*|--dllext=*)
         dll="$arg"
@@ -291,7 +337,8 @@ while : ; do
           wxclibname="$arg"
         else
           echo "warning:"
-          echo "  option --wxc-libname is only valid if preceded with --with-msc."
+          echo " Option --wxc-libname is only valid if preceded with --with-msc."
+	  echo ""
         fi;;
    *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
        echo "" 1>&2
@@ -351,6 +398,7 @@ if test "$withmsc" != "yes"; then
     echo " Maybe you forgot to run 'make install' on wxWidgets?"
     echo " Otherwise, add the install directory of wx-config to your path."
     if test "$WINDIR"; then
+      echo ""
       echo " Or maybe you are trying to compile with Microsoft Visual C++?"
       echo " If so, you can specify that on the command line:"
       echo " For example: ./configure --with-msc"
@@ -730,7 +778,7 @@ updateversion () {
 
 # set version in msc project file
 if test "$withmsc" = "yes"; then
-  echo "update version number in visual c++ project file"
+  echo " update version number in visual c++ project file"
   for dsp in wxc/*.dsp
   do
     updateversion $dsp
@@ -835,6 +883,9 @@ echo ""                                      >> config/prologue.txt.temp
 cat config/prologue.txt.temp bin/prologue-template.txt > config/prologue.txt
 rm -f config/prologue.txt.temp
 
+# save arguments
+echo " config/cache.txt"
+echo "$arguments" > config/cache.txt
 
 # show configuration
 echo ""
