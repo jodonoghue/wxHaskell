@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.24 2003/09/15 10:14:06 dleijen Exp $
+# $Id: makefile,v 1.25 2003/09/15 10:14:48 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -168,7 +168,7 @@ WXHASKELL-SOURCES= \
 	config.search configure makefile \
 	prologue.txt license.txt \
 	bin/macosx-app bin/reimp.exe \
-	bin/macosx-builddmg bin/macosx-package bin/macosx-postinstall \	
+	bin/macosx-builddmg bin/macosx-package bin/macosx-postinstall \
 	bin/wxhaskell-register bin/wxhaskell-register.bat \
 	bin/wxhaskell-uninstall.bat
 
