@@ -52,7 +52,7 @@ timeFlows
                     ]
 
        -- set event handlers
-       set f        [ on paint    := onPaint  vmouseHistory flowText
+       set f        [ on paint    := onPaint  vmouseHistory 
                     , on idle     := onIdle   vmouseHistory f
                     , on drag     := onDrag   vmouseHistory
                     ]
@@ -62,14 +62,14 @@ timeFlows
   Event handlers
 -------------------------------------------------------------------------}
 -- repaint handler
-onPaint vmouseHistory text dc viewRect updateAreas
+onPaint vmouseHistory  dc viewRect updateAreas
   = do history <- varGet vmouseHistory
        time    <- getTime
        -- draw trace line
        polyline dc (map snd history) [penColor := lightgrey]
        -- draw the words
-       set dc [font := fontSwiss{ _fontSize = 16} ]
-       mapM_ drawWord (wordPositions history (wordTimes timeSpan time (words text)))
+       set dc [font := flowFont ]
+       mapM_ drawWord (wordPositions history timeSpan time flowText)
   where
     drawWord (pos,word)
       = do -- center word
@@ -77,35 +77,34 @@ onPaint vmouseHistory text dc viewRect updateAreas
            let newX = pointX pos - (sizeW sz `div` 2)
                newY = pointY pos - (sizeH sz `div` 2)
            -- and draw it.
-           drawText dc word (pt newX newY) []
+           drawText dc word (pt  newX newY) []
 
            
 -- idle event handler
 onIdle :: Var History -> Window a -> IO Bool
 onIdle vmouseHistory win
-  = do hist <- varGet vmouseHistory
-       if (length hist <= 1)
+  = do history <- varGet vmouseHistory
+       if (null (tail history))
         then do -- don't call idle again until some other event happens
                 return False
         else do time <- getTime
                 repaint win
                 -- prune the history  
-                let (recent,old) = splitAfter (time-timeSpan) [] hist  
-                varSet vmouseHistory recent
-                -- keep calling idle only when there is something to do
-                return (not (null old)) 
+                varSet vmouseHistory (prune time history)
+                return True
   where
-    -- split the history in two lists at a certain time. 
-    -- but ensure that the first list is never empty.
-    splitAfter time acc []     = (reverse acc,[])
-    splitAfter time acc (x@(t,pos):xs) 
-      | t >= time  = splitAfter time (x:acc) xs
-      | null acc   = splitAfter time (x:acc) xs
-      | otherwise  = (reverse acc,x:xs)
+    -- prune the history: only remember time/position pairs up to a certain time span.
+    prune time (h:hs)
+      = h:takeWhile (after (time-timeSpan)) hs
+
+    after time (t,p)
+      = time <= t
+
 
 -- mouse drag handler
 onDrag vmouseHistory mousePos
   = do time <- getTime
+       -- prepend a new time/position pair
        varUpdate vmouseHistory ((time,mousePos):)
        return ()
            
@@ -113,11 +112,15 @@ onDrag vmouseHistory mousePos
 {-------------------------------------------------------------------------
   Helper functions
 -------------------------------------------------------------------------}
+-- Tuple each word in a string with its historic position, given a mouse
+-- history, a time span, and current time.
+wordPositions :: History -> Time -> Time -> String -> [(Point,String)]
+wordPositions history timeSpan time 
+  = wordPositionsAt history . wordTimes timeSpan time . words 
 
--- Translate time/word pairs to position/word pairs given the mouse
--- position history.
-wordPositions :: History -> [(Time,String)] -> [(Point,String)]
-wordPositions history timedWords
+-- Translate time/word pairs to position/word pairs given the mouse position history.
+wordPositionsAt :: History -> [(Time,String)] -> [(Point,String)]
+wordPositionsAt history timedWords
   = [(posAtTime t history, word) | (t,word) <- timedWords]
 
 -- | Return the mouse position at a certain time.
@@ -126,19 +129,16 @@ posAtTime time [(t,pos)]    = pos
 posAtTime time ((t,pos):xs) | t <= time  = pos
                             | otherwise  = posAtTime time xs
 
--- | Assign times to the words in a string, given a timeSpan and current time.
+-- | Evenly assign times to the words in a string, given a timeSpan and current time.
 wordTimes :: Time -> Time -> [String] -> [(Time,String)]
 wordTimes timeSpan time words
   = let n     = length words
         delta = timeSpan / (fromIntegral n)
     in zip (iterate (\t -> t-delta) time) words
     
-
 -- Get the current Time
 getTime :: IO Time
 getTime
   = do picoSecs <- getCPUTime
        let time = (fromIntegral picoSecs) / 1.0e12
        return time
-
-
