@@ -188,7 +188,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 #--------------------------------------------------------------------------
 WXHASKELL-SOURCES= \
 	configure makefile makefile.lib \
-	bin/prologue-template.txt license.txt \
+	bin/prologue-template.txt license.txt changes.txt \
 	bin/wxhaskell-spec-template \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
@@ -199,17 +199,19 @@ SAMPLE-SOURCES= \
 	samples/wx/BouncingBalls.hs \
 	samples/wx/ByeDemo.hs \
 	samples/wx/Controls.hs \
+	samples/wx/CustomControl.hs \
+	samples/wx/DbBrowse.hs \
+	samples/wx/DbConsole.hs \
+	samples/wx/FileBrowse.hs \
+	samples/wx/Grid.hs \
 	samples/wx/HelloWorld.hs \
+	samples/wx/ImageViewer.hs \
 	samples/wx/Layout.hs \
 	samples/wx/Minimal.hs \
 	samples/wx/Process.hs \
 	samples/wx/Paint.hs \
-	samples/wx/ImageViewer.hs \
 	samples/wx/TimeFlows.hs \
 	samples/wx/TimeFlowsEx.hs \
-	samples/wx/FileBrowse.hs \
-	samples/wx/DbBrowse.hs \
-	samples/wx/DbConsole.hs \
 	\
 	samples/wxcore/BouncingBalls.hs \
 	samples/wxcore/ByeDemo.hs \
