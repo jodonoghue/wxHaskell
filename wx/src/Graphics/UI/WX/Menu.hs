@@ -135,8 +135,9 @@ menuSub parent menu props
                                      if (null title) 
                                       then return "<empty>"
                                       else return title                  
-       menuSetTitle menu "" -- remove title on submenus
+       menuSetTitle menu ""           -- remove title on submenus
        menuAppendSub parent id label menu ""
+       menuPropagateEvtHandlers menu  -- move the evtHandlers to the parent
        item <- menuFindItem parent id nullPtr
        set item props
        return item
@@ -310,6 +311,16 @@ menuItemOnCommand item io
                               | otherwise = (k,v):insert key val xs
 
 
+-- Propagate the (delayed) event handlers of a submenu to the parent menu.
+-- This is necessary for event handlers set on menu items in a submenu that
+-- was not yet assigned to a parent menu.
+menuPropagateEvtHandlers :: Menu a -> IO ()
+menuPropagateEvtHandlers menu
+  = do parent   <- menuGetTopMenu menu
+       handlers <- menuGetEvtHandlers menu
+       menuSetEvtHandlers menu []
+       menuSetEvtHandlers parent handlers
+
 -- Get associated frame of a menu in a menubar. Returns NULL for popup and sub menus.
 menuGetFrame :: Menu a -> IO (Frame ())
 menuGetFrame menu
@@ -325,11 +336,11 @@ menuItemGetTopMenu item
        menuGetTopMenu menu
 
 -- Get the top level menu of a possible sub menu 
-menuGetTopMenu :: Menu () -> IO (Menu ())
+menuGetTopMenu :: Menu a -> IO (Menu ())
 menuGetTopMenu menu
   = do parent <- menuGetParent menu
        if (objectIsNull parent)
-        then return menu
+        then return (downcastMenu menu)
         else menuGetTopMenu parent
 
 -- Set all menu event handlers on a certain window (EvtHandler)
