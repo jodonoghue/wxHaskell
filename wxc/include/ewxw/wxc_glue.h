@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.8 2003/09/09 13:15:41 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.9 2003/09/09 14:49:08 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -4447,7 +4447,7 @@ void       wxTreeCtrl_GetRootItem( TSelf(wxTreeCtrl) _obj, TClassRef(wxTreeItemI
 void       wxTreeCtrl_GetSelection( TSelf(wxTreeCtrl) _obj, TClassRef(wxTreeItemId) _item );
 TArrayLen  wxTreeCtrl_GetSelections( TSelf(wxTreeCtrl) _obj, TArrayIntOutVoid selections );
 int        wxTreeCtrl_GetSpacing( TSelf(wxTreeCtrl) _obj );
-void*      wxTreeCtrl_GetStateImageList( TSelf(wxTreeCtrl) _obj );
+TClass(wxImageList)  wxTreeCtrl_GetStateImageList( TSelf(wxTreeCtrl) _obj );
 void       wxTreeCtrl_HitTest( TSelf(wxTreeCtrl) _obj, TPoint(_x,_y), int* flags, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_InsertItem( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
 void       wxTreeCtrl_InsertItemByIndex( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TStringVoid text, int image, int selectedImage, void* data, TClassRef(wxTreeItemId) _item );
