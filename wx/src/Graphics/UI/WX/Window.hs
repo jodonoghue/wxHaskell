@@ -17,10 +17,11 @@
 module Graphics.UI.WX.Window
         ( -- * Window
           Window, refit, refitMinimal, rootParent, frameParent
+        , resizeable, maximizeable, minimizeable, clipChildren
           -- * ScrolledWindow
         , ScrolledWindow, scrolledWindow, scrollRate
           -- * Internal
-        , noFullRepaintOnResize
+        , fullRepaintOnResizeFlags, resizeableFlags, maximizeableFlags, minimizeableFlags, clipChildrenFlags
         ) where
 
 import Graphics.UI.WXCore
@@ -46,7 +47,7 @@ import Graphics.UI.WX.Events
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
   = do sw <- scrolledWindowCreate parent idAny rectNull 
-              (wxCLIP_CHILDREN .+. noFullRepaintOnResize props  )
+              (clipChildrenFlags props (fullRepaintOnResizeFlags props 0))
        set sw props
        return sw
 
@@ -232,13 +233,110 @@ instance Visible (Window a) where
                                    else stl .+. wxNO_FULL_REPAINT_ON_RESIZE]
 
 
--- | Helper function that retrieves the 'wxNO_FULL_REPAINT_ON_RESIZE' flag
--- out of the properties.
-noFullRepaintOnResize :: Visible w => [Prop w] -> Int
-noFullRepaintOnResize props
+-- | Helper function that transforms the style according to the 'fullRepaintOnResize' flags.
+fullRepaintOnResizeFlags :: Visible w => [Prop w] -> Int -> Int
+fullRepaintOnResizeFlags props stl
   = case getPropValue fullRepaintOnResize props of
-      Just False -> wxNO_FULL_REPAINT_ON_RESIZE
-      other      -> 0
+      Just True  -> stl .-. wxNO_FULL_REPAINT_ON_RESIZE
+      Just False -> stl .+. wxNO_FULL_REPAINT_ON_RESIZE
+      other      -> stl
+
+
+
+-- | Display a resize border on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+resizeable :: Attr (Window a) Bool
+resizeable
+  = reflectiveAttr "resizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxRESIZE_BORDER s)
+    setFlag w resize
+      = set w [style :~ \stl -> if resize 
+                                 then stl .+. wxRESIZE_BORDER
+                                 else stl .-. wxRESIZE_BORDER]
+
+-- | Helper function that transforms the style accordding
+-- to the 'resizeable' flag out of the properties
+resizeableFlags :: [Prop (Window a)] -> Int -> Int
+resizeableFlags props stl
+  = case getPropValue resizeable props of
+      Just True  -> stl .+. wxRESIZE_BORDER
+      Just False -> stl .-. wxRESIZE_BORDER
+      Nothing    -> stl
+
+
+
+-- | Clip the children of window during drawing ('wxCLIP_CHILDREN' flag).
+-- This attribute must be set at creation time.
+clipChildren :: Attr (Window a) Bool
+clipChildren
+  = reflectiveAttr "clipChildren" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxCLIP_CHILDREN s)
+    setFlag w clip
+      = set w [style :~ \stl -> if clip
+                                 then stl .+. wxCLIP_CHILDREN
+                                 else stl .-. wxCLIP_CHILDREN]
+
+-- | Helper function that transforms the style accordding
+-- to the 'clipChildren' flag out of the properties
+clipChildrenFlags :: [Prop (Window a)] -> Int -> Int
+clipChildrenFlags props stl
+  = case getPropValue clipChildren props of
+      Just True -> stl .+. wxCLIP_CHILDREN
+      Just False-> stl .-. wxCLIP_CHILDREN
+      Nothing   -> stl
+
+
+
+
+-- | Display a maximize box on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+maximizeable :: Attr (Window a) Bool
+maximizeable
+  = reflectiveAttr "maximizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxMAXIMIZE_BOX s)
+    setFlag w max
+      = set w [style :~ \stl -> if max then stl .+. wxMAXIMIZE_BOX else stl .-. wxMAXIMIZE_BOX]
+
+-- | Helper function that transforms the style accordding
+-- to the 'maximizable' flag out of the properties
+maximizeableFlags :: [Prop (Window a)] -> Int -> Int
+maximizeableFlags props stl
+  = case getPropValue maximizeable props of
+      Just True  -> stl .+. wxMAXIMIZE_BOX
+      Just False -> stl .-. wxMAXIMIZE_BOX
+      Nothing    -> stl
+
+
+-- | Display a minimize box on a 'Frame' or 'Dialog' window.
+-- This attribute must be set at creation time.
+minimizeable :: Attr (Window a) Bool
+minimizeable
+  = reflectiveAttr "minimizeable" getFlag setFlag
+  where
+    getFlag w
+      = do s <- get w style
+           return (bitsSet wxMINIMIZE_BOX s)
+    setFlag w min
+      = set w [style :~ \stl -> if min then stl .+. wxMINIMIZE_BOX else stl .-. wxMINIMIZE_BOX]
+
+-- | Helper function that transforms the style accordding
+-- to the 'minimizable' flag out of the properties
+minimizeableFlags :: [Prop (Window a)] -> Int -> Int
+minimizeableFlags props stl
+  = case getPropValue minimizeable props of
+      Just True  -> stl .+. wxMINIMIZE_BOX
+      Just False -> stl .-. wxMINIMIZE_BOX
+      Nothing    -> stl
+
 
 instance Child (Window a) where
   parent

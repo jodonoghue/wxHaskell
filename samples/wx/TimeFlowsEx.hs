@@ -101,7 +101,7 @@ showOptionDialog frame vtimeSpan vflowText status
        timeSpan <- varGet vtimeSpan
       
        -- create dialog
-       d     <- dialog frame [text := "Options"]
+       d     <- dialog frame [text := "Options", resizeable := True]
        p     <- panel d []
        entry <- textEntry p AlignLeft [text := flowText]
        delay <- spinCtrl  p 1 10 [selection := round timeSpan]

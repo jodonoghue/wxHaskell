@@ -61,6 +61,10 @@ import Graphics.UI.WX.Events
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Window
 
+
+defaultStyle
+  = wxCLIP_CHILDREN -- .+. wxNO_FULL_REPAINT_ON_RESIZE
+
 -- | Create a 'Panel', a window that is normally used as a container for
 -- controls. It has a standard background and maintains standard keyboard
 -- navigation (ie. /Tab/ moves through the controls).
@@ -72,8 +76,8 @@ import Graphics.UI.WX.Window
 --             'Textual', 'Literate' 
 panel :: Window a -> [Prop (Panel ())] -> IO (Panel ())
 panel parent props
-  = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props 
-      -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props 
+  = panelEx parent (wxTAB_TRAVERSAL .+. defaultStyle) props 
+
 
 -- | Create a 'Panel' with a specific style.
 --
@@ -84,7 +88,7 @@ panel parent props
 --             'Textual', 'Literate', 'Reactive', 'Paint' 
 panelEx :: Window a -> Style -> [Prop (Panel ())] -> IO (Panel ())
 panelEx parent style props
-  = do p <- panelCreate parent idAny rectNull style
+  = do p <- panelCreate parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
        windowSetFocus p
        set p props
        return p
@@ -119,7 +123,8 @@ focusOn w
 --             'Textual', 'Literate', 'Reactive', 'Paint' 
 notebook :: Window a -> [Prop (Notebook ())] -> IO (Notebook ())
 notebook parent props
-  = do nb <- notebookCreate parent idAny rectNull wxCLIP_CHILDREN
+  = do nb <- notebookCreate parent idAny rectNull  
+              (clipChildrenFlags props (fullRepaintOnResizeFlags props defaultStyle))
        set nb props
        return nb
 
@@ -690,7 +695,7 @@ treeEvent
 --             
 treeCtrl :: Window a -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrl parent props
-  = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props
+  = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. defaultStyle) props
 
 -- | Create a tree control.
 --
@@ -701,7 +706,7 @@ treeCtrl parent props
 --
 treeCtrlEx :: Window a -> Style -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrlEx parent style props
-  = do t <- treeCtrlCreate2 parent idAny rectNull style
+  = do t <- treeCtrlCreate2 parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
        set t props
        return t
 
@@ -791,7 +796,7 @@ listEvent
 --             
 listCtrl :: Window a -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrl parent props
-  = listCtrlEx parent (wxLC_REPORT .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props) props
+  = listCtrlEx parent (wxLC_REPORT .+. defaultStyle) props
 
 -- | Create a list control.
 --
@@ -802,7 +807,7 @@ listCtrl parent props
 --             
 listCtrlEx :: Window a -> Style -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrlEx parent style props
-  = do l <- listCtrlCreate parent idAny rectNull style
+  = do l <- listCtrlCreate parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
        set l props
        return l
 
@@ -817,7 +822,8 @@ listCtrlEx parent style props
 splitterWindow :: Window a -> [Prop (SplitterWindow ())] -> IO (SplitterWindow ())
 splitterWindow parent props
   = do s <- splitterWindowCreate parent idAny rectNull 
-            (wxSP_LIVE_UPDATE .+. wxCLIP_CHILDREN .+. noFullRepaintOnResize props)
+            (clipChildrenFlags props (fullRepaintOnResizeFlags props 
+              (wxSP_LIVE_UPDATE .+. defaultStyle)))
        set s props
        return s
 

@@ -37,26 +37,34 @@ import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Window
 
+defaultStyle 
+  = frameDefaultStyle .+. wxTAB_TRAVERSAL -- .+. wxNO_FULL_REPAINT_ON_RESIZE
+
 -- | Create a top-level frame window.
 frame :: [Prop (Frame ())]  -> IO (Frame ())
 frame props
-  = frameEx (frameDefaultStyle .+. wxTAB_TRAVERSAL) props objectNull
+  = frameEx defaultStyle props objectNull
 
 -- | Create a top-level frame window that is not resizeable.
 frameFixed :: [Prop (Frame ())]  -> IO (Frame ())
 frameFixed props
-  = frameEx (frameDefaultStyle .+. wxTAB_TRAVERSAL .-. wxMAXIMIZE_BOX .-. wxRESIZE_BORDER)  props objectNull
+  = frameEx (defaultStyle .-. wxMAXIMIZE_BOX .-. wxRESIZE_BORDER)  props objectNull
 
 -- | Create a tool window; floats on the parent and has a small caption.
 frameTool :: [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameTool props parent
-  = frameEx (frameDefaultStyle .+. wxTAB_TRAVERSAL .-. wxFRAME_TOOL_WINDOW .-. wxFRAME_FLOAT_ON_PARENT)  props parent
+  = frameEx (defaultStyle .-. wxFRAME_TOOL_WINDOW .-. wxFRAME_FLOAT_ON_PARENT)  props parent
 
 
 -- | Create a top-level frame window in a custom style.
 frameEx :: Style -> [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameEx style props parent
-  = do f <- frameCreate parent idAny "" rectNull (style .+. noFullRepaintOnResize props)
+  = do f <- frameCreate parent idAny "" rectNull 
+              ( minimizeableFlags props 
+              $ maximizeableFlags props 
+              $ clipChildrenFlags props 
+              $ resizeableFlags props   
+              $ fullRepaintOnResizeFlags props style)
        wxcAppSetTopWindow f
        let initProps = if (containsProp "visible" props)
                         then [] else [visible := True] ++
@@ -87,13 +95,18 @@ instance Closeable (Frame a) where
 -- | Create an MDI parent frame.
 mdiParentFrame :: [Prop (MDIParentFrame ())] -> IO (MDIParentFrame ())
 mdiParentFrame props
-  = mdiParentFrameEx objectNull (frameDefaultStyle .+. wxTAB_TRAVERSAL) props
+  = mdiParentFrameEx objectNull defaultStyle props
 
 
 -- | Create an MDI parent frame with a custom style.
 mdiParentFrameEx :: Window a -> Style -> [Prop (MDIParentFrame ())] -> IO (MDIParentFrame ())
 mdiParentFrameEx parent stl props
-  = do f <- mdiParentFrameCreate parent idAny "" rectNull (stl .+. noFullRepaintOnResize props)
+  = do f <- mdiParentFrameCreate parent idAny "" rectNull 
+              ( minimizeableFlags props 
+              $ maximizeableFlags props 
+              $ clipChildrenFlags props 
+              $ resizeableFlags props   
+              $ fullRepaintOnResizeFlags props stl)
        wxcAppSetTopWindow f
        set f [visible := True, clientSize := sizeZero]
        set f props
@@ -102,12 +115,17 @@ mdiParentFrameEx parent stl props
 -- | Create a MDI child frame.
 mdiChildFrame :: MDIParentFrame a -> [Prop (MDIChildFrame ())] -> IO (MDIChildFrame ())
 mdiChildFrame parent props
-  = mdiChildFrameEx parent (frameDefaultStyle .+. wxTAB_TRAVERSAL) props
+  = mdiChildFrameEx parent defaultStyle props
 
 -- | Create a MDI child frame with a custom style.
 mdiChildFrameEx :: MDIParentFrame a -> Style -> [Prop (MDIChildFrame ())] -> IO (MDIChildFrame ())
 mdiChildFrameEx parent stl props
-  = do f <- mdiChildFrameCreate parent idAny "" rectNull (stl .+. noFullRepaintOnResize props)
+  = do f <- mdiChildFrameCreate parent idAny "" rectNull 
+              ( minimizeableFlags props 
+              $ maximizeableFlags props 
+              $ clipChildrenFlags props 
+              $ resizeableFlags props   
+              $ fullRepaintOnResizeFlags props stl)
        set f [visible := True, clientSize := sizeZero]
        set f props
        return f

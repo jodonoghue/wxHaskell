@@ -39,7 +39,8 @@ imageViewer
        vbitmap <- varCreate Nothing
 
        -- add a scrollable window widget in the frame
-       sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap, bgcolor := white, fullRepaintOnResize := False]
+       sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap
+                                  ,bgcolor := white, fullRepaintOnResize := False]
 
        -- create file menu
        file   <- menuPane      [text := "&File"]

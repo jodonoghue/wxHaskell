@@ -41,6 +41,7 @@ import Graphics.UI.WX.Types
 import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
+import Graphics.UI.WX.Window
 
 instance Form (Dialog a) where
   layout
@@ -50,19 +51,19 @@ instance Form (Dialog a) where
 -- the 'visible' property to show\/hide a modeless dialog.
 dialog :: Window a -> [Prop (Dialog ())] -> IO (Dialog ())
 dialog parent props
-  = dialogEx parent defaultStyle props
+  = dialogEx parent (dialogDefaultStyle {- .+. wxNO_FULL_REPAINT_ON_RESIZE -}) props
 
 -- | Create a dialog window with a certain style.
 dialogEx :: Window a -> Style -> [Prop (Dialog ())] -> IO (Dialog ())
 dialogEx parent style props
-  = do d <- dialogCreate parent idAny "" rectNull style 
+  = do d <- dialogCreate parent idAny "" rectNull 
+              ( minimizeableFlags props 
+              $ maximizeableFlags props 
+              $ clipChildrenFlags props 
+              $ resizeableFlags props   
+              $ fullRepaintOnResizeFlags props style)
        set d props
        return d
-
-defaultStyle :: Style
-defaultStyle
-  = wxCAPTION .+. wxSYSTEM_MENU .+. wxRESIZE_BORDER .+. wxTAB_TRAVERSAL 
-    .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE
 
 -- | Show a modal dialog. Take a function as argument that takes a function itself
 -- as argument that can be used to end the modal dialog. The argument of this function
