@@ -62,7 +62,7 @@ timeFlows
   Event handlers
 -------------------------------------------------------------------------}
 -- repaint handler
-onPaint vmouseHistory  dc viewRect updateAreas
+onPaint vmouseHistory  dc viewArea
   = do history <- varGet vmouseHistory
        time    <- getTime
        -- draw trace line

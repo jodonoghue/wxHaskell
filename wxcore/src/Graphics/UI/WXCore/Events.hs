@@ -48,6 +48,7 @@ module Graphics.UI.WXCore.Events
         , windowOnFocus
         , windowOnActivate
         , windowOnPaint
+        , windowOnPaintRaw
         , windowOnContextMenu
         , windowOnScroll
 
@@ -87,6 +88,7 @@ module Graphics.UI.WXCore.Events
         , windowGetOnFocus
         , windowGetOnActivate
         , windowGetOnPaint
+        , windowGetOnPaintRaw
         , windowGetOnContextMenu
         , windowGetOnScroll
 
@@ -188,6 +190,7 @@ import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Draw
+import Graphics.UI.WXCore.Defines
 
 ------------------------------------------------------------------------------------------
 -- Controls  (COMMAND events)
@@ -573,49 +576,75 @@ windowGetOnTimer window
 {-----------------------------------------------------------------------------------------
   Paint
 -----------------------------------------------------------------------------------------}
--- | Set an event handler that is called when the window needs repainting.
--- When the first argument is 'True', double-buffering is used to reduce flickering.
--- The event handler gets a special 'PaintDC' drawing context, the current
--- logical view rectangle and the region that needs repainting. The coordinates
--- are already adjusted for scrolled windows and The 'PaintDC' is already clipped
--- to the update region. If you need to draw outside the this area, use a 'ClientDC'.
-windowOnPaint :: Window a -> Bool -> (DC () -> Rect -> [Rect] -> IO ()) -> IO ()
-windowOnPaint window noflicker eventHandler
-  = do cache <- if noflicker
-                 then do v <- varCreate objectNull
-                         return (Just v)
-                 else return Nothing
-       windowOnEventEx window [wxEVT_PAINT] eventHandler (destroy cache) (onPaint cache eventHandler)
+-- | Set an event handler for /raw/ paint events. Draws directly to the
+-- paint device context ('PaintDC') and the 'DC' is not cleared when the handler
+-- is called. The handler takes two other arguments: the view rectangle and a
+-- list of /dirty/ rectangles. The rectangles contain logical coordinates and
+-- are already adjusted for scrolled windows.
+-- /Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!/
+windowOnPaintRaw :: Window a -> (DC () -> Rect -> [Rect] -> IO ()) -> IO ()
+windowOnPaintRaw window paintHandler
+  = windowOnEvent window [wxEVT_PAINT] paintHandler onPaint 
   where
-    destroy cache ownerDeleted
-      = case cache of
-          Nothing -> return ()
-          Just v  -> do bitmap <- varSwap v objectNull
-                        when (bitmap/=objectNull) (bitmapDelete bitmap)
+    onPaint event
+      = do obj <- eventGetEventObject event
+           if (obj==objectNull)
+            then return ()
+            else do let window = objectCast obj
+                    region <- windowGetUpdateRects window
+                    view   <- windowGetViewRect window
+                    withPaintDC window (\paintDC ->
+                     do isScrolled <- objectIsScrolledWindow window
+                        when (isScrolled) (scrolledWindowPrepareDC (objectCast window) paintDC)
+                        paintHandler (downcastDC paintDC) view region)
 
--- | Get the current paint event handler.
-windowGetOnPaint :: Window a -> IO (DC () -> Rect -> [Rect] -> IO ())
-windowGetOnPaint window
+downcastDC :: DC a -> DC ()
+downcastDC dc   = objectCast dc
+                    
+-- | Get the current /raw/ paint event handler. 
+windowGetOnPaintRaw :: Window a -> IO (DC () -> Rect -> [Rect] -> IO ())
+windowGetOnPaintRaw window
   = unsafeWindowGetHandlerState window wxEVT_PAINT (\dc rect region -> return ())
 
 
--- onPaint :: Maybe (Var (Bitmap ()) -> (DC () -> Rect -> [Rect] -> IO ()) -> (Event () -> IO ())
+-- | Set an event handler for paint events. The implementation uses an 
+-- intermediate buffer for non-flickering redraws. 
+-- The device context ('DC')
+-- is always cleared before the paint handler is called. The paint handler
+-- also gets the currently visible view area as an argument (adjusted for scrolling).
+-- /Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!/
+windowOnPaint :: Window a -> (DC () -> Rect -> IO ()) -> IO ()
+windowOnPaint window paintHandler
+  = do v <- varCreate objectNull
+       windowOnEventEx window [wxEVT_PAINT] paintHandler (destroy v) (onPaint v)
+  where
+    destroy v ownerDeleted
+      = do bitmap <- varSwap v objectNull
+           when (not (objectIsNull bitmap)) (bitmapDelete bitmap)
 
-onPaint cache handler event
-  = do obj <- eventGetEventObject event
-       if (obj==objectNull)
-        then return ()
-        else do let window = objectCast obj
-                region <- windowGetUpdateRects window
-                view   <- windowGetViewRect window
-                withPaintDC window (\paintDC ->
-                  do isScrolled <- objectIsScrolledWindow window
-                     when (isScrolled) (scrolledWindowPrepareDC (objectCast window) paintDC)
-                     case cache of
-                      Just _  -> dcBufferWithRef paintDC cache view (\dc -> handler dc view region)
-                      Nothing -> handler (objectCast paintDC) view region)
-                return ()
+    onPaint v event
+      = do obj <- eventGetEventObject event
+           if (obj==objectNull)
+            then return ()
+            else do let window = objectCast obj
+                    view  <- windowGetViewRect window
+                    withPaintDC window (\paintDC ->
+                     do isScrolled <- objectIsScrolledWindow window
+                        when (isScrolled) (scrolledWindowPrepareDC (objectCast window) paintDC)
+                        -- Note: wxMSW 2.4 does not clear the properly scrolled view rectangle.
+                        let clear dc  | wxToolkit == WxMSW  = dcClearRect dc view
+                                      | otherwise           = dcClear dc
+                        -- and repaint with buffer
+                        dcBufferWithRefEx paintDC clear (Just v) view (\dc -> paintHandler dc view))
 
+
+-- | Get the current paint event handler.
+windowGetOnPaint :: Window a -> IO (DC () -> Rect -> IO ())
+windowGetOnPaint window
+  = unsafeWindowGetHandlerState window wxEVT_PAINT (\dc view -> return ())
+
+
+-- Get the logical /dirty/ rectangles as a list of 'Rect'.
 windowGetUpdateRects :: Window a -> IO [Rect]
 windowGetUpdateRects window
   = do region <- windowGetUpdateRegion window

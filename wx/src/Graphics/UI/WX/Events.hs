@@ -68,7 +68,7 @@ module Graphics.UI.WX.Events
              , mouse, keyboard
              , closing, idle, resize, focus, activate
              , Paint
-             , paint, repaint
+             , paint, paintRaw, repaint
              -- * Event filters
              -- ** Mouse filters
              , enter, leave, motion, drag
@@ -147,8 +147,17 @@ class Reactive w where
   activate  :: Event w (Bool -> IO ())
 
 -- | 'Paint' widgets can serve as a canvas.
+-- /Note:/ it is illegal to use both a 'paint' and 'paintRaw'
+-- event handler at the same widget.
 class Paint w where
-  paint     :: Event w (DC () -> Rect -> [Rect] -> IO ())
+  -- | Paint double buffered to a device context. The context is always
+  -- cleared before drawing. Takes the current view rectangle (adjusted
+  -- for scrolling) as an argument.
+  paint     :: Event w (DC () -> Rect -> IO ())
+  -- | Paint directly to the on-screen device context. Takes the current
+  -- view rectangle and a list of dirty rectangles as arguments.\
+  paintRaw  :: Event w (DC () -> Rect -> [Rect] -> IO ())
+  -- | Emit a paint event to the specified widget.
   repaint   :: w -> IO ()
 
 

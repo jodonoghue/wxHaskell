@@ -107,7 +107,7 @@ imageViewer
            repaint sw
        `catch` \err -> repaint sw
 
-    onPaint vbitmap dc viewRect updateAreas
+    onPaint vbitmap dc viewArea
       = do mbBitmap <- varGet vbitmap
            case mbBitmap of
              Nothing -> dcClear dc

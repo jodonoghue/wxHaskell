@@ -147,7 +147,7 @@ int  wxProgressDialog_Update(TSelf(wxProgressDialog) obj, int value );
 int  wxProgressDialog_UpdateWithMessage( TSelf(wxProgressDialog) obj, int value, TString message );
 void wxProgressDialog_Resume( TSelf(wxProgressDialog) obj );
 
-/** Get the version number of wxWindows as a number composed of the major version, minor version, and release number. For example, release 2.1.15 becomes 2115. */
+/** Get the version number of wxWindows as a number composed of the major version times 1000, minor version times 100, and the release number. For example, release 2.1.15 becomes 2115. */
 int wxVersionNumber();
 /** Check if a preprocessor macro is defined. For example, @wxIsDefined("__WXGTK__")@ or @wxIsDefined("wxUSE_GIF")@. */
 TBoolInt wxIsDefined( TString s );

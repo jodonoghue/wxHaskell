@@ -72,7 +72,7 @@ gui
 
        set p [ on resize := repaint p
              , on click  := klik p desert
-             , on paint  := drawDesert desert b
+             , on paint  := drawDesert desert b 
              , defaultButton := q
              ]
        set f [ layout := column 0
@@ -81,8 +81,8 @@ gui
                          ]]
        return ()
 
-drawDesert :: Var Board -> Bitmap () -> DC () -> Rect -> [Rect] -> IO ()
-drawDesert desert bmp dc (Rect x y w h) _ =
+drawDesert :: Var Board -> Bitmap () -> DC () -> Rect -> IO ()
+drawDesert desert bmp dc (Rect x y w h) =
   do drawBitmap dc bmp pointZero False []
      for 0 (w `div` 234) (\i ->
        for 0 (h `div` 87) (\j ->

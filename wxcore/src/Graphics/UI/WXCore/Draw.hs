@@ -14,13 +14,13 @@
 module Graphics.UI.WXCore.Draw
         (
         -- * DC
-          drawLines, drawPolygon, getTextExtent, getFullTextExtent
+          drawLines, drawPolygon, getTextExtent, getFullTextExtent, dcClearRect
         -- ** Creation
         , withPaintDC, withClientDC, dcDraw
         -- ** Draw state
         , DrawState, dcEncapsulate, dcGetDrawState, dcSetDrawState, drawStateDelete
         -- ** Double buffering
-        , dcBuffer, dcBufferWithRef
+        , dcBuffer, dcBufferWithRef, dcBufferWithRefEx
         -- * Scrolled windows
         , windowGetViewStart, windowGetViewRect, windowCalcUnscrolledPosition
         -- * Font
@@ -32,15 +32,15 @@ module Graphics.UI.WXCore.Draw
         -- * Brush
         , BrushStyle(..), BrushKind(..)
         , HatchStyle(..)
-        , brushDefault
+        , brushDefault, brushSolid
         , dcSetBrushStyle, dcGetBrushStyle
-        , withBrushStyle, dcWithBrushStyle
+        , withBrushStyle, dcWithBrushStyle, dcWithBrush
         , brushCreateFromStyle, brushGetBrushStyle
         -- * Pen
         , PenStyle(..), PenKind(..), CapStyle(..), JoinStyle(..), DashStyle(..)
         , penDefault, penColored, penTransparent
         , dcSetPenStyle, dcGetPenStyle
-        , withPenStyle, dcWithPenStyle
+        , withPenStyle, dcWithPenStyle, dcWithPen
         , penCreateFromStyle, penGetPenStyle
         ) where
 
@@ -48,6 +48,7 @@ import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.Types
+import Graphics.UI.WXCore.Defines
 
 import Foreign.Marshal.Array
 import Foreign.Storable
@@ -78,6 +79,26 @@ withClientDC :: Window a -> (ClientDC () -> IO b) -> IO b
 withClientDC window draw
   = bracket (clientDCCreate window) (clientDCDelete) (\dc -> dcDraw dc (draw dc))
 
+
+-- | Clear a specific rectangle with the current background brush.
+-- This is preferred to 'dcClear' for scrolled windows as 'dcClear' sometimes
+-- only clears the original view area, instead of the currently visible scrolled area.
+-- Unfortunately, the background brush is not set correctly on wxMAC 2.4, and 
+-- this will always clear to a white color on mac systems.
+dcClearRect :: DC a -> Rect -> IO ()
+dcClearRect dc r
+  = bracket (dcGetBackground dc)
+            (brushDelete)
+            (\brush -> dcWithBrush dc brush $
+                         dcWithPenStyle dc penTransparent $ 
+                           dcDrawRectangle dc r)
+
+-- | Fill a rectangle with a certain color.
+dcFillRect :: DC a -> Rect -> Color -> IO ()
+dcFillRect dc r color
+  = dcWithBrushStyle dc (brushSolid color) $
+     dcWithPenStyle dc penTransparent $
+      dcDrawRectangle dc r
 
 {--------------------------------------------------------------------------------
   Windows
@@ -512,6 +533,11 @@ brushDefault
   = BrushStyle BrushTransparent black
 
 
+-- | A solid brush of a specific color.
+brushSolid :: Color -> BrushStyle
+brushSolid color
+  = BrushStyle BrushSolid color
+
 -- | Use a brush that is automatically deleted at the end of the computation.
 dcWithBrushStyle :: DC a -> BrushStyle -> IO b -> IO b
 dcWithBrushStyle dc brushStyle io
@@ -719,11 +745,21 @@ dcBuffer dc r draw
 
 -- | Optimized double buffering. Takes a possible reference to a bitmap. If it is
 -- 'Nothing', a new bitmap is allocated everytime. Otherwise, the reference is used
--- to re-use an allocated bitmap if possible.
+-- to re-use an allocated bitmap if possible. The 'Rect' argument specifies the
+-- the current logical view rectangle. The last argument is called to draw on the
+-- memory 'DC'. 
 dcBufferWithRef :: DC a -> Maybe (Var (Bitmap ())) -> Rect -> (DC () -> IO ()) -> IO ()
-dcBufferWithRef dc mbVar r draw
-  | rectSize r == sizeZero = return ()
-dcBufferWithRef dc mbVar r draw
+dcBufferWithRef dc mbVar viewArea draw
+  = dcBufferWithRefEx dc (\dc -> dcClearRect dc viewArea) mbVar viewArea draw
+
+
+-- | Optimized double buffering. Takes a /clear/ routine as its first argument.
+-- Normally this is something like '\dc -> dcClearRect dc viewArea' but on certain platforms, like
+-- MacOS X, special handling is necessary.
+dcBufferWithRefEx :: DC a -> (DC () -> IO ()) -> Maybe (Var (Bitmap ())) -> Rect -> (DC () -> IO ()) -> IO ()
+dcBufferWithRefEx dc clear mbVar view draw
+  | rectSize view == sizeZero = return ()
+dcBufferWithRefEx dc clear mbVar view draw
   = bracket (initBitmap)
             (doneBitmap)
             (\bitmap ->
@@ -741,7 +777,7 @@ dcBufferWithRef dc mbVar r draw
     where
      initBitmap
        = case mbVar of
-           Nothing  -> bitmapCreateEmpty (rectSize r) (-1)
+           Nothing  -> bitmapCreateEmpty (rectSize view) (-1)
            Just v   -> do bitmap <- varGet v
                           size   <- if (bitmap==objectNull)
                                      then return sizeZero
@@ -749,12 +785,12 @@ dcBufferWithRef dc mbVar r draw
                                              bh <- bitmapGetHeight bitmap
                                              return (Size bw bh)
                           -- re-use the bitmap if possible
-                          if (sizeEncloses size (rectSize r) && bitmap /= objectNull)
+                          if (sizeEncloses size (rectSize view) && bitmap /= objectNull)
                             then return bitmap
                             else do when (bitmap/=objectNull) (bitmapDelete bitmap)
                                     varSet v objectNull
                                     -- new size a bit larger to avoid multiple reallocs
-                                    let (Size w h) = rectSize r
+                                    let (Size w h) = rectSize view
                                         neww       = div (w*105) 100
                                         newh       = div (h*105) 100
                                     bm <- bitmapCreateEmpty (sz neww newh) (-1)
@@ -768,24 +804,27 @@ dcBufferWithRef dc mbVar r draw
 
 
      drawUnbuffered
-       = draw (objectCast dc) -- down cast
+       = do clear (downcastDC dc)
+            draw (downcastDC dc) -- down cast
 
      drawBuffered memdc
       = do -- set the device origin for scrolled windows
-           dcSetDeviceOrigin memdc (pointFromVec (vecNegate (vecFromPoint (rectTopLeft r))))
-           dcSetClippingRegion memdc r
-           -- dcBlit memdc r dc (rectTopLeft r) wxCOPY False
+           dcSetDeviceOrigin memdc (pointFromVec (vecNegate (vecFromPoint (rectTopLeft view))))
+           dcSetClippingRegion memdc view
+           -- dcBlit memdc view dc (rectTopLeft view) wxCOPY False
 	   bracket (dcGetBackground dc)
                    (\brush -> do dcSetBrush memdc nullBrush
                                  brushDelete brush)
                    (\brush -> do -- set the background to the owner brush
                                  dcSetBackground memdc brush
-                                 -- dcSetBrush memdc brush
-                                 -- dcWithPenStyle memdc penTransparent (dcDrawRectangle memdc r)
-                                 dcClear memdc
+                                 when (wxToolkit /= WxMac) (dcSetBrush memdc brush)
+                                 clear (downcastDC memdc)
 				 -- and finally do the drawing!
-                                 draw (objectCast memdc) -- down cast
+                                 draw (downcastDC memdc) -- down cast
                    )
            -- blit the memdc into the owner dc.
-           dcBlit dc r memdc (rectTopLeft r) wxCOPY False
+           dcBlit dc view memdc (rectTopLeft view) wxCOPY False
            return ()
+
+downcastDC :: DC a -> DC ()
+downcastDC dc   = objectCast dc

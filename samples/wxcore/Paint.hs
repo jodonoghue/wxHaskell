@@ -21,13 +21,13 @@ gui
 
        -- virtual size is 20*40 = 800 pixels
        scrolledWindowSetScrollbars s 20 20 40 40 0 0 False
-
+       
        -- to show the effect of double-buffering, we track the mouse with a small disc.
        mouseXY <- varCreate (pt 0 0)
        windowOnMouse s True {- get motion events -} (onMouse s mouseXY)
 
        -- set paint event handler:
-       windowOnPaint s True {- double buffer? -} (onPaint mouseXY)
+       windowOnPaint s (\dc -> onPaint mouseXY dc)
 
        -- show the frame
        windowShow f
@@ -40,15 +40,13 @@ gui
            windowRefresh w False {- erase background -}
 
     -- do some painting.
-    onPaint mouseXY dc viewRect updateAreas
+    onPaint mouseXY dc view
       = -- first create some brushes and pens.
         withBrushStyle (BrushStyle (BrushHatch HatchCross) red) $ \brushRedHatch ->
         withBrushStyle (BrushStyle BrushSolid red)  $ \brushRed ->
         withBrushStyle (BrushStyle BrushSolid white)  $ \brushWhite ->
         withPenStyle (penColored blue 5) $ \penMedBlue ->
-        do -- clear the canvas
-           dcClear dc
-
+        do -- dcClearRect dc view
            dcSetBrush dc brushWhite
            dcDrawRectangle dc (rect (pt 20 20) (sz 500 500))
 

@@ -132,7 +132,7 @@ showOptionDialog frame vtimeSpan vflowText
   Event handlers
 -------------------------------------------------------------------------}
 -- repaint handler
-onPaint vmouseHistory vtimeSpan vflowLine vflowText vflowFont  dc viewRect updateAreas
+onPaint vmouseHistory vtimeSpan vflowLine vflowText vflowFont  dc viewArea
   = do time     <- getTime
        history  <- varGet vmouseHistory
        timeSpan <- varGet vtimeSpan

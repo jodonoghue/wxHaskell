@@ -44,7 +44,7 @@ imageViewer
        s <- scrolledWindowCreate f idAny rectNull (wxHSCROLL + wxVSCROLL + wxNO_FULL_REPAINT_ON_RESIZE + wxCLIP_CHILDREN)
 
        -- set paint event handler:
-       windowOnPaint s False {- double buffer? -} (onPaint vbitmap)
+       windowOnPaint s (onPaint vbitmap)
 
        -- connect menu
        frameSetMenuBar f m
@@ -67,7 +67,7 @@ imageViewer
            return ()
 
     onOpen f vbitmap fm s
-      = do mbfname <- fileOpenDialog f True True "Open image" imageFiles "" ""
+      = do mbfname <- fileOpenDialog f False True "Open image" imageFiles "" ""
            case mbfname of
              Nothing
                -> return ()
@@ -84,7 +84,8 @@ imageViewer
                      windowSetClientSize f newsz
                      scrolledWindowSetScrollbars s 1 1 w h 0 0 False
                      -- and repaint explicitly (to delete previous stuff)
-                     withClientDC s (\dc -> onPaint vbitmap dc (rectFromSize newsz) [])
+                     view <- windowGetViewRect s
+                     withClientDC s (\dc -> onPaint vbitmap dc view)
                   `catch` (\err -> return ())
       where
         imageFiles
@@ -110,10 +111,8 @@ imageViewer
              Nothing -> return ()
              Just bm -> bitmapDelete bm
 
-    onPaint vbitmap dc viewRect updateAreas
-      = do -- clear the canvas
-           dcClear dc
-           mbBitmap <- varGet vbitmap
+    onPaint vbitmap dc viewArea
+      = do mbBitmap <- varGet vbitmap
            case mbBitmap of
              Nothing -> return ()
              Just bm -> do dcDrawBitmap dc bm pointZero False {- use mask? -}

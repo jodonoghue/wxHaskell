@@ -25,6 +25,7 @@ module Graphics.UI.WXCore
           module Graphics.UI.WXCore.WxcDefs
         , module Graphics.UI.WXCore.WxcClasses
         , module Graphics.UI.WXCore.WxcClassTypes
+        , module Graphics.UI.WXCore.Defines
         , module Graphics.UI.WXCore.Types
         , module Graphics.UI.WXCore.Process
         , module Graphics.UI.WXCore.Draw
@@ -46,6 +47,7 @@ import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.WxcClassTypes
 
 import Graphics.UI.WXCore.Types
+import Graphics.UI.WXCore.Defines
 import Graphics.UI.WXCore.Process
 import Graphics.UI.WXCore.Events
 import Graphics.UI.WXCore.Draw

@@ -24,8 +24,8 @@ ballsFrame
        t <- windowTimerCreate f
        timerOnCommand t (nextBalls p vballs)
 
-       -- paint the balls: double buffer is not really necessary as the balls are too small anyway.
-       windowOnPaint p False {- double-buffer? -} (paintBalls vballs)
+       -- paint the balls unbuffered
+       windowOnPaintRaw p (paintBalls vballs)
 
        -- left-click: new ball, right-click: new window
        windowOnMouse p False {- no motion events -} (onMouse p vballs)
