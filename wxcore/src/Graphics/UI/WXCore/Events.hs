@@ -28,6 +28,7 @@ module Graphics.UI.WXCore.Events
         , radioBoxOnCommand
         , sliderOnCommand
         , textCtrlOnTextEnter
+        , listCtrlOnEvent
 
         -- ** Windows
         , windowOnMouse
@@ -67,6 +68,7 @@ module Graphics.UI.WXCore.Events
         , radioBoxGetOnCommand
         , sliderGetOnCommand
         , textCtrlGetOnTextEnter
+        , listCtrlGetOnEvent
 
         -- ** Windows
         , windowGetOnMouse
@@ -119,6 +121,10 @@ module Graphics.UI.WXCore.Events
         -- ** Scroll events
         , EventScroll(..), Orientation(..)
         , scrollOrientation, scrollPos
+
+        -- ** List control events
+        , EventList(..), ListItemInfo(..)
+        , listItemIndex, listItemImage, listItemText, listItemLabel, listItemData
 
         -- * Current event
         , skipCurrentEvent
@@ -1433,6 +1439,141 @@ showKey key
       KeyF24          -> "F24"
       KeyNumLock      -> "Numlock"
       KeyScroll       -> "Scroll"
+
+
+{-----------------------------------------------------------------------------------------
+  ListCtrl events
+-----------------------------------------------------------------------------------------}
+-- | List control events.
+data EventList  = ListBeginDrag       !ListItemInfo !Point  -- ^ Drag with left mouse button
+                | ListBeginRDrag      !ListItemInfo !Point  -- ^ Drag with right mouse button
+                | ListBeginLabelEdit  !ListItemInfo         -- ^ Edit label (can be @veto@ed)
+                | ListEndLabelEdit    !ListItemInfo !Bool   -- ^ End editing label. @Bool@ argument is 'True' when cancelled.
+                | ListDeleteItem      !ListItemInfo
+                | ListDeleteAllItems
+                | ListItemSelected    !ListItemInfo 
+                | ListItemDeselected  !ListItemInfo 
+                | ListItemActivated   !ListItemInfo     -- ^ Activate (ENTER or double click)  
+                | ListItemFocused     !ListItemInfo 
+                | ListItemMiddleClick !ListItemInfo 
+                | ListItemRightClick  !ListItemInfo   
+                | ListInsertItem      !ListItemInfo   
+                | ListColClick        !Int              -- ^ Column has been clicked. (-1 when clicked in control header outside any column)
+                | ListColRightClick   !Int                
+                | ListColBeginDrag    !Int              -- ^ Column is dragged. Index is of the column left of the divider that is being dragged. Can be veto\'ed.
+                | ListColDragging     !Int
+                | ListColEndDrag      !Int
+                | ListKeyDown         !Key              -- ^ (Unimplemented)
+                | ListCacheHint       !Int !Int         -- ^ (Unimplemented). (Inclusive) range of list items that are advised to be cached.
+
+-- | List item info: index, label, text, image index, client data, and mask.
+data ListItemInfo  = ListItemInfo !Int !String !String !Int !Int !Int
+
+listItemIndex :: ListItemInfo -> Int
+listItemIndex (ListItemInfo index label text image client mask)   = index
+
+listItemImage :: ListItemInfo -> Int
+listItemImage (ListItemInfo index label text image client mask)   = image
+
+listItemText :: ListItemInfo -> String
+listItemText (ListItemInfo index label text image client mask)   = text
+
+listItemLabel :: ListItemInfo -> String
+listItemLabel (ListItemInfo index label text image client mask)   = label
+
+listItemData :: ListItemInfo -> Int
+listItemData (ListItemInfo index label text image client mask)   = client
+
+fromListEvent :: ListEvent a -> IO EventList
+fromListEvent listEvent
+  = do tp <- eventGetEventType listEvent
+  {-
+       if (tp == wxEVT_LIST_CACHE_HINT)
+        then return ListCacheHint 0 0   -- TODO: unimplemented
+        else 
+  -} 
+       if (tp == wxEVT_COMMAND_LIST_KEY_DOWN)
+        then do code <- listEventGetCode listEvent
+                return (ListKeyDown (keyCodeToKey code))  
+        else if (tp == wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS)
+              then return (ListDeleteAllItems)
+              else case lookup tp listItemEvents of
+                     Just f  -> f listEvent tp
+                     Nothing -> case lookup tp listColEvents of
+                                  Just f  -> f listEvent
+                                  Nothing -> return (ListKeyDown KeySpace)  -- TODO: what could we return here?
+
+listEvents :: [Int]
+listEvents
+  = map fst listItemEvents ++ map fst listColEvents 
+    ++ [wxEVT_COMMAND_LIST_KEY_DOWN,wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS]
+
+listItemEvents :: [(Int,ListEvent a -> Int -> IO EventList)]
+listItemEvents
+  = [(wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,  fromListItemEvent ListBeginLabelEdit)
+    ,(wxEVT_COMMAND_LIST_DELETE_ITEM,       fromListItemEvent ListDeleteItem)
+    ,(wxEVT_COMMAND_LIST_INSERT_ITEM,       fromListItemEvent ListInsertItem)
+    ,(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,    fromListItemEvent ListItemActivated)
+    ,(wxEVT_COMMAND_LIST_ITEM_DESELECTED,   fromListItemEvent ListItemDeselected)
+    ,(wxEVT_COMMAND_LIST_ITEM_FOCUSED,      fromListItemEvent ListItemFocused)
+    ,(wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK ,fromListItemEvent ListItemMiddleClick)
+    ,(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,  fromListItemEvent ListItemRightClick)
+    ,(wxEVT_COMMAND_LIST_ITEM_SELECTED,     fromListItemEvent ListItemSelected)
+    ,(wxEVT_COMMAND_LIST_END_LABEL_EDIT,    fromListEndLabelEditEvent)
+    ,(wxEVT_COMMAND_LIST_BEGIN_RDRAG,       fromListDragEvent ListBeginRDrag)
+    ,(wxEVT_COMMAND_LIST_BEGIN_DRAG,        fromListDragEvent ListBeginDrag)
+    ] 
+  where
+    fromListDragEvent make listEvent tp
+      = do pt  <- listEventGetPoint listEvent
+           fromListItemEvent (\info -> make info pt) listEvent tp
+    
+    fromListEndLabelEditEvent listEvent tp
+      = do can <- listEventCancelled listEvent
+           fromListItemEvent (\info -> ListEndLabelEdit info can) listEvent tp
+
+    fromListItemEvent :: (ListItemInfo -> EventList) -> ListEvent a -> Int -> IO EventList
+    fromListItemEvent make listEvent tp
+      = do index <- listEventGetIndex listEvent
+           label <- listEventGetLabel listEvent
+           text  <- listEventGetText  listEvent
+           image <- listEventGetImage listEvent
+           client<- listEventGetData  listEvent
+           mask  <- listEventGetMask  listEvent
+           return (make (ListItemInfo index label text image client mask))
+
+listColEvents :: [(Int,ListEvent a -> IO EventList)]
+listColEvents
+  = [(wxEVT_COMMAND_LIST_COL_CLICK,      fromListColEvent ListColClick)
+  {- TODO: add event types.
+    ,(wxEVT_COMMAND_COL_BEGIN_DRAG, fromListColEvent ListColBeginDrag)
+    ,(wxEVT_COMMAND_COL_DRAGGING,   fromListColEvent ListColDragging)
+    ,(wxEVT_COMMAND_COL_END_DRAG,   fromListColEvent ListColEndDrag)
+    ,(wxEVT_COMMAND_COL_RIGHT_CLICK,fromListColEvent ListColRightClick)
+  -}
+    ]
+  where
+    fromListColEvent :: (Int -> EventList) -> ListEvent a -> IO EventList
+    fromListColEvent make listEvent
+      = do col <- listEventGetColumn listEvent
+           return (make col)
+
+         
+
+-- | Set a scroll event handler.
+listCtrlOnEvent :: ListCtrl a -> (EventList -> IO ()) -> IO ()
+listCtrlOnEvent listCtrl eventHandler
+  = windowOnEvent listCtrl listEvents eventHandler listHandler
+  where
+    listHandler event
+      = do eventList <- fromListEvent (objectCast event)
+           eventHandler eventList
+
+-- | Get the current mouse event handler of a window.
+listCtrlGetOnEvent :: Window a -> IO (EventList -> IO ())
+listCtrlGetOnEvent window
+  = unsafeWindowGetHandlerState window wxEVT_COMMAND_LIST_ITEM_ACTIVATED (\event -> skipCurrentEvent)
+
 
 
 ------------------------------------------------------------------------------------------
