@@ -216,9 +216,12 @@ EWXWEXPORT(void, wxTreeCtrl_SetItemData)(void* _obj, void* item, wxClosure* clos
 	((wxTreeCtrl*)_obj)->SetItemData(*((wxTreeItemId*) item), new wxcTreeItemData (closure));
 }
 
-EWXWEXPORT(void, wxTreeCtrl_SetItemClientClosure)(void* _obj, void* item, wxClosure* closure)
+EWXWEXPORT(void, wxTreeCtrl_SetItemClientClosure)(wxTreeCtrl* _obj, void* item, wxClosure* closure)
 {
-	((wxTreeCtrl*)_obj)->SetItemData(*((wxTreeItemId*) item), new wxcTreeItemData (closure));
+        wxTreeItemData* oldData = _obj->GetItemData(*((wxTreeItemId*) item));
+        /* bit unsafe: might delete twice but it is definitely ok on MSW 2.4.1 */
+        if (oldData) delete oldData;
+	_obj->SetItemData(*((wxTreeItemId*) item), new wxcTreeItemData (closure));
 }
 
 	
