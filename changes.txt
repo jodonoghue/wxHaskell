@@ -4,7 +4,7 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
-Version 0.7.1
+Version 0.8
 -------------
 Non backward compatible changes:
 - Added wildcards argument to the "fileSaveDialog" function.
@@ -19,6 +19,8 @@ Non backward compatible changes:
 - Removed default "wxTAB_TRAVERSAL" style on frames (to make the grid
   work correctly).
 - Renamed "WXCore.WxcClassTypes" to "WXCore.WxcClassInfo".
+- Ignore double buffering on the Mac toolkit to avoid bugs (?) in
+  wxMac 2.5.2.
 
 Backward compatible additions:
 - Added pure "bitmap" and "sound"
