@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.65 2004/03/23 13:11:35 dleijen Exp $
+# $Id: makefile,v 1.66 2004/03/23 15:22:48 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -615,12 +615,12 @@ endif
 
 # dynamic link library on unix: generates single .so file
 $(basename $(WXC-LIB)).so: $(WXC-OBJS)
-	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$(SHARED-PREFIX)$@
+	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$(SHARED-PREFIX)$(notdir $@)
 
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^ $(WXC-LIBS)
-	$(CXX) -dynamiclib -install_name $(SHARED-PREFIX)$@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
+	$(CXX) -dynamiclib -install_name $(SHARED-PREFIX)$(notdir $@) -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
 # create an object file from source files

@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.37 2004/03/23 12:37:13 dleijen Exp $
+# $Id: configure,v 1.38 2004/03/23 15:22:48 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -384,16 +384,22 @@ if test "$withmsc" != "yes"; then
   wxrezcomp="`$wxconfig --rezflags`"
   wxrezfile=""
   if test "$wxrezcomp"; then
+    IFS=' '
     for word in $wxrezcomp; do
       temp="`echo $word | grep '[^_]*_mac-[^r]*r'`"
       if test "$temp"; then
         wxrezfile="$temp"
       fi
     done
-    echo "resource file: $wxrezfile"
   fi
 fi
 
+if test "$wxrezfile"; then
+  wxrezdir="`echo $wxrezfile | sed -e 's|\(.*\)/libwx_mac.*|\1|'`"
+  wxrezcomp="`echo \"${wxrezcomp}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
+  wxrezfile="`echo \"${wxrezfile}\" | sed -e \"s|${wxrezdir}|${libdir}|g\"`"
+  echo "resource file: $wxrezfile"
+fi
 
 #--------------------------------------------------------------------
 # haskell compiler and package manager
