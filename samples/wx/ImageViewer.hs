@@ -62,11 +62,11 @@ imageViewer
        status <- statusField   [text := "Welcome to the wxHaskell ImageViewer"]
 
        -- set the statusbar, menubar, layout, and add menu item event handlers
-       set f [statusbar        := [status]
-             ,menubar          := [file,hlp]
-             ,layout           := column 1 [hfill $ hrule 1  -- add divider between toolbar and scrolledWindow
+       -- note: set the layout before the menubar!
+       set f [layout           := column 1 [hfill $ hrule 1  -- add divider between toolbar and scrolledWindow
                                            ,fill (widget sw)]
-             ,clientSize       := sz 300 200
+             ,statusbar        := [status]
+             ,menubar          := [file,hlp]
              ,on (menu about)  := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
              ,on (menu quit)   := close f
              ,on (menu open)   := onOpen f sw vbitmap mclose status 

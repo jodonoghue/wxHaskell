@@ -34,7 +34,7 @@ gui
        f       <- frame [text := "List Sample"]
        -- panel: just for the nice grey color
        p       <- panel f []
-       textlog <- textCtrl p WrapLine [enabled := False]
+       textlog <- textCtrl p [enabled := False, wrap := WrapLine]
 
        -- use text control as logger
        textCtrlMakeLogActiveTarget textlog

@@ -47,6 +47,7 @@ void        wxFrame_SetTitle( TSelf(wxFrame) _frame, TString _txt );
 TBool       wxFrame_SetShape( TSelf(wxFrame) self, TClass(wxRegion) region);
 TBool       wxFrame_ShowFullScreen( TSelf(wxFrame) self, TBool show, int style);
 TBool       wxFrame_IsFullScreen( TSelf(wxFrame) self );
+void        wxFrame_Centre( TSelf(wxFrame) self, int orientation );
 
 /* Create/Delete */
 void   wxCursor_Delete( TSelf(wxCursor) _obj );

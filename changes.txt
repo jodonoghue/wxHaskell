@@ -6,9 +6,9 @@
 
 Version 0.7.1
 -------------
-Not backward compatible changes:
+Non backward compatible changes:
 - Added wildcards argument to the "fileSaveDialog" function.
-- Removed to call to "buttonSetDefault" in the "defaultButton" 
+- Removed the call to "buttonSetDefault" in the "defaultButton" 
   property since GTK seems to enlarge the button in that case.
 - Removed alignment argument for text controls
 - Removed sorted and labels argument for choice and combo boxes.
@@ -16,10 +16,11 @@ Not backward compatible changes:
 - Added default "stretch" to every toplevel layout, assuring that
   such layout gets at least all available space assigned.
 - (un)set "maximize box" when "resizeable" is set.
-
+- Removed default "wxTAB_TRAVERSAL" style on frames (to make the grid
+  work correctly).
 
 Backward compatible additions:
-- Added wxGrid events.
+- Added wxGrid events and demo (samples/wx/Grid.hs).
 - Improved signatures for wxGrid.
 - Added "changes.txt" file :-)
 - Added "HAS_RADIO_MENU_ITEMS" to "isDefined".
@@ -37,6 +38,7 @@ Backward compatible additions:
 - Defaulted background color of "Frame"s to Color3DFace (as a Panel).
 - Made the definition of "Closure" in "wrappers.h" more liberal to 
   support wxOCaml better.
+- Added "frameCentre" method
 
 Bug fixes:
 - HtmlLinkClicked events are now properly generated.
@@ -45,10 +47,4 @@ Bug fixes:
 - The "item" attribute of a list control always returned the first
   item and disregarded the parameter. Thanks to Olivier Spier for 
   sending a fix.
-
-WxWindows patches:
-- changed line 565 of src/generic/grid.cpp:
-                                , wxTE_PROCESS_TAB | wxTE_AUTO_SCROLL 
-  to
-                              , wxTE_PROCESS_TAB | wxTE_AUTO_SCROLL | wxTE_PROCESS_ENTER
 

@@ -107,6 +107,9 @@ import Foreign.Concurrent
 
 import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 
+{- note: this is just for instances for the WX library and not necessary for WXCore -}
+import Data.Dynamic
+
 {-----------------------------------------------------------------------------------------
     Objects
 -----------------------------------------------------------------------------------------}
@@ -193,7 +196,7 @@ data Point  = Point
         { pointX :: !Int -- ^ x component of a point.
         , pointY :: !Int -- ^ y component of a point.
         }
-        deriving (Eq,Show)
+        deriving (Eq,Show,Read,Typeable)
 
 -- | Construct a point.
 point :: Int -> Int -> Point
@@ -253,7 +256,7 @@ data Size   = Size
         { sizeW :: !Int -- ^ the width  of a size
         , sizeH :: !Int -- ^ the height of a size
         }
-        deriving (Eq,Show)
+        deriving (Eq,Show,Typeable)
 
 -- | Construct a size from a width and height.
 size :: Int -> Int -> Size
@@ -313,7 +316,7 @@ data Vector = Vector
         { vecX :: !Int -- ^ delta-x component of a vector
         , vecY :: !Int -- ^ delta-y component of a vector
         }
-        deriving (Eq,Show)
+        deriving (Eq,Show,Read,Typeable)
 
 -- | Construct a vector.
 vector :: Int -> Int -> Vector
@@ -377,7 +380,7 @@ data Rect   = Rect
         , rectWidth  :: !Int
         , rectHeight :: !Int
         }
-        deriving (Eq,Show)
+        deriving (Eq,Show,Read,Typeable)
 
 
 rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight :: Rect -> Point
@@ -741,7 +744,7 @@ foreign import ccall "wxGridCellCoordsArray_Create" wxGridCellCoordsArray_Create
 -- | Identifies tree items. Note: Replaces the @TreeItemId@ object and takes automatically
 -- care of allocation issues.
 newtype TreeItem  = TreeItem Int
-                  deriving Eq
+                  deriving (Eq,Show,Read)
 
 -- | Invalid tree item.
 treeItemInvalid :: TreeItem
@@ -814,7 +817,8 @@ foreign import ccall "wxString_GetString" wxString_GetString :: (WxStringObject 
   Color
 -----------------------------------------------------------------------------------------}
 -- | An abstract data type to define colors.
-newtype Color = Color Int deriving Eq
+newtype Color = Color Int 
+              deriving (Eq,Typeable)
 
 instance Show Color where
   showsPrec d c

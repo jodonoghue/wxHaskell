@@ -93,7 +93,9 @@ panel parent props
 --             'Textual', 'Literate', 'Reactive', 'Paint' 
 panelEx :: Window a -> Style -> [Prop (Panel ())] -> IO (Panel ())
 panelEx parent style props
-  = do p <- panelCreate parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
+  = feed2 props style $
+    initialContainer $ \id rect -> \props flags  ->
+    do p <- panelCreate parent id rect flags
        windowSetFocus p
        set p props
        return p
@@ -128,8 +130,9 @@ focusOn w
 --             'Textual', 'Literate', 'Reactive', 'Paint' 
 notebook :: Window a -> [Prop (Notebook ())] -> IO (Notebook ())
 notebook parent props
-  = do nb <- notebookCreate parent idAny rectNull  
-              (clipChildrenFlags props (fullRepaintOnResizeFlags props defaultStyle))
+  = feed2 props defaultStyle $
+    initialContainer $ \id rect -> \props flags ->
+    do nb <- notebookCreate parent id rect flags
        set nb props
        return nb
 
@@ -162,9 +165,12 @@ smallButton parent props
 -- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
-buttonEx :: Window a -> Int -> [Prop (Button ())] -> IO (Button ())
-buttonEx parent flags props
-  = do b <- buttonCreate parent idAny "?" rectNull flags
+buttonEx :: Window a -> Style -> [Prop (Button ())] -> IO (Button ())
+buttonEx parent stl props
+  = feed2 props stl $
+    initialWindow $ \id rect ->
+    initialText   $ \txt -> \props flags ->
+    do b <- buttonCreate parent id txt rect flags
        set b props
        return b
 
@@ -179,7 +185,9 @@ instance Commanding (Button a) where
 --             
 bitmapButton :: Window a -> [Prop (BitmapButton ())] -> IO (BitmapButton ())
 bitmapButton parent props
-  = do bb <- bitmapButtonCreate parent idAny nullBitmap rectNull wxBU_AUTODRAW 
+  = feed2 props wxBU_AUTODRAW $
+    initialWindow $ \id rect -> \props flags ->
+    do bb <- bitmapButtonCreate parent id nullBitmap rect flags
        set bb props
        return bb
 
@@ -197,13 +205,13 @@ instance HasImage (BitmapButton a) where
 --------------------------------------------------------------------------------}
 -- | Alignment.
 data Align   = AlignLeft | AlignRight | AlignCentre
-             deriving (Eq,Typeable)
+             deriving (Eq,Show,Read,Typeable)
 
 -- | Wrap mode.
 data Wrap    = WrapNone   -- ^ No wrapping (and show a horizontal scrollbar).
              | WrapLine   -- ^ Wrap lines that are too long at any position.
              | WrapWord   -- ^ Wrap lines that are too long at word boundaries.
-             deriving (Eq,Typeable)
+             deriving (Eq,Show,Read,Typeable)
 
 instance BitMask Align where
   assocBitMask
@@ -225,12 +233,14 @@ instance BitMask Wrap where
 class Aligned w where
   -- | Set the alignment of the content. Due to wxWidgets constrictions,
   -- this property has to be set at creation time.
-  alignment :: Attr w Align
+  alignment :: CreateAttr w Align
 
-alignmentFlags props stl
-  = case getPropValue alignment props of
-      Just align -> setBitMask align stl
-      Nothing    -> stl
+initialAlignment :: Aligned w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialAlignment cont props style
+  = case filterProperty alignment props of
+      (PropValue x, ps)  -> cont ps (setBitMask x style) 
+      (PropModify f, ps) -> cont ps (setBitMask (f (fromBitMask style)) style)
+      (PropNone, ps)     -> cont ps style
 
 
 instance Aligned (TextCtrl a) where
@@ -247,12 +257,13 @@ instance Aligned (TextCtrl a) where
 -- | Widgets that have wrappable content.
 class Wrapped w where
   -- | Set the wrap mode of a widget.
-  wrap :: Attr w Wrap
+  wrap :: CreateAttr w Wrap
 
-wrapFlags props stl
-  = case getPropValue wrap props of
-      Just mode -> setBitMask mode stl
-      Nothing   -> stl
+initialWrap cont props style
+  = case filterProperty wrap props of
+      (PropValue x, ps)  -> cont ps (setBitMask x style) 
+      (PropModify f, ps) -> cont ps (setBitMask (f (fromBitMask style)) style)
+      (PropNone, ps)     -> cont ps style
 
 instance Wrapped (TextCtrl a) where
   wrap
@@ -264,6 +275,7 @@ instance Wrapped (TextCtrl a) where
        
       setter w mode
         = set w [style :~ setBitMask mode]
+
 
 
 {-
@@ -321,8 +333,13 @@ textCtrlRich parent props
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
 textCtrlEx :: Window a -> Style -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
-textCtrlEx parent flags props
-  = do e <- textCtrlCreate parent idAny "" rectNull (wrapFlags props $ alignmentFlags props $ flags)
+textCtrlEx parent stl props
+  = feed2 props stl $
+    initialWindow    $ \id rect ->
+    initialText      $ \txt ->
+    initialWrap      $ 
+    initialAlignment $ \props flags ->
+    do e <- textCtrlCreate parent id txt rect flags
        set e props
        return e
 
@@ -365,7 +382,10 @@ processTab
 -- | Create static text label, see also 'label'.
 staticText :: Window a -> [Prop (StaticText ())] -> IO (StaticText ())
 staticText parent props
-  = do t <- staticTextCreate parent idAny "" rectNull 0 {- (wxALIGN_LEFT + wxST_NO_AUTORESIZE) -}
+  = feed2 props 0 $
+    initialWindow $ \id rect -> 
+    initialText   $ \txt -> \props flags ->
+    do t <- staticTextCreate parent id txt rect flags {- (wxALIGN_LEFT + wxST_NO_AUTORESIZE) -}
        set t props
        return t
 
@@ -390,7 +410,10 @@ instance Checkable (CheckBox a) where
 --             
 checkBox :: Window a -> [Prop (CheckBox ())] -> IO (CheckBox ())
 checkBox parent props
-  = do c <- checkBoxCreate parent idAny "" rectNull 0
+  = feed2 props 0 $
+    initialWindow $ \id rect ->
+    initialText   $ \txt -> \props flags ->
+    do c <- checkBoxCreate parent id txt rect flags
        set c props
        return c
 
@@ -412,11 +435,10 @@ instance Sorted (Choice a) where
       setter w sort
         = set w [style :~ \st -> if sort then st .+. wxCB_SORT else st .-. wxCB_SORT]
 
-sortedFlags mask props st
-  = case getPropValue sorted props of
-      Just True  -> st .+. mask
-      Just False -> st .-. mask
-      Nothing    -> st
+initialSorted :: Sorted w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialSorted 
+  = withStyleProperty sorted wxCB_SORT
+
 
 instance Selecting (Choice ()) where
   select = newEvent "select" choiceGetOnCommand choiceOnCommand
@@ -457,7 +479,10 @@ choice parent props
 --             
 choiceEx :: Window a -> Style -> [Prop (Choice ())] -> IO (Choice ())
 choiceEx parent flags props
-  = do c <- choiceCreate parent idAny rectNull [] (sortedFlags wxCB_SORT props flags)
+  = feed2 props flags $
+    initialWindow $ \id rect ->
+    initialSorted $ \props flags ->
+    do c <- choiceCreate parent id rect [] flags
        set c props
        return c
 
@@ -516,7 +541,11 @@ comboBox parent props
 -- 'processEnter' has been set to 'True'.
 comboBoxEx :: Window a -> Style -> [Prop (ComboBox ())] -> IO (ComboBox ())
 comboBoxEx parent flags props
-  = do cb <- comboBoxCreate parent idAny "" rectNull [] (sortedFlags wxCB_SORT props flags)
+  = feed2 props flags $
+    initialWindow $ \id rect ->
+    initialText   $ \txt ->
+    initialSorted $ \props flags ->
+    do cb <- comboBoxCreate parent id txt rect [] flags
        set cb props
        return cb
 
@@ -585,8 +614,10 @@ instance Selections (MultiListBox a) where
 --             
 singleListBox :: Window a -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
 singleListBox parent props
-  = do lb <- listBoxCreate parent idAny rectNull []
-                (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (sortedFlags wxLB_SORT props 0))
+  = feed2 props (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB) $
+    initialWindow $ \id rect ->
+    initialSorted $ \props flags ->
+    do lb <- listBoxCreate parent id rect [] flags
        let sl = (objectCast lb :: SingleListBox ())
        set sl props
        return sl
@@ -598,8 +629,10 @@ singleListBox parent props
 --             
 multiListBox :: Window a -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
 multiListBox parent props
-  = do lb <- listBoxCreate parent idAny rectNull []
-              (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (sortedFlags wxLB_SORT props 0))
+  = feed2 props (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB) $
+    initialWindow $ \id rect ->
+    initialSorted $ \props flags ->
+    do lb <- listBoxCreate parent id rect [] flags
        let ml = (objectCast lb :: MultiListBox ())
        set ml props
        return ml  
@@ -637,15 +670,13 @@ instance Items (RadioBox a) String where
 --             
 radioBox :: Window a -> Orientation -> [String] -> [Prop (RadioBox ())] -> IO (RadioBox ())
 radioBox parent direction labels props
-  = do r <- radioBoxCreate parent idAny title rectNull labels 1 flags
+  = feed2 props (if (direction==Horizontal) then wxRA_SPECIFY_ROWS else wxRA_SPECIFY_COLS) $
+    initialWindow $ \id rect ->
+    initialText   $ \title -> \props flags ->
+    do putStrLn title
+       r <- radioBoxCreate parent id title rect labels 1 flags
        set r props
        return r
-  where
-    title
-      = if (containsProp "text" props) then " " else ""
-
-    flags
-      = (if (direction==Horizontal) then wxRA_SPECIFY_ROWS else wxRA_SPECIFY_COLS)
 
 {--------------------------------------------------------------------------------
   Gauge
@@ -763,7 +794,10 @@ instance Selection (Slider a) where
 --             
 spinCtrl :: Window a -> Int -> Int -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
 spinCtrl parent lo hi props
-  = do sc <- spinCtrlCreate parent idAny "" rectNull wxSP_ARROW_KEYS (min lo hi) (max lo hi) lo
+  = feed2 props wxSP_ARROW_KEYS $
+    initialWindow $ \id rect ->
+    initialText   $ \txt -> \props flags ->
+    do sc <- spinCtrlCreate parent id txt rect flags (min lo hi) (max lo hi) lo
        set sc props
        return sc
 
@@ -811,7 +845,9 @@ treeCtrl parent props
 --
 treeCtrlEx :: Window a -> Style -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrlEx parent style props
-  = do t <- treeCtrlCreate2 parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
+  = feed2 props style $
+    initialContainer $ \id rect -> \props flags ->
+    do t <- treeCtrlCreate2 parent id rect flags
        set t props
        return t
 
@@ -913,7 +949,9 @@ listCtrl parent props
 --             
 listCtrlEx :: Window a -> Style -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrlEx parent style props
-  = do l <- listCtrlCreate parent idAny rectNull (clipChildrenFlags props (fullRepaintOnResizeFlags props style))
+  = feed2 props style $
+    initialContainer $ \id rect -> \props flags ->
+    do l <- listCtrlCreate parent id rect flags
        set l props
        return l
 
@@ -927,9 +965,9 @@ listCtrlEx parent style props
 --             
 splitterWindow :: Window a -> [Prop (SplitterWindow ())] -> IO (SplitterWindow ())
 splitterWindow parent props
-  = do s <- splitterWindowCreate parent idAny rectNull 
-            (clipChildrenFlags props (fullRepaintOnResizeFlags props 
-              (wxSP_LIVE_UPDATE .+. defaultStyle)))
+  = feed2 props (defaultStyle .+. wxSP_LIVE_UPDATE) $
+    initialContainer $ \id rect -> \props flags ->
+    do s <- splitterWindowCreate parent id rect flags
        set s props
        return s
 

@@ -15,8 +15,8 @@ gui
        p      <- panel  f []                       -- panel for color and tab management.
        ok     <- button p [text := "Ok", on command := close f]
        can    <- button p [text := "Cancel", on command := infoDialog f "Info" "Pressed 'Cancel'"]
-       xinput <- textEntry p AlignRight [text := "100"]
-       yinput <- textEntry p AlignRight [text := "100"]
+       xinput <- textEntry p [text := "100", alignment := AlignRight]
+       yinput <- textEntry p [text := "100", alignment := AlignRight]
 
        set p [defaultButton := ok]
        set f [layout := container p $

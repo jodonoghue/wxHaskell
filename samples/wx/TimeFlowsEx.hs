@@ -62,6 +62,11 @@ timeFlows
        flowText <- varGet vflowText
        status   <- statusField [text := flowText]
 
+       -- set layout (before the menubar!)
+       set f [ layout      := fill $ widget p
+             , clientSize  := sz 300 300        --initial size
+             ]
+
        -- set menu and status bar
        set f [ menuBar     := [mfile,medit,mhelp]
              , statusBar   := [status]
@@ -80,10 +85,6 @@ timeFlows
              , on drag     := onDrag   vmouseHistory
              ]
 
-       -- set layout
-       set f [ layout      := fill $ widget p
-             , clientSize  := sz 300 300        --initial size
-             ]
        return ()
 
 {-------------------------------------------------------------------------
@@ -103,7 +104,7 @@ showOptionDialog frame vtimeSpan vflowText status
        -- create dialog
        d     <- dialog frame [text := "Options", resizeable := True]
        p     <- panel d []
-       entry <- textEntry p AlignLeft [text := flowText]
+       entry <- textEntry p [text := flowText]
        delay <- spinCtrl  p 1 10 [selection := round timeSpan]
        ok    <- button p [text := "Ok"] 
        can   <- button p [text := "Cancel"]           

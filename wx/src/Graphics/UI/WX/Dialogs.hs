@@ -58,13 +58,9 @@ dialog parent props
 -- | Create a dialog window with a certain style.
 dialogEx :: Window a -> Style -> [Prop (Dialog ())] -> IO (Dialog ())
 dialogEx parent style props
-  = do d <- dialogCreate parent idAny "" rectNull 
-              ( minimizeableFlags props 
-              $ maximizeableFlags props 
-              $ clipChildrenFlags props 
-              $ resizeableFlags props   
-              $ closeableFlags props
-              $ fullRepaintOnResizeFlags props style)
+  = feed2 props style $
+    initialFrame $ \id rect txt -> \props flags -> 
+    do d <- dialogCreate parent id txt rect flags
        set d props
        return d
 

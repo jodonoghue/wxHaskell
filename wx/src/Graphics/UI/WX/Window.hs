@@ -20,7 +20,9 @@ module Graphics.UI.WX.Window
           -- * ScrolledWindow
         , ScrolledWindow, scrolledWindow, scrollRate
           -- * Internal
-        , fullRepaintOnResizeFlags, clipChildrenFlags
+        , initialWindow, initialContainer
+        , initialIdentity, initialStyle, initialText
+        , initialFullRepaintOnResize, initialClipChildren
         ) where
 
 import Graphics.UI.WXCore
@@ -30,6 +32,7 @@ import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Events
+
 
 {--------------------------------------------------------------------------------
   ScrolledWindow
@@ -45,8 +48,9 @@ import Graphics.UI.WX.Events
 --
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
-  = do sw <- scrolledWindowCreate parent idAny rectNull 
-              (clipChildrenFlags props (fullRepaintOnResizeFlags props 0))
+  = feed2 props 0 $
+    initialContainer $ \id rect -> \props style ->
+    do sw <- scrolledWindowCreate parent id rect style
        set sw props
        return sw
 
@@ -67,6 +71,25 @@ scrollRate
 {--------------------------------------------------------------------------------
   Properties
 --------------------------------------------------------------------------------}
+-- | Helper function that retrieves initial window settings, including
+-- |identity|, |style|, and |area| (or |position| and |outerSize|).
+initialWindow :: (Id -> Rect -> [Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialWindow cont 
+  = initialIdentity $ \id ->
+    initialArea     $ \rect ->
+    initialStyle    $ 
+    cont id rect 
+
+-- | Helper function that retrieves initial window settings, including |clipChildren|
+-- and |fullRepaintOnResize|.
+initialContainer :: (Id -> Rect -> [Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialContainer cont
+  = initialWindow $ \id rect ->
+    initialFullRepaintOnResize $ 
+    initialClipChildren        $ 
+    cont id rect 
+
+
 instance Able (Window a) where
   enabled
     = newAttr "enabled" windowIsEnabled setter
@@ -78,7 +101,7 @@ instance Able (Window a) where
 
 instance Textual (Window a) where
   text
-    = newAttr "text" getter setter
+    = reflectiveAttr "text" getter setter
     where
       getter w
         = fst (getset w)
@@ -98,6 +121,12 @@ instance Textual (Window a) where
       ifInstanceOf w classTextCtrl
         (\tc -> textCtrlAppendText tc s)
         (set w [text :~ (++s)])
+
+
+-- | Retrieve the initial title from the |text| attribute.
+initialText :: Textual w => (String -> [Prop w] -> a) -> [Prop w] -> a
+initialText cont props 
+  = withProperty text "" cont props
 
 
 instance Dimensions (Window a) where
@@ -124,6 +153,23 @@ instance Dimensions (Window a) where
 
   virtualSize
     = newAttr "virtualSize" windowGetVirtualSize windowSetVirtualSize
+
+
+-- | Retrieve the initial creation area from the |area|, or the |position| and
+-- |outerSize| properties.
+initialArea :: Dimensions w => (Rect -> [Prop w] -> a) -> [Prop w] -> a
+initialArea cont props
+  = case findProperty area rectNull props of
+      Just (rect,props') -> cont rect props'
+      Nothing 
+        -> case findProperty position pointNull props of
+             Just (p,props') -> case findProperty outerSize sizeNull props of
+                                  Just (sz,props'') -> cont (rect p sz) props''
+                                  Nothing           -> cont (rect p sizeNull) props'
+             Nothing         -> case findProperty outerSize sizeNull props of
+                                  Just (sz,props')  -> cont (rect pointNull sz) props'
+                                  Nothing           -> cont rectNull props
+
 
 
 instance Colored (Window a) where
@@ -242,22 +288,19 @@ instance Visible (Window a) where
                                    then stl .+. wxCLIP_CHILDREN
                                    else stl .-. wxCLIP_CHILDREN]
 
--- | Helper function that transforms the style according to the 'fullRepaintOnResize' flags.
-fullRepaintOnResizeFlags :: Visible w => [Prop w] -> Int -> Int
-fullRepaintOnResizeFlags props stl
-  = case getPropValue fullRepaintOnResize props of
-      Just True  -> stl .-. wxNO_FULL_REPAINT_ON_RESIZE
-      Just False -> stl .+. wxNO_FULL_REPAINT_ON_RESIZE
-      other      -> stl
+
+-- | Helper function that transforms the style accordding
+-- to the 'fullRepaintOnResize' flag in of the properties
+initialFullRepaintOnResize :: Visible w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialFullRepaintOnResize 
+  = withStylePropertyNot fullRepaintOnResize wxNO_FULL_REPAINT_ON_RESIZE
+
 
 -- | Helper function that transforms the style accordding
 -- to the 'clipChildren' flag out of the properties
-clipChildrenFlags :: [Prop (Window a)] -> Int -> Int
-clipChildrenFlags props stl
-  = case getPropValue clipChildren props of
-      Just True -> stl .+. wxCLIP_CHILDREN
-      Just False-> stl .-. wxCLIP_CHILDREN
-      Nothing   -> stl
+initialClipChildren :: Visible w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialClipChildren 
+  = withStyleProperty clipChildren wxCLIP_CHILDREN
 
 
 
@@ -294,11 +337,21 @@ frameParent
 
 instance Identity (Window a) where
   identity
-    = newAttr "identity" windowGetId windowSetId
+    = reflectiveAttr "identity" windowGetId windowSetId
+
+-- | Helper function that retrieves the initial |identity|.
+initialIdentity :: Identity w => (Id -> [Prop w] -> a) -> [Prop w] -> a
+initialIdentity
+  = withProperty identity idAny
 
 instance Styled (Window a) where
   style
-    = newAttr "style" windowGetWindowStyleFlag windowSetWindowStyleFlag
+    = reflectiveAttr "style" windowGetWindowStyleFlag windowSetWindowStyleFlag
+
+-- | Helper function that retrieves the initial |style|.
+initialStyle :: Styled w => ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+initialStyle cont props stl
+  = withProperty style stl (\stl' props' -> cont props' stl') props
 
 instance Tipped (Window a) where
   tooltip

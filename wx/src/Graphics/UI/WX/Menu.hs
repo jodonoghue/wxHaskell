@@ -129,12 +129,12 @@ instance Textual (Menu a) where
 menuSub :: Menu b -> Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuSub parent menu props
   = do id <- idCreate
-       label <- case (getPropValue text props) of 
-                  Just txt -> return txt
-                  Nothing  -> do title <- menuGetTitle menu
-                                 if (null title) 
-                                  then return "<empty>"
-                                  else return title                  
+       label <- case (findProperty text "" props) of 
+                  Just (txt,_) -> return txt
+                  Nothing      -> do title <- menuGetTitle menu
+                                     if (null title) 
+                                      then return "<empty>"
+                                      else return title                  
        menuSetTitle menu "" -- remove title on submenus
        menuAppendSub parent id label menu ""
        item <- menuFindItem parent id objectNull
@@ -164,9 +164,9 @@ menuLine menu
 --
 menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItem menu props
-  = do let kind = case (getPropValue checkable props) of
-                    Just True  -> wxITEM_CHECK
-                    _          -> wxITEM_NORMAL
+  = do let kind = case (findProperty checkable False props) of
+                    Just (True,_) -> wxITEM_CHECK
+                    _             -> wxITEM_NORMAL
        menuItemKind menu kind props                     
 
 -- | Append a radio menu item. These items are 'checkable' by default.
@@ -182,9 +182,9 @@ menuRadioItem menu props
 
 menuItemKind menu kind props
   = do id <- idCreate
-       let label = case (getPropValue text props) of 
-                     Nothing  -> "<empty>"
-                     Just txt -> txt
+       let label = case (findProperty text "" props) of 
+                     Nothing      -> "<empty>"
+                     Just (txt,_) -> txt
        menuItemEx menu id label kind props
        
 

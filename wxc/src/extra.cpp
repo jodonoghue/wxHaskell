@@ -1297,6 +1297,12 @@ EWXWEXPORT(bool, wxFrame_IsFullScreen)( wxFrame* self )
   return self->IsFullScreen();
 }
 
+EWXWEXPORT(void, wxFrame_Centre)( wxFrame* self, int orientation )
+{
+  self->Centre();
+}
+
+
 EWXWEXPORT(void, wxNotebook_AssignImageList)( wxNotebook* _obj, wxImageList* imageList )
 {
   _obj->AssignImageList(imageList);

@@ -87,7 +87,8 @@ infixl 5 .+.
 infixl 5 .-.
 infix 5 #
 
--- | Reverse application. Useful for an object oriented style of programming.
+-- | Reverse application, i.e. @x # f@ = @f x@.
+-- Useful for an object oriented style of programming.
 --
 -- > (frame # frameSetTitle) "hi"
 --

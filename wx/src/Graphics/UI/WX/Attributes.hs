@@ -65,11 +65,17 @@ module Graphics.UI.WX.Attributes
     -- ** Attributes
     , newAttr, readAttr, writeAttr, nullAttr, constAttr
     -- ** Reflection
-    , attrName, propName, containsProp
+    , attrName, propName, containsProperty
     -- ** Reflective attributes
-    , reflectiveAttr, createAttr, getPropValue
+    , reflectiveAttr, createAttr, withProperty, findProperty
+    , withStyleProperty, withStylePropertyNot
+
+    -- *** Filter
+    , PropValue(..)
+    , filterProperty 
     ) where
 
+import Graphics.UI.WX.Types
 import Data.Dynamic
 
 infixr 0 :=,:~,::=,::~
@@ -92,7 +98,7 @@ type ReadAttr w a = Attr w a
 type WriteAttr w a = Attr w a
 
 -- | Widgets @w@ can have attributes of type @a@.
-data Attr w a   = Attr String (Maybe (a -> Dynamic)) (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
+data Attr w a   = Attr String (Maybe (a -> Dynamic, Dynamic -> Maybe a)) (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
 
 
 -- | Create a /reflective/ attribute with a specified name: value can possibly
@@ -100,7 +106,7 @@ data Attr w a   = Attr String (Maybe (a -> Dynamic)) (w -> IO a) (w -> a -> IO (
 -- as it leads to non-compositional code.
 reflectiveAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 reflectiveAttr name getter setter
-  = Attr name (Just toDyn) getter setter
+  = Attr name (Just (toDyn, fromDynamic)) getter setter
 
 -- | Create a /reflective/ attribute with a specified name: value can possibly
 -- retrieved using 'getPropValue'. Note: the use of this function is discouraged
@@ -194,19 +200,105 @@ propName (attr :~ f)    = attrName attr
 propName (attr ::= f)   = attrName attr
 propName (attr ::~ f)   = attrName attr
 
+
 -- | Is a certain property in a list of properties?
-containsProp :: String -> [Prop w] -> Bool
-containsProp name props
+containsProperty :: Attr w a -> [Prop w] -> Bool
+containsProperty attr props
+  = containsPropName (attrName attr) props
+
+-- | Is a certain property in a list of properties?
+containsPropName :: String -> [Prop w] -> Bool
+containsPropName name props
   = any (\p -> propName p == name) props
 
--- | Get a value of a reflective property. Only works on attributes
--- created with 'reflectiveAttr' and when the property is set using ':='.
--- Returns 'Nothing' whenever the property is not present or when the types
--- do not match.
-getPropValue :: Typeable a => Attr w a -> [Prop w] -> Maybe a
-getPropValue (Attr name1 (Just todyn1) _ _) ((Attr name2 (Just todyn2) _ _ := x):props)
-  | name1 == name2  = fromDynamic (todyn2 x)
-getPropValue attr (prop:props)
-  = getPropValue attr props
-getPropValue attr []
-  = Nothing
+
+-- | Property value: used when retrieving a property from a list.
+data PropValue a  = PropValue  a
+                  | PropModify (a -> a)
+                  | PropNone
+
+instance Show a => Show (PropValue a) where
+  show (PropValue x)  = "PropValue " ++ show x
+  show (PropModify f) = "PropModify"
+  show (PropNone)     = "PropNone"
+
+-- | Retrieve the value of a property and the list with the property removed.
+filterProperty :: Typeable a => Attr w a -> [Prop w] -> (PropValue a, [Prop w])
+filterProperty (Attr name _ _ _) props
+  = walk [] PropNone props
+  where
+    -- Daan: oh, how a simple thing like properties can result into this... ;-)
+    walk :: Typeable a => [Prop w] -> PropValue a -> [Prop w] -> (PropValue a, [Prop w])
+    walk acc res props
+      = case props of
+          -- Property setter found.
+          (((Attr attr (Just (todyn,fromdyn)) _ _) := x):rest)  | name == attr
+              -> case fromDynamic (todyn x) of
+                   Just x  -> walk acc (PropValue x) rest
+                   Nothing -> walk acc res props
+                   
+          -- Property modifier found.
+          (((Attr attr (Just (todyn,fromdyn)) _ _) :~ f):rest)  | name == attr
+              -> let dynf x = case fromdyn (toDyn x) of
+                                Just xx -> case fromDynamic (todyn (f xx)) of
+                                             Just y  -> y
+                                             Nothing -> x  -- identity
+                                Nothing -> x -- identity
+                 in case res of
+                      PropValue x  -> walk acc (PropValue (dynf x)) rest
+                      PropModify g -> walk acc (PropModify (dynf . g)) rest
+                      PropNone     -> walk acc (PropModify dynf) rest
+
+          -- Property found, but with the wrong arguments
+          (((Attr attr _ _ _) := _):rest)   | name == attr  -> stop
+          (((Attr attr _ _ _) :~ _):rest)   | name == attr  -> stop
+          (((Attr attr _ _ _) ::= _):rest)  | name == attr  -> stop
+          (((Attr attr _ _ _) ::~ _):rest)  | name == attr  -> stop
+
+          -- Defaults
+          (prop:rest)
+              -> walk (prop:acc) res rest
+          []  -> stop
+       where
+        stop  = (res, reverse acc ++ props)
+  
+               
+-- | Try to find a property value and call the contination function with that value
+-- and the property list witht the searched property removed. If the property is not
+-- found, use the default value and the unchanged property list.
+withProperty :: Typeable a => Attr w a -> a -> (a -> [Prop w] -> b) -> [Prop w] -> b
+withProperty attr def cont props
+  = case filterProperty attr props of
+      (PropValue x, ps)  -> cont x ps
+      (PropModify f, ps) -> cont (f def) ps
+      (PropNone, ps)     -> cont def ps
+
+-- | Try to find a property value. Return |Nothing| if not found at all.
+findProperty :: Typeable a => Attr w a -> a -> [Prop w] -> Maybe (a,[Prop w])
+findProperty attr def props
+  = case filterProperty attr props of
+      (PropValue x, ps)  -> Just (x,ps)
+      (PropModify f, ps) -> Just (f def,ps)
+      (PropNone, ps)     -> Nothing
+
+
+
+-- | Transform the properties based on a style property.
+withStyleProperty :: Attr w Bool -> Style -> ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+withStyleProperty prop flag 
+  = withStylePropertyEx prop (bitsSet flag) (\isSet style -> if isSet then (style .+. flag) else (style .-. flag)) 
+
+-- | Transform the properties based on a style property. The flag is interpreted negatively, i.e. |True|
+-- removes the bit instead of setting it.
+withStylePropertyNot :: Attr w Bool -> Style -> ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+withStylePropertyNot prop flag 
+  = withStylePropertyEx prop (not . bitsSet flag) (\isSet style -> if isSet then (style .-. flag) else (style .+. flag)) 
+
+
+-- | Transform the properties based on a style property.
+withStylePropertyEx :: Attr w Bool -> (Style -> Bool) -> (Bool -> Style -> Style) -> ([Prop w] -> Style -> a) -> [Prop w] -> Style -> a
+withStylePropertyEx prop def transform cont props style
+  = case filterProperty prop props of
+      (PropValue x, ps)  -> cont ps (transform x style) 
+      (PropModify f, ps) -> cont ps (transform (f (def style)) style)
+      (PropNone, ps)     -> cont ps style

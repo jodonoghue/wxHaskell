@@ -16,6 +16,9 @@ module Graphics.UI.WXCore.Frame
         , frameCreateDefault
         , frameSetTopFrame
         , frameDefaultStyle
+        , frameCenter
+        , frameCenterHorizontal
+        , frameCenterVertical
           -- * Window
         , windowGetRootParent
         , windowGetFrameParent
@@ -66,6 +69,22 @@ frameSetTopFrame frame
 frameCreateDefault :: String -> IO (Frame ())
 frameCreateDefault title
   = frameCreate objectNull idAny title rectNull frameDefaultStyle
+
+
+-- | Center the frame on the screen.
+frameCenter :: Frame a -> IO ()
+frameCenter f 
+  = frameCentre f wxBOTH
+
+-- | Center the frame horizontally on the screen.
+frameCenterHorizontal :: Frame a -> IO ()
+frameCenterHorizontal f
+  = frameCentre f wxHORIZONTAL
+
+-- | Center the frame vertically on the screen.
+frameCenterVertical :: Frame a -> IO ()
+frameCenterVertical f
+  = frameCentre f wxVERTICAL
 
 ------------------------------------------------------------------------------------------
 -- Window

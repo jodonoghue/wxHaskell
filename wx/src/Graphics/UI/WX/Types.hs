@@ -15,8 +15,10 @@ module Graphics.UI.WX.Types
     (
 
     -- * Basic Types
+      Orientation(..)
+
     -- ** Objects
-      ( # )
+    , ( # ), feed, feed2
     , Object, objectNull, objectIsNull, objectCast
     , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
 
@@ -88,6 +90,17 @@ module Graphics.UI.WX.Types
 
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Draw
+import Graphics.UI.WXCore.Events( Orientation(..) )
+
+-- | Inverse application, i.e. @feed x f@ = @f x@.
+feed :: a -> (a -> b) -> b
+feed x f
+  = f x
+
+-- | Composed Inverse application, i.e. @feed2 x y f@ = @f x y@.
+feed2 :: a -> b -> (a -> b -> c) -> c
+feed2 x y f
+  = f x y
 
 -- | Data types that can be represented through a bit mask. Only the @assocBitMask@ method
 -- is required for a new instance.

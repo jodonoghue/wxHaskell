@@ -28,7 +28,7 @@ module Graphics.UI.WX.Frame
     , activeChild, activateNext, activatePrevious, arrangeIcons
     , cascade, tile
     -- * Internal
-    , resizeableFlags, maximizeableFlags, minimizeableFlags, closeableFlags
+    , initialFrame, initialResizeable, initialMaximizeable, initialMinimizeable, initialCloseable
     ) where
 
 import Graphics.UI.WXCore
@@ -41,7 +41,7 @@ import Graphics.UI.WX.Window
 import Graphics.UI.WX.Events
 
 defaultStyle 
-  = frameDefaultStyle .+. wxTAB_TRAVERSAL -- .+. wxNO_FULL_REPAINT_ON_RESIZE
+  = frameDefaultStyle -- .+. wxTAB_TRAVERSAL -- .+. wxNO_FULL_REPAINT_ON_RESIZE
 
 -- | Create a top-level frame window.
 frame :: [Prop (Frame ())]  -> IO (Frame ())
@@ -62,23 +62,31 @@ frameTool props parent
 -- | Create a top-level frame window in a custom style.
 frameEx :: Style -> [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameEx style props parent
-  = do f <- frameCreate parent idAny "" rectNull 
-              ( minimizeableFlags props 
-              $ clipChildrenFlags props 
-              $ resizeableFlags props   
-              $ maximizeableFlags props 
-              $ closeableFlags props
-              $ fullRepaintOnResizeFlags props style)
-       wxcAppSetTopWindow f
-       let initProps = (if (containsProp "visible" props)
-                         then [] else [visible := True]) ++
-                       (if (containsProp "clientSize" props)
-                         then [] else [clientSize := sizeZero]) ++
-                       [bgcolor := colorSystem Color3DFace]
+  = feed2 props style $
+    initialFrame $ \id rect txt -> \props style ->
+    do f <- frameCreate parent id txt rect style
+       let initProps = (if (containsProperty visible props)
+                        then [] else [visible := True]) ++
+                       (if (containsProperty bgcolor props)
+                        then [] else [bgcolor := colorSystem Color3DFace])
        set f initProps
        set f props
        return f
+     
 
+-- | initial Frame flags
+initialFrame :: (Id -> Rect -> String -> [Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialFrame cont 
+  = initialContainer    $ \id rect ->
+    initialText         $ \txt ->
+    initialResizeable   $
+    initialMinimizeable $
+    initialMaximizeable $
+    initialCloseable    $
+    initialClipChildren $
+    initialFullRepaintOnResize $ 
+    cont id rect txt 
+             
 
 -- The image of a frame. 
 instance HasImage (Frame a) where
@@ -136,17 +144,17 @@ mdiParentFrame props
 -- | Create an MDI parent frame with a custom style.
 mdiParentFrameEx :: Window a -> Style -> [Prop (MDIParentFrame ())] -> IO (MDIParentFrame ())
 mdiParentFrameEx parent stl props
-  = do f <- mdiParentFrameCreate parent idAny "" rectNull 
-              ( minimizeableFlags props 
-              $ maximizeableFlags props 
-              $ clipChildrenFlags props 
-              $ resizeableFlags props
-              $ closeableFlags props
-              $ fullRepaintOnResizeFlags props stl)
-       wxcAppSetTopWindow f
-       set f [visible := True, clientSize := sizeZero]
+  = feed2 props stl $
+    initialFrame $ \id rect txt -> \props stl ->
+    do f <- mdiParentFrameCreate parent id txt rect stl
+       let initProps = (if (containsProperty visible props)
+                        then [] else [visible := True]) ++
+                       (if (containsProperty bgcolor props)
+                        then [] else [bgcolor := colorSystem Color3DFace])
+       set f initProps
        set f props
        return f
+
 
 -- | Create a MDI child frame.
 mdiChildFrame :: MDIParentFrame a -> [Prop (MDIChildFrame ())] -> IO (MDIChildFrame ())
@@ -156,15 +164,18 @@ mdiChildFrame parent props
 -- | Create a MDI child frame with a custom style.
 mdiChildFrameEx :: MDIParentFrame a -> Style -> [Prop (MDIChildFrame ())] -> IO (MDIChildFrame ())
 mdiChildFrameEx parent stl props
-  = do f <- mdiChildFrameCreate parent idAny "" rectNull 
-              ( minimizeableFlags props 
-              $ maximizeableFlags props 
-              $ clipChildrenFlags props 
-              $ resizeableFlags props   
-              $ fullRepaintOnResizeFlags props stl)
-       set f [visible := True, clientSize := sizeZero]
+  = feed2 props stl $
+    initialFrame $ \id rect txt -> \props stl ->
+    do f <- mdiChildFrameCreate parent id txt rect stl
+       let initProps = (if (containsProperty visible props)
+                         then [] else [visible := True]) ++
+                       (if (containsProperty bgcolor props)
+                         then [] else [bgcolor := colorSystem Color3DFace])
+       set f initProps
        set f props
        return f
+  
+
 
 -- | Return the active child frame ('objectIsNull' when no child is active)
 activeChild :: ReadAttr (MDIParentFrame a) (MDIChildFrame ())
@@ -197,7 +208,7 @@ tile = mdiParentFrameTile
 -- | Display a resize border on a 'Frame' or 'Dialog' window.  Also enables or
 -- disables the the maximize box.
 -- This attribute must be set at creation time.
-windowResizeable :: Attr (Window a) Bool
+windowResizeable :: CreateAttr (Window a) Bool
 windowResizeable
   = reflectiveAttr "resizeable" getFlag setFlag
   where
@@ -210,18 +221,15 @@ windowResizeable
                                  else stl .-. wxRESIZE_BORDER .-. wxMAXIMIZE_BOX]
 
 -- | Helper function that transforms the style accordding
--- to the 'resizeable' flag out of the properties
-resizeableFlags :: [Prop (Window a)] -> Int -> Int
-resizeableFlags props stl
-  = case getPropValue windowResizeable props of
-      Just True  -> stl .+. wxRESIZE_BORDER .+. wxMAXIMIZE_BOX
-      Just False -> stl .-. wxRESIZE_BORDER .-. wxMAXIMIZE_BOX
-      Nothing    -> stl
+-- to the 'windowResizable' flag in of the properties
+initialResizeable :: ([Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialResizeable 
+  = withStyleProperty windowResizeable (wxRESIZE_BORDER .+. wxMAXIMIZE_BOX) 
 
 
 -- | Display a maximize box on a 'Frame' or 'Dialog' window.
 -- This attribute must be set at creation time.
-windowMaximizeable :: Attr (Window a) Bool
+windowMaximizeable :: CreateAttr (Window a) Bool
 windowMaximizeable
   = reflectiveAttr "maximizeable" getFlag setFlag
   where
@@ -232,18 +240,15 @@ windowMaximizeable
       = set w [style :~ \stl -> if max then stl .+. wxMAXIMIZE_BOX else stl .-. wxMAXIMIZE_BOX]
 
 -- | Helper function that transforms the style accordding
--- to the 'maximizable' flag out of the properties
-maximizeableFlags :: [Prop (Window a)] -> Int -> Int
-maximizeableFlags props stl
-  = case getPropValue windowMaximizeable props of
-      Just True  -> stl .+. wxMAXIMIZE_BOX
-      Just False -> stl .-. wxMAXIMIZE_BOX
-      Nothing    -> stl
+-- to the 'windowMaximizable' flag in of the properties
+initialMaximizeable :: ([Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialMaximizeable 
+  = withStyleProperty windowMaximizeable wxMAXIMIZE_BOX 
 
 
 -- | Display a minimize box on a 'Frame' or 'Dialog' window.
 -- This attribute must be set at creation time.
-windowMinimizeable :: Attr (Window a) Bool
+windowMinimizeable :: CreateAttr (Window a) Bool
 windowMinimizeable
   = reflectiveAttr "minimizeable" getFlag setFlag
   where
@@ -254,18 +259,15 @@ windowMinimizeable
       = set w [style :~ \stl -> if min then stl .+. wxMINIMIZE_BOX else stl .-. wxMINIMIZE_BOX]
 
 -- | Helper function that transforms the style accordding
--- to the 'minimizable' flag out of the properties
-minimizeableFlags :: [Prop (Window a)] -> Int -> Int
-minimizeableFlags props stl
-  = case getPropValue windowMinimizeable props of
-      Just True  -> stl .+. wxMINIMIZE_BOX
-      Just False -> stl .-. wxMINIMIZE_BOX
-      Nothing    -> stl
+-- to the 'windowMinimizable' flag in of the properties
+initialMinimizeable :: ([Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialMinimizeable 
+  = withStyleProperty windowMinimizeable wxMINIMIZE_BOX 
 
 
 -- | Display a close box on a 'Frame' or 'Dialog' window.
 -- This attribute must be set at creation time.
-windowCloseable :: Attr (Window a) Bool
+windowCloseable :: CreateAttr (Window a) Bool
 windowCloseable
   = reflectiveAttr "closeable" getFlag setFlag
   where
@@ -276,11 +278,7 @@ windowCloseable
       = set w [style :~ \stl -> if min then stl .+. wxCLOSE_BOX else stl .-. wxCLOSE_BOX]
 
 -- | Helper function that transforms the style accordding
--- to the 'closeable' flag out of the properties
-closeableFlags :: [Prop (Window a)] -> Int -> Int
-closeableFlags props stl
-  = case getPropValue windowCloseable props of
-      Just True  -> stl .+. wxCLOSE_BOX
-      Just False -> stl .-. wxCLOSE_BOX
-      Nothing    -> stl
-
+-- to the 'windowMinimizable' flag in of the properties
+initialCloseable :: ([Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
+initialCloseable 
+  = withStyleProperty windowCloseable wxCLOSE_BOX 
