@@ -101,7 +101,7 @@ gui
        treeCtrlExpand t top
 
        -- list control
-       l  <- listCtrl s [columns := [("Name",AlignLeft,140),("Permissions",AlignLeft,80),("Date",AlignLeft,100)]]
+       l  <- listCtrl s [clipChildren := True, columns := [("Name",AlignLeft,140),("Permissions",AlignLeft,80),("Date",AlignLeft,100)]]
        listCtrlSetImageList l images wxIMAGE_LIST_SMALL
        
        -- status bar

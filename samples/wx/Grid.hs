@@ -32,7 +32,7 @@ gui
 
        -- layout
        set f [layout := column 5 [fill (dynamic (widget g))
-                                 ,hfill (widget textlog)]
+                                 ,hfill $ minsize (sz 20 80) $ widget textlog]
              ]       
        focusOn g
        set f [visible := True]  -- reduce flicker at startup.
