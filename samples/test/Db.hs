@@ -10,6 +10,9 @@ import Foreign.C.String
 import Foreign.Marshal.Array
 
 main 
+  = console
+
+gui
   = start $ 
     do f   <- frame [text := "Pubs database"]
 
@@ -88,7 +91,7 @@ dbGetDataSourceEx henv isFirst
     allocaArray (descLen+1) $ \cdesc ->
     do pokeArray0 0 cdsn []
        pokeArray0 0 cdesc []
-       ok   <- dbGetDataSource henv (castPtr cdsn) dsnLen (castPtr cdesc) descLen isFirst
+       ok   <- dbGetDataSource henv (castPtr cdsn) dsnLen (castPtr cdesc) descLen (if isFirst then wxSQL_FETCH_FIRST else wxSQL_FETCH_NEXT)
        if not ok
         then return Nothing
         else do dsn  <- peekCString cdsn
