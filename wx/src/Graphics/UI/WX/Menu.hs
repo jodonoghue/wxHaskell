@@ -23,10 +23,10 @@
    >    set frame [menuBar        := [file] 
    >              ,on (menu quit) := close frame] 
 
-    Note: /Unfortunately, the 'text' of menu items must be given at creation time
-    due to restrictions on GTK./
+    Note: Unfortunately, the 'text' of menu items must be given at creation time
+    due to restrictions on GTK.
 -}
---------------------s------------------------------------------------------------
+--------------------------------------------------------------------------------
 module Graphics.UI.WX.Menu
     ( -- * Menu
       -- ** Menu containers
@@ -108,7 +108,7 @@ menuList
 -- | Create a new menu with a certain title (corresponds with 'text' attribute).
 menuPane :: [Prop (Menu ())] -> IO (Menu ())
 menuPane props
-  = do m <- menuCreate " " wxMENU_TEAROFF
+  = do m <- menuCreate "" wxMENU_TEAROFF
        set m props
        return m
 

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.26 2003/09/15 13:18:21 dleijen Exp $
+# $Id: makefile,v 1.27 2003/09/15 17:14:55 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -168,7 +168,7 @@ WXHASKELL-SOURCES= \
 	config.search configure makefile \
 	prologue.txt license.txt \
 	bin/macosx-app bin/reimp.exe \
-	bin/macosx-builddmg bin/macosx-package bin/macosx-postinstall \
+	bin/macosx-builddmg bin/macosx-package  \
 	bin/wxhaskell-register bin/wxhaskell-register.bat \
 	bin/wxhaskell-uninstall.bat
 
@@ -390,9 +390,10 @@ srcdist: dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 # generic binary distribution as a zip
 bindist: all dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call cp-bindist,config,$(BINDIST-LIBDIR),config/wxcore.pkg config/wx.pkg)
-	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
 ifeq ($(TOOLKIT),msw)
 	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat)
+else
+	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
 endif
 ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/macosx-app)

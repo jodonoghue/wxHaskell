@@ -28,7 +28,7 @@ data WxToolkit  = WxGTK         -- ^ GTK
                 | WxMotif       
                 | WxMGL         -- ^ SciTech soft MGL
                 | WxUniversal
-                | WxOSTwo       -- ^ OS/2
+                | WxOSTwo       -- ^ OS\/2
                 | WxXEleven     -- ^ X11
                 | WxUnknown
                 deriving (Eq,Show,Enum)

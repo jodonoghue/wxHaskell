@@ -581,7 +581,7 @@ windowGetOnTimer window
 -- is called. The handler takes two other arguments: the view rectangle and a
 -- list of /dirty/ rectangles. The rectangles contain logical coordinates and
 -- are already adjusted for scrolled windows.
--- /Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!/
+-- Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!
 windowOnPaintRaw :: Window a -> (DC () -> Rect -> [Rect] -> IO ()) -> IO ()
 windowOnPaintRaw window paintHandler
   = windowOnEvent window [wxEVT_PAINT] paintHandler onPaint 
@@ -612,7 +612,7 @@ windowGetOnPaintRaw window
 -- The device context ('DC')
 -- is always cleared before the paint handler is called. The paint handler
 -- also gets the currently visible view area as an argument (adjusted for scrolling).
--- /Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!/
+-- Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!
 windowOnPaint :: Window a -> (DC () -> Rect -> IO ()) -> IO ()
 windowOnPaint window paintHandler
   = do v <- varCreate objectNull

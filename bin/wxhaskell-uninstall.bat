@@ -20,7 +20,7 @@ DEL wx.pkg wxcore.pkg
 DEL libwx.a libwxcore.a libwxcore0.a 
 DEL wx.o wxcore.o wxcore0.o 
 DEL /Q libwxc*.a 
-DEL /Q bin/wxc*.dll
+DEL /Q bin\wxc*.dll
 
 ECHO - deleting haskell interface files
 DEL imports\Graphics\UI\WX.hi
@@ -30,10 +30,9 @@ RMDIR /S /Q imports\Graphics\UI\WXCore
 
 ECHO - deleting scripts
 DEL wxhaskell-register wxhaskell-register.bat
-DEL wxhaskell-uninstall.bat
-
 ECHO done.
 ECHO.
 PAUSE
+DEL wxhaskell-uninstall.bat
 
 :end
