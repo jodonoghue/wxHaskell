@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.2 2003/07/17 23:23:58 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.3 2003/07/18 13:47:13 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -1360,7 +1360,7 @@ int        wxDC_MinX( TSelf(wxDC) _obj );
 int        wxDC_MinY( TSelf(wxDC) _obj );
 TBool      wxDC_Ok( TSelf(wxDC) _obj );
 void       wxDC_ResetBoundingBox( TSelf(wxDC) _obj );
-void       wxDC_SetAxisOrientation( TSelf(wxDC) _obj, int xLeftRight, int yBottomUp );
+void       wxDC_SetAxisOrientation( TSelf(wxDC) _obj, TBoolInt xLeftRight, TBoolInt yBottomUp );
 void       wxDC_SetBackground( TSelf(wxDC) _obj, TClass(wxBrush) brush );
 void       wxDC_SetBackgroundMode( TSelf(wxDC) _obj, int mode );
 void       wxDC_SetBrush( TSelf(wxDC) _obj, TClass(wxBrush) brush );
@@ -3897,13 +3897,13 @@ int        wxScrolledWindow_GetScrollPageSize( TSelf(wxScrolledWindow) _obj, int
 void       wxScrolledWindow_GetScrollPixelsPerUnit( TSelf(wxScrolledWindow) _obj, TPointOutVoid(_x,_y) );
 TClass(wxWindow) wxScrolledWindow_GetTargetWindow( TSelf(wxScrolledWindow) _obj );
 void       wxScrolledWindow_GetViewStart( TSelf(wxScrolledWindow) _obj, TPointOutVoid(_x,_y) );
-void       wxScrolledWindow_GetVirtualSize( TSelf(wxScrolledWindow) _obj, TPointOutVoid(_x,_y) );
+void       wxScrolledWindow_GetVirtualSize( TSelf(wxScrolledWindow) _obj, TSizeOutVoid(_x,_y) );
 void       wxScrolledWindow_OnDraw( TSelf(wxScrolledWindow) _obj, TClass(wxDC) dc );
 void       wxScrolledWindow_PrepareDC( TSelf(wxScrolledWindow) _obj, TClass(wxDC) dc );
 void       wxScrolledWindow_Scroll( TSelf(wxScrolledWindow) _obj, TPoint(x_pos,y_pos) );
 void       wxScrolledWindow_SetScale( TSelf(wxScrolledWindow) _obj, double xs, double ys );
 void       wxScrolledWindow_SetScrollPageSize( TSelf(wxScrolledWindow) _obj, int orient, int pageSize );
-void       wxScrolledWindow_SetScrollbars( TSelf(wxScrolledWindow) _obj, int pixelsPerUnitX, int pixelsPerUnitY, int noUnitsX, int noUnitsY, int xPos, int yPos, int noRefresh );
+void       wxScrolledWindow_SetScrollbars( TSelf(wxScrolledWindow) _obj, int pixelsPerUnitX, int pixelsPerUnitY, int noUnitsX, int noUnitsY, int xPos, int yPos, TBoolInt noRefresh );
 void       wxScrolledWindow_SetTargetWindow( TSelf(wxScrolledWindow) _obj, TClass(wxWindow) target );
 void       wxScrolledWindow_ViewStart( TSelf(wxScrolledWindow) _obj, TPointOutVoid(_x,_y) );
 

@@ -254,7 +254,11 @@ void wxInputSinkEvent::Read( wxInputStream* input )
   /* read */
   input->Read( m_buffer, m_bufferLen );
   m_lastError = input->LastError();
-  m_lastRead  = input->LastRead();
+  if (m_lastError == wxSTREAM_NO_ERROR)
+    m_lastRead  = input->LastRead();
+  else
+    m_lastRead  = 0;
+
 
   /* maintain invariants */
   if (m_lastRead < 0)           m_lastRead = 0;
@@ -1242,6 +1246,7 @@ EWXWEXPORT(void, wxWindow_SetClientObject)(void* _obj, void * obj )
     ((wxWindow*)_obj)->SetClientObject( (wxClientData*)obj );
 }
 
+
 EWXWEXPORT(void, wxWindow_SetVirtualSize)(void* _obj, int w, int h )
 {
     ((wxWindow*)_obj)->SetVirtualSize( w, h );
@@ -1252,6 +1257,20 @@ EWXWEXPORT(void, wxWindow_GetVirtualSize)(void* _obj, int* w, int* h )
     ((wxWindow*)_obj)->GetVirtualSize( w, h );
 }
 
+EWXWEXPORT(void, wxWindow_FitInside)(void* _obj)
+{
+    ((wxWindow*)_obj)->FitInside();
+}
+
+
+
+/*-----------------------------------------------------------------------------
+  scrolledwindow
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(void, wxScrolledWindow_SetScrollRate)( wxScrolledWindow* _obj, int xstep, int ystep )
+{
+  _obj->SetScrollRate(xstep,ystep);
+}
 
 /*-----------------------------------------------------------------------------
   mouse
@@ -1402,6 +1421,10 @@ EWXWEXPORT(int, wxTextCtrl_SetStyle)(void * _obj, long start, long end, void * s
 /*------------------------------------------------------------------------------
   TextAttr
 ------------------------------------------------------------------------------*/
+EWXWEXPORT( wxTextAttr*, wxTextAttr_CreateDefault)()
+{
+  return new wxTextAttr();
+}
 
 EWXWEXPORT( void *, wxTextAttr_Create)(void * colText, void * colBack, void *font)
 {
@@ -1448,6 +1471,20 @@ EWXWEXPORT(int, wxTextAttr_IsDefault)(void * _obj)
     return (int) ((wxTextAttr*)_obj)->IsDefault(   );
 }
 
+EWXWEXPORT( void, wxTextAttr_SetTextColour)(wxTextAttr* _obj, wxColour* colour )
+{
+   _obj->SetTextColour(*colour);
+}
+
+EWXWEXPORT( void, wxTextAttr_SetBackgroundColour)(wxTextAttr* _obj, wxColour* colour )
+{
+   _obj->SetBackgroundColour(*colour);
+}
+
+EWXWEXPORT( void, wxTextAttr_SetFont)(wxTextAttr* _obj, wxFont* font )
+{
+   _obj->SetFont(*font);
+}
 
 /*------------------------------------------------------------------------------
   progress dialog

@@ -7,15 +7,16 @@ main :: IO ()
 main
   = start gui
 
+
+
 gui :: IO ()
 gui
   = do f      <- frame [text := "Process test"]
        p      <- panel f []                       -- panel for tab-management etc.
        input  <- comboBox  p False ["cmd"] [style :~ \stl -> stl .+. wxTE_PROCESS_ENTER]
-       output <- textCtrlRich  p WrapNone  [color := black]
+       output <- textCtrlRich  p WrapNone  [color := red, font := fontSwiss{ fontSize = 12, fontWeight = WeightBold} ]
        stop   <- button    p [text := "kill", enable := False]
        focusOn input
-       withFontInfo fontSwiss{ fontFace = "Courier New" } (windowSetFont output)
        textCtrlSetEditable output False
        set f [layout := container p $
                         margin 10 $ column 5 [fill (widget output)

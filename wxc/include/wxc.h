@@ -48,6 +48,12 @@ void  wxWindow_ConvertDialogToPixelsEx( TSelf(wxWindow) _obj, TPoint(x,y), TPoin
 void  wxWindow_ConvertPixelsToDialogEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );
 void  wxWindow_GetVirtualSize( TSelf(wxWindow) _obj, TSizeOut(_w,_h) );
 void  wxWindow_SetVirtualSize( TSelf(wxWindow) _obj, TSize(w,h) );
+void  wxWindow_FitInside(TSelf(wxWindow) _obj);
+
+
+
+/* scrolledwindow */
+void wxScrolledWindow_SetScrollRate( TSelf(wxScrolledWindow) _obj, int xstep, int ystep );
 
 
 /* wxObject */
@@ -226,14 +232,19 @@ TBool               wxTextCtrl_SetStyle( TSelf(wxTextCtrl) _obj, long start, lon
 
 /* text attributes */
 TClass(wxTextAttr)  wxTextAttr_Create(TClass(wxColour) colText, TClass(wxColour) colBack, TClass(wxFont) font);
-void                wxTextAttr_Delete( TSelf(wxTextAttr) _obj );
-void                wxTextAttr_GetBackgroundColour( TSelf(wxTextAttr) _obj, TClassRef(wxColour) colour  );
-void                wxTextAttr_GetFont( TSelf(wxTextAttr) _obj, TClassRef(wxFont) font );
-void                wxTextAttr_GetTextColour( TSelf(wxTextAttr) _obj, TClassRef(wxColour) colour );
-TBool               wxTextAttr_HasBackgroundColour( TSelf(wxTextAttr) _obj );
-TBool               wxTextAttr_HasFont( TSelf(wxTextAttr) _obj );
-TBool               wxTextAttr_HasTextColour( TSelf(wxTextAttr) _obj );
-TBool               wxTextAttr_IsDefault( TSelf(wxTextAttr) _obj );
+TClass(wxTextAttr)  wxTextAttr_CreateDefault();
+void      wxTextAttr_Delete( TSelf(wxTextAttr) _obj );
+void      wxTextAttr_GetBackgroundColour( TSelf(wxTextAttr) _obj, TClassRef(wxColour) colour  );
+void      wxTextAttr_GetFont( TSelf(wxTextAttr) _obj, TClassRef(wxFont) font );
+void      wxTextAttr_GetTextColour( TSelf(wxTextAttr) _obj, TClassRef(wxColour) colour );
+TBool     wxTextAttr_HasBackgroundColour( TSelf(wxTextAttr) _obj );
+TBool     wxTextAttr_HasFont( TSelf(wxTextAttr) _obj );
+TBool     wxTextAttr_HasTextColour( TSelf(wxTextAttr) _obj );
+TBool     wxTextAttr_IsDefault( TSelf(wxTextAttr) _obj );
+void      wxTextAttr_SetTextColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colour );
+void      wxTextAttr_SetBackgroundColour(TSelf(wxTextAttr) _obj, TClass(wxColour) colour );
+void      wxTextAttr_SetFont(TSelf(wxTextAttr) _obj, TClass(wxFont) font );
+
 
 /* ELJApp */
 void  ELJApp_InitializeC( TClass(wxClosure) closure, int _argc, TChar** _argv );

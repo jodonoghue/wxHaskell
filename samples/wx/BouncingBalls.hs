@@ -16,7 +16,7 @@ ballsFrame
        f <- frameFixed [text := "Bouncing balls"]
 
        -- create a panel to draw in.
-       p <- panel f [on paint := paintBalls vballs, clientSize := sz maxX maxY]
+       p <- panel f [on paint := paintBalls vballs]
 
        -- create a timer that updates the ball positions
        t <- timer f [interval := 20, on command := nextBalls vballs p]
@@ -30,7 +30,7 @@ ballsFrame
              ]
 
        -- put the panel in the frame
-       set f [layout := widget p]
+       set f [layout := minsize (sz maxX maxY) $ widget p]
        return ()
   where
     -- drop a new ball
@@ -56,8 +56,8 @@ ballsFrame
     -- paint the balls
     paintBalls vballs dc viewRect updateAreas
       = do balls <- varGet vballs
-           withPen dc [bgcolor := red, brush := BrushSolid] $
-             mapM_ (drawBall dc) (map head (filter (not.null) balls))
+           set dc [bgcolor := red, brush := BrushSolid] 
+           mapM_ (drawBall dc) (map head (filter (not.null) balls))
 
     drawBall dc pt
       = circle dc pt radius []

@@ -17,6 +17,8 @@ module Graphics.UI.WXH.Draw
           drawLines, drawPolygon, getTextExtent, getFullTextExtent
         -- ** Creation
         , withPaintDC, withClientDC, dcDraw
+        -- ** Draw state
+        , DrawState, dcRestoreDrawState, dcGetDrawState, dcSetDrawState, drawStateDelete
         -- ** Double buffering
         , dcBuffer, dcBufferWithRef
         -- * Scrolled windows
@@ -58,7 +60,13 @@ import Foreign.Marshal.Alloc
 -- | Encloses the computation with 'dcBeginDrawing' and 'dcEndDrawing'.
 dcDraw :: DC a -> IO b -> IO b
 dcDraw dc io
-  = bracket_ (dcBeginDrawing dc) (dcEndDrawing dc) io
+  = bracket_ (do dcBeginDrawing dc
+                 dcSetPenStyle dc penDefault
+                 dcSetBrushStyle dc brushDefault) 
+             (do dcSetPen dc nullPen
+                 dcSetBrush dc nullBrush
+                 dcEndDrawing dc) 
+             io
 
 -- | Use a 'PaintDC'.
 withPaintDC :: Window a -> (PaintDC () -> IO b) -> IO b
@@ -338,12 +346,6 @@ data BrushKind
   | BrushStipple{ brushBitmap :: !(Bitmap ())}  -- ^ Bitmap pattern (on win95 only 8x8 bitmaps are supported)
   deriving (Eq,Show)
 
--- | Use a pen that is automatically deleted at the end of the computation.
-withPenStyle :: PenStyle -> (Pen () -> IO a) -> IO a
-withPenStyle penStyle f
-  = do (pen,delete) <- penCreateFromStyle penStyle
-       finally (f pen) delete
-
 
 -- | Set a pen that is automatically deleted at the end of the computation.
 -- The text color will also be adapted.
@@ -368,13 +370,13 @@ dcWithPen dc pen io
                  penDelete oldPen)
              (const io)
 
+
 -- | Set the current pen style. The text color is also adapted.
 dcSetPenStyle :: DC a -> PenStyle -> IO ()
 dcSetPenStyle dc penStyle
-  = do (pen,del) <- penCreateFromStyle penStyle
-       finalize del $ 
-        do dcSetPen dc pen
-           dcSetTextForeground dc (penColor penStyle)
+  = withPenStyle penStyle $ \pen ->
+    do dcSetPen dc pen
+       dcSetTextForeground dc (penColor penStyle)
 
 -- | Get the current pen style.
 dcGetPenStyle :: DC a -> IO PenStyle
@@ -382,6 +384,12 @@ dcGetPenStyle dc
   = do pen <- dcGetPen dc
        finalize (penDelete pen) $ 
          do penGetPenStyle pen
+
+-- | Use a pen that is automatically deleted at the end of the computation.
+withPenStyle :: PenStyle -> (Pen () -> IO a) -> IO a
+withPenStyle penStyle f
+  = do (pen,delete) <- penCreateFromStyle penStyle
+       finally (f pen) delete
 
 -- | Create a new pen from a 'PenStyle'. Returns both the pen and its deletion procedure.
 penCreateFromStyle :: PenStyle -> IO (Pen (),IO ())
@@ -487,14 +495,6 @@ brushDefault :: BrushStyle
 brushDefault
   = BrushStyle BrushTransparent black
 
--- | Use a brush that is automatically deleted at the end of the computation.
--- The text back ground color is also set.
-withBrushStyle :: BrushStyle -> (Brush () -> IO a) -> IO a
-withBrushStyle brushStyle f
-  = do (brush,delete) <- brushCreateFromStyle brushStyle
-       finalize delete $ 
-        do f brush 
-
 
 -- | Use a brush that is automatically deleted at the end of the computation.
 -- The text back ground color is also set.
@@ -520,9 +520,9 @@ dcWithBrush dc brush io
 -- | Set the brush style (and text background color) of a device context.
 dcSetBrushStyle :: DC a -> BrushStyle -> IO ()
 dcSetBrushStyle dc brushStyle
-  = do (brush,del) <- brushCreateFromStyle brushStyle
-       finalize del $ do dcSetBrush dc brush
-                         dcSetTextBackground dc (brushColor brushStyle)
+  = withBrushStyle brushStyle $ \brush ->
+    do dcSetBrush dc brush
+       dcSetTextBackground dc (brushColor brushStyle)
        
 -- | Get the current brush of a device context.
 dcGetBrushStyle :: DC a -> IO BrushStyle
@@ -531,6 +531,13 @@ dcGetBrushStyle dc
        finalize (brushDelete brush) $
         do brushGetBrushStyle brush
 
+
+-- | Use a brush that is automatically deleted at the end of the computation.
+withBrushStyle :: BrushStyle -> (Brush () -> IO a) -> IO a
+withBrushStyle brushStyle f
+  = do (brush,delete) <- brushCreateFromStyle brushStyle
+       finalize delete $ 
+        do f brush 
 
 -- | Create a new brush from a 'BrushStyle'. Returns both the brush and its deletion procedure.
 brushCreateFromStyle :: BrushStyle -> IO (Brush (), IO ())
@@ -585,6 +592,49 @@ brushGetBrushStyle brush
       | stl == wxHORIZONTAL_HATCH = return (BrushHatch HatchHorizontal)
       | stl == wxVERTICAL_HATCH   = return (BrushHatch HatchVertical)
       | otherwise                 = return BrushTransparent
+
+
+
+{--------------------------------------------------------------------------------
+  DC drawing state
+--------------------------------------------------------------------------------}
+-- | The drawing state (pen,brush,font) of a device context.
+data DrawState  = DrawState (Pen ()) (Brush ()) (Font ()) Color Color
+
+-- | Run a computation after which the original drawing state of the 'DC' is restored.
+dcRestoreDrawState :: DC a -> IO b -> IO b
+dcRestoreDrawState dc io
+  = bracket (dcGetDrawState dc)
+            (\drawState ->
+             do dcSetDrawState dc drawState
+                drawStateDelete drawState)
+            (const io)
+
+-- | Get the drawing state. (Should be deleted with 'drawStateDelete').
+dcGetDrawState     :: DC a -> IO DrawState
+dcGetDrawState dc
+  = do pen   <- dcGetPen dc
+       brush <- dcGetBrush dc
+       font  <- dcGetFont dc
+       textc <- dcGetTextForeground dc
+       backc <- dcGetTextBackground dc
+       return (DrawState pen brush font textc backc)
+
+-- | Set the drawing state.
+dcSetDrawState  :: DC a -> DrawState -> IO ()
+dcSetDrawState dc (DrawState pen brush font textc backc)
+  = do dcSetPen dc pen
+       dcSetBrush dc brush
+       dcSetFont dc font
+       dcSetTextBackground dc backc
+       dcSetTextForeground dc textc
+
+-- | Release the resources associated with a drawing state.
+drawStateDelete :: DrawState -> IO ()
+drawStateDelete (DrawState pen brush font _ _)
+  = do penDelete pen
+       brushDelete brush
+       fontDelete font
 
 {--------------------------------------------------------------------------------
   DC utils

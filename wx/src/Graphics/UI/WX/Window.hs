@@ -47,18 +47,6 @@ instance Able (Window a) where
         | enable    = unitIO $ windowEnable w
         | otherwise = unitIO $ windowDisable w
 
-instance Literate (Window a) where
-  font
-    = newAttr "font" getter setter
-    where
-      getter w
-        = do f <- windowGetFont w
-             finalize (fontDelete f) (fontGetFontInfo f)
-
-      setter w info
-        = do (f,del) <- fontCreateFromInfo info
-             finalize del (windowSetFont w f)
-             return ()
 
 instance Textual (Window a) where
   text
@@ -112,7 +100,44 @@ instance Colored (Window a) where
     = newAttr "bgcolor" windowGetBackgroundColour (\w x -> do{ windowSetBackgroundColour w x; return ()})
 
   color
-    = newAttr "color" windowGetForegroundColour (\w x -> do{ windowSetForegroundColour w x; return ()})
+    = newAttr "color" getter setter
+    where
+      getter w
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl) 
+                                 (textAttrDelete)
+                                 (textAttrGetTextColour))
+           (windowGetForegroundColour w)
+      setter w clr
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textAttrCreateDefault)
+                                 (textAttrDelete)
+                                 (\attr -> do textAttrSetTextColour attr clr
+                                              textCtrlSetDefaultStyle textCtrl attr
+                                              return ()))
+           (unitIO (windowSetForegroundColour w clr))
+
+
+instance Literate (Window a) where
+  font
+    = newAttr "font" getter setter
+    where
+      getter w
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textCtrlGetDefaultStyle textCtrl) 
+                                 (textAttrDelete)
+                                 (\attr -> bracket (textAttrGetFont attr) fontDelete fontGetFontInfo))
+           (bracket (windowGetFont w) fontDelete fontGetFontInfo)
+
+      setter w info
+        = ifInstanceOf w classTextCtrl
+           (\textCtrl -> bracket (textAttrCreateDefault)
+                                 (textAttrDelete)
+                                 (\attr -> withFontInfo info $ \fnt ->
+                                           do textAttrSetFont attr fnt
+                                              textCtrlSetDefaultStyle textCtrl attr
+                                              return ()))
+           (withFontInfo info (unitIO . windowSetFont w))
 
 
 instance Visible (Window a) where
@@ -163,5 +188,5 @@ instance Reactive (Window a) where
   activate  = newEvent "activate" windowGetOnActivate windowOnActivate
 
 instance Paint (Window a) where
-  paint     = newEvent "paint" windowGetOnPaint (\w h -> windowOnPaint w False h)
+  paint     = newEvent "paint" windowGetOnPaint (\w h -> windowOnPaint w True h)
   repaint w = windowRefresh w False

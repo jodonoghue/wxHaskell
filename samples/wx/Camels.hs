@@ -83,10 +83,10 @@ gui
 
 drawDesert :: Var Board -> Bitmap () -> DC () -> Rect -> [Rect] -> IO ()
 drawDesert desert bmp dc (Rect x y w h) _ =
-  do dcDrawBitmap dc bmp (Point 0 0) False
+  do drawBitmap dc bmp pointZero False []
      for 0 (w `div` 234) (\i ->
        for 0 (h `div` 87) (\j ->
-         dcDrawBitmap dc bmp (Point (i * 234) (j * 87)) False ))
+         drawBitmap dc bmp (pt (i * 234) (j * 87)) False []))
      board <- varGet desert
      let l = length board
          s = min h $ w `div` l
@@ -100,14 +100,12 @@ for x y f = sequence_ $ map f [x..y]
 
 drawField :: DC () -> Field -> Rect -> IO ()
 drawField dc f r@(Rect x y w h) =
-  withPen dc [bgcolor := colorRGB 0x80 0x80 0x00, brush := BrushSolid] $
-    case f of Full East -> do drawPolygon dc (map (lin r) camel)
-                              withPen dc [bgcolor := red, brush := BrushSolid] $
-                                drawPolygon dc (map (lin r) saddle)
-              Full West -> do drawPolygon dc (map (lin r . mirror) camel)
-                              withPen dc [bgcolor := blue, brush := BrushSolid] $
-                                drawPolygon dc (map (lin r . mirror) saddle)
-              _         -> return ()
+  do set dc [brush := BrushSolid, bgcolor := colorRGB 0x80 0x80 0x00] 
+     case f of Full East -> do polygon dc (map (lin r) camel) []
+                               polygon dc (map (lin r) saddle) [bgcolor := red] 
+               Full West -> do polygon dc (map (lin r . mirror) camel) []
+                               polygon dc (map (lin r . mirror) saddle) [bgcolor := blue] 
+               _         -> return ()
 
 camel :: [(Float, Float)]
 camel = map (\(x, y) -> (x / 8, y / 8)) [(2, 2), (3, 3), (4, 2), (5, 3), (6, 2), (7, 3), (6, 3), (5, 5), (5, 7), (4, 7), (4, 5), (3, 5), (3, 7), (2, 7), (2, 4), (1, 6), (1, 4)]
