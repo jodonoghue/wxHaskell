@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.27 2003/09/15 17:14:55 dleijen Exp $
+# $Id: makefile,v 1.28 2003/09/16 12:52:03 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -191,7 +191,18 @@ SAMPLE-SOURCES= \
 	samples/wxcore/HelloWorld.hs \
 	samples/wxcore/Minimal.hs \
 	samples/wxcore/Paint.hs \
-	samples/wxcore/ImageViewer.hs samples/wxcore/ImageViewer.ico
+	samples/wxcore/ImageViewer.hs samples/wxcore/ImageViewer.ico \
+	\
+	samples/bitmaps/computer.ico \
+	samples/bitmaps/disk.ico \
+	samples/bitmaps/eye.ico \
+	samples/bitmaps/f_closed.ico \
+	samples/bitmaps/f_open.ico \
+	samples/bitmaps/file.ico \
+	samples/bitmaps/fileopen16.png \
+	samples/bitmaps/hsicon.ico \
+	samples/bitmaps/wxwin16.png \
+	samples/bitmaps/wxwin.ico
 
 #--------------------------------------------------------------------------
 # Functions  ($(1) means first argument etc.)
