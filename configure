@@ -631,10 +631,19 @@ if test "$enableupx" = "yes"; then
  fi
 fi
 
+if test "$enableupx" = "yes"; then
+ if test "$enablestrip" = "yes"; then
+   echo "warning:"
+   echo " Using both 'strip' and 'upx' is not possible."
+   echo " The libraries will not be stripped."
+   echo ""
+   enablestrip="no"
+ fi
+fi
 
 runcompress=":"
 if test "$enableupx" = "yes"; then
-  runcompress="config/compress \$(1)"
+  runcompress="upx -qt \$(1) >/dev/null 2>/dev/null; if test \$? != 0; then upx \$(1); fi"
 else
  if test "$enablestrip" = "yes"; then
    runcompress="echo strip \$(1); strip \$(1)"
@@ -792,20 +801,6 @@ fi
 
 # create installer scripts
 # echo " installer scripts"
-
-# generate compress utility
-if test "$enableupx" = "yes"; then
-  echo " config/compress"
-  echo "#!/bin/sh"                                      > config/compress
-  echo "upx -t \$1 > /dev/null 2> /dev/null"            >> config/compress
-  echo "if test \"\$?\" != \"0\"; then"                 >> config/compress
-  if test "$enablestrip" = "yes"; then
-    echo "  echo \"strip \$1\""                         >> config/compress
-    echo "  strip \$1"                                  >> config/compress
-  fi
-  echo "  upx \$1"                                      >> config/compress
-  echo "fi"                                             >> config/compress
-fi
 
 # generate windows installer files.
 echo " config/wxhaskell-register.bat"
