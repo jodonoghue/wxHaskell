@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# default installation directory is the current directory.
-installdir="`pwd`"
+# default installation directory
+installdir="/usr/local/lib"
 
 # parse command-line arguments
 while : ; do
@@ -36,11 +36,9 @@ done
 if test ! -e "${installdir}/wxh.pkg"; then
   echo "error: " 1>&2
   echo "  Unable to find: ${installdir}/wxh.pkg" 1>&2
-  echo "  Please run this program from the wxHaskell installation directory" 1>&2
-  echo "  or specify the installation directory on the command line." 1>&2
+  echo "  Please specify the installation directory on the command line." 1>&2
+  echo "  For example: wxhaskell-register --installdir=/usr/local/lib" 1>&2
   echo "" 1>&2
-  echo "usage:" 1>&2
-  echo "  wxhaskell-register  [--installdir=<dir>]" 1>&2
   exit 2
 fi
 

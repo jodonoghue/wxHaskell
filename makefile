@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.14 2003/07/21 08:48:14 dleijen Exp $
+# $Id: makefile,v 1.15 2003/07/22 14:24:39 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -338,7 +338,7 @@ ROOTDIR   =$(word $(words $(TOPDIRS)),$(TOPDIRS))
 # zip commands
 # usage: $(call zip-bindist,<relative directory>,<files>)
 # usage: $(call zip-srcdist,<local files>)
-zip-add		=echo zipping: $(1); $(ZIP) -9 $(TOPDIR)/$(1) $(2)
+zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
 
 zip-docdist	=$(CD) $(1); $(call zip-add,$(DIST-DOC), $(call relative-to,$(1),$(2)))
 zip-bindist	=$(CD) $(1); $(call zip-add,$(DIST-BIN), $(call relative-to,$(1),$(2)))
@@ -361,12 +361,12 @@ srcdist: dist-dirs wxc-dist wxd-dist wxh-dist wx-dist
 # binary distribution
 bindist: all dist-dirs wxc-bindist wxh-bindist wx-bindist
 	@$(call zip-bindist,config, wxh.pkg wx.pkg)
-	@$(call zip-bindist,bin, wxhaskell-register)
+	@$(call zip-bindist,bin,wxhaskell-register)
 ifeq ($(DLL),.dll)
-	@$(call zip-bindist,bin, wxhaskell-register.bat)
+	@$(call zip-bindist,bin,wxhaskell-register.bat)
 endif
 ifeq ($(DLL),.dylib)
-	@$(call zip-bindist,bin, macosx-app)
+	@$(call zip-bindist,bin,macosx-app)
 endif
 
 
@@ -617,7 +617,11 @@ endif
 	@-$(RMDIR) $(WXC-OUTDIR)/bin
 else
 ifneq ($(WXWINLIB),)
-	@$(call zip-bindist,$(dir $(WXWINLIB)),$(notdir $(WXWINLIB)))
+	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*$(DLL))
+ifeq ($(TOOLKIT),mac)
+	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*.r)
+	@$(call zip-bindist,$(dir $(WXWINLIB)),$(basename $(notdir $(WXWINLIB)))*.rsrc)
+endif		
 endif
 	@$(call zip-bindist,$(WXC-OUTDIR), $(WXC-LIB))
 endif
@@ -647,7 +651,7 @@ $(basename $(WXC-LIB)).so: $(WXC-OBJS)
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^
-	$(CXX) -dynamiclib -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
+	$(CXX) -dynamiclib -install_name $@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
 # create an object file from source files
