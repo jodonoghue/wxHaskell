@@ -721,6 +721,8 @@ windowGetOnPaintRaw window
 -- Note: you can not set both a 'windowOnPaintRaw' and 'windowOnPaint' handler!
 windowOnPaint :: Window a -> (DC () -> Rect -> IO ()) -> IO ()
 windowOnPaint window paintHandler
+  | wxToolkit == WxMac  = windowOnPaintRaw window (\dc view _ -> paintHandler dc view)
+  | otherwise
   = do v <- varCreate objectNull
        windowOnEventEx window [wxEVT_PAINT] paintHandler (destroy v) (onPaint v)
   where
