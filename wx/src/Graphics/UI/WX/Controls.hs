@@ -725,6 +725,7 @@ instance Items (ListCtrl a) [String] where
                   listItemDelete
                   (\li -> do count <- listCtrlGetColumnCount l
                              mapM (\column -> do listItemSetColumn li (column-1)
+                                                 listItemSetId li i
                                                  listCtrlGetItem l li
                                                  listItemGetText li) [1..count])
                              

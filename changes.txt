@@ -19,5 +19,8 @@ Backward compatible additions:
 Bug fixes:
 - Fixed bug that crashed wxHaskell when a tree control had the focus
   and a key was pressed. Thanks to Olivier Spier for sending a fix.
+- The "item" attribute of a list control always returned the first
+  item and disregarded the parameter. Thanks to Olivier Spier for 
+  sending a fix.
 
 
