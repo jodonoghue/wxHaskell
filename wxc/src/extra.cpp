@@ -1337,6 +1337,30 @@ EWXWEXPORT(void,wxObject_Delete)(wxObject* _obj)
 }
 
 /*-----------------------------------------------------------------------------
+  String
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxString*, wxString_Create)( char* buffer )
+{
+  return new wxString(buffer);
+}
+
+EWXWEXPORT(wxString*, wxString_CreateLen)( char* buffer, int len )
+{
+  return new wxString(buffer,len);
+}
+
+EWXWEXPORT(void,wxString_Delete)( wxString* s )
+{
+  delete s;
+}
+
+EWXWEXPORT(int,wxString_GetString)( wxString* s, char* buffer )
+{
+  if (buffer) memcpy (buffer, s->c_str(), s->Length());
+  return s->Length();
+}  
+
+/*-----------------------------------------------------------------------------
   classinfo
 -----------------------------------------------------------------------------*/
 EWXWEXPORT(void*,wxClassInfo_FindClass)(char* _txt)

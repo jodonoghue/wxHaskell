@@ -8,9 +8,9 @@
 
 #define _stdcall
 
-
 #include "ewxw/wxc_types.h"
 #include "ewxw/wxc_glue.h"
+#include "db.h"
 
 /* wxClosure */
 TClassDefExtend(wxClosure,wxObject)
@@ -59,6 +59,13 @@ void  wxWindow_ConvertPixelsToDialogEx( TSelf(wxWindow) _obj, TPoint(x,y), TPoin
 void  wxWindow_GetVirtualSize( TSelf(wxWindow) _obj, TSizeOut(_w,_h) );
 void  wxWindow_SetVirtualSize( TSelf(wxWindow) _obj, TSize(w,h) );
 void  wxWindow_FitInside(TSelf(wxWindow) _obj);
+
+/* wxString helpers */
+TClass(wxString) wxString_Create( TString buffer );
+TClass(wxString) wxString_CreateLen( TString buffer, int len );
+void             wxString_Delete( TSelf(wxString) s );
+TStringLen       wxString_GetString( TSelf(wxString) s, TStringOut buffer );
+
 
 /* menu */
 TClass(wxMenuBar) wxMenu_GetMenuBar( TSelf(wxMenu) _obj );
@@ -339,9 +346,8 @@ TStringLen wxGetApplicationDir( TStringOut buffer);
 /** Return the full path of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. */
 TStringLen wxGetApplicationPath( TStringOut buffer);
 
-
-
 /* ELJApp */
 void  ELJApp_InitializeC( TClass(wxClosure) closure, int _argc, TChar** _argv );
+
 
 #endif /* wxc_h */

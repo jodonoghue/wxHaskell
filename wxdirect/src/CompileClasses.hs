@@ -495,6 +495,7 @@ haskellType i tp
       Object    "wxColour"  -> "Color"
       RefObject "wxTreeItemId"  -> "TreeItem"
       Object    "wxTreeItemId"  -> "TreeItem"
+      Object    "wxString"      -> "String"
       Fun f  -> "FunPtr " ++ pparens f
       RefObject name  -> haskellTypeName name ++ typeVar i
       Object name     -> haskellTypeName name ++ typeVar i

@@ -53,7 +53,7 @@ setWxcDir dir
 -----------------------------------------------------------------------------------------}
 ignoreClasses :: Set.Set String
 ignoreClasses
-  = Set.fromList [ "wxFile", "wxDir"  ]
+  = Set.fromList ["wxFile", "wxDir", "wxString"]
 
 classes :: [Class]
 classes
@@ -64,7 +64,9 @@ classes
        -}
        -- urk, ugly hack.
        wxcdir <- getWxcDir
-       cs <- parseClassDefs [wxcdir ++ "/include/ewxw/wxc_glue.h", wxcdir ++ "/include/wxc.h"]
+       cs <- parseClassDefs [wxcdir ++ "/include/ewxw/wxc_glue.h"
+                            ,wxcdir ++ "/include/wxc.h"
+                            ,wxcdir ++ "/include/db.h"]
        -- writeFile "wxclasses.def" (showClasses cs)
        return cs
        -- return (mergeClasses xs ys) -- (mergeClasses zs (mergeClasses ys xs))
@@ -406,7 +408,7 @@ haskellClassDefs
 
 
 haskellClass parents (Class name derived)
-  | name == "wxColour" = []   -- handled as a basic type
+  | isManaged name = []   -- handled as a basic type
   | otherwise
     = ( (tname,[tname,inheritName tname,className tname] ++ (if isManaged name then [tname ++ "Object"] else []))
       ,   (if isManaged name

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.46 2003/10/23 09:08:09 dleijen Exp $
+# $Id: makefile,v 1.47 2003/10/25 08:13:39 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -153,8 +153,10 @@ WXC-SPECS-EIFFEL = \
 	wxc/eiffel/wxc_defs.e  wxc/eiffel/ewxw/wx_defs.e
 
 WXC-SPECS-HEADER = \
-	wxc/include/wxc.h 
-	# wxc/include/ewxw/wxc_glue.h 
+	wxc/include/wxc.h \
+	wxc/include/db.h \
+	wxc/include/ewxw/wxc_glue.h 
+
 
 # distributed in a source distribution
 WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard wxc/src/ewxw/*.h)\
@@ -639,13 +641,13 @@ wxcore-uninstall:
 
 # build marshall modules
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
-	$(WXD-EXE) -c $(WXD-FLAGS) $(WXC-SPECS-HEADER)
+	$(WXD-EXE) -c $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
 
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcDefs.hs: $(WXD-EXE) $(WXC-SPECS-EIFFEL)
 	$(WXD-EXE) -d $(WXD-FLAGS) $(WXC-SPECS-EIFFEL)
 
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassTypes.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
-	$(WXD-EXE) -t $(WXD-FLAGS) $(WXC-SPECS-HEADER)
+	$(WXD-EXE) -t $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
 
 # build ghci object files
 $(WXCORE-OBJ): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)

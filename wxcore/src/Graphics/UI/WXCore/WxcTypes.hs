@@ -58,8 +58,11 @@ module Graphics.UI.WXCore.WxcTypes(
             , TreeItem, treeItemInvalid, treeItemIsOk, treeItemFromInt
             , withRefTreeItemId, withTreeItemId, withTreeItemIdResult
 
+            , WxStringObject, CWxStringObject
+
             -- ** Managed object types
             , managedAddFinalizer
+            , withManagedWxStringResult, withManagedWxString
             , withRefColour, withManagedColourResult, withManagedColour
             , withRefBitmap
             , withRefCursor
@@ -90,6 +93,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , Ptr, ptrNull, ptrIsNull, ptrCast, ForeignPtr, FunPtr, toCFunPtr
             ) where
 
+import Control.Exception 
 import System.IO.Unsafe( unsafePerformIO )
 import Foreign.C
 import Foreign.Ptr
@@ -777,6 +781,34 @@ foreign import ccall "wxTreeItemId_Create" treeItemIdCreate :: IO (Object a)
 foreign import ccall "wxTreeItemId_GetValue" treeItemIdGetValue :: Object a -> IO Int
 foreign import ccall "wxTreeItemId_CreateFromValue" treeItemIdCreateFromValue :: Int -> IO (Object a)
 foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Object a -> IO ()
+
+{-----------------------------------------------------------------------------------------
+  String
+-----------------------------------------------------------------------------------------}
+-- | A @wxString@ object.
+type WxStringObject a   = Object (CWxStringObject a)
+data CWxStringObject a  = CWxStringObject
+
+withManagedWxString :: String -> (WxStringObject () -> IO a) -> IO a
+withManagedWxString s f
+  = withCString s $ \cstr -> 
+    bracket (wxString_Create cstr)
+            (wxString_Delete)
+            f
+
+withManagedWxStringResult :: IO (WxStringObject a) -> IO String
+withManagedWxStringResult io
+  = do wxs <- io
+       s   <- withStringResult (wxString_GetString wxs)
+       wxString_Delete wxs
+       return s
+
+
+foreign import ccall "wxString_Create"    wxString_Create    :: Ptr CChar -> IO (WxStringObject ())
+foreign import ccall "wxString_CreateLen" wxString_CreateLen :: Ptr CChar -> CInt -> IO (WxStringObject ())
+foreign import ccall "wxString_Delete"    wxString_Delete    :: (WxStringObject a) -> IO ()
+foreign import ccall "wxString_GetString" wxString_GetString :: (WxStringObject a) -> Ptr CChar -> IO CInt
+
 
 {-----------------------------------------------------------------------------------------
   Color

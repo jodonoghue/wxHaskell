@@ -27,7 +27,7 @@ import List( isPrefixOf )
 -----------------------------------------------------------------------------------------}
 managedObjects :: Set.Set String
 managedObjects
-  = Set.fromList ["wxColour"]
+  = Set.fromList ["wxColour","wxString"]
 
   {-
     [ "Bitmap"

@@ -100,6 +100,10 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wx
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\include\db.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ewxw_def.h
 # End Source File
 # Begin Source File
@@ -125,6 +129,10 @@ SOURCE=.\src\wxc.rc
 # Begin Source File
 
 SOURCE=.\src\apppath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\db.cpp
 # End Source File
 # Begin Source File
 
