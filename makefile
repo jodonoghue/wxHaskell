@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.10 2003/07/17 12:27:51 dleijen Exp $
+# $Id: makefile,v 1.11 2003/07/17 12:46:25 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -206,7 +206,7 @@ dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
 # usage: $(call ensure-dir,<directory>)
 # usage: $(call ensure-dirs-of-files,<files>)
 ensure-dir	=if test -d "$(1)" -o "$(1)" = "./"; then :; else $(MKDIR) $(1); fi
-ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,$(dir));)
+ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,$(dir)) &&) :
 
 # full-remove-dir
 # safe-remove-dir
@@ -218,7 +218,7 @@ full-remove-dir	  =$(call safe-remove-dir-contents,$(1)); $(call safe-remove-dir
 # safe-remove-file(<file>)
 safe-move-file	   =if test -f $(1); then $(call run-with-echo,$(MV) $(1) $(2)); fi
 safe-remove-file   =if test -f $(1); then $(call run-with-echo,$(RM) $(1)); fi
-safe-remove-files  =$(foreach file,$(1),$(call safe-remove-file,$(file));)
+safe-remove-files  =$(foreach file,$(1),$(call safe-remove-file,$(file)) &&) :
 
 
 
@@ -231,7 +231,7 @@ silent-remove-file =if test -f $(1); then $(RM) $(1); fi
 make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
 
 # compile-c(<output .o>,<input .c>,<compile flags>)
-compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)); \
+compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
 		 $(silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
 
 # silent-move-stubs(<output .o>,<input .c>)
@@ -273,17 +273,19 @@ make-archive-index	=$(AR) -s $(1)
 # we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
 # usage: $(call install-files,<local dir>,<install dir>,<files>)
 # usage: $(call uninstall-files,<local dir>,<install dir>,<files>)
-install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)); \
-	         $(foreach archive,$(filter %.a,$(2)),$(call make-archive-index,$(archive));)
-install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1);
-install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
-	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))))
+install-file    =echo "install: $(2)"; $(INSTALL) $(1) $(dir $(2)) \
+	         $(if $(filter %.a,$(2)),&& $(call make-archive-index,$(basename $(2)).a))
+install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1)
+install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir)) &&) \
+	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))) &&) \
+		 :
 
-uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
-uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi;
-uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file))) \
-		 $(CD) $(1); \
-		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)))
+uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi
+uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi
+uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file)) &&) \
+		 $(CD) $(1) && \
+		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)) &&) \
+		 :
 uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
 
 # install packages
