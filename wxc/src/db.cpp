@@ -1,6 +1,8 @@
 #include "wrapper.h"
 #include "wx/db.h"
 
+/* testing */
+// #define wxUSE_ODBC 0
 
 /*-----------------------------------------------------------------------------
   We want to include the function signatures always -- even on 
@@ -38,6 +40,7 @@ enum StandardSqlType {
  ,SqlBigInt
  ,SqlTinyInt
 };
+
 
 extern "C" {
 
@@ -278,15 +281,30 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMsg)(wxDb* db)
 #endif
 }
 
+EWXWEXPORT(int,wxDb_GetNumErrorMessages)( wxDb* db)
+{
+#ifdef wxUSE_ODBC
+  int i = 0;
+  for( i = 0; i < DB_MAX_ERROR_HISTORY; i++ ) {
+    if (db->errorList[i] == NULL || db->errorList[i][0] == 0) return i;
+  }
+  return DB_MAX_ERROR_HISTORY;
+#else
+  return 0;
+#endif
+}
+
 EWXWEXPORT(wxString*,wxDb_GetErrorMessage)(wxDb* db, int index)
 {
 #ifdef wxUSE_ODBC
-  if (db==NULL)
-    return new wxString("");
-  else
-    return new wxString(db->errorList[index]);
+  int n;
+  if (db==NULL) return new wxString("");
+  n = wxDb_GetNumErrorMessages(db);
+  if (index >= n) index = n-1;
+  if (index < 0)  index = 0;  
+  return new wxString(db->errorList[n - index - 1]);
 #else
-  return (-1);
+  return new wxString("");
 #endif
 }
 
@@ -896,4 +914,114 @@ EWXWEXPORT(bool,wxDbColInf_IsNullable)( wxDbColInf* self )
 #endif
 }
 
+/*-----------------------------------------------------------------------------
+  Result set information.
+  Unfortunately, the wxWindows standard interface doesn't have a way
+  to retrieve column information for a query result -- so we add it
+  here ourselves.
+-----------------------------------------------------------------------------*/
+
+EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
+{
+#ifndef wxUSE_ODBC
+  if (pnumCols) *pnumCols = 0;
+  return NULL;
+#else
+  RETCODE retcode = 0;
+  HSTMT   hstmt   = SQL_NULL_HSTMT;
+  SWORD   numCols = 0;
+  
+  UWORD       column = 0;
+  wxDbColInf* colInf = NULL;
+
+  if (pnumCols) *pnumCols = 0;
+  if (db==NULL) return NULL;
+
+  /* allocate column info's */
+  hstmt   = db->GetHSTMT();
+  retcode = SQLNumResultCols(hstmt,&numCols);
+  if (retcode != SQL_SUCCESS) {
+    db->DispAllErrors(db->GetHENV(), db->GetHDBC(), hstmt);
+    return NULL;
+  }
+  if (numCols==0) return NULL; 
+  
+  colInf = new wxDbColInf[numCols+1];
+  if (!colInf) return NULL;
+
+  /* mark the end of the array */
+  wxStrcpy(colInf[numCols].tableName, wxEmptyString);
+  wxStrcpy(colInf[numCols].colName, wxEmptyString);
+  colInf[numCols].sqlDataType = 0;
+
+  /* initialize all column infos */
+  for( column = 0; column < numCols; column++)
+  {
+    SWORD colNameLen = 0;
+    UDWORD colSize   = 0;
+
+    /* get the column description */
+    retcode = SQLDescribeCol(hstmt, column+1,
+                            (UCHAR*) colInf[column].colName, DB_MAX_COLUMN_NAME_LEN+1, &colNameLen,
+                            &colInf[column].sqlDataType,
+                            &colSize,
+                            &colInf[column].decimalDigits, 
+                            &colInf[column].nullable );
+    colInf[column].columnSize   = colSize;
+    
+    if (retcode != SQL_SUCCESS) {
+      db->DispAllErrors(db->GetHENV(), db->GetHDBC(), hstmt);
+      delete [] colInf;
+      return NULL;
+    }
+
+    /* for compatibilty with the wxWindows GetColumns, we set the dbDataType too */
+    colInf[column].dbDataType = 0;
+    switch (colInf[column].sqlDataType)
+    {
+        case SQL_VARCHAR:
+        case SQL_CHAR:
+            colInf[column].dbDataType = DB_DATA_TYPE_VARCHAR;
+        break;
+
+        case SQL_TINYINT:
+        case SQL_SMALLINT:
+        case SQL_INTEGER:
+#ifdef SQL_BIGINT
+        case SQL_BIGINT:
+#endif
+#ifdef SQL_BIT
+        case SQL_BIT:
+#endif
+            colInf[column].dbDataType = DB_DATA_TYPE_INTEGER;
+            break;
+        case SQL_DOUBLE:
+        case SQL_DECIMAL:
+        case SQL_NUMERIC:
+        case SQL_FLOAT:
+        case SQL_REAL:
+            colInf[column].dbDataType = DB_DATA_TYPE_FLOAT;
+            break;
+        case SQL_DATE:
+            colInf[column].dbDataType = DB_DATA_TYPE_DATE;
+            break;
+        case SQL_BINARY:
+            colInf[column].dbDataType = DB_DATA_TYPE_BLOB;
+            break;
+    #ifdef __WXDEBUG__
+        default:
+            wxString errMsg;
+            errMsg.Printf(wxT("SQL Data type %d currently not supported by wxWindows"), colInf[column].sqlDataType);
+            wxLogDebug(errMsg,wxT("ODBC DEBUG MESSAGE"));
+    #endif
+    }
+  } /* for columns */
+
+  if (pnumCols) *pnumCols = numCols;
+  return colInf;
+#endif
 }
+
+}
+
+

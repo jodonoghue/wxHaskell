@@ -20,18 +20,16 @@ main
 showPubsNames :: IO ()
 showPubsNames 
   = do putStrLn "opening pubs datasource"
-       db <- dbConnect "pubs" "" ""
-       if (objectIsNull db)
-         then putStrLn "unable to open database!"
-         else do ok <- dbExecSql db "SELECT au_fname FROM authors"
-                 if not ok
-                   then putStrLn "unable to exec query"
-                   else do names <- dbGetNames db
-                           putStrLn $ unlines $ names                          
-                           dbFreeConnection db
-                           -- dbConnectInfDelete connectInf
-                           dbCloseConnections 
-                           putStrLn "done"
+       dbWithConnection "pubs" "" "" $ \db ->
+        do dbHandleExn db $ dbExecSql db "SELECT au_fname, au_lname, contract FROM authors"
+           putStrLn "columns:"
+           columns <- dbGetColumnInfos db
+           putStr $ unlines $ showColumnInfos columns
+           putStrLn ""
+           putStrLn "names:"
+           names <- dbGetNames db
+           putStrLn $ unlines $ names                          
+       putStrLn "done"
 
 {----------------------------------------------------------
    Print data sources
@@ -72,9 +70,12 @@ showTableInfo info
     ,"type   : " ++ tableType info
     ,"remarks: " ++ tableRemarks info
     ,"columns: "
-    ] ++
-    numbered (map showColumnInfo (tableColumns info))
+    ] ++ showColumnInfos (tableColumns info)
+    
 
+
+showColumnInfos infos
+  = numbered (map showColumnInfo infos)
 
 showColumnInfo info
   = ["name   : " ++ columnName info
@@ -125,10 +126,8 @@ dbGetNames db
 dbGetDataStringEx :: Db a -> Int -> Int -> IO String
 dbGetDataStringEx db maxLen column
   = allocaArray maxLen $ \cstr ->
-    do ok <- dbGetDataString db column cstr maxLen nullPtr
-       if not ok
-        then ioError (userError "database: unable to retrieve string value.")
-        else peekCString cstr 
+    do dbHandleExn db $ dbGetDataString db column cstr maxLen nullPtr
+       peekCString cstr 
 
 
 
@@ -139,8 +138,8 @@ dbGetDataStringEx db maxLen column
 ----------------------------------------------------------}
 -- | Open a connection and automatically close it after the computation
 -- returns. See 'dbConnect' for more information about the parameters.
-dbWithConnect :: String -> String -> String -> (Db () -> IO b) -> IO b
-dbWithConnect name userid password f
+dbWithConnection :: String -> String -> String -> (Db () -> IO b) -> IO b
+dbWithConnection name userid password f
   = bracket (dbConnect name userid password)
             (dbDisconnect)
             (f)
@@ -152,14 +151,16 @@ dbConnect :: String -> String -> String -> IO (Db ())
 dbConnect name userId password
   = bracket (dbConnectInfCreate nullHENV name userId password "" "" "" )
             (dbConnectInfDelete)
-            (\connectInf -> do db <- dbGetConnection connectInf True
-                               if objectIsNull db 
-                                then raiseDbError (DbError "Unable to establish a connection" name DB_ERR_CONNECT 0)
-                                else do opened <- dbIsOpen db
-                                        if (not opened)
-                                         then dbRaiseExn db
-                                         else return db)
-       
+            (\connectInf -> 
+              do db <- dbGetConnection connectInf True
+                 if objectIsNull db 
+                  then raiseDbError (DbError ("Unable to establish a connection to the '" ++ name ++ "' database") 
+                                             name DB_ERR_CONNECT 0 "")
+                  else do opened <- dbIsOpen db
+                          if (not opened)
+                           then dbRaiseExn db
+                           else return db)
+
 
 -- | Closes a connection opened with 'dbConnect'.
 dbDisconnect :: Db a -> IO ()
@@ -223,12 +224,25 @@ dbTableInfGetInfo tableInf db
        tableType <- dbTableInfGetTableType tableInf
        remarks   <- dbTableInfGetTableRemarks tableInf
        numCols   <- dbTableInfGetNumCols tableInf
-       columns   <- dbGetColumnInfos db tableName  
+       columns   <- dbGetTableColumnInfos db tableName  
        return (TableInfo tableName tableType remarks columns)
 
+-- | Return dynamic column information for a query.
+dbGetColumnInfos :: Db a -> IO [ColumnInfo]
+dbGetColumnInfos db
+  = alloca $ \pcnumCols ->
+    bracket (dbGetResultColumns db pcnumCols)
+            (dbColInfArrayDelete)
+            (\colInfs  -> do cnumCols <- peek pcnumCols
+                             let numCols = fromCInt cnumCols
+                             mapM (\idx -> do colInf <- dbColInfArrayGetColInf colInfs (idx-1)
+                                              dbColInfGetInfo colInf) 
+                                  [1..numCols])
+    
+
 -- | Return the column information of a certain table.
-dbGetColumnInfos :: Db a -> String -> IO [ColumnInfo]
-dbGetColumnInfos db tableName
+dbGetTableColumnInfos :: Db a -> String -> IO [ColumnInfo]
+dbGetTableColumnInfos db tableName
   = alloca $ \pcnumCols ->
     bracket (dbGetColumns db tableName pcnumCols "")
             (dbColInfArrayDelete)
@@ -329,21 +343,36 @@ dbGetDbms db
 {----------------------------------------------------------
   Database Exceptions
 ----------------------------------------------------------}
+-- | Database error type.
 data DbError
   = DbError   { dbErrorMsg   :: String
               , dbDataSource :: String
               , dbErrorCode  :: DbStatus 
               , dbNativeCode :: Int
+              , dbSqlState   :: String  
               }    -- ^ General error.
   | DbNull         -- ^ Reading a @NULL@ value.
   deriving (Read,Show)  
 
 
 -- | Automatically raise a database exception when 'False' is returned.
+-- You can use this method to wrap around basic database methods.
+--
+-- >  dbHandleExn db $ dbExecSql db "SELECT au_fname FROM authors"           
+--
 dbHandleExn :: Db a -> IO Bool -> IO ()
 dbHandleExn db io
   = do ok <- io
        if ok
+        then return ()
+        else dbRaiseExn db
+
+-- | Raise a database exception based on the most recent error set in
+-- the database. Does nothing when no error is set.
+dbCheckExn :: Db a -> IO ()
+dbCheckExn db
+  = do status <- dbGetDbStatus db
+       if (status == DB_SUCCESS)
         then return ()
         else dbRaiseExn db
 
@@ -355,7 +384,30 @@ dbRaiseExn db
        errorCode <- dbGetDbStatus db
        nativeCode<- dbGetNativeError db
        dataSource<- dbGetDatasourceName db
-       raiseDbError (DbError errorMsg dataSource errorCode nativeCode)
+       raiseDbError (DbError (extractMessage errorMsg) dataSource errorCode nativeCode (extractSqlState errorMsg))
+  where
+    extractSqlState msg
+      | isPrefixOf sqlStatePrefix msg = takeWhile (/='\n') (drop (length sqlStatePrefix) msg)
+      | otherwise                     = ""
+      where
+        sqlStatePrefix  = "SQL State = "
+
+    extractMessage msg
+      = dropTillPrefix "Error Message = " msg
+
+    dropTillPrefix prefix msg
+      = walk msg
+      where
+        walk s  | null s                = msg
+                | isPrefixOf prefix s   = drop (length prefix) s
+                | otherwise             = walk (tail s)
+
+-- | Get the raw error message history. More recent error messages
+-- come first.
+dbGetErrorMessages :: Db a -> IO [String]
+dbGetErrorMessages db
+  = do n <- dbGetNumErrorMessages db
+       mapM (\idx -> dbGetErrorMessage db (idx-1)) [1..n]
 
 -- | Raise a database error.
 raiseDbError :: DbError -> IO a

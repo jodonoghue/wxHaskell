@@ -41,9 +41,12 @@ int              wxDb_GetStatus(TSelf(wxDb) db);
 int              wxDb_GetNativeError( TSelf(wxDb) db);
 /** Retrieve error message set by 'dbGetNextError' */
 TClass(wxString) wxDb_GetErrorMsg(TSelf(wxDb) db);
-/** Retrieve the last /n/ error messages. /0/ is the most recent error
+/** Retrieve the last /n/ error messages, where
+    /n/ is 'dbGetNumErrorMessages'. Index 0 is the most recent error
    that corresponds with 'dbGetStatus' and 'dbGetNativeError' */
 TClass(wxString) wxDb_GetErrorMessage( TSelf(wxDb) db, int index);
+/** Get the number of stored error messages. */
+int wxDb_GetNumErrorMessages( TSelf(wxDb) db);
 TBool wxDb_IsOpen(TSelf(wxDb) db );
 void wxDb_Close(TSelf(wxDb) db);
 TBool wxDb_CommitTrans(TSelf(wxDb) db);
@@ -77,6 +80,8 @@ TBool wxDb_TablePrivileges(TSelf(wxDb) db, TClass(wxString) tableName, TClass(wx
 int wxDb_TranslateSqlState(TSelf(wxDb) db, TClass(wxString) sqlState);
 TClass(wxDb) wxDb_Create( TClass(wxHENV) henv, TBool fwdOnlyCursors );
 void wxDb_Delete( TSelf(wxDb) db );
+/** Return dynamic column information about a result set of a query. */
+TClass(wxDbColInfArray) wxDb_GetResultColumns( TSelf(wxDb) db, int* pnumCols );
 
 /*-----------------------------------------------------------------------------
   DbInf
