@@ -174,6 +174,9 @@ instance Dimensions (Window a) where
     = newAttr "virtualSize" windowGetVirtualSize windowSetVirtualSize
 
 
+instance Sized (Window a) where
+  size  = outerSize
+
 -- | Retrieve the initial creation area from the |area|, or the |position| and
 -- |outerSize| properties.
 initialArea :: Dimensions w => (Rect -> [Prop w] -> a) -> [Prop w] -> a

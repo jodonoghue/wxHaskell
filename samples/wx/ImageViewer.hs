@@ -12,9 +12,7 @@
 -----------------------------------------------------------------------------------------}
 module Main where
 
-import Graphics.UI.WXCore ( bitmapCreateFromFile, bitmapGetSize, dcClear)
 import Graphics.UI.WX 
-
 
 main :: IO ()
 main
@@ -37,7 +35,7 @@ imageViewer
        f      <- frame [text := "ImageViewer", image := "../bitmaps/eye.ico", fullRepaintOnResize := False]
 
        -- use a mutable variable to hold the image
-       vbitmap <- varCreate Nothing
+       vbitmap <- variable [value := Nothing]
 
        -- add a scrollable window widget in the frame
        sw     <- scrolledWindow f [scrollRate := sz 10 10, on paint := onPaint vbitmap
@@ -68,13 +66,15 @@ imageViewer
                                            ,fill (widget sw)]
              ,statusbar        := [status]
              ,menubar          := [file,hlp]
+             ,outerSize        := sz 400 300    -- niceness
              ,on (menu about)  := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
              ,on (menu quit)   := close f
              ,on (menu open)   := onOpen f sw vbitmap mclose status 
              ,on (menu mclose) := onClose  sw vbitmap mclose status
+
+             -- nice close down, but no longer necessary as bitmaps are managed automatically.
              ,on closing       :~ \previous -> do{ closeImage vbitmap; previous }
              ]
-
   where
     onOpen :: Frame a -> ScrolledWindow b -> Var (Maybe (Bitmap ())) -> MenuItem c -> StatusField -> IO ()
     onOpen f sw vbitmap mclose status
@@ -91,7 +91,7 @@ imageViewer
            repaint sw
 
     closeImage vbitmap
-      = do mbBitmap <- varSwap vbitmap Nothing
+      = do mbBitmap <- swap vbitmap value Nothing
            case mbBitmap of
              Nothing -> return ()
              Just bm -> objectDelete bm
@@ -100,17 +100,17 @@ imageViewer
       = do -- load the new bitmap
            bm <- bitmapCreateFromFile fname  -- can fail with exception
            closeImage vbitmap
-           varSet vbitmap (Just bm)
+           set vbitmap [value := Just bm]
            set mclose [enabled := True]
            set status [text := fname]
            -- reset the scrollbars 
-           bmsize <- bitmapGetSize bm
+           bmsize <- get bm size
            set sw [virtualSize := bmsize]
            repaint sw
        `catch` \err -> repaint sw
 
     onPaint vbitmap dc viewArea
-      = do mbBitmap <- varGet vbitmap
+      = do mbBitmap <- get vbitmap value
            case mbBitmap of
-             Nothing -> dcClear dc
+             Nothing -> return () 
              Just bm -> drawBitmap dc bm pointZero False []

@@ -11,10 +11,10 @@ main
 
 gui :: IO ()
 gui 
-  = do f <- frame [text := "Grid test"] 
+  = do f <- frame [text := "Grid test", visible := False] 
            
        -- use text control as logger
-       textlog <- textCtrl f [enabled := False, wrap := WrapNone] 
+       textlog <- textCtrl f [wrap := WrapNone, enabled := False] 
        textCtrlMakeLogActiveTarget textlog
        logMessage "logging enabled"              
 
@@ -35,6 +35,7 @@ gui
                                  ,hfill (widget textlog)]
              ]       
        focusOn g
+       set f [visible := True]  -- reduce flicker at startup.
        return ()
   where
     onGridKeyDown g (EventKey key mods pt)

@@ -57,14 +57,14 @@ module Graphics.UI.WX.Attributes
     (
     -- * Attributes
       Attr, Prop((:=),(:~),(::=),(::~)), ReadAttr, WriteAttr, CreateAttr
-    , get, set
+    , get, set, swap
     , mapAttr, mapAttrW
 
 
     -- * Internal
 
     -- ** Attributes
-    , newAttr, readAttr, writeAttr, nullAttr, constAttr
+    , newAttr, readAttr, writeAttr, nullAttr, constAttr, makeAttr
     
     -- ** Reflection
     , attrName, propName, containsProperty
@@ -104,13 +104,16 @@ type ReadAttr w a = Attr w a
 type WriteAttr w a = Attr w a
 
 -- | Widgets @w@ can have attributes of type @a@.
-data Attr w a   = Attr String (Maybe (a -> Dynamic, Dynamic -> Maybe a)) (w -> IO a) (w -> a -> IO ())   -- name, getter, setter
+data Attr w a   = Attr String (Maybe (a -> Dynamic, Dynamic -> Maybe a))  -- name, dynamic conversion
+                              (w -> IO a) (w -> a -> IO ())               -- getter setter 
+                              (w -> (a -> a) -> IO a)                     -- updater      
 
 
 -- | Cast attributes.
 castAttr :: (v -> w) -> Attr w a -> Attr v a
-castAttr coerce (Attr name mbdyn getter setter)
+castAttr coerce (Attr name mbdyn getter setter upd)
   = Attr name mbdyn (\v -> getter (coerce v)) (\v x -> (setter (coerce v) x))
+                    (\v f -> upd (coerce v) f) 
 
 -- | Cast properties
 castProp :: (v -> w) -> Prop w -> Prop v
@@ -131,7 +134,9 @@ castProps coerce props
 -- as it leads to non-compositional code.
 reflectiveAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 reflectiveAttr name getter setter
-  = Attr name (Just (toDyn, fromDynamic)) getter setter
+  = Attr name (Just (toDyn, fromDynamic)) getter setter updater 
+  where
+    updater w f   = do x <- getter w; setter w (f x); return x
 
 -- | Create a /reflective/ attribute with a specified name: value can possibly
 -- retrieved using 'getPropValue'. Note: the use of this function is discouraged
@@ -140,10 +145,19 @@ createAttr :: Typeable a => String -> (w -> IO a) -> (w -> a -> IO ()) -> Create
 createAttr name getter setter
   = reflectiveAttr name getter setter
 
+-- | Create a new attribute with a specified name, getter, setter, and updater function.
+makeAttr :: String -> (w -> IO a) -> (w -> a -> IO ()) -> (w -> (a -> a) -> IO a) -> Attr w a
+makeAttr name getter setter updater
+  = Attr name Nothing getter setter updater 
+
+
 -- | Create a new attribute with a specified name, getter and setter function.
 newAttr :: String -> (w -> IO a) -> (w -> a -> IO ()) -> Attr w a
 newAttr name getter setter
-  = Attr name Nothing getter setter
+  = makeAttr name getter setter updater 
+  where
+    updater w f   = do x <- getter w; setter w (f x); return x
+
 
 -- | Define a read-only attribute.
 readAttr :: String -> (w -> IO a) -> ReadAttr w a
@@ -171,26 +185,25 @@ constAttr name x
 -- requested and (@set :: a -> b -> a@) is applied to current
 -- value when the attribute is set.
 mapAttr :: (a -> b) -> (a -> b -> a) -> Attr w a -> Attr w b
-mapAttr get set (Attr name reflect getter setter)
+mapAttr get set (Attr name reflect getter setter updater)
     = Attr name Nothing
                 (\w   -> do a <- getter w; return (get a))
                 (\w b -> do a <- getter w; setter w (set a b))
-
+                (\w f -> do a <- updater w (\a -> set a (f (get a))); return (get a)) 
 
 -- | (@mapAttrW conv attr@) maps an attribute of @Attr w a@ to
 -- @Attr v a@ where (@conv :: v -> w@) is used to convert a widget
 -- @v@ into a widget of type @w@.
 mapAttrW :: (v -> w) -> Attr w a -> Attr v a
-mapAttrW f (Attr name reflect getter setter)
-  = Attr name reflect (\v -> getter (f v)) (\v x -> setter (f v) x)
-
+mapAttrW f attr
+  = castAttr f attr
 
 -- | Get the value of an attribute
 --
 -- > t <- get w text
 --
 get :: w -> Attr w a -> IO a
-get w (Attr name reflect getter setter)
+get w (Attr name reflect getter setter updater)
   = getter w
 
 -- | Set a list of properties.
@@ -201,21 +214,23 @@ set :: w -> [Prop w] -> IO ()
 set w props
   = mapM_ setprop props
   where
-    setprop ((Attr name reflect getter setter) := x)
+    setprop ((Attr name reflect getter setter updater) := x)
       = setter w x
-    setprop ((Attr name reflect getter setter) :~ f)
-      = do x <- getter w
-           setter w (f x)
-    setprop ((Attr name reflect getter setter) ::= f)
+    setprop ((Attr name reflect getter setter updater) :~ f)
+      = do updater w f; return ()
+    setprop ((Attr name reflect getter setter updater) ::= f)
       = setter w (f w)
-    setprop ((Attr name reflect getter setter) ::~ f)
-      = do x <- getter w
-           setter w (f w x)
+    setprop ((Attr name reflect getter setter updater) ::~ f)
+      = do updater w (f w); return ()
 
+-- | Set the value of an attribute and return the old value.
+swap :: w -> Attr w a -> a -> IO a
+swap w (Attr name reflect getter setter updater) x
+  = updater w (const x)
 
 -- | Retrieve the name of an attribute
 attrName :: Attr w a -> String
-attrName (Attr name _ _ _)
+attrName (Attr name _ _ _ _)
   = name
 
 -- | Retrieve the name of a property.
@@ -249,7 +264,7 @@ instance Show a => Show (PropValue a) where
 
 -- | Retrieve the value of a property and the list with the property removed.
 filterProperty :: Typeable a => Attr w a -> [Prop w] -> (PropValue a, [Prop w])
-filterProperty (Attr name _ _ _) props
+filterProperty (Attr name _ _ _ _) props
   = walk [] PropNone props
   where
     -- Daan: oh, how a simple thing like properties can result into this... ;-)
@@ -257,13 +272,13 @@ filterProperty (Attr name _ _ _) props
     walk acc res props
       = case props of
           -- Property setter found.
-          (((Attr attr (Just (todyn,fromdyn)) _ _) := x):rest)  | name == attr
+          (((Attr attr (Just (todyn,fromdyn)) _ _ _) := x):rest)  | name == attr
               -> case fromDynamic (todyn x) of
                    Just x  -> walk acc (PropValue x) rest
                    Nothing -> walk acc res props
                    
           -- Property modifier found.
-          (((Attr attr (Just (todyn,fromdyn)) _ _) :~ f):rest)  | name == attr
+          (((Attr attr (Just (todyn,fromdyn)) _ _ _) :~ f):rest)  | name == attr
               -> let dynf x = case fromdyn (toDyn x) of
                                 Just xx -> case fromDynamic (todyn (f xx)) of
                                              Just y  -> y
@@ -275,10 +290,10 @@ filterProperty (Attr name _ _ _) props
                       PropNone     -> walk acc (PropModify dynf) rest
 
           -- Property found, but with the wrong arguments
-          (((Attr attr _ _ _) := _):rest)   | name == attr  -> stop
-          (((Attr attr _ _ _) :~ _):rest)   | name == attr  -> stop
-          (((Attr attr _ _ _) ::= _):rest)  | name == attr  -> stop
-          (((Attr attr _ _ _) ::~ _):rest)  | name == attr  -> stop
+          (((Attr attr _ _ _ _) := _):rest)   | name == attr  -> stop
+          (((Attr attr _ _ _ _) :~ _):rest)   | name == attr  -> stop
+          (((Attr attr _ _ _ _) ::= _):rest)  | name == attr  -> stop
+          (((Attr attr _ _ _ _) ::~ _):rest)  | name == attr  -> stop
 
           -- Defaults
           (prop:rest)

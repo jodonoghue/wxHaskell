@@ -62,9 +62,11 @@ WX-SOURCES= \
 	Graphics/UI/WX/Attributes \
 	Graphics/UI/WX/Layout \
 	Graphics/UI/WX/Classes \
+	Graphics/UI/WX/Variable \
 	Graphics/UI/WX/Events \
 	Graphics/UI/WX/Window \
 	Graphics/UI/WX/Frame \
+	Graphics/UI/WX/Media \
 	Graphics/UI/WX/Menu \
 	Graphics/UI/WX/Timer \
 	Graphics/UI/WX/Draw \

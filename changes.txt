@@ -21,6 +21,8 @@ Non backward compatible changes:
 - Renamed "WXCore.WxcClassTypes" to "WXCore.WxcClassInfo".
 
 Backward compatible additions:
+- Added pure "bitmap" and "sound"
+- Added "variable" objects (mutable variables)
 - Added custom control demo.
 - Made "refresh" erase the background too.
 - Added "children" attribute for windows.

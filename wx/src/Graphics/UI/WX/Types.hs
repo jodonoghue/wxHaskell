@@ -71,7 +71,7 @@ module Graphics.UI.WX.Types
     , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
     -- ** Sizes
-    , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+    , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
     , sizeMin, sizeMax
 
     -- ** Vectors

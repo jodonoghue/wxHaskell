@@ -27,7 +27,7 @@ module Graphics.UI.WX.Draw
     , drawPoint, drawRect, roundedRect
     , drawText, rotatedText, drawBitmap
     -- * Internal
-    , dcWith
+    , dcWith, dcClear
     ) where
 
 import Graphics.UI.WXCore

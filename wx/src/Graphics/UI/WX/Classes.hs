@@ -53,6 +53,8 @@ module Graphics.UI.WX.Classes
     , Checkable( checkable, checked )
     , Dockable( dockable )
     , HasImage( image )
+    , Valued( value )
+    , Sized( size )
     ) where
 
 import Data.Dynamic
@@ -351,3 +353,20 @@ class Items w a | w -> a where
   itemsDelete w
     = do count <- get w itemCount 
          sequence_ (replicate count (itemDelete w 0))
+
+{--------------------------------------------------------------------------
+  Values
+--------------------------------------------------------------------------}  
+-- | Items with a value.
+class Valued w where
+  -- | The value of an object.
+  value :: Attr (w a) a
+
+{--------------------------------------------------------------------------
+  Size
+--------------------------------------------------------------------------}  
+-- | Sized objects (like bitmaps)
+class Sized w where
+  -- | The size of an object. (is 'outerSize' for 'Dimensions' widgets).
+  size :: Attr w Size
+
