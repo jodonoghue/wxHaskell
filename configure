@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.8 2003/08/20 09:57:44 dleijen Exp $
+# $Id: configure,v 1.9 2003/09/12 12:36:39 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -619,6 +619,33 @@ if test "$enableupx" = "yes"; then
   echo "fi"                                             >> config/compress
 fi
 
+
+# generate maxosx installer files.
+echo " - config/macosx-install.info"
+cat > config/macosx-install.info << EOF
+Title wxHaskell
+Version $version
+Description wxHaskell library
+DefaultLocation $prefix
+DeleteWarning
+NeedsAuthorization YES
+Required NO
+Relocatable NO
+RequiresReboot NO
+UseUserMask YES
+OverwritePermissions NO
+InstallFat NO
+RootVolumeOnly YES
+EOF
+
+# generate macosx post-install files.
+echo " - config/macosx-postinstall"
+cat > config/macosx-postinstall << EOF
+#!/bin/sh      
+env installdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
+env installdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
+EOF
+chmod a+x config/macosx-postinstall
 
 echo ""
 echo "done:"
