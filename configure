@@ -11,7 +11,6 @@
 #--------------------------------------------------------------------
 # Variables
 #--------------------------------------------------------------------
-
 version="0.7"
 release="0"
 
@@ -473,6 +472,9 @@ else
   exit 2
 fi
 
+# save name (hcpkg also gets flags)
+hcpkgname="$hcpkg"	
+
 # Add local package flags
 if test "$hcpkglocal"; then
   hc="$hc -package-conf $hcpkglocal"
@@ -805,6 +807,26 @@ EOF
 cat config/macosx-app-temp bin/macosx-app-template > config/macosx-app
 rm -f config/macosx-app-temp
 chmod a+x config/macosx-app
+
+# generate RPM spec file
+hcbasename="`echo $hcname | sed -e 's|-[0-9].*||'`"
+hcpkgbasename="`echo $hcpkgname | sed -e 's|-[0-9].*||'`"
+# to uppercase
+wxToolkit="`echo "$wxtoolkit" | sed -e 'y|abcdefghijklmnopqrstuvwxyz|ABCDEFGHIJKLMNOPQRSTUVWXYZ|'`"
+
+echo " - config/wxhaskell.spec"
+echo "%define wxhversion   $version"	>  config/wxhaskell.spec.temp
+echo "%define wxhrelease   $release"	>> config/wxhaskell.spec.temp
+echo "%define hccomp       $hcbasename"		>> config/wxhaskell.spec.temp
+echo "%define hcpkg        $hcpkgbasename"	>> config/wxhaskell.spec.temp
+echo "%define hcversion    $hcversion"		>> config/wxhaskell.spec.temp	
+echo "%define wxtoolkit    $wxtoolkit"		>> config/wxhaskell.spec.temp
+echo "%define wxToolkit    $wxToolkit"		>> config/wxhaskell.spec.temp
+echo "%define wxversion    $wxversion"		>> config/wxhaskell.spec.temp
+echo "%define configflags  $configflags"	>> config/wxhaskell.spec.temp
+echo ""						>> config/wxhaskell.spec.temp
+cat config/wxhaskell.spec.temp bin/wxhaskell-spec-template > config/wxhaskell.spec
+rm -f config/wxhaskell.spec.temp
 
 # we are done.
 echo ""

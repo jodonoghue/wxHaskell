@@ -1,0 +1,75 @@
+%define wxhversion  0.7
+%define wxhrelease  0
+%define hccomp      ghc
+%define hcpkg       ghc-pkg
+%define hcversion   6.2
+%define wxtoolkit   gtk
+%define wxToolkit   GTK
+%define wxversion   2.5.1
+%define configflags "--wx-config=/home/dleijen/local/wxWindows2.5.1/bin/wx-config"
+
+Summary: A Haskell library for wxWidgets
+Name: wxhaskell
+Version: %{wxhversion}
+Release: %{wxhrelease}
+License: wxWindows Library license
+Group: Development/Libraries
+URL: http://wxhaskell.sourceforge.net
+Source: %{name}-src-%{version}.zip
+BuildRoot: %{_builddir}/%{name}-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{version}-%{release}-root
+
+%description
+
+%package %{hcomp}-%{hcversion}
+Summary: A Haskell library for wxWidgets
+Group: Development/Libraries
+BuildRequires: %{hcomp} = %{hcversion}
+# , wx%{wxtoolkit}-devel = %{wxversion}
+Requires: %{hcomp} = %{hcversion}
+Requires(post,preun): %{_bindir}/%{hcpkg}-%{hcversion}
+
+%description %{hcomp}-%{hcversion}
+wxHaskell is a portable GUI library for Haskell that uses wxWidgets.
+wxWidgets is a comprehensive C++ library that is portable across all major GUI 
+platforms; including GTK, Windows, X11, and MacOS X. Furthermore, it is a 
+mature library (in development since 1992) that supports a wide range of widgets 
+with native look-and-feel.
+
+This package contains the libraries compiled 
+- for : %{hcomp}-%{hcversion}
+- with: wx%{wxToolkit}-%{wxversion}
+
+%prep
+%setup -q
+
+%build
+./configure %{configargs} --shared-prefix="" --hc=%{hcomp}-%{hcversion} --hcpkg=%{hcpkg}-%{hcversion} --libdir=%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell 
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install-files
+mv %buildroot%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/libwxc-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{version}.so %buildroot%{_libdir}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post %{hcomp}-%{hcversion}
+env wxhlibdir=%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell %{hcpkg}-%{hcversion} -u -i %{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/wxcore.pkg
+env wxhlibdir=%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell %{hcpkg}-%{hcversion} -u -i %{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/wx.pkg
+
+%preun %{hcomp}-%{hcversion}
+if [ "$1" = 0 ]; then
+  %{hcpkg}-%{hcversion} -r wx || :
+  %{hcpkg}-%{hcversion} -r wxcore || :
+fi
+
+%files %{hcomp}-%{hcversion}
+%defattr(-,root,root,-)
+%{_libdir}/%{hcomp}-%{hcversion}/wxhaskell/*
+%{_libdir}/libwxc-%{hcomp}%{hcversion}-%{wxtoolkit}%{wxversion}-%{version}.so
+
+%changelog
+* Fri Mar 26 2004 Daan Leijen <http://www.cs.uu.nl/~daan> - 0.7-0
+- Initial build
+- Original spec file was kindly provided by Jens Petersen <petersen@haskell.org>.
