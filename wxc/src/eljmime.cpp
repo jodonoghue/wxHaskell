@@ -92,7 +92,14 @@ EWXWEXPORT(int, wxFileType_GetExtensions) (void* _obj, void* _lst)
 
 EWXWEXPORT(int, wxFileType_GetIcon) (void* _obj, void *icon)
 {
-        return (int)((wxFileType*)_obj)->GetIcon((wxIcon*)icon);
+#if wxCHECK_VERSION(2,5,0)
+	wxIconLocation iconLoc;
+	int res = ((wxFileType*)_obj)->GetIcon(&iconLoc);
+	*((wxIcon*)icon) = wxIcon(iconLoc);
+	return res;
+#else
+	return (int)((wxFileType*)_obj)->GetIcon((wxIcon*)icon);
+#endif
 }
 
 EWXWEXPORT(int, wxFileType_GetDescription) (void* _obj, void* _buf)

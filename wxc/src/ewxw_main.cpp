@@ -81,7 +81,9 @@ EWXWEXPORT(void, ELJApp_initialize)(void* _obj, AppInitFunc _func, char* _cmd, v
 #else  /* not WIN32 */
 
 #ifdef __WXMAC__ /* declare wxEntry explicitly as wxMAC seems to leave it out? */
+#if !wxCHECK_VERSION(2,5,0)
 void wxEntry( int argc, char** argv, bool enterLoop = true );
+#endif
 #endif
 extern "C"
 {
@@ -109,7 +111,7 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
 EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, void* _argv)
 {
   APPTerminating = 0;
-  wxEntry(_argc, (char**)_argv);
+  wxEntry(_argc, (char**)_argv );
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
   /* wxPendingEvents = NULL; */

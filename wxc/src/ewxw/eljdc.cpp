@@ -523,7 +523,7 @@ EWXWEXPORT(int, wxScreenDC_EndDrawingOnTop)(void* _obj)
 	
 EWXWEXPORT(void*,wxMetafileDC_Create)(void* _file)
 {
-#if defined(__WXGTK__)
+#if defined(__WXGTK__) || defined(__WXMAC__) 
 	return NULL;
 #else
 	wxString file;

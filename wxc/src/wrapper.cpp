@@ -315,10 +315,12 @@ EWXWEXPORT(void*, ELJApp_CreateLogTarget)()
         return wxGetApp().CreateLogTarget();
 }
 
+/*
 EWXWEXPORT(int, ELJApp_GetWantDebugOutput)()
 {
         return (int)wxGetApp().GetWantDebugOutput();
 }
+*/
 
 EWXWEXPORT(void, ELJApp_SetUseBestVisual)( int flag )
 {
@@ -344,7 +346,7 @@ EWXWEXPORT(void, ELJApp_SetTopWindow) (void* _wnd)
 {
         wxGetApp ().SetTopWindow ((wxWindow*)_wnd);
 }
-
+/*
 EWXWEXPORT(int, ELJApp_SendIdleEvents)()
 {
         return (int)wxGetApp().SendIdleEvents();
@@ -354,7 +356,7 @@ EWXWEXPORT(int, ELJApp_SendIdleEventsToWindow)(void* win)
 {
         return (int)wxGetApp().SendIdleEvents((wxWindow*) win);
 }
-
+*/
 EWXWEXPORT(void, ELJApp_EnableTooltips)(int _enable)
 {
         wxToolTip::Enable (_enable != 0);
@@ -603,7 +605,7 @@ EWXWEXPORT(void*, Null_Colour)()
 {
         return (void*)&wxNullColour;
 }
-
+/*
 EWXWEXPORT(int, wxDllLoader_LoadLibrary)(void* _name, void* _success)
 {
         bool success;
@@ -627,7 +629,7 @@ EWXWEXPORT(void*, wxDllLoader_GetSymbol)(int _handle, void* _name)
 {
         return wxDllLoader::GetSymbol ((wxDllType)_handle, (const char*)_name);
 }
-
+*/
 EWXWEXPORT(void, wxCFree) (void* _ptr)
 {
         free (_ptr);

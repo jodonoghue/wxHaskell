@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.17 2004/02/20 09:16:46 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.18 2004/02/20 15:07:09 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -275,15 +275,15 @@ TStringLen ELJApp_GetUserHome( void* _usr, TStringOutVoid _buf );
 TStringLen ELJApp_GetUserId( TStringOutVoid _buf );
 TStringLen ELJApp_GetUserName( TStringOutVoid _buf );
 TStringLen ELJApp_GetVendorName( TStringOutVoid _buf );
-int        ELJApp_GetWantDebugOutput(  );
+/* int        ELJApp_GetWantDebugOutput(  ); */
 void       ELJApp_InitAllImageHandlers(  );
 int        ELJApp_Initialized(  );
 int        ELJApp_MainLoop(  );
 void       ELJApp_MousePosition( TPointOutVoid(_x,_y) );
 int        ELJApp_Pending(  );
 int        ELJApp_SafeYield( TClass(wxWindow) _win );
-int        ELJApp_SendIdleEvents(  );
-int        ELJApp_SendIdleEventsToWindow( TClass(wxWindow) win );
+/* int        ELJApp_SendIdleEvents(  ); */
+/* int        ELJApp_SendIdleEventsToWindow( TClass(wxWindow) win ); */
 void       ELJApp_SetAppName( TString name );
 void       ELJApp_SetClassName( TString name );
 void       ELJApp_SetExitOnFrameDelete( int flag );
@@ -1599,9 +1599,11 @@ TClassDef(wxDirTraverser)
 
 /* wxDllLoader */
 TClassDef(wxDllLoader)
+/*
 void*      wxDllLoader_GetSymbol( int _handle, TStringVoid _name );
 int        wxDllLoader_LoadLibrary( TStringVoid _name, void* _success );
 void       wxDllLoader_UnloadLibrary( int _handle );
+*/
 
 /* wxDocChildFrame */
 TClassDefExtend(wxDocChildFrame,wxFrame)
@@ -2864,8 +2866,10 @@ int        wxListEvent_GetIndex( TSelf(wxListEvent) _obj );
 void       wxListEvent_GetItem( TSelf(wxListEvent) _obj, TClassRef(wxListItem) _ref );
 TStringLen wxListEvent_GetLabel( TSelf(wxListEvent) _obj, TStringOutVoid _buf );
 int        wxListEvent_GetMask( TSelf(wxListEvent) _obj );
+/*
 int        wxListEvent_GetOldIndex( TSelf(wxListEvent) _obj );
 int        wxListEvent_GetOldItem( TSelf(wxListEvent) _obj );
+*/
 void       wxListEvent_GetPoint( TSelf(wxListEvent) _obj, TPointOutVoid(_x,_y) );
 TStringLen wxListEvent_GetText( TSelf(wxListEvent) _obj, TStringOutVoid _buf );
 
@@ -3246,7 +3250,7 @@ int        wxNavigationKeyEvent_GetDirection( TSelf(wxNavigationKeyEvent) _obj )
 TBool      wxNavigationKeyEvent_IsWindowChange( TSelf(wxNavigationKeyEvent) _obj );
 void       wxNavigationKeyEvent_SetCurrentFocus( TSelf(wxNavigationKeyEvent) _obj, TClass(wxWindow) win );
 void       wxNavigationKeyEvent_SetDirection( TSelf(wxNavigationKeyEvent) _obj, int bForward );
-void       wxNavigationKeyEvent_SetPropagate( TSelf(wxNavigationKeyEvent) _obj, int bDoIt );
+/* void       wxNavigationKeyEvent_SetPropagate( TSelf(wxNavigationKeyEvent) _obj, int bDoIt );*/
 void       wxNavigationKeyEvent_SetWindowChange( TSelf(wxNavigationKeyEvent) _obj, int bIs );
 int        wxNavigationKeyEvent_ShouldPropagate( TSelf(wxNavigationKeyEvent) _obj );
 

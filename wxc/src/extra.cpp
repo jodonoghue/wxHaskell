@@ -289,7 +289,11 @@ void wxInputSinkEvent::Read( wxInputStream* input )
 
   /* read */
   input->Read( m_buffer, m_bufferLen );
+#if wxCHECK_VERSION(2,5,0)
+  m_lastError = input->GetLastError();
+#else
   m_lastError = input->LastError();
+#endif
   if (m_lastError == wxSTREAM_NO_ERROR)
     m_lastRead  = input->LastRead();
   else

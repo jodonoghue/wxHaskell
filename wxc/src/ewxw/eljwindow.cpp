@@ -21,7 +21,11 @@ EWXWEXPORT(int, wxWindow_Destroy)(void* _obj)
 	
 EWXWEXPORT(void, wxWindow_Clear)(void* _obj)
 {
+#if wxCHECK_VERSION(2,5,0)
+        ((wxWindow*)_obj)->ClearBackground();
+#else
 	((wxWindow*)_obj)->Clear();
+#endif
 }
 	
 EWXWEXPORT(void, wxWindow_Fit)(void* _obj)

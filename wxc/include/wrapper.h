@@ -488,7 +488,7 @@ class ELJPreviewFrame: public wxPreviewFrame
         { if ((DoCreateControlBar) && DoCreateControlBar(EiffelObject)) return; wxPreviewFrame::CreateControlBar();}
 
         void SetPreviewCanvas (void* _obj)
-        { m_previewCanvas = (wxWindow*) _obj; }
+        { m_previewCanvas = (wxPreviewCanvas*) _obj; }
 
         void SetControlBar (void* _obj)
         { m_controlBar = (wxPreviewControlBar*) _obj; }

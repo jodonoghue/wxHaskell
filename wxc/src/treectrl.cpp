@@ -309,8 +309,12 @@ EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, int* selections)
             /*
 			*(((wxTreeItemId**)selections)[i]) = sel[i];
             */
-            selections[i] = (int)(sel[i].m_pItem);
-          }
+	    #if wxCHECK_VERSION(2,5,0)
+            selections[i] = (int)(((wxTreeItemId*)sel[i])->m_pItem);
+            #else
+	    selections[i] = (int)(sel[i].m_pItem);
+	    #endif
+	  }
 	}
 	return result;		
 }
