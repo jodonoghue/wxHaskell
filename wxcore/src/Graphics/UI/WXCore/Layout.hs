@@ -857,12 +857,25 @@ sizerFromLayout parent layout
           = case layout of
               Widget _ win            -> downcastWindow win
               WidgetContainer _ win _ -> downcastWindow win
+              Splitter _ splitter _ _ _ _ _ -> downcastWindow splitter
               other                   -> error "Layout: hsplit/vsplit need widgets or containers as arguments"
 
         paneSetLayout layout
           = case layout of
               Widget _ win            -> return ()
               WidgetContainer options win layout -> windowSetLayout win layout
+              Splitter options splitter pane1 pane2 splitHorizontal sashWidth paneWidth 
+                                      ->  do splitterWindowSetMinimumPaneSize splitter 20
+                                             splitterWindowSetSashSize splitter sashWidth
+                                             -- sizerAddWindowWithOptions container splitter options
+                                             let win1 = getWinFromLayout pane1
+                                                 win2 = getWinFromLayout pane2
+                                             if splitHorizontal
+                                              then splitterWindowSplitHorizontally splitter win1 win2 paneWidth
+                                              else splitterWindowSplitVertically splitter win1 win2 paneWidth
+                                             paneSetLayout pane1
+                                             paneSetLayout pane2
+                                             return ()
               other                   -> error "Layout: hsplit/vsplit need widgets or containers as arguments"
 
 

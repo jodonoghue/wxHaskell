@@ -1,5 +1,9 @@
 #include "wrapper.h"
 
+#ifdef wxUSE_ODBC
+#include "wx/db.h"
+#endif
+
 extern int APPTerminating;
 
 
@@ -41,6 +45,10 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
 
 #if defined(_MSC_VER)
   wxPendingEvents = NULL; 
+#endif
+
+#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
+  wxDbCloseConnections();
 #endif
 
 /* check memory leaks with visual C++ */
@@ -93,6 +101,9 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
   /* wxPendingEvents = NULL; */
+#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
+  wxDbCloseConnections();
+#endif
 }
 
 EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, void* _argv)
@@ -102,6 +113,9 @@ EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, v
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
   /* wxPendingEvents = NULL; */
+#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
+  wxDbCloseConnections();
+#endif
 }
 
 }

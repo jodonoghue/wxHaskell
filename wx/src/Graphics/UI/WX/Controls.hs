@@ -563,7 +563,7 @@ columns
   where
     setter l xs
       = do n <- listCtrlGetColumnCount l
-           mapM_ (listCtrlDeleteColumn l) (reverse [0..n-1])
+           mapM_ (\c -> listCtrlDeleteColumn l 0) (reverse [1..n])
            mapM_ (insertColumn l) (zip [0..] xs)
       where
         insertColumn l (idx,(name,align,width))

@@ -132,12 +132,13 @@ module Graphics.UI.WXCore.Db
      
    -- * Meta information
    -- ** Data sources
-   , DataSourceName, dbGetDataSources, dbGetDataSourceInfo   
+   , DataSourceName, dbGetDataSources
+   , dbGetDataSourceInfo, dbGetDataSourceTableInfo
    
    -- ** Tables and columns
    , TableName, ColumnName, ColumnIndex
    , DbInfo(..), TableInfo(..), ColumnInfo(..)
-   , dbGetInfo, dbGetTableColumnInfos, dbGetColumnInfos
+   , dbGetInfo, dbGetTableInfo, dbGetTableColumnInfos, dbGetColumnInfos
 
    -- ** Dbms
    , Dbms(..), dbGetDbms   
@@ -405,7 +406,7 @@ dbGetDataNull db getData
 {----------------------------------------------------------
   Open connection
 ----------------------------------------------------------}
-{- | Open a connection and automatically close it after the computation
+{- | Open a (cached) connection and automatically close it after the computation
   returns. Takes the name of the data source, a user name, and password as
    arguments. Raises a database exception ('DbError') when the connection
    fails.
@@ -416,7 +417,20 @@ dbWithConnection name userid password f
             (dbDisconnect)
             (f)
 
--- | (@dbConnect name userId password@) creates a connection to a 
+
+{- | Open a direct database connection and automatically close it after the computation
+  returns. This method is not recommended in general as
+-- the 'dbWithConnection' function is potentially much more efficient since it
+-- caches database connections and meta information, greatly reducing network traffic.
+-}
+dbWithDirectConnection :: DataSourceName -> String -> String -> (Db () -> IO b) -> IO b
+dbWithDirectConnection name userid password f
+  = bracket (dbConnectDirect name userid password)
+            (\db -> do{ dbClose db; dbDelete db } )
+            (f)
+
+
+-- | (@dbConnect name userId password@) creates a (cached) connection to a 
 -- data source @name@. Raises a database exception ('DbError') when the connection fails.
 -- Use 'dbDisconnect' to close the connection.
 dbConnect :: DataSourceName -> String -> String -> IO (Db ())
@@ -426,19 +440,40 @@ dbConnect name userId password
             (\connectInf -> 
               do db <- dbGetConnection connectInf True
                  if objectIsNull db 
-                  then raiseDbConnect name
+                  then dbConnectDirect name userId password
                   else do opened <- dbIsOpen db
                           if (not opened)
-                           then dbRaiseExn db
+                           then do dbFreeConnection db
+                                   dbConnectDirect name userId password
                            else return db)
 
+-- | Open a direct database connection. This method is in general not recommended as
+-- the 'dbConnect' function is potentially much more efficient since it
+-- caches database connections and meta information, greatly reducing network traffic.
+dbConnectDirect :: DataSourceName -> String -> String -> IO (Db ())
+dbConnectDirect dataSource userId password 
+  = bracket (dbConnectInfCreate nullHENV dataSource userId password "" "" "") 
+            (dbConnectInfDelete)
+            (\connectInf ->
+             do henv <- dbConnectInfGetHenv connectInf
+                db   <- dbCreate henv True
+                if (objectIsNull db)
+                 then raiseDbConnect dataSource
+                 else do opened <- dbOpen db dataSource userId password
+                         if (not opened)
+                          then finalize (dbDelete db)
+                                        (dbRaiseExn db)
+                          else return db)
 
--- | Closes a connection opened with 'dbConnect'.
+
+-- | Closes a connection opened with 'dbConnect' (or 'dbConnectDirect').
 dbDisconnect :: Db a -> IO ()
 dbDisconnect db
-  = do dbClose db
-       dbHandleExn db $ dbFreeConnection db
-       return ()
+  = do freed <- dbFreeConnection db
+       if (freed) 
+        then return ()
+        else do dbClose db
+                dbDelete db
 
 
 {----------------------------------------------------------
@@ -487,37 +522,39 @@ data ColumnInfo
 -- | Get the complete meta information of a data source. Takes the
 -- data source name, a user id, and password as arguments.
 --
--- > do info <- dbGetDataSourceInfo "pubs" "" ""
--- >    print info
+-- > dbGetDataSourceInfo dsn userid password
+-- >   = dbWithConnection dsn userId password dbGetInfo 
 -- 
 dbGetDataSourceInfo :: DataSourceName -> String -> String -> IO DbInfo
 dbGetDataSourceInfo dataSource userId password
-  = bracket (dbConnectInfCreate nullHENV dataSource userId password "" "" "") 
-            (dbConnectInfDelete)
-            (\connectInf ->
-             do henv <- dbConnectInfGetHenv connectInf
-                bracket (dbCreate henv True)
-                        (dbDelete)
-                        (\db -> if (objectIsNull db)
-                                 then raiseDbConnect dataSource
-                                 else do opened <- dbOpen db dataSource userId password
-                                         if (not opened)
-                                          then dbRaiseExn db
-                                          else do info <- dbGetInfo db
-                                                  dbClose db
-                                                  return info))
+  = dbWithConnection dataSource userId password dbGetInfo
+
+-- | Get the meta information of a table in a data source. Takes the
+-- data source name, table name, a user id, and password as arguments.
+dbGetDataSourceTableInfo :: DataSourceName -> TableName -> String -> String -> IO TableInfo
+dbGetDataSourceTableInfo dataSource tableName userId password
+  = dbWithConnection dataSource userId password (\db -> dbGetTableInfo db tableName)
+
+-- | Get the meta information of a table in a database.
+dbGetTableInfo :: Db a -> TableName -> IO TableInfo
+dbGetTableInfo db name
+  = do info <- dbGetInfo db
+       case lookup name (zip (map tableName (dbTables info)) (dbTables info)) of
+         Nothing    -> raiseDbInvalidTableName db name
+         Just tinfo -> return tinfo
 
 -- | Get the complete meta information of a database.
 dbGetInfo :: Db a -> IO DbInfo
 dbGetInfo db
-  = do dbInf    <- dbGetCatalog db ""
-       catalog  <- dbInfGetCatalogName dbInf
-       schema   <- dbInfGetSchemaName  dbInf
-       numTables<- dbInfGetNumTables   dbInf
-       tables   <- mapM (\idx -> do tableInf <- dbInfGetTableInf dbInf (idx-1)
-                                    dbTableInfGetInfo tableInf db) 
-                        [1..numTables]
-       return (DbInfo catalog schema tables)
+  = bracket (dbGetCatalog db "")
+            (dbInfDelete)
+            (\dbInf ->do catalog  <- dbInfGetCatalogName dbInf
+                         schema   <- dbInfGetSchemaName  dbInf
+                         numTables<- dbInfGetNumTables   dbInf
+                         tables   <- mapM (\idx -> do tableInf <- dbInfGetTableInf dbInf (idx-1)
+                                                      dbTableInfGetInfo tableInf db) 
+                                          [1..numTables]
+                         return (DbInfo catalog schema tables))
 
 dbTableInfGetInfo :: DbTableInf a -> Db b -> IO TableInfo
 dbTableInfGetInfo tableInf db
@@ -745,6 +782,12 @@ raiseDbInvalidColumnName db name
   = do dataSource <- dbGetDataSourceName db
        raiseDbError (DbError ("Invalid column name (" ++ name ++ ")") dataSource DB_ERR_INVALID_COLUMN_NAME 0 "")
 
+-- | Raise an invalid table name error
+raiseDbInvalidTableName :: Db a -> ColumnName -> IO b
+raiseDbInvalidTableName db name
+  = do dataSource <- dbGetDataSourceName db
+       raiseDbError (DbError ("Invalid table name (" ++ name ++ ")") dataSource DB_ERR_INVALID_TABLE_NAME 0 "")
+
 -- | Raise a connection error
 raiseDbConnect :: DataSourceName -> IO a
 raiseDbConnect name
@@ -866,6 +909,7 @@ data DbStatus
   | DB_ERR_DRIVER_NOT_CAPABLE                         -- ^ SqlState = @S1C00@
   | DB_ERR_TIMEOUT_EXPIRED                            -- ^ SqlState = @S1T00@
   | DB_ERR_FETCH_NULL          -- ^ Unexpected NULL value
+  | DB_ERR_INVALID_TABLE_NAME  -- ^ Invalid (or unknown) table name
   | DB_ERR_INVALID_COLUMN_NAME -- ^ Invalid (or unknown) column name
   | DB_ERR_TYPE_MISMATCH       -- ^ Trying to convert a SQL value of the wrong type
   | DB_ERR_CONNECT             -- ^ Unable to establish a connection
