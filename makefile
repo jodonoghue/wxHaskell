@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.31 2003/09/29 14:21:24 dleijen Exp $
+# $Id: makefile,v 1.32 2003/09/29 14:24:50 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -419,7 +419,7 @@ else
 	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
 endif
 ifeq ($(TOOLKIT),mac)
-	@$(call cp-bindist,bin,$(BINDIST-BINDIR),config/macosx-app)
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/macosx-app)
 endif
 	@$(RM) $(DIST-BIN)
 	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
