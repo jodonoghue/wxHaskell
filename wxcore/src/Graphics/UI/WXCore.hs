@@ -33,6 +33,7 @@ module Graphics.UI.WXCore
         , module Graphics.UI.WXCore.Frame
         , module Graphics.UI.WXCore.Dialogs
         , module Graphics.UI.WXCore.Controls
+        , module Graphics.UI.WXCore.Db
         , module Graphics.UI.WXCore.Layout
         , module Graphics.UI.WXCore.Image
 
@@ -56,6 +57,7 @@ import Graphics.UI.WXCore.Dialogs
 import Graphics.UI.WXCore.Controls
 import Graphics.UI.WXCore.Layout
 import Graphics.UI.WXCore.Image
+import Graphics.UI.WXCore.Db
 
 -- | Start the event loop. Takes an initialisation action as argument.
 -- Except for 'run', the functions in the WXH library can only be called

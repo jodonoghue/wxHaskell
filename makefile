@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.49 2003/10/25 13:20:16 dleijen Exp $
+# $Id: makefile,v 1.50 2003/10/27 11:22:24 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -88,6 +88,7 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/Dialogs \
 	Graphics/UI/WXCore/Image \
 	Graphics/UI/WXCore/Controls \
+	Graphics/UI/WXCore/Db \
 	Graphics/UI/WXCore
 
 WXCORE-CORE-SOURCES = \
