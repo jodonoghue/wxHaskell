@@ -1439,6 +1439,12 @@ EWXWEXPORT(void, wxWindow_FitInside)(void* _obj)
 }
 
 
+EWXWEXPORT(void, wxcGetMousePosition)( int* x, int* y )
+{
+  wxPoint pt = wxGetMousePosition();
+  if (x) *x = pt.x;
+  if (y) *y = pt.y;
+}
 
 /*-----------------------------------------------------------------------------
   scrolledwindow

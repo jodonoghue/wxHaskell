@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.52 2003/10/31 22:20:29 dleijen Exp $
+# $Id: makefile,v 1.53 2003/11/07 09:50:42 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -21,7 +21,9 @@
 # make dist	 - create distribution files
 #       srcdist
 #       docdist
-#       bindist
+#       bindist	 - zip file (on windows with install scripts)
+#	macdist	 - macOSX installer
+#       
 #
 # Dependencies are handled fully automatic: no need for "make depend" :-)
 #

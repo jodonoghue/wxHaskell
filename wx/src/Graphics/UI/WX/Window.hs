@@ -9,6 +9,9 @@
     Portability :  portable
 
     Exports default instances for generic windows.
+
+    * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.             
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Window
@@ -31,6 +34,13 @@ import Graphics.UI.WX.Events
 --------------------------------------------------------------------------------}
 -- | A scrollable window. Use 'virtualSize' and 'scrollRate' to set the scrollbar
 -- behaviour.
+--
+-- * Attributes: 'scrollRate'
+--
+-- * Instances: 'HasImage', 'Form', 'Closable' -- 
+--             'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
 scrolledWindow :: Window a -> [Prop (ScrolledWindow ())] -> IO (ScrolledWindow ())
 scrolledWindow parent props
   = do sw <- scrolledWindowCreate parent idAny rectNull 

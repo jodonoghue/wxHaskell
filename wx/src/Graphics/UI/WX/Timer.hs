@@ -28,6 +28,11 @@ import Graphics.UI.WX.Events
 
 --------------------------------------------------------------------}
 -- | A timer generates a 'command' event on a specified milli-second 'interval'.
+--
+-- * Attributes: 'interval'
+--
+-- * Instances: 'Able', 'Commanding'
+--
 type Timer  = TimerEx ()
 
 -- | Create a new timer with a 1 second interval. The timer is automatically discarded

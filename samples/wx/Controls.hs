@@ -1,5 +1,10 @@
 {--------------------------------------------------------------------------------
-   Controls demo.
+ Copyright (c) Daan Leijen 2003
+ wxWindows License.
+
+ Demonstrates: 
+ - many different kind of controls
+ - message logging.
 --------------------------------------------------------------------------------}
 module Main where
 
@@ -37,17 +42,21 @@ gui
 
        -- choice
        p3   <- panel nb []
-       let clabels = ["noot","mies","aap"]
+       let clabels = ["mies","noot","aap"]
        c1   <- choice p3 False clabels [tooltip := "unsorted choices", on command ::= logSelect clabels]
        c2   <- choice p3 True  clabels [tooltip := "sorted choices", on command ::= logSelect clabels]
        cb1  <- button p3 [text := "disable", on command ::= onEnable c1]
 
        -- list box page
        p4   <- panel nb []
-       sl1  <- singleListBox p4 False clabels 
-                  [tooltip := "unsorted single-selection listbox", on command ::= logSelect clabels]
-       sl2  <- singleListBox p4 True clabels 
-                  [tooltip := "sorted listbox", on command ::= logSelect clabels]
+       sl1  <- singleListBox p4 False 
+                  [items      := clabels
+                  ,tooltip    := "unsorted single-selection listbox"
+                  ,on command ::= logSelect clabels]
+       sl2  <- singleListBox p4 True 
+                  [items      := clabels
+                  ,tooltip    := "sorted listbox"
+                  ,on command ::= logSelect clabels]
        sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enable :~ not]]
 
        -- slider/gauge page

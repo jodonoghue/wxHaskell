@@ -63,11 +63,23 @@ import Graphics.UI.WX.Window
 -- | Create a 'Panel', a window that is normally used as a container for
 -- controls. It has a standard background and maintains standard keyboard
 -- navigation (ie. /Tab/ moves through the controls).
+--
+-- * Attributes: 'defaultButton', 'focusOn' 
+--
+-- * Instances: 'Form' -- 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled',
+--             'Textual', 'Literate' 
 panel :: Window a -> [Prop (Panel ())] -> IO (Panel ())
 panel parent props
   = panelEx parent (wxTAB_TRAVERSAL .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props -- .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a 'Panel' with a specific style.
+--
+-- * Attributes: 'defaultButton', 'focusOn' 
+--
+-- * Instances: 'Form' -- 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled',
+--             'Textual', 'Literate', 'Reactive', 'Paint' 
 panelEx :: Window a -> Style -> [Prop (Panel ())] -> IO (Panel ())
 panelEx parent style props
   = do p <- panelCreate parent idAny rectNull style
@@ -98,6 +110,10 @@ focusOn w
 
 
 -- | Create a 'Notebook'. Layout is managed with the 'tabs' combinator.
+--
+-- * Instances: 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled',
+--             'Textual', 'Literate', 'Reactive', 'Paint' 
 notebook :: Window a -> [Prop (Notebook ())] -> IO (Notebook ())
 notebook parent props
   = do nb <- notebookCreate parent idAny rectNull wxCLIP_CHILDREN
@@ -109,17 +125,30 @@ notebook parent props
 --------------------------------------------------------------------------------}
 
 -- | Create a standard push button.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 button :: Window a -> [Prop (Button ())] -> IO (Button ())
 button parent props
   = buttonEx parent 0 props
 
 -- | Create a minimially sized push button.
+--
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 smallButton :: Window a -> [Prop (Button ())] -> IO (Button ())
 smallButton parent props
   = buttonEx parent wxBU_EXACTFIT props
 
 
 -- | Create a standard push button with the given flags.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 buttonEx :: Window a -> Int -> [Prop (Button ())] -> IO (Button ())
 buttonEx parent flags props
   = do b <- buttonCreate parent idAny "?" rectNull flags
@@ -131,6 +160,10 @@ instance Commanding (Button a) where
 
 -- | Create a bitmap button. Use the 'image' attribute to set the
 -- bitmap.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 bitmapButton :: Window a -> [Prop (BitmapButton ())] -> IO (BitmapButton ())
 bitmapButton parent props
   = do bb <- bitmapButtonCreate parent idAny nullBitmap rectNull wxBU_AUTODRAW 
@@ -193,11 +226,19 @@ instance Able (TextCtrl a) where
 -}
 
 -- | Create a single-line text entry control.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 textEntry :: Window a -> Align -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textEntry parent align props
   = textCtrlEx parent (toBitMask align) props
 
 -- | Create a multi-line text control with a certain wrap mode
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 textCtrl :: Window a -> Wrap -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrl parent wrap props
   = textCtrlEx parent (toBitMask wrap .+. wxTE_MULTILINE) props
@@ -206,11 +247,19 @@ textCtrl parent wrap props
 -- | Create a multi-line text rich-text control with a certain wrap mode
 -- Enables font and color settings on windows, while being equal to 'textCtrl'
 -- on other platforms.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 textCtrlRich :: Window a -> Wrap -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlRich parent wrap props
   = textCtrlEx parent (toBitMask wrap .+. wxTE_MULTILINE .+. wxTE_RICH2) props
 
 -- | Create a generic text control given a certain style.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 textCtrlEx :: Window a -> Style -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlEx parent flags props
   = do e <- textCtrlCreate parent idAny "" rectNull flags
@@ -245,6 +294,10 @@ instance Checkable (CheckBox a) where
     = newAttr "checked" checkBoxGetValue checkBoxSetValue
 
 -- | Create a new checkbox.
+--
+-- * Instances: 'Commanding','Checkable' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 checkBox :: Window a -> [Prop (CheckBox ())] -> IO (CheckBox ())
 checkBox parent props
   = do c <- checkBoxCreate parent idAny "" rectNull 0
@@ -279,6 +332,10 @@ instance Items (Choice a) String where
 -- | Create a choice item to select a one of a list of strings.
 -- It takes a boolean that determines if the list is sorted
 -- and a list of labels.
+--
+-- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 choice :: Window a -> Bool -> [String] -> [Prop (Choice ())] -> IO (Choice ())
 choice parent sorted labels props
   = do c <- choiceCreate parent idAny rectNull labels (if sorted then wxCB_SORT else 0)
@@ -315,6 +372,10 @@ instance Items (ComboBox a) String where
 
 -- | Create a new combo box with a list of initial entries and a boolean
 -- that is 'True' when the entries should be sorted.
+--
+-- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 comboBox :: Window a -> Bool -> [String] -> [Prop (ComboBox ())] -> IO (ComboBox ())
 comboBox parent sorted labels props
   = do cb <- comboBoxCreate parent idAny "" rectNull labels ((if sorted then wxCB_SORT else 0) .+. wxCB_DROPDOWN)
@@ -368,20 +429,28 @@ instance Selections (MultiListBox a) where
 
 
 -- | Create a single selection list box. Takes a boolean that determines if
--- the entries are sorted and a list of labels.
-singleListBox :: Window a -> Bool -> [String] -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
-singleListBox parent sorted labels props
-  = do lb <- listBoxCreate parent idAny rectNull labels
+-- the entries are sorted.
+--
+-- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
+singleListBox :: Window a -> Bool -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
+singleListBox parent sorted props
+  = do lb <- listBoxCreate parent idAny rectNull []
                 (wxLB_SINGLE .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
        let sl = (objectCast lb :: SingleListBox ())
        set sl props
        return sl
 
 -- | Create a multi selection list box with a boolean that determines if
--- the entries are sorted and a list of labels.
-multiListBox :: Window a -> Bool -> [String] -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
-multiListBox parent sorted labels props
-  = do lb <- listBoxCreate parent idAny rectNull labels
+-- the entries are sorted.
+----
+-- * Instances: 'Commanding','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
+multiListBox :: Window a -> Bool -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
+multiListBox parent sorted props
+  = do lb <- listBoxCreate parent idAny rectNull []
               (wxLB_MULTIPLE .+. wxLB_EXTENDED .+. wxHSCROLL .+. wxLB_NEEDED_SB .+. (if sorted then wxLB_SORT else 0))
        let ml = (objectCast lb :: MultiListBox ())
        set ml props
@@ -413,6 +482,10 @@ instance Items (RadioBox a) String where
 
 -- | Create a new radio button group with an initial orientation and a list of
 -- labels. Use 'selection' to get the currently selected item.
+--
+-- * Instances: 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 radioBox :: Window a -> Orientation -> [String] -> [Prop (RadioBox ())] -> IO (RadioBox ())
 radioBox parent direction labels props
   = do r <- radioBoxCreate parent idAny title rectNull labels 1 flags
@@ -430,18 +503,30 @@ radioBox parent direction labels props
 --------------------------------------------------------------------------------}
 -- | Create a horizontal gauge with a specified integer range (max value).
 -- The 'selection' attribute determines the position of the gauge.
+--
+-- * Instances: 'Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 hgauge :: Window a -> Int -> [Prop (Gauge ())] -> IO (Gauge ())
 hgauge parent range props
   = gaugeEx parent range (wxHORIZONTAL .+. wxGA_SMOOTH) props
 
 -- | Create a vertical gauge with a specified integer range (max value).
 -- The 'selection' attribute determines the position of the gauge.
+--
+-- * Instances: 'Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 vgauge :: Window a -> Int -> [Prop (Gauge ())] -> IO (Gauge ())
 vgauge parent range props
   = gaugeEx parent range (wxVERTICAL .+. wxGA_SMOOTH) props
 
 -- | Create a gauge control.
 -- The 'selection' attribute determines the position of the gauge.
+--
+-- * Instances: 'Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 gaugeEx :: Window a -> Int -> Style -> [Prop (Gauge ())] -> IO (Gauge ())
 gaugeEx parent range style props
   = do g <- gaugeCreate parent idAny range rectNull style 
@@ -471,6 +556,10 @@ instance Commanding (Slider a) where
 -- | Create a horizontal slider with a specified minimum and maximum. Set
 -- the 'Bool' argument to 'True' to show labels (minimumn, maximum, and
 -- current value). The 'selection' attribute gives the current value.
+--
+-- * Instances: 'Commanding','Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 hslider :: Window a -> Bool -> Int -> Int -> [Prop (Slider ())] -> IO (Slider ())
 hslider parent showLabels min max props
   = sliderEx parent min max (wxHORIZONTAL .+. (if showLabels then wxSL_LABELS else 0)) props
@@ -478,12 +567,20 @@ hslider parent showLabels min max props
 -- | Create a vertical slider with a specified minimum and maximum. Set
 -- the 'Bool' argument to 'True' to show labels (minimumn, maximum, and
 -- current value). The 'selection' attribute gives the current value.
+--
+-- * Instances: 'Commanding','Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 vslider :: Window a -> Bool -> Int -> Int -> [Prop (Slider ())] -> IO (Slider ())
 vslider parent showLabels min max props
   = sliderEx parent min max (wxVERTICAL .+. (if showLabels then wxSL_LABELS else 0)) props
 
 -- | Create a slider with a specified minimum and maximum. The
 -- 'selection' attribute gives the current value.
+--
+-- * Instances: 'Commanding','Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 sliderEx :: Window a -> Int -> Int -> Style -> [Prop (Slider ())] -> IO (Slider ())
 sliderEx parent min max style props
   = do s <- sliderCreate parent style min min max rectNull style
@@ -511,6 +608,10 @@ instance Selection (Slider a) where
 --------------------------------------------------------------------------------}
 -- | Create a spin control: a text field with up\/down buttons. The value ('selection')
 -- is always between a specified minimum and maximum.
+--
+-- * Instances: 'Selection' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 spinCtrl :: Window a -> Int -> Int -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
 spinCtrl parent lo hi props
   = do sc <- spinCtrlCreate parent idAny "" rectNull wxSP_ARROW_KEYS (min lo hi) (max lo hi) lo
@@ -542,11 +643,23 @@ treeEvent
   = newEvent "treeEvent" treeCtrlGetOnTreeEvent treeCtrlOnTreeEvent 
 
 -- | Create a single-selection tree control with buttons (i.e. + and - signs).
+--
+-- * Attributes: 'treeEvent'
+--
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 treeCtrl :: Window a -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrl parent props
   = treeCtrlEx parent (wxTR_HAS_BUTTONS .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a tree control.
+--
+-- * Attributes: 'treeEvent'
+--
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
 treeCtrlEx :: Window a -> Style -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
 treeCtrlEx parent style props
   = do t <- treeCtrlCreate2 parent idAny rectNull style
@@ -556,6 +669,40 @@ treeCtrlEx parent style props
 {--------------------------------------------------------------------------------
   ListCtrl
 --------------------------------------------------------------------------------}
+instance Items (ListCtrl a) [String] where
+  itemCount
+    = readAttr "itemCount" listCtrlGetItemCount
+
+  item i
+    = newAttr "item" getter setter
+    where
+      getter l
+        = bracket listItemCreate
+                  listItemDelete
+                  (\li -> do count <- listCtrlGetColumnCount l
+                             mapM (\column -> do listItemSetColumn li (column-1)
+                                                 listCtrlGetItem l li
+                                                 listItemGetText li) [1..count])
+                             
+        
+      setter l texts
+        = do count <- listCtrlGetItemCount l
+             when (i == count) (do listCtrlInsertItemWithLabel l i (show i) (-1); return ())
+             mapM_ (\(column,txt) -> listCtrlSetItem l i column txt (-1)) (zip [0..] texts)
+
+  itemAppend l texts
+    = do count <- listCtrlGetItemCount l
+         listCtrlInsertItemWithLabel l count (show count) (-1)
+         mapM_ (\(column,txt) -> listCtrlSetItem l count column txt (-1)) (zip [0..] texts)
+
+  itemDelete l i
+    = do listCtrlDeleteItem l i
+         return ()
+
+  itemsDelete l
+    = do listCtrlDeleteAllItems l 
+         return ()
+
 -- | The @columns@ attribute controls the columns in a report-view list control.
 columns :: Attr (ListCtrl a) [(String,Align,Int)]
 columns
@@ -588,18 +735,32 @@ columns
                                            | otherwise                         = AlignLeft
                                  return (name,align,width)
                     )
+
                
+
 -- | List control events.
 listEvent :: Event (ListCtrl a) (EventList -> IO ())
 listEvent
   = newEvent "listEvent" listCtrlGetOnListEvent listCtrlOnListEvent 
 
 -- | Create a report-style list control.
+--
+-- * Attributes: 'listEvent', 'columns'
+--
+-- * Instances: 'Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 listCtrl :: Window a -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrl parent props
   = listCtrlEx parent (wxLC_REPORT .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE) props
 
 -- | Create a list control.
+--
+-- * Attributes: 'listEvent', 'columns'
+--
+-- * Instances: 'Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 listCtrlEx :: Window a -> Style -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
 listCtrlEx parent style props
   = do l <- listCtrlCreate parent idAny rectNull style
@@ -610,6 +771,10 @@ listCtrlEx parent style props
   SplitterWindow
 --------------------------------------------------------------------------------}
 -- | Create a splitter window.
+--
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--             
 splitterWindow :: Window a -> [Prop (SplitterWindow ())] -> IO (SplitterWindow ())
 splitterWindow parent props
   = do s <- splitterWindowCreate parent idAny rectNull (wxSP_LIVE_UPDATE .+. wxCLIP_CHILDREN .+. wxNO_FULL_REPAINT_ON_RESIZE)

@@ -8,6 +8,13 @@
     Stability   :  provisional
     Portability :  portable
 
+    Frames.
+    
+ * Instances: 'HasImage', 'Form', 'Closable' -- 
+             'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+             
+
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Frame

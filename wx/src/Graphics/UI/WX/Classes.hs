@@ -37,7 +37,7 @@ module Graphics.UI.WX.Classes
       -- * Containers
     , Selection( selection )
     , Selections( selections )
-    , Items( itemCount, item, items, itemAppend, itemDelete )
+    , Items( itemCount, item, items, itemAppend, itemDelete, itemsDelete )
       -- * Misc.
     , Able( enable )
     , Checkable( checkable, checked )
@@ -248,6 +248,8 @@ class Items w a | w -> a where
   item   :: Int -> Attr w a
   -- | Delete an item. Only valid for writeable items.
   itemDelete :: w -> Int -> IO ()
+  -- | Delete all items. Only valid for writeable items.
+  itemsDelete :: w -> IO ()
   -- | Append an item. Only valid for writeable items.
   itemAppend :: w -> a -> IO ()
 
@@ -261,11 +263,13 @@ class Items w a | w -> a where
 
       setter :: w -> [a] -> IO ()
       setter w xs
-        = do n <- get w itemCount
-             sequence_ (replicate n (itemDelete w 0))
+        = do itemsDelete w
              mapM_ (\x -> itemAppend w x) xs
 
   itemAppend w x
     = do xs <- get w items
          set w [items := xs ++ [x]]
 
+  itemsDelete w
+    = do count <- get w itemCount 
+         sequence_ (replicate count (itemDelete w 0))

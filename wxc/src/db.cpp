@@ -281,7 +281,7 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMsg)(wxDb* db)
   else
     return new wxString(db->errorMsg,db->cbErrorMsg);
 #else
-  return new wxString("ODBC is not supported on this platform");
+  return new wxString("ODBC is not supported on this platform (recompile with ODBC support)");
 #endif
 }
 
@@ -313,11 +313,11 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMessage)(wxDb* db, int index)
   if (index < 0)  index = 0;  
   idx = n - index - 1;
   if (idx < 0 || idx >= DB_MAX_ERROR_HISTORY)
-    return new wxString("");
+    return new wxString("unknown error");
   else
     return new wxString(db->errorList[n - index - 1]);
 #else
-  return new wxString("");
+  return new wxString("ODBC is not supported on this platform (recompile with ODBC support)");
 #endif
 }
 
@@ -1214,78 +1214,3 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
 }
 
 }
-
-
-#if 0
-
-EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, bool asChars, char** pbuf, int* plen ) 
-{
-#ifdef wxUSE_ODBC
-  long  needed   = 0;
-  long  totalLen = 0;
-  char* buf      = NULL;
-  long  bufLen   = 0;
-  bool  ok       = false;
-  int   sqlType  = (asChars ? SQL_C_CHAR : SQL_C_BINARY);
-  
-  /* init args */
-  *pbuf = NULL;
-  *plen = 0;    
-
-  /* try to get length */
-  db->GetData( column, sqlType, NULL, 0, &needed );
-  
-  
-  /* return when null value encountered */
-  if (needed == SQL_NULL_DATA) {
-    *plen = SQL_NULL_DATA;
-    return true;
-  }
-
-  /* try to allocate needed length immediately */
-  if (needed >= 0 && needed != SQL_NO_TOTAL) 
-    bufLen = needed+1;
-  else 
-    bufLen = 512;
-  
-  buf = (char*)malloc(bufLen);  
-  if (buf==NULL) return false;
-  
-  /* get data */
-  ok = db->GetData( column, sqlType, buf, bufLen, &needed );
-
-  /* while we haven't retrieved all data.. */
-  while (!ok && db->DB_STATUS == DB_ERR_DATA_TRUNCATED) {    
-    char* newbuf;
-    totalLen = (asChars ? bufLen-1 : bufLen);  /* less the terminating 0 ? */
-    
-    /* realloc the buffer exponentially */
-    newbuf = (char*)realloc( buf, 2*bufLen );
-    if (newbuf == NULL) {
-      free(buf);
-      return false;
-    }
-    buf    = newbuf;
-    bufLen = 2*bufLen;
-
-    /* add more data */
-    ok = db->GetData( column, sqlType, buf+totalLen, bufLen - totalLen, &needed );
-  }
-  /* add the last added data length to the total length */
-  if (needed == SQL_NO_TOTAL) {
-    free(buf);
-    return false;
-  }
-  totalLen += needed;
-  
-  /* return results */
-  if (ok) {
-    *pbuf = buf;
-    *plen = totalLen;
-  }
-  return ok;
-#else
-  return false;
-#endif
-}
-#endif

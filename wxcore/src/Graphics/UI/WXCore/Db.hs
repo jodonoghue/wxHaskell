@@ -106,6 +106,9 @@ and password as arguments, and returns a 'DbInfo' structure:
 >         type   : VARCHAR
 >  ...
 
+Changes to the database can be made using 'dbExecute'. All these actions
+are done in transaction mode and are only comitted when wrapped with
+a 'dbTransaction'.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Db
@@ -114,7 +117,10 @@ module Graphics.UI.WXCore.Db
       dbWithConnection, dbConnect, dbDisconnect
    , dbWithDirectConnection, dbConnectDirect
    -- * Queries
-   , dbQuery, dbQuery_, dbExecute
+   , dbQuery, dbQuery_
+   
+   -- * Changes
+   , dbExecute, dbTransaction
 
    -- * Rows
    , DbRow(..)
@@ -231,6 +237,20 @@ dbExecute :: Db a -> String -> IO ()
 dbExecute db sql
   = dbHandleExn db $ dbExecSql db sql
 
+
+-- | Execute an 'IO' action as a transaction on a particular database. 
+-- When no exception is raised, the changes to a database are committed. 
+-- Always use this when using 'dbExecute' statements that update the database.
+--
+-- > do dbWithConnection "pubs" "" "" $ \db -> 
+-- >     dbTransaction db $
+-- >       dbExecute db "CREATE TABLE TestTable ( TestField LONG)"
+--       
+dbTransaction :: Db a -> IO b -> IO b
+dbTransaction db io
+  = do x <- io
+       dbHandleExn db (dbCommitTrans db)
+       return x
 
 {----------------------------------------------------------
   Result rows of a query

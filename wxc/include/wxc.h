@@ -55,6 +55,9 @@ int   wxMouseEvent_GetWheelRotation( TSelf(wxMouseEvent) _obj );
 int   wxMouseEvent_GetButton( TSelf(wxMouseEvent) _obj );
 int   expEVT_MOUSEWHEEL(  );
 
+void wxcGetMousePosition( TPointOut(x,y) );
+
+
 /* wxWindow */
 void  wxWindow_ConvertDialogToPixelsEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );
 void  wxWindow_ConvertPixelsToDialogEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );

@@ -19,6 +19,9 @@ module Graphics.UI.WXCore.Frame
           -- * Window
         , windowGetRootParent
         , windowGetFrameParent
+        , windowGetMousePosition
+        , windowScreenToRelativePosition
+        , windowGetScreenPosition
           -- * Dialog
         , dialogDefaultStyle
           -- * Status bar
@@ -87,6 +90,30 @@ windowGetRootParent w
         else windowGetRootParent p
        
 
+
+-- | Retrieve the current mouse position relative to the window position.
+windowGetMousePosition :: Window a -> IO Point
+windowGetMousePosition w
+  = do p <- wxcGetMousePosition
+       windowScreenToRelativePosition w p
+  
+-- | Translate a screen position to a position relative to a window.
+windowScreenToRelativePosition :: Window a -> Point -> IO Point
+windowScreenToRelativePosition w p
+  = do sp <- windowGetScreenPosition w
+       return (pointSub p sp)
+
+-- | Get the window position relative to the origin of the display.
+windowGetScreenPosition :: Window a -> IO Point
+windowGetScreenPosition w
+  = do pt <- windowGetPosition w
+       if (instanceOf w classFrame || instanceOf w classDialog)
+        then return pt
+        else do parent <- windowGetParent w
+                if (objectIsNull parent)
+                 then return pt
+                 else do pos <- windowGetScreenPosition parent
+                         return (pointAdd pos pt)
 
 
 ------------------------------------------------------------------------------------------

@@ -97,6 +97,9 @@ menuList
   = menuPane 
 
 -- | Create a new menu with a certain title (corresponds with 'text' attribute).
+--
+-- * Instances: 'Textual'
+--
 menuPane :: [Prop (Menu ())] -> IO (Menu ())
 menuPane props
   = do m <- menuCreate "" wxMENU_TEAROFF
@@ -148,6 +151,11 @@ menuLine menu
 -- properties of a menu item.
 --
 -- Note: on GTK, it is required to set the 'text' attribute immediately at creation time.
+--
+-- * Events: 'menu', 'menuId'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
+--
 menuItem :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItem menu props
   = do id <- idCreate
@@ -161,22 +169,42 @@ menuItem menu props
 
 -- | Append an /about/ menu item (@"&About..."@). On some platforms,
 -- the /about/ menu is handled specially.
+--
+-- * Events: 'menu', 'menuId'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
+--
 menuAbout :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuAbout menu props
   = menuItemId menu wxID_ABOUT "&About..." props
 
 -- | Append an /quit/ menu item (@"&Quit\tCtrl+Q"@). On some platforms,
 -- the /quit/ menu is handled specially
+--
+-- * Events: 'menu', 'menuId'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
+--
 menuQuit :: Menu a -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuQuit menu props
   = menuItemId menu wxID_EXIT "&Quit\tCtrl+Q" props
 
 -- | Append a menu item with a specific id and label.
+--
+-- * Events: 'menu', 'menuId'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
+--
 menuItemId :: Menu a -> Id -> String -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItemId menu id label props
   = menuItemEx menu id label False props
 
 -- | Append a menu item with a specific id, label, and whether it is checkable.
+--
+-- * Events: 'menu', 'menuId'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Checkable', 'Identity', 'Commanding'.
+--
 menuItemEx :: Menu a -> Id -> String -> Bool -> [Prop (MenuItem ())] -> IO (MenuItem ())
 menuItemEx menu id label isCheck props
   = do menuAppend menu id label "" isCheck
@@ -334,6 +362,11 @@ toolBarEx parent showText showDivider props
        return t
 
 -- | A tool in a toolbar.
+--
+-- * Events: 'tool'
+--
+-- * Instances: 'Textual', 'Able', 'Help', 'Tipped', 'Checkable', 'Identity', 'Commanding'.
+--
 data ToolBarItem  = ToolBarItem (ToolBar ()) Id Bool
 
 instance Able ToolBarItem  where
@@ -462,6 +495,10 @@ toolControl toolbar control
 {--------------------------------------------------------------------------------
   Statusbar
 --------------------------------------------------------------------------------}
+-- | A field in a status bar.
+--
+-- * Instances: 'Textual'
+-- 
 data StatusField  = SF (Var Int) (Var (StatusBar ())) (Var Int) (Var String)
 
 -- | The status width attribute determines the width of a status bar field.

@@ -8,6 +8,10 @@
     Stability   :  provisional
     Portability :  portable
 
+    Drawing.
+
+    A /Device Context/ or 'DC', is an instance of 'Drawn', 'Brushed',
+    'Literate', and 'Colored'.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Draw

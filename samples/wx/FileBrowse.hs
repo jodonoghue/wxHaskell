@@ -117,11 +117,6 @@ gui
              ,statusBar  := [status]
              ,clientSize := sz 500 300
              ]
-{-       
-       -- Give the tree control 1/3 of the view
-       ssize <- get s clientSize
-       splitterWindowSplitVertically s t l ((sizeW ssize) `div` 3)
--}
        return ()
 
 {--------------------------------------------------------------------------------
@@ -160,7 +155,7 @@ onListEvent l status event
 --------------------------------------------------------------------------------}
 listCtrlShowDir :: ListCtrl a -> FilePath -> IO ()
 listCtrlShowDir listCtrl path
-  = do listCtrlDeleteAllItems listCtrl
+  = do itemsDelete listCtrl
        contents <- getDirectoryContents path
        let paths = map (\dir -> path ++ dir ++ "/") contents
        mapM_ (listCtrlAddFile listCtrl) (zip3 [0..] contents paths)
@@ -175,10 +170,8 @@ listCtrlAddFile l (idx,fname,fpath)
                                 else if (extension fname == "hs")
                                       then imgHFile
                                       else imgFile)
-       listCtrlInsertItemWithLabel l idx fpath image
-       listCtrlSetItem l idx 0 {- name -} fname image
-       listCtrlSetItem l idx 1 {- perm -} (showPerm perm) imageNone
-       listCtrlSetItem l idx 2 {- date -} (show time) imageNone
+       listCtrlInsertItemWithLabel l idx fpath image        -- use this instead of 'items' so we can set the image.
+       set l [item idx := [fname,showPerm perm,show time]]
 
 extension fname
   | elem '.' fname  = reverse (takeWhile (/='.') (reverse fname))
