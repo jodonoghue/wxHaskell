@@ -341,6 +341,7 @@ ignore
     ,prefix "wxTreeItemId"               "tree item id"
     ,classprefix "wxSize"                "size"
     ,classprefix "wxString"              "string"
+    ,equals "wxObject_Delete"            "wxObject_Delete"
     ]
   where
     classprefix s msg decl  | (s == declName decl) = Just msg

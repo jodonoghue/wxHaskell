@@ -11,32 +11,78 @@
     with a proper marshaling wrapper.
 -}
 -----------------------------------------------------------------------------------------
-module CompileClasses( compileClasses, compileClassesShort, haskellTypeArg, haskellTypePar ) where
+module CompileClasses( compileClasses, haskellTypeArg, haskellTypePar ) where
 
 import qualified Set
 import qualified Map
 import qualified MultiSet
 
 import Time( getClockTime)
-import Char( toUpper, isUpper ) --toLower, toUpper, isSpace, isLower, isUpper )
+import Char( toUpper, isUpper, toLower ) --toLower, toUpper, isSpace, isLower, isUpper )
 import List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
 import Types
 import HaskellNames
-import Classes( isClassName, haskellClassDefs )
+import Classes( isClassName, haskellClassDefs, objectClassNames )
 import ParseC( parseC )
 import DeriveTypes( deriveTypes, classifyName, Name(..), Method(..), ClassName, MethodName, PropertyName )
 
 {-----------------------------------------------------------------------------------------
   Compile
 -----------------------------------------------------------------------------------------}
-compileClasses :: Bool -> String -> String -> FilePath -> [FilePath] -> IO ()
-compileClasses showIgnore moduleRoot moduleName outputFile inputFiles
+compileClasses :: Bool -> String -> String -> String -> FilePath -> [FilePath] -> IO ()
+compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile inputFiles
   = do declss  <- mapM parseC inputFiles
        time    <- getClockTime
-       let decls        = deriveTypes showIgnore (sortBy cmpDecl (concat declss))
+       let splitter        = 'M'
+           (decls1,decls2) = let isLower decl = (haskellDeclName (declName decl) < [toLower splitter])
+                             in span isLower (deriveTypes showIgnore (sortBy cmpDecl (concat declss)))
 
-           foreignDecls = map foreignDecl decls
+           postfix1       = "A" ++ [toEnum (fromEnum splitter -1)]
+           postfix2       = [splitter] ++ "Z"
+
+           module1        = moduleRoot ++ moduleName ++ postfix1
+           module2        = moduleRoot ++ moduleName ++ postfix2
+
+           export   = concat  [ ["module " ++ moduleRoot ++ moduleName
+                                , "    ( -- * Version"
+                                , "      version" ++ moduleName
+                                , "      -- * Re-export" 
+                                , "    , module " ++ module1
+                                , "    , module " ++ module2
+                                , "    , module " ++ moduleRoot ++ moduleClassTypesName
+                                , "    ) where"
+                                , ""
+                                , "import " ++ module1
+                                , "import " ++ module2
+                                , "import " ++ moduleRoot ++ moduleClassTypesName
+                                , ""
+                                , "version" ++ moduleName ++ " :: String"
+                                , "version" ++ moduleName ++ "  = \"" ++ show time ++ "\""
+                                , ""
+                                ]
+                              ]
+
+       (m1,c1) <- compileClassesFile showIgnore moduleRoot moduleClassTypesName
+                                    (moduleName ++ postfix1) (outputFile ++ postfix1) inputFiles decls1 time
+       (m2,c2) <- compileClassesFile showIgnore moduleRoot moduleClassTypesName
+                                    (moduleName ++ postfix2) (outputFile ++ postfix2) inputFiles decls2 time
+       let methodCount = m1 + m2
+           classCount  = c1 + c2
+
+       prologue <- getPrologue moduleName "class"
+                               (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
+                               inputFiles
+       
+       let output  = unlines (prologue ++ export)
+       putStrLn ("generating: " ++ outputFile ++ ".hs")
+       writeFile (outputFile ++ ".hs") output
+       putStrLn ("generated " ++ show methodCount ++ " total methods for " ++ show classCount ++ " total classes.")
+       putStrLn ("ok.")
+
+
+compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputFile inputFiles decls time
+  = do let foreignDecls = map foreignDecl decls
            haskellDecls = map haskellDecl decls
            typeDecls    = map haskellTypeDecl decls
 
@@ -44,90 +90,39 @@ compileClasses showIgnore moduleRoot moduleName outputFile inputFiles
 
            (exportsClass,classDecls)          = haskellClassDefs
 
-           (exportsStatic,exportsClassClasses) = exportDefs decls exportsClass []
+           (exportsStatic,exportsClassClasses,classCount) = exportDefs decls exportsClass []
 
            methodCount  = length decls
-           classCount   = length exportsClass
            ghcoptions   = ["{-# OPTIONS -fglasgow-exts -#include \"wxc.h\" #-}"]
 
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
                                 , "    ( -- * Version"
-                                , "      moduleVersion"
-                                , "      -- * Classes" ]
-                              , exportsClassClasses
-                              , [ "      -- * Global" ]
+                                , "      version" ++ moduleName
+                                , "      -- * Global" ]
                               , exportsStatic
+                                , [ "      -- * Classes" ]
+                              , exportsClassClasses
                               , [ "    ) where"
                                 , ""
                                 , "import System.IO.Unsafe( unsafePerformIO )"
                                 , "import " ++ moduleRoot ++ "WxcTypes"
+                                , "import " ++ moduleRoot ++ moduleClassTypesName
                                 , ""
-                                , "moduleVersion :: String"
-                                , "moduleVersion  = \"" ++ show time ++ "\""
+                                , "version" ++ moduleName ++ " :: String"
+                                , "version" ++ moduleName ++ "  = \"" ++ show time ++ "\""
                                 , ""
                                 ]
                               ]
 
        prologue <- getPrologue moduleName "class"
-                               (show methodCount ++ " methods in " ++ show classCount ++ " classes.")
+                               (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
                                inputFiles
-       let output  = unlines (ghcoptions ++ prologue ++ export ++ classDecls ++ marshalDecls)
+       let output  = unlines (ghcoptions ++ prologue ++ export {- ++ classDecls -} ++ marshalDecls)
 
-       putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile output
-       putStrLn ("generated " ++ show methodCount ++ " methods in " ++ show classCount ++ " classes.")
-       putStrLn ("ok.")
-
-{-----------------------------------------------------------------------------------------
-  Compile
------------------------------------------------------------------------------------------}
-compileClassesShort :: Bool -> String -> String -> String -> FilePath -> [FilePath] -> IO ()
-compileClassesShort showIgnore moduleRoot moduleClassesName moduleName outputFile inputFiles
-  = do declss  <- mapM parseC inputFiles
-       time    <- getClockTime
-       let decls        = deriveTypes showIgnore (sortBy cmpDecl (concat declss))
-
-           shortNames   = validShortNames decls
-           (exportsShort,shortDecls)  = unzip (concatMap (shortDecl shortNames) decls)
-
-           (exportsClass,classDecls)  = haskellClassDefs
-
-           (exportsStatic,exportsClassClasses) = exportDefs decls exportsClass exportsShort
-
-           methodCount  = length decls
-           classCount   = length exportsClass
-           shortCount   = length exportsShort
-
-           export   = concat  [ ["module " ++ moduleRoot ++ moduleName
-                                , "    ( -- * Version"
-                                , "      moduleVersion"
-                                , "      -- * Classes" ]
-                              , exportsClassClasses
-                              , [ "      -- * Global" ]
-                              , exportsStatic
-                              , [ "    ) where"
-                                , ""
-                                , "import " ++ moduleRoot ++ "Types"
-                                , "import " ++ moduleRoot ++ moduleClassesName ++ " hiding (moduleVersion)"
-                                , ""
-                                , "moduleVersion :: String"
-                                , "moduleVersion  = \"" ++ show time ++ "\""
-                                , ""
-                                ]
-                              ]
-
-       prologue <- getPrologue moduleName "short class"
-                               (show methodCount ++ " methods in " ++ show classCount ++ " classes with " ++ show shortCount ++ " short method names.")
-                               inputFiles
-       let output  = unlines (prologue ++ export ++ concat shortDecls)
-
-       putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile output
-       putStrLn ("generated " ++ show shortCount ++ " short methods.")
-       putStrLn ("ok.\n")
-
-
-
+       putStrLn ("generating: " ++ outputFile ++ ".hs")
+       writeFile (outputFile ++ ".hs") output
+       putStrLn ("generated " ++ show methodCount ++ " methods for " ++ show classCount ++ " classes.")
+       return (methodCount,classCount)
 
 
 
@@ -142,7 +137,7 @@ exportSpaces = "     "
 {-----------------------------------------------------------------------------------------
    Create export definitions
 -----------------------------------------------------------------------------------------}
-exportDefs :: [Decl] -> [(ClassName,[String])] -> [(ClassName,[String])] -> ([String],[String])
+exportDefs :: [Decl] -> [(ClassName,[String])] -> [(ClassName,[String])] -> ([String],[String],Int)
 exportDefs decls classExports shortExports
   = let classMap   = Map.fromListWith (++) (classExports ++ [("Events",[]),("Null",[]),("Misc.",[])])
         methodMap  = Map.map sort (Map.fromListWith (++) (map exportDef decls))
@@ -158,21 +153,28 @@ exportDefs decls classExports shortExports
                        Just entry  -> [("Null",entry)]
                        Nothing     -> []
 
-    in  (concatMap todef (nullEntry ++ eventEntry ++ miscEntry)
-        ,concatMap todef (Map.toAscList (Map.delete "Null" (Map.delete "Misc." (Map.delete "Events" exportMap))))
+        staticExps = map todef (nullEntry ++ eventEntry ++ miscEntry)
+        classExps  = map todef (Map.toAscList (Map.delete "Null" (Map.delete "Misc." (Map.delete "Events" exportMap))))
+
+    in  (concat staticExps
+        ,concat classExps
+        ,length (filter (not . null) classExps)
         )
   where
     addMethods methodMap shortMap className classDecls
-      = [heading 2 className] ++ commaSep classDecls ++
-        (case Map.lookup className shortMap of
-           Nothing    -> []
-           Just decls -> [heading 3 "Short methods"] ++ (commaSep decls)) ++
-        (case Map.lookup className methodMap of
-           Nothing    -> []
-           Just decls -> (if (null shortExports || elem className ["Events","Misc.","Null"])
-                           then []
-                           else [heading 3 "Methods"])
-                         ++ (commaSep decls))
+      | null decls = []
+      | otherwise  = [heading 2 className] ++ decls {- ++ commaSep classDecls -} 
+      where
+        decls =
+          (case Map.lookup className shortMap of
+             Nothing    -> []
+             Just decls -> [heading 3 "Short methods"] ++ (commaSep decls)) ++
+          (case Map.lookup className methodMap of
+             Nothing    -> []
+             Just decls -> {- (if (null shortExports || elem className ["Events","Misc.","Null"])
+                             then []
+                             else [heading 3 "Methods"])
+                           ++ -} (commaSep decls))
 
 
     todef (classname,decls)
@@ -271,6 +273,15 @@ shortDecl validShorts decl    | Set.member sname validShorts
 shortDecl validShorts decl
   = []
 
+{-----------------------------------------------------------------------------------------
+   Compile "xxx_Delete" methods to "objectDelete" to accomodate managed objects.
+-----------------------------------------------------------------------------------------}
+isDeleteMethod :: Decl -> Bool
+isDeleteMethod decl
+  = case (declRet decl, declArgs decl, classifyName (declName decl)) of
+      (Void,[self],Method cname (Normal mname)) -> (mname == "Delete" && cname `elem` objectClassNames)
+      _  -> False
+
 
 {-----------------------------------------------------------------------------------------
    Make the "this" pointer the last argument
@@ -280,14 +291,14 @@ haskellThisArgument :: Decl -> (Maybe Arg,[Arg])
 haskellThisArgument decl
   = (Nothing, declArgs decl)
 
-{-
+haskellThisArgs :: Decl -> [(Bool,Arg)]
+haskellThisArgs decl
   = case classifyName (declName decl) of
       Method name _  | not (null args) && (argType (head args) == Object name)
-                     -> (Just (head args), tail args)
-      other          -> (Nothing, args)
+                     -> [(True,head args)] ++ [(False,arg) | arg <- tail args]
+      other          -> [(False,arg) | arg <- args]
   where
     args = declArgs decl
--}
 
 haskellSwapThis :: Decl -> [Arg]
 haskellSwapThis decl
@@ -299,10 +310,14 @@ haskellSwapThis decl
    Translate a declaration to a haskell marshalling wrapper
 -----------------------------------------------------------------------------------------}
 haskellDecl :: Decl -> String
+haskellDecl decl | isDeleteMethod decl
+  = haskellDeclName (declName decl) ++ nlStart
+    ++ "objectDelete"
+
 haskellDecl decl
   = haskellDeclName (declName decl) ++ " " ++ haskellArgs (haskellSwapThis decl) ++ nlStart
     ++ haskellToCResult decl (declRet decl) (
-           haskellToCArgsIO (declArgs decl)
+           haskellToCArgsIO (haskellThisArgs decl)
         ++ foreignName (declName decl) ++ " " ++ haskellToCArgs decl (declArgs decl)
        )
 
@@ -329,6 +344,8 @@ haskellToCResult decl tp call
             -> "withManaged" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
       Object obj | obj == "wxTreeItemId"
             -> "with" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
+      Object obj
+            -> "withObjectResult $" ++ nl ++ call
       String _ -> "withStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Vector _ -> "withVectorResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
@@ -348,9 +365,9 @@ haskellToCResult decl tp call
 
 
 haskellToCArgsIO args
-  = concatMap (\arg -> haskellToCArgIO arg) args
+  = concatMap (\(isSelf,arg) -> haskellToCArgIO isSelf arg) args
 
-haskellToCArgIO arg
+haskellToCArgIO isSelf arg
   = case argType arg of
       String _    -> "withCString " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCStringName (argName arg) ++ " -> " ++ nl
@@ -372,6 +389,8 @@ haskellToCArgIO arg
                   -> "withArrayInt " ++ haskellName (argName arg)
                      ++ " $ \\" ++ haskellArrayLenName (argName arg) ++ " " ++ haskellArrayName (argName arg)
                      ++ " -> " ++ nl
+      Object obj  -> (if isSelf then "withObjectRef " else "withObjectPtr ") ++ haskellName (argName arg)
+                     ++ " $ \\" ++ haskellCObjectName (argName arg) ++ " -> " ++ nl
       other       -> ""
 
 haskellToCArgs decl args
@@ -389,6 +408,7 @@ haskellToCArg decl arg
       String _   -> haskellCStringName (argName arg)
       Object obj | isManaged obj -> haskellCManagedName (argName arg)
       Object obj | obj == "wxTreeItemId" -> haskellCManagedName (argName arg)
+      Object obj -> haskellCObjectName (argName arg)
       Point _  -> pparens ("toCIntPointX " ++ name) ++ " " ++ pparens( "toCIntPointY " ++ name)
       Vector _ -> pparens ("toCIntVectorX " ++ name) ++ " " ++ pparens( "toCIntVectorY " ++ name)
       Size _   -> pparens ("toCIntSizeW " ++ name) ++ " " ++ pparens( "toCIntSizeH " ++ name)
@@ -418,6 +438,9 @@ haskellArrayName name
 
 haskellArrayLenName name
   = "carrlen_" ++ haskellName name
+
+haskellCObjectName name
+  = "cobj_" ++ haskellName name
 
 {-----------------------------------------------------------------------------------------
    Translate a declaration to a haskell type declaration
@@ -505,6 +528,9 @@ haskellType i tp
    Translate a declaration to a foreign import declaration
 -----------------------------------------------------------------------------------------}
 foreignDecl :: Decl -> String
+foreignDecl decl | isDeleteMethod decl
+  = ""
+
 foreignDecl decl
   = "foreign import ccall \"" ++ declName decl ++ "\" "
       ++ foreignName (declName decl) ++ " :: "
@@ -534,7 +560,7 @@ foreignResultType tp
       Vector _ -> "Ptr CInt -> Ptr CInt -> IO ()"
       Size _   -> "Ptr CInt -> Ptr CInt -> IO ()"
       Rect _   -> "Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()"
-      RefObject "wxColour"  -> "ColourObject () -> IO ()"
+      RefObject "wxColour"  -> "ColourPtr () -> IO ()"
       RefObject name        -> foreignType 0 tp ++ " -> IO ()"
       EventId -> "IO CInt"
       other   -> "IO " ++ foreignTypePar 0 tp
@@ -563,10 +589,10 @@ foreignType i tp
       ArrayObject name _ -> "CInt -> Ptr " ++ foreignTypePar i (Object name)
       ArrayString _      -> "CInt -> Ptr (Ptr CChar)"
       ArrayInt _         -> "CInt -> Ptr CInt"
-      RefObject "wxColour"  -> "ColourObject ()"
-      Object    "wxColour"  -> "ColourObject ()"
-      RefObject name -> haskellUnManagedTypeName name ++ typeVar i
-      Object name    -> haskellUnManagedTypeName name ++ typeVar i
+      RefObject "wxColour"  -> "ColourPtr ()"
+      Object    "wxColour"  -> "ColourPtr ()"
+      RefObject name -> "Ptr (T" ++ haskellUnManagedTypeName name ++ typeVar i ++ ")"
+      Object name    -> "Ptr (T" ++ haskellUnManagedTypeName name ++ typeVar i ++ ")"
 
 
 parenType f tp

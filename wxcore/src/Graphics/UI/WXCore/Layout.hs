@@ -171,7 +171,7 @@ import List( transpose )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
-import Graphics.UI.WXCore.WxcClassTypes
+import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Frame
 
@@ -673,7 +673,7 @@ type TabPage  = (String,Bitmap (),Layout)
 -- | Create a simple tab page with a certain title and layout.
 tab :: String -> Layout -> TabPage
 tab title layout
-  = (title,ptrNull,layout)
+  = (title,objectNull,layout)
 
 -- | Create a tab page with a certain title, icon, and layout.
 imageTab :: String -> Bitmap () -> Layout -> TabPage
@@ -892,7 +892,7 @@ sizerFromLayout parent layout
 
 
     insert container (XNotebook options nbook pages)
-      = do pages' <- addImages ptrNull pages
+      = do pages' <- addImages objectNull pages
            mapM_ addPage pages'
            nbsizer <- notebookSizerCreate nbook
            sizerAddSizerWithOptions container nbsizer options
@@ -909,12 +909,12 @@ sizerFromLayout parent layout
           = error "Graphics.UI.WXCore.sizerFromLayout: notebook page needs to be a 'container' layout!"
 
         addImages il []
-          = if (ptrNull==il)
+          = if (objectIsNull il)
              then return []
              else do notebookAssignImageList nbook il
                      return []
 
-        addImages il ((title,bm,layout):xs)   | bm == ptrNull
+        addImages il ((title,bm,layout):xs)   | objectIsNull bm 
           = do xs' <- addImages il xs
                return ((title,-1,layout):xs')
 
@@ -925,13 +925,13 @@ sizerFromLayout parent layout
                return ((title,i,layout):xs')
 
         addImage il bm
-          = if (ptrNull==il)
+          = if (objectIsNull il)
              then do w  <- bitmapGetWidth bm
                      h  <- bitmapGetHeight bm
                      il <- imageListCreate (sz w h) False 1
-                     imageListAddBitmap il bm ptrNull
+                     imageListAddBitmap il bm objectNull
                      return il
-             else do imageListAddBitmap il bm ptrNull
+             else do imageListAddBitmap il bm objectNull
                      return il
 
 
@@ -955,7 +955,7 @@ sizerFromLayout parent layout
 
     sizerAddWithOptions :: Int -> (Int -> Int -> Int -> Ptr p -> IO ()) -> (Size -> IO ()) -> LayoutOptions -> IO ()
     sizerAddWithOptions miscflags addSizer setMinSize options
-      = do addSizer 1 (flags options .+. miscflags) (marginW options) objectNull
+      = do addSizer 1 (flags options .+. miscflags) (marginW options) ptrNull
            case minSize options of
              Nothing -> return ()
              Just sz -> setMinSize sz

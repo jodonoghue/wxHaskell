@@ -1,7 +1,7 @@
 #ifndef WXC_GLUE_H
 #define WXC_GLUE_H
 
-/* $Id: wxc_glue.h,v 1.19 2004/07/20 11:02:29 dleijen Exp $ */
+/* $Id: wxc_glue.h,v 1.20 2004/07/24 14:31:01 dleijen Exp $ */
 
 /* Null */
 TClass(wxAcceleratorTable) Null_AcceleratorTable(  );
@@ -1296,7 +1296,7 @@ TClassDefExtend(wxCustomDataObject,wxDataObjectSimple)
 /* wxDC */
 TClassDefExtend(wxDC,wxObject)
 void       wxDC_BeginDrawing( TSelf(wxDC) _obj );
-int        wxDC_Blit( TSelf(wxDC) _obj, TRect(xdest,ydest,width,height), void* source, TPoint(xsrc,ysrc), int rop, TBool useMask );
+int        wxDC_Blit( TSelf(wxDC) _obj, TRect(xdest,ydest,width,height), TClass(wxDC) source, TPoint(xsrc,ysrc), int rop, TBool useMask );
 void       wxDC_CalcBoundingBox( TSelf(wxDC) _obj, TPoint(x,y) );
 TBool      wxDC_CanDrawBitmap( TSelf(wxDC) _obj );
 TBool      wxDC_CanGetTextExtent( TSelf(wxDC) _obj );
@@ -3400,8 +3400,8 @@ void       wxPaletteChangedEvent_SetChangedWindow( TSelf(wxPaletteChangedEvent) 
 
 /* wxPanel */
 TClassDefExtend(wxPanel,wxWindow)
-TClass(wxPanel) wxPanel_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
-void*      wxPanel_GetDefaultItem( TSelf(wxPanel) _obj );
+TClass(wxPanel)  wxPanel_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
+TClass(wxButton) wxPanel_GetDefaultItem( TSelf(wxPanel) _obj );
 void       wxPanel_InitDialog( TSelf(wxPanel) _obj );
 void       wxPanel_SetDefaultItem( TSelf(wxPanel) _obj, TClass(wxButton) btn );
 
@@ -4135,7 +4135,7 @@ TClass(wxStaticBox) wxStaticBox_Create( TClass(wxWindow) _prt, int _id, TString 
 /* wxStaticBoxSizer */
 TClassDefExtend(wxStaticBoxSizer,wxBoxSizer)
 void       wxStaticBoxSizer_CalcMin( TSelf(wxStaticBoxSizer) _obj, TSizeOutVoid(_w,_h) );
-TClass(wxStaticBoxSizer) wxStaticBoxSizer_Create( void* box, int orient );
+TClass(wxStaticBoxSizer) wxStaticBoxSizer_Create( TClass(wxStaticBox) box, int orient );
 TClass(wxStaticBox) wxStaticBoxSizer_GetStaticBox( TSelf(wxStaticBoxSizer) _obj );
 void       wxStaticBoxSizer_RecalcSizes( TSelf(wxStaticBoxSizer) _obj );
 

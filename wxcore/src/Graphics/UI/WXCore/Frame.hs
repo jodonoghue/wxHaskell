@@ -35,6 +35,7 @@ import Data.Bits
 import Foreign.Marshal.Array
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
+import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.WxcClassTypes
 import Graphics.UI.WXCore.Types
@@ -131,7 +132,8 @@ windowChildren w
         then return []
         else withArray (replicate count ptrNull) $ \ptrs ->
              do windowGetChildren w ptrs count
-                peekArray count ptrs
+                ps <- peekArray count ptrs
+                return (map objectFromPtr ps)
 
 ------------------------------------------------------------------------------------------
 -- Statusbar

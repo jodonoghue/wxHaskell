@@ -150,7 +150,7 @@ getPrologue moduleName content contains inputFiles
     prologue time
       = [line
         ,"{-| Module      :  " ++ moduleName
-        ,"    Copyright   :  (c) Daan Leijen 2003"
+        ,"    Copyright   :  Copyright (c) Daan Leijen 2003, 2004"
         ,"    License     :  wxWindows"
         ,""
         ,"    Maintainer  :  daan@cs.uu.nl"

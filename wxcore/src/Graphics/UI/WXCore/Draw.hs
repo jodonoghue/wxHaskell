@@ -47,6 +47,7 @@ module Graphics.UI.WXCore.Draw
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Defines
 
@@ -833,6 +834,3 @@ dcBufferWithRefEx dc clear mbVar view draw
            -- blit the memdc into the owner dc.
            dcBlit dc view memdc (rectTopLeft view) wxCOPY False
            return ()
-
-downcastDC :: DC a -> DC ()
-downcastDC dc   = objectCast dc

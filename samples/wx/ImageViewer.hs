@@ -12,8 +12,9 @@
 -----------------------------------------------------------------------------------------}
 module Main where
 
-import Graphics.UI.WXCore ( bitmapDelete, bitmapCreateFromFile, bitmapGetSize, dcClear)
+import Graphics.UI.WXCore ( bitmapCreateFromFile, bitmapGetSize, dcClear)
 import Graphics.UI.WX 
+
 
 main :: IO ()
 main
@@ -93,7 +94,7 @@ imageViewer
       = do mbBitmap <- varSwap vbitmap Nothing
            case mbBitmap of
              Nothing -> return ()
-             Just bm -> bitmapDelete bm
+             Just bm -> objectDelete bm
 
     openImage sw vbitmap mclose status fname
       = do -- load the new bitmap

@@ -1,7 +1,7 @@
 {-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  Types
-    Copyright   :  (c) Daan Leijen 2003
+{-| Module      :  WxcTypes
+    Copyright   :  (c) Daan Leijen 2003, 2004
     License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
@@ -13,8 +13,13 @@
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.WxcTypes(
             -- * Object types
-              Object, objectNull, objectIsNull, objectCast
-            , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
+              Object, objectNull, objectIsNull, objectCast, objectIsManaged
+            , objectFromPtr, managedFromPtr
+            , objectDelete, withObjectPtr, withObjectRef, withObjectResult, withManagedResult
+            , objectFinalize, withManagedResultPtr, managedObjectFromPtr
+            , wxObject_Delete
+
+--            , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
 
             -- * Type synonyms
             , Id
@@ -50,7 +55,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , withArrayString, withArrayInt, withArrayObject
             , withArrayIntResult, withArrayStringResult, withArrayObjectResult
 
-            , Colour, ColourObject
+            , Colour, ColourPtr
             , colourFromColor, colorFromColour
             , colourCreate, colourCreateRGB, colourDelete, colourRed, colourGreen, colourBlue
             , toCCharColorRed, toCCharColorGreen, toCCharColorBlue
@@ -58,7 +63,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , TreeItem, treeItemInvalid, treeItemIsOk, treeItemFromInt
             , withRefTreeItemId, withTreeItemId, withTreeItemIdResult
 
-            , WxStringObject, CWxStringObject
+            , WxStringObject, TWxStringObject, CWxStringObject
 
             -- ** Managed object types
             , managedAddFinalizer
@@ -110,6 +115,9 @@ import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 {- note: this is just for instances for the WX library and not necessary for WXCore -}
 import Data.Dynamic
 
+import Graphics.UI.WXCore.WxcObject
+import Graphics.UI.WXCore.WxcClassTypes
+
 {-----------------------------------------------------------------------------------------
     Objects
 -----------------------------------------------------------------------------------------}
@@ -123,68 +131,30 @@ type EventId = Int
 type Style = Int
 
 
-{- | An @Object a@ is a pointer to an object of type @a@. The @a@ parameter is used
-   to encode the inheritance relation. When the type parameter is unit @()@, it denotes
-   an object of exactly that class, when the parameter is a type variable @a@, it
-   specifies an object that is at least an instance of that class. For example in 
-   wxWindows, we have the following class hierarchy:
+-- | Delete a wxObject, works for managed and unmanaged objects.
+objectDelete :: WxObject a -> IO ()
+objectDelete obj
+  = if objectIsManaged obj
+     then objectFinalize obj
+     else withObjectPtr obj $ \p ->
+          if (p == nullPtr)
+           then return ()
+           else wxObject_Delete p
+                                    
+-- | Create a managed object that will be deleted using |wxObject_Delete|.
+managedFromPtr :: Ptr (TWxObject a) -> IO (WxObject a)
+managedFromPtr p
+  = managedObjectFromPtr wxObject_Delete p
 
-   > EvtHandler
-   >   |- Window
-   >        |- Frame
-   >        |- Control
-   >            |- Button
-   >            |- Radiobox
+-- | Create a managed object that will be deleted using @wxObject_Delete@.
+withManagedResult :: IO (Ptr (TWxObject a)) -> IO (WxObject a)
+withManagedResult io
+  = do p <- io
+       managedFromPtr p
 
-   In wxHaskell, all the creation functions will return objects of exactly that
-   class and use the @()@ type:
+-- | Primitive deletion of @wxObject@ objects.
+foreign import ccall "wxObject_Delete" wxObject_Delete :: Ptr (TWxObject a) -> IO ()
 
-   > frameCreate :: Window a -> ... -> IO (Frame ())
-   > buttonCreate :: Window a -> ... -> IO (Button ())
-   > ...
-
-   In contrast, all the /this/ (or /self/) pointers of methods can take objects
-   of any instance of that class and have a type variable, for example:
-
-   > windowSetClientSize :: Window a -> Size -> IO ()
-   > controlSetLabel     :: Control a -> String -> IO ()
-   > buttonSetDefault    :: Button a -> IO ()
-
-   This means that we can use @windowSetClientSize@ on any window, including
-   buttons and frames, but we can only use @controlSetLabel@ on controls, not
-   includeing frames. 
-
-   In wxHaskell, this works since a @Frame ()@ is actually a type synonym for
-   @Window (CFrame ())@ (where @CFrame@ is an abstract data type). We can thus
-   pass a value of type @Frame ()@ to anything that expects some @Window a@.
-   For a button this works too, as it is a synonym for @Control (CButton ())@
-   which is in turn a synonym for @Window (CControl (CButton ()))@. Note that
-   we can\'t pass a frame to something that expects a value of type @Control a@.
-   Of course, a @Window a@ is actually a type synonym for @EvtHandler (CWindow a)@.
-   If you study the documentation in "Graphics.UI.WXH.WxcClasses" closely, you
-   can discover where this chain ends :-).  
-
-   Objects are not automatically deleted. Normally you can use a delete function
-   like @windowDelete@ to delete an object. However, almost all objects in the
-   wxWindows library are automatically deleted by the library. The only objects
-   that should be used with care are resources as bitmaps, fonts and brushes.
--}
-type Object a   = Ptr a
-
--- | A null object. Use with care.
-objectNull :: Object a
-objectNull
-  = nullPtr
-
--- | Test for null object.
-objectIsNull :: Object a -> Bool
-objectIsNull p
-  = (p == objectNull)
-
--- | Cast an object to another type. Use with care.
-objectCast :: Object a -> Object b
-objectCast obj
-  = castPtr obj
 
 {-----------------------------------------------------------------------------------------
   Point
@@ -536,7 +506,7 @@ withArrayIntResult f
                 xs <- peekArray len carr
                 return (map fromCInt xs)
 
-withArrayObjectResult :: (Ptr (Ptr a) -> IO CInt) -> IO [Ptr a]
+withArrayObjectResult :: (Ptr (Ptr a) -> IO CInt) -> IO [Object a]
 withArrayObjectResult f
   = do clen <- f nullPtr
        let len = fromCInt clen
@@ -544,7 +514,8 @@ withArrayObjectResult f
         then return []
         else allocaArray len $ \carr ->
              do f carr
-                peekArray len carr
+                ps <- peekArray len carr
+                return (map objectFromPtr ps)
 
 withArrayString :: [String] -> (CInt -> Ptr CString -> IO a) -> IO a
 withArrayString xs f
@@ -618,7 +589,7 @@ type Managed a  = ForeignPtr a
 
 -- | Create a managed object. Takes a finalizer as argument. This is normally a
 -- a delete function like 'windowDelete'.
-createManaged :: IO () -> Object a -> IO (Managed a)
+createManaged :: IO () -> Ptr a -> IO (Managed a)
 createManaged final obj
   = newForeignPtr obj final
 
@@ -628,7 +599,7 @@ managedAddFinalizer io managed
   = addForeignPtrFinalizer managed io
 
 -- | Do something with the object from a managed object.
-withManaged :: Managed a -> (Object a -> IO b) -> IO b
+withManaged :: Managed a -> (Ptr a -> IO b) -> IO b
 withManaged fptr f
   = withForeignPtr fptr f
 
@@ -642,7 +613,7 @@ managedTouch fptr
 {-# NOINLINE managedNull #-}
 managedNull :: Managed a
 managedNull
-  = unsafePerformIO (createManaged (return ()) objectNull)
+  = unsafePerformIO (createManaged (return ()) ptrNull)
 
 -- | Test for null.
 managedIsNull :: Managed a -> Bool
@@ -658,83 +629,90 @@ managedCast fptr
 {-----------------------------------------------------------------------------------------
   Classes assigned by value.
 -----------------------------------------------------------------------------------------}
-assignRef :: IO (Object a) -> (Object a -> IO ()) -> IO (Object a)
+assignRef :: IO (Ptr (TWxObject a)) -> (Ptr (TWxObject a) -> IO ()) -> IO (WxObject a)
 assignRef create f
+  = withManagedResult (assignRefPtr create f)
+
+assignRefPtr :: IO (Ptr a) -> (Ptr a -> IO ()) -> IO (Ptr a)
+assignRefPtr create f
   = do p <- create
        f p
        return p
 
-withRefBitmap :: (Object a -> IO ()) -> IO (Object a)
+
+withRefBitmap :: (Ptr (TBitmap a) -> IO ()) -> IO (Bitmap a)
 withRefBitmap f
   = assignRef wxBitmap_Create  f
-foreign import ccall "wxBitmap_CreateDefault" wxBitmap_Create :: IO (Object a)
+foreign import ccall "wxBitmap_CreateDefault" wxBitmap_Create :: IO (Ptr (TBitmap a))
 
-withRefCursor :: (Object a -> IO ()) -> IO (Object a)
+withRefCursor :: (Ptr (TCursor a) -> IO ()) -> IO (Cursor a)
 withRefCursor f
   = assignRef (wx_Cursor_CreateFromStock 1)  f
-foreign import ccall "Cursor_CreateFromStock" wx_Cursor_CreateFromStock :: CInt -> IO (Object a)
+foreign import ccall "Cursor_CreateFromStock" wx_Cursor_CreateFromStock :: CInt -> IO (Ptr (TCursor a))
 
-withRefIcon :: (Object a -> IO ()) -> IO (Object a)
+withRefIcon :: (Ptr (TIcon a) -> IO ()) -> IO (Icon a)
 withRefIcon f
   = assignRef wxIcon_Create  f
-foreign import ccall "wxIcon_CreateDefault" wxIcon_Create :: IO (Object a)
+foreign import ccall "wxIcon_CreateDefault" wxIcon_Create :: IO (Ptr (TIcon a))
 
-withRefImage :: (Object a -> IO ()) -> IO (Object a)
+withRefImage :: (Ptr (TImage a) -> IO ()) -> IO (Image a)
 withRefImage f
   = assignRef wxImage_Create  f
-foreign import ccall "wxImage_CreateDefault" wxImage_Create :: IO (Object a)
+foreign import ccall "wxImage_CreateDefault" wxImage_Create :: IO (Ptr (TImage a))
 
-withRefFont :: (Object a -> IO ()) -> IO (Object a)
+withRefFont :: (Ptr (TFont a) -> IO ()) -> IO (Font a)
 withRefFont f
   = assignRef wxFont_Create  f
-foreign import ccall "wxFont_CreateDefault" wxFont_Create :: IO (Object a)
+foreign import ccall "wxFont_CreateDefault" wxFont_Create :: IO (Ptr (TFont a))
 
 
-withRefPen :: (Object a -> IO ()) -> IO (Object a)
+withRefPen :: (Ptr (TPen a) -> IO ()) -> IO (Pen a)
 withRefPen f
   = assignRef wxPen_Create  f
-foreign import ccall "wxPen_CreateDefault" wxPen_Create :: IO (Object a)
+foreign import ccall "wxPen_CreateDefault" wxPen_Create :: IO (Ptr (TPen a))
 
 
-withRefBrush :: (Object a -> IO ()) -> IO (Object a)
+withRefBrush :: (Ptr (TBrush a) -> IO ()) -> IO (Brush a)
 withRefBrush f
   = assignRef wxBrush_Create  f
-foreign import ccall "wxBrush_CreateDefault" wxBrush_Create :: IO (Object a)
+foreign import ccall "wxBrush_CreateDefault" wxBrush_Create :: IO (Ptr (TBrush a))
 
-withRefDateTime :: (Object a -> IO ()) -> IO (Object a)
-withRefDateTime f
-  = assignRef wxDateTime_Create  f
-foreign import ccall "wxDateTime_Create" wxDateTime_Create :: IO (Object a)
-
-withRefListItem :: (Object a -> IO ()) -> IO (Object a)
-withRefListItem f
-  = assignRef wxListItem_Create  f
-foreign import ccall "wxListItem_Create" wxListItem_Create :: IO (Object a)
-
-withRefFontData :: (Object a -> IO ()) -> IO (Object a)
+withRefFontData :: (Ptr (TFontData a) -> IO ()) -> IO (FontData a)
 withRefFontData f
   = assignRef wxFontData_Create  f
-foreign import ccall "wxFontData_Create" wxFontData_Create :: IO (Object a)
+foreign import ccall "wxFontData_Create" wxFontData_Create :: IO (Ptr (TFontData a))
 
-withRefPrintData :: (Object a -> IO ()) -> IO (Object a)
+withRefListItem :: (Ptr (TListItem a) -> IO ()) -> IO (ListItem a)
+withRefListItem f
+  = assignRef wxListItem_Create  f
+foreign import ccall "wxListItem_Create" wxListItem_Create :: IO (Ptr (TListItem a))
+
+withRefPrintData :: (Ptr (TPrintData a) -> IO ()) -> IO (PrintData a)
 withRefPrintData f
   = assignRef wxPrintData_Create  f
-foreign import ccall "wxPrintData_Create" wxPrintData_Create :: IO (Object a)
+foreign import ccall "wxPrintData_Create" wxPrintData_Create :: IO (Ptr (TPrintData a))
 
-withRefPrintDialogData :: (Object a -> IO ()) -> IO (Object a)
+withRefPrintDialogData :: (Ptr (TPrintDialogData a) -> IO ()) -> IO (PrintDialogData a)
 withRefPrintDialogData f
   = assignRef wxPrintDialogData_Create  f
-foreign import ccall "wxPrintDialogData_CreateDefault" wxPrintDialogData_Create :: IO (Object a)
+foreign import ccall "wxPrintDialogData_CreateDefault" wxPrintDialogData_Create :: IO (Ptr (TPrintDialogData a))
 
-withRefPageSetupDialogData :: (Object a -> IO ()) -> IO (Object a)
+withRefPageSetupDialogData :: (Ptr (TPageSetupDialogData a) -> IO ()) -> IO (PageSetupDialogData a)
 withRefPageSetupDialogData f
   = assignRef wxPageSetupDialogData_Create  f
-foreign import ccall "wxPageSetupDialogData_Create" wxPageSetupDialogData_Create :: IO (Object a)
+foreign import ccall "wxPageSetupDialogData_Create" wxPageSetupDialogData_Create :: IO (Ptr (TPageSetupDialogData a))
 
-withRefGridCellCoordsArray :: (Object a -> IO ()) -> IO (Object a)
+withRefDateTime :: (Ptr (TDateTime a) -> IO ()) -> IO (DateTime a)
+withRefDateTime f
+  = withManagedResultPtr wxDateTime_Delete $ assignRefPtr wxDateTime_Create  f
+foreign import ccall "wxDateTime_Create" wxDateTime_Create :: IO (Ptr (TDateTime a))
+foreign import ccall "wxDateTime_Delete" wxDateTime_Delete :: Ptr (TDateTime a) -> IO ()
+
+withRefGridCellCoordsArray :: (Ptr (TGridCellCoordsArray a) -> IO ()) -> IO (GridCellCoordsArray a)
 withRefGridCellCoordsArray f
-  = assignRef wxGridCellCoordsArray_Create  f
-foreign import ccall "wxGridCellCoordsArray_Create" wxGridCellCoordsArray_Create :: IO (Object a)
+  = withManagedResultPtr wxGridCellCoordsArray_Delete $ assignRefPtr wxGridCellCoordsArray_Create  f
+foreign import ccall "wxGridCellCoordsArray_Create" wxGridCellCoordsArray_Create :: IO (Ptr (TGridCellCoordsArray a))
+foreign import ccall "wxGridCellCoordsArray_Delete" wxGridCellCoordsArray_Delete :: Ptr (TGridCellCoordsArray a) -> IO ()
 
 
 
@@ -759,37 +737,38 @@ treeItemFromInt :: Int -> TreeItem
 treeItemFromInt i
   = TreeItem i
 
-withRefTreeItemId :: (Object a -> IO ()) -> IO TreeItem
+withRefTreeItemId :: (Ptr a -> IO ()) -> IO TreeItem
 withRefTreeItemId f
-  = do item <- assignRef treeItemIdCreate f
+  = do item <- assignRefPtr treeItemIdCreate f
        val  <- treeItemIdGetValue item
        treeItemIdDelete item
        return (TreeItem val)
 
-withTreeItemId :: TreeItem -> (Object a -> IO b) -> IO b
+withTreeItemId :: TreeItem -> (Ptr a -> IO b) -> IO b
 withTreeItemId (TreeItem val) f 
   = do item <- treeItemIdCreateFromValue val
        x    <- f item
        treeItemIdDelete item
        return x
 
-withTreeItemIdResult :: IO (Object a) -> IO TreeItem 
+withTreeItemIdResult :: IO (Ptr a) -> IO TreeItem 
 withTreeItemIdResult io
   = do item <- io
        val  <- treeItemIdGetValue item
        treeItemIdDelete item
        return (TreeItem val)
 
-foreign import ccall "wxTreeItemId_Create" treeItemIdCreate :: IO (Object a)
-foreign import ccall "wxTreeItemId_GetValue" treeItemIdGetValue :: Object a -> IO Int
-foreign import ccall "wxTreeItemId_CreateFromValue" treeItemIdCreateFromValue :: Int -> IO (Object a)
-foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Object a -> IO ()
+foreign import ccall "wxTreeItemId_Create" treeItemIdCreate :: IO (Ptr a)
+foreign import ccall "wxTreeItemId_GetValue" treeItemIdGetValue :: Ptr a -> IO Int
+foreign import ccall "wxTreeItemId_CreateFromValue" treeItemIdCreateFromValue :: Int -> IO (Ptr a)
+foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Ptr a -> IO ()
 
 {-----------------------------------------------------------------------------------------
   String
 -----------------------------------------------------------------------------------------}
 -- | A @wxString@ object.
-type WxStringObject a   = Object (CWxStringObject a)
+type WxStringObject a   = Ptr (CWxStringObject a)
+type TWxStringObject a  = CWxStringObject a
 data CWxStringObject a  = CWxStringObject
 
 withManagedWxString :: String -> (WxStringObject () -> IO a) -> IO a
@@ -881,16 +860,16 @@ toCCharInt :: Int -> CChar
 toCCharInt i         = fromIntegral i
 
 -- marshalling 2
-type Colour a        = Managed (CColour a)
-type ColourObject a  = Object (CColour a)
-data CColour a       = CColour
+type Colour a     = Object (CColour a)
+type ColourPtr a  = Ptr (CColour a)
+data CColour a    = CColour
 
-withRefColour :: (ColourObject () -> IO ()) -> IO Color
+withRefColour :: (ColourPtr () -> IO ()) -> IO Color
 withRefColour f
   = withManagedColourResult $
-    assignRef colourCreate f
+    assignRefPtr colourCreate f
 
-withManagedColourResult :: IO (ColourObject a) -> IO Color
+withManagedColourResult :: IO (ColourPtr a) -> IO Color
 withManagedColourResult io
   = do pcolour <- io
        color <- do ok <- colourOk pcolour
@@ -901,7 +880,7 @@ withManagedColourResult io
        colourDelete pcolour
        return color
 
-withManagedColour :: Color -> (ColourObject () -> IO b) -> IO b
+withManagedColour :: Color -> (ColourPtr () -> IO b) -> IO b
 withManagedColour c f
   = do pcolour <- colourCreateFromInt (toCInt (intFromColor c))
        x <- f pcolour
@@ -911,14 +890,15 @@ withManagedColour c f
 colourFromColor :: Color -> IO (Colour ())
 colourFromColor c
   = if (colorOk c)
-     then do pcolour <- colourCreateFromInt (toCInt (intFromColor c))
-             newForeignPtr pcolour (colourDelete pcolour)
-     else do pcolour <- colourNull
-             newForeignPtr pcolour (return ())
+     then withManagedResultPtr colourDelete $
+          colourCreateFromInt (toCInt (intFromColor c))
+     else withManagedResultPtr (const (return ())) $
+          colourNull
+          
 
 colorFromColour :: Colour a -> IO Color
 colorFromColour c
-  = withManaged c $ \pcolour ->
+  = withObjectPtr c $ \pcolour ->
     do ok <- colourOk pcolour
        if (ok==0)
         then return colorNull
@@ -926,13 +906,13 @@ colorFromColour c
                 return (colorFromInt (fromCInt rgb))
 
 
-foreign import ccall "wxColour_CreateEmpty" colourCreate    :: IO (ColourObject ())
-foreign import ccall "wxColour_CreateRGB" colourCreateRGB :: CUChar -> CUChar -> CUChar -> IO (ColourObject ())
-foreign import ccall "wxColour_CreateFromInt" colourCreateFromInt :: CInt -> IO (ColourObject ())
-foreign import ccall "wxColour_GetInt" colourGetInt   :: ColourObject a -> IO CInt
-foreign import ccall "wxColour_Delete" colourDelete   :: ColourObject a -> IO ()
-foreign import ccall "wxColour_Red"   colourRed       :: ColourObject a -> IO CUChar
-foreign import ccall "wxColour_Green" colourGreen     :: ColourObject a -> IO CUChar
-foreign import ccall "wxColour_Blue"  colourBlue      :: ColourObject a -> IO CUChar
-foreign import ccall "wxColour_Ok"    colourOk        :: ColourObject a -> IO CInt
-foreign import ccall "Null_Colour"    colourNull      :: IO (ColourObject ())
+foreign import ccall "wxColour_CreateEmpty" colourCreate    :: IO (ColourPtr ())
+foreign import ccall "wxColour_CreateRGB" colourCreateRGB :: CUChar -> CUChar -> CUChar -> IO (ColourPtr ())
+foreign import ccall "wxColour_CreateFromInt" colourCreateFromInt :: CInt -> IO (ColourPtr ())
+foreign import ccall "wxColour_GetInt" colourGetInt   :: ColourPtr a -> IO CInt
+foreign import ccall "wxColour_Delete" colourDelete   :: ColourPtr a -> IO ()
+foreign import ccall "wxColour_Red"   colourRed       :: ColourPtr a -> IO CUChar
+foreign import ccall "wxColour_Green" colourGreen     :: ColourPtr a -> IO CUChar
+foreign import ccall "wxColour_Blue"  colourBlue      :: ColourPtr a -> IO CUChar
+foreign import ccall "wxColour_Ok"    colourOk        :: ColourPtr a -> IO CInt
+foreign import ccall "Null_Colour"    colourNull      :: IO (ColourPtr ())

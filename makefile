@@ -76,8 +76,9 @@ WX-SOURCES= \
 # wxcore
 #--------------------------------------------------------------------------
 WXCORE-SOURCES = \
+	Graphics/UI/WXCore/WxcClasses \
+	Graphics/UI/WXCore/WxcClassInfo \
 	Graphics/UI/WXCore/WxcDefs \
-	Graphics/UI/WXCore/WxcClassTypes \
 	Graphics/UI/WXCore/IntMap \
 	Graphics/UI/WXCore/Types \
 	Graphics/UI/WXCore/Defines \
@@ -93,14 +94,23 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/OpenGL \
 	Graphics/UI/WXCore
 
-WXCORE-CORE-SOURCES = \
+WXCORE-CORE-A-SOURCES = \
+	Graphics/UI/WXCore/WxcObject \
+	Graphics/UI/WXCore/WxcClassTypes \
 	Graphics/UI/WXCore/WxcTypes \
-	Graphics/UI/WXCore/WxcClasses
+	
+WXCORE-CORE-B-SOURCES = \
+	Graphics/UI/WXCore/WxcClassesAL
 
+WXCORE-CORE-C-SOURCES = \
+	Graphics/UI/WXCore/WxcClassesMZ
 
 WXCORE-GEN-SOURCES = \
-	Graphics/UI/WXCore/WxcClasses \
 	Graphics/UI/WXCore/WxcClassTypes \
+	Graphics/UI/WXCore/WxcClassesAL \
+	Graphics/UI/WXCore/WxcClassesMZ \
+	Graphics/UI/WXCore/WxcClasses \
+	Graphics/UI/WXCore/WxcClassInfo \
 	Graphics/UI/WXCore/WxcDefs 
 	
 # all sources that generate stub files (ie. containing: foreign import "wrapper")
@@ -118,6 +128,7 @@ WXD-SOURCES = \
 	DeriveTypes \
 	CompileHeader \
 	CompileClassTypes \
+	CompileClassInfo \
 	CompileClasses \
 	CompileDefs \
 	Main
@@ -174,7 +185,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 #--------------------------------------------------------------------------
 WXHASKELL-SOURCES= \
 	configure makefile makefile.lib \
-	prologue.txt license.txt \
+	bin/prologue-template.txt license.txt \
 	bin/wxhaskell-spec-template \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
@@ -482,18 +493,32 @@ WXCORE-IMPORTSDIR=$(WXCORE-OUTDIR)/imports
 
 WXCORE-OBJ	=$(WXCORE-OUTDIR)/$(WXCORE).o
 WXCORE-LIB	=$(WXCORE-OUTDIR)/lib$(WXCORE).a
-WXCORE-CORE-OBJ	=$(WXCORE-OUTDIR)/$(WXCORE)0.o
-WXCORE-CORE-LIB	=$(WXCORE-OUTDIR)/lib$(WXCORE)0.a
-WXCORE-LIBS	=$(WXCORE-CORE-LIB) $(WXCORE-CORE-OBJ) $(WXCORE-LIB) $(WXCORE-OBJ)
+WXCORE-CORE-A-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)0.o
+WXCORE-CORE-A-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)0.a
+WXCORE-CORE-B-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)1.o
+WXCORE-CORE-B-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)1.a
+WXCORE-CORE-C-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)2.o
+WXCORE-CORE-C-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)2.a
+WXCORE-LIBS	=$(WXCORE-CORE-A-LIB) $(WXCORE-CORE-A-OBJ) \
+                 $(WXCORE-CORE-B-LIB) $(WXCORE-CORE-B-OBJ) \
+                 $(WXCORE-CORE-C-LIB) $(WXCORE-CORE-C-OBJ) \
+		 $(WXCORE-LIB) $(WXCORE-OBJ)
 
 WXCORE-OBJS	=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-SOURCES))
-WXCORE-CORE-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES))
+WXCORE-CORE-A-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-A-SOURCES))
+WXCORE-CORE-B-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-B-SOURCES))
+WXCORE-CORE-C-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-C-SOURCES))
 WXCORE-STUB-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(patsubst %,%_stub,$(WXCORE-STUBS)))
+
+WXCORE-CORE-SOURCES=$(WXCORE-CORE-A-SOURCES) $(WXCORE-CORE-B-SOURCES) $(WXCORE-CORE-C-SOURCES)
+WXCORE-CORE-OBJS   =$(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS)
+
 WXCORE-DEPS	=$(call make-deps, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
 WXCORE-HIS	=$(call make-his,  $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
-WXCORE-HS	=$(call make-hs,   $(WXCORE-SRCDIR),     $(WXCORE-SOURCES) $(WXCORE-CORE-SOURCES))
+WXCORE-HS	=$(call make-hs,   $(WXCORE-SRCDIR),     $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
 WXCORE-GEN-HS   =$(call make-hs,   $(WXCORE-SRCDIR),     $(WXCORE-GEN-SOURCES))
 WXCORE-NONGEN-HS=$(filter-out $(WXCORE-GEN-HS),$(WXCORE-HS))
+
 WXCORE-BINS	=$(WXCORE-HIS) $(WXCORE-LIBS)
 WXCORE-DOCS	=$(filter-out $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/IntMap.hs,$(WXCORE-HS))
 WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)
@@ -535,31 +560,49 @@ wxcore-uninstall-files:
 	-@$(call uninstall-files,$(dir $(WXCORE-PKG)),$(LIBDIR),$(WXCORE-PKG))
 
 # build marshall modules
-$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
-	$(WXD-EXE) -c $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
+$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassTypes.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
+	$(WXD-EXE) -t $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
 
 $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcDefs.hs: $(WXD-EXE) $(WXC-SPECS-EIFFEL)
 	$(WXD-EXE) -d $(WXD-FLAGS) $(WXC-SPECS-EIFFEL)
 
-$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassTypes.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
-	$(WXD-EXE) -t $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
+$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassInfo.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
+	$(WXD-EXE) -i $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
+
+$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassesAL.hs: $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs
+$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClassesMZ.hs: $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs
+
+$(WXCORE-SRCDIR)/$(WXCORE-HPATH)/WxcClasses.hs: $(WXD-EXE) $(WXC-SPECS-HEADER)
+	$(WXD-EXE) -c $(WXD-FLAGS) $(word 1,$(WXC-SPECS-HEADER))
 
 # build ghci object files
 $(WXCORE-OBJ): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)
 	  $(call combine-objs,$@,$^)
 
-$(WXCORE-CORE-OBJ): $(WXCORE-CORE-OBJS)
+$(WXCORE-CORE-A-OBJ): $(WXCORE-CORE-A-OBJS)
+	  $(call combine-objs,$@,$^)
+
+$(WXCORE-CORE-B-OBJ): $(WXCORE-CORE-B-OBJS)
+	  $(call combine-objs,$@,$^)
+
+$(WXCORE-CORE-C-OBJ): $(WXCORE-CORE-C-OBJS)
 	  $(call combine-objs,$@,$^)
 
 # build a library
 $(WXCORE-LIB): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)
 	  $(call make-archive,$@,$^)
 
-$(WXCORE-CORE-LIB): $(WXCORE-CORE-OBJS)
+$(WXCORE-CORE-A-LIB): $(WXCORE-CORE-A-OBJS)
+	  $(call make-archive,$@,$^)
+
+$(WXCORE-CORE-B-LIB): $(WXCORE-CORE-B-OBJS)
+	  $(call make-archive,$@,$^)
+
+$(WXCORE-CORE-C-LIB): $(WXCORE-CORE-C-OBJS)
 	  $(call make-archive,$@,$^)
 
 # create an object file from source files.
-$(WXCORE-CORE-OBJS) $(WXCORE-OBJS): $(WXCORE-IMPORTSDIR)/%.o: $(WXCORE-SRCDIR)/%.hs
+$(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS) $(WXCORE-OBJS): $(WXCORE-IMPORTSDIR)/%.o: $(WXCORE-SRCDIR)/%.hs
 	@$(call compile-hs,$@,$<,$(WXCORE-HCFLAGS) -i$(WXCORE-IMPORTSDIR) -Iwxc/include)
 
 # automatically include all dependency information.
@@ -665,7 +708,7 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 #--------------------------------------------------------------------------
 DOC-OUTDIR  =$(OUTDIR)/doc
 DOCFILE     =$(DOC-OUTDIR)/wxhaskell.haddock
-HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=prologue.txt --html $(HDOCBASES)
+HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=config/prologue.txt --html $(HDOCBASES)
 DOCSOURCES  = $(WX-DOCS) $(WXCORE-DOCS)
 
 doc: doc-dirs $(DOCFILE)

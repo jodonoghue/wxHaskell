@@ -109,8 +109,7 @@ defaultButton
   = newAttr "defaultButton" getter setter
   where
     getter panel
-      = do p <- panelGetDefaultItem panel
-           return (objectCast p)
+      = panelGetDefaultItem panel
 
     setter panel button
       = do panelSetDefaultItem panel button
@@ -673,8 +672,7 @@ radioBox parent direction labels props
   = feed2 props (if (direction==Horizontal) then wxRA_SPECIFY_ROWS else wxRA_SPECIFY_COLS) $
     initialWindow $ \id rect ->
     initialText   $ \title -> \props flags ->
-    do putStrLn title
-       r <- radioBoxCreate parent id title rect labels 1 flags
+    do r <- radioBoxCreate parent id title rect labels 1 flags
        set r props
        return r
 

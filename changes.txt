@@ -18,6 +18,7 @@ Non backward compatible changes:
 - (un)set "maximize box" when "resizeable" is set.
 - Removed default "wxTAB_TRAVERSAL" style on frames (to make the grid
   work correctly).
+- Renamed "WXCore.WxcClassTypes" to "WXCore.WxcClassInfo".
 
 Backward compatible additions:
 - Added custom control demo.
@@ -44,6 +45,10 @@ Backward compatible additions:
 - Made the definition of "Closure" in "wrappers.h" more liberal to 
   support wxOCaml better.
 - Added "frameCentre" method
+- Huge internal changes: split up wxcClasses in three files and added
+  initial support for managed objects like bitmaps. Also added checks
+  for NULL pointers. 
+
 
 Bug fixes:
 - HtmlLinkClicked events are now properly generated.

@@ -24,7 +24,7 @@ module Graphics.UI.WXCore
         -- * Re-exports
           module Graphics.UI.WXCore.WxcDefs
         , module Graphics.UI.WXCore.WxcClasses
-        , module Graphics.UI.WXCore.WxcClassTypes
+        , module Graphics.UI.WXCore.WxcClassInfo
         , module Graphics.UI.WXCore.Defines
         , module Graphics.UI.WXCore.Types
         , module Graphics.UI.WXCore.Process
@@ -51,8 +51,8 @@ import Graphics.UI.WXCore.WxcClasses
          , glCanvasSwapBuffers
          , glCanvasSetColour )
 
-import Graphics.UI.WXCore.WxcClassTypes
-
+import Graphics.UI.WXCore.WxcClassInfo
+  
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Defines
 import Graphics.UI.WXCore.Process

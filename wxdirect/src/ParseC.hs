@@ -146,7 +146,7 @@ patomtype
   <|> do reserved "TArrayStringOutVoid"; return (ArrayStringOut CVoid)
   <|> do reserved "TArrayIntOut"; return (ArrayIntOut CInt)
   <|> do reserved "TArrayIntOutVoid"; return (ArrayIntOut CVoid)
-  <|> do reserved "TClosureFun"; return (Fun "Ptr fun -> Ptr state -> Event evt -> IO ()")
+  <|> do reserved "TClosureFun"; return (Fun "Ptr fun -> Ptr state -> Ptr (TEvent evt) -> IO ()")
   <|> do reserved "TClass"
          name <- parens identifier
          return (Object name)

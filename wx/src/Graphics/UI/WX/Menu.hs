@@ -46,7 +46,7 @@ module Graphics.UI.WX.Menu
 import Char( toUpper )
 import List( partition, intersperse )
 import System.IO.Unsafe (unsafePerformIO)
-
+import Foreign.Ptr( nullPtr )
 import Graphics.UI.WXCore hiding (Event)
 
 import Graphics.UI.WX.Types
@@ -137,7 +137,7 @@ menuSub parent menu props
                                       else return title                  
        menuSetTitle menu "" -- remove title on submenus
        menuAppendSub parent id label menu ""
-       item <- menuFindItem parent id objectNull
+       item <- menuFindItem parent id nullPtr
        set item props
        return item
 
@@ -232,7 +232,7 @@ menuItemEx menu id label kind props
   = do if (kind == wxITEM_RADIO)
         then menuAppendRadioItem menu id label ""
         else menuAppend menu id label "" (kind == wxITEM_CHECK)
-       item <- menuFindItem menu id objectNull
+       item <- menuFindItem menu id nullPtr
        set item props
        return item
 

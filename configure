@@ -11,7 +11,7 @@
 #--------------------------------------------------------------------
 # Variables
 #--------------------------------------------------------------------
-version="0.7.1"
+version="0.7.2"
 release="0"
 
 # install
@@ -705,7 +705,7 @@ Package
   { name="wxcore"
   , import_dirs=["\${wxhlibdir}/imports"]
   , library_dirs=["\${wxhlibdir}"]
-  , hs_libraries=["wxcore","wxcore0"]
+  , hs_libraries=["wxcore","wxcore0","wxcore1","wxcore2"]
   , extra_libraries=["${wxclibname}-${binversion}"]
   , package_deps = ["base","data"]
   , extra_ld_opts=[$extraldopts]
@@ -827,6 +827,14 @@ echo "%define configflags  $configflags"	>> config/wxhaskell.spec.temp
 echo ""						>> config/wxhaskell.spec.temp
 cat config/wxhaskell.spec.temp bin/wxhaskell-spec-template > config/wxhaskell.spec
 rm -f config/wxhaskell.spec.temp
+
+# generate prologue for documentation
+echo " config/prologue.txt"
+echo "Documentation for wxHaskell $version"  >  config/prologue.txt.temp
+echo ""                                      >> config/prologue.txt.temp
+cat config/prologue.txt.temp bin/prologue-template.txt > config/prologue.txt
+rm -f config/prologue.txt.temp
+
 
 # show configuration
 echo ""

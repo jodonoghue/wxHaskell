@@ -19,8 +19,10 @@ module Graphics.UI.WX.Types
 
     -- ** Objects
     , ( # ), feed, feed2
-    , Object, objectNull, objectIsNull, objectCast
-    , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
+    , Object, objectNull, objectIsNull, objectCast, objectIsManaged
+    , objectDelete
+    
+--    , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
 
     -- ** Identifiers
     , Id, idAny, idCreate

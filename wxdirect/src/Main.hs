@@ -23,10 +23,11 @@ import System( getEnv )
 import System.Environment( getArgs )
 import System.Console.GetOpt
 
-import CompileClasses   ( compileClasses, compileClassesShort)
+import CompileClasses   ( compileClasses)
 import CompileHeader    ( compileHeader )
 import CompileDefs      ( compileDefs )
 import CompileClassTypes( compileClassTypes )
+import CompileClassInfo ( compileClassInfo )
 
 import Classes( getWxcDir, setWxcDir )
 
@@ -39,28 +40,29 @@ main
          ModeHelp
           -> showHelp
          ModeClasses outputDir inputFiles verbose
-          -> compileClasses verbose moduleRootWxCore moduleClassesName
-                             (outputDir ++ moduleClassesName ++ ".hs") inputFiles
+          -> compileClasses verbose moduleRootWxCore moduleClassTypesName moduleClassesName
+                             (outputDir ++ moduleClassesName) inputFiles
+         ModeClassTypes outputDir inputFiles verbose
+          -> compileClassTypes verbose moduleRootWxCore moduleClassTypesName
+                                (outputDir ++ moduleClassTypesName ++ ".hs") inputFiles
          ModeDefs outputDir inputFiles verbose
           -> compileDefs verbose moduleRootWxCore moduleDefsName
                              (outputDir ++ moduleDefsName ++ ".hs") inputFiles
-         ModeClassTypes outputDir verbose
-          -> compileClassTypes verbose moduleRootWxCore moduleClassesName moduleClassTypesName
-                             (outputDir ++ moduleClassTypesName ++ ".hs")
-         ModeClassesShort outputDir inputFiles verbose
-          -> compileClassesShort verbose moduleRootWxCore moduleClassesName moduleClassesShortName
-                             (outputDir ++ moduleClassesShortName ++ ".hs") inputFiles
+         ModeClassInfo outputDir verbose
+          -> compileClassInfo verbose moduleRootWxCore moduleClassesName moduleClassTypesName moduleClassInfoName
+                             (outputDir ++ moduleClassInfoName ++ ".hs")
 
          ModeCHeader outputDir inputFiles verbose
           -> compileHeader verbose (outputDir ++ "wxc_glue.h") inputFiles
        -- putStrLn "done."
 
-moduleClassesShortName  = "Classes"
+moduleClassesShortName= "Classes"
 moduleClassTypesName  = "WxcClassTypes"
-moduleClassesName  = "WxcClasses"
-moduleDefsName     = "WxcDefs"
-moduleRootWxCore   = "Graphics.UI.WXCore."
-moduleRootWx       = "Graphics.UI.WX."
+moduleClassesName     = "WxcClasses"
+moduleClassInfoName   = "WxcClassInfo"
+moduleDefsName        = "WxcDefs"
+moduleRootWxCore      = "Graphics.UI.WXCore."
+moduleRootWx          = "Graphics.UI.WX."
 
 moduleRootDir moduleRoot
   = map dotToSlash moduleRoot
@@ -105,14 +107,14 @@ data Flag
 
 
 data Target
-  = TDefs | TClasses | TClassesShort | TClassTypes | THeader
+  = TDefs | TClasses | TClassTypes | THeader | TClassInfo
 
 data Mode
   = ModeHelp
-  | ModeClasses { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
-  | ModeDefs    { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
-  | ModeClassTypes { outputDir :: FilePath, verbose :: Bool }
-  | ModeClassesShort { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
+  | ModeClasses   { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
+  | ModeClassTypes{ outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
+  | ModeDefs      { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
+  | ModeClassInfo { outputDir :: FilePath, verbose :: Bool }
   | ModeCHeader { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
 
 
@@ -132,9 +134,9 @@ options :: [OptDescr Flag]
 options =
  [ Option ['d'] ["definitions"] (NoArg (Target TDefs))    "generate constant definitions from .e files"
  , Option ['c'] ["classes"]     (NoArg (Target TClasses)) "generate class method definitions from .h files"
- , Option ['t'] ["types"]       (NoArg (Target TClassTypes)) "generate class type definitions"
+ , Option ['t'] ["classtypes"]   (NoArg (Target TClassTypes)) "generate class type definitions from .h files"
+ , Option ['i'] ["classinfo"]   (NoArg (Target TClassInfo)) "generate class info definitions"
  , Option ['h'] ["header"]      (NoArg (Target THeader))  "generate typed C header file -- development use only"
- , Option ['s'] ["short"]       (NoArg (Target TClassesShort)) "generate short class method definitions from .h files"
  , Option ['v'] ["verbose"]     (NoArg Verbose)           "verbose: show ignored definitions"
  , Option ['o'] ["output"]      (ReqArg Output "DIR")     "optional output directory"
  , Option ['w'] ["wxc"]         (ReqArg WxcDir "DIR")     "optional 'wxc' directory (=../wxc)"
@@ -155,18 +157,18 @@ compileOpts
                                            inputFiles <- getInputFiles ".e" defaultEiffelFiles files
                                            outputDir  <- getOutputDir flags defaultOutputDirWxh
                                            return (ModeDefs outputDir inputFiles (any isVerbose flags))
-                   [Target TClassTypes]
+                   [Target TClassInfo]
                                      -> do outputDir  <- getOutputDir flags defaultOutputDirWxh
-                                           return (ModeClassTypes outputDir (any isVerbose flags))
+                                           return (ModeClassInfo outputDir (any isVerbose flags))
                    [Target TClasses] -> do defaultHeaderFiles <- getDefaultHeaderFiles
                                            inputFiles <- getInputFiles ".h" defaultHeaderFiles files
                                            outputDir  <- getOutputDir flags defaultOutputDirWxh
                                            return (ModeClasses outputDir inputFiles (any isVerbose flags))
-                   [Target TClassesShort]
-                                     -> do defaultHeaderFiles <- getDefaultHeaderFiles
+                   [Target TClassTypes] ->
+                                        do defaultHeaderFiles <- getDefaultHeaderFiles
                                            inputFiles <- getInputFiles ".h" defaultHeaderFiles files
                                            outputDir  <- getOutputDir flags defaultOutputDirWxh
-                                           return (ModeClassesShort outputDir inputFiles (any isVerbose flags))
+                                           return (ModeClassTypes outputDir inputFiles (any isVerbose flags))
                    [Target THeader]
                                      -> do defaultHeaderFiles <- getDefaultHeaderFiles
                                            inputFiles <- getInputFiles ".h" defaultHeaderFiles files
@@ -223,4 +225,4 @@ helpMessage
        return  (usageInfo header options ++
                 "\ndefault input files:\n" ++
                 unlines (map ("  "++) defaultFiles))
-  where header = "usage: wxDirect -[dct] [other options] [header-files..] [eiffel-files..]"
+  where header = "usage: wxDirect -[dcti] [other options] [header-files..] [eiffel-files..]"

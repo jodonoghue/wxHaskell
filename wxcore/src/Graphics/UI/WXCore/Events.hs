@@ -202,6 +202,7 @@ import qualified Graphics.UI.WXCore.IntMap as IntMap
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
+import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Draw
 import Graphics.UI.WXCore.Defines
@@ -705,8 +706,6 @@ windowOnPaintRaw window paintHandler
                         when (isScrolled) (scrolledWindowPrepareDC (objectCast window) paintDC)
                         paintHandler (downcastDC paintDC) view region)
 
-downcastDC :: DC a -> DC ()
-downcastDC dc   = objectCast dc
                     
 -- | Get the current /raw/ paint event handler. 
 windowGetOnPaintRaw :: Window a -> IO (DC () -> Rect -> [Rect] -> IO ())
@@ -2122,10 +2121,11 @@ evtHandlerOnEventDisconnect object firstId lastId eventIds
 evtHandlerOnEventConnect :: EvtHandler a -> Id -> Id -> [EventId] -> state -> OnEvent
 evtHandlerOnEventConnect object firstId lastId eventIds state destroy eventHandler
   = do closure <- createClosure state destroy eventHandler
-       mapM_ (connectEventId closure) eventIds
+       withObjectPtr closure $ \pclosure ->
+        mapM_ (connectEventId pclosure) eventIds
   where
-    connectEventId closure eventId
-      = evtHandlerConnect object firstId lastId eventId closure
+    connectEventId pclosure eventId
+      = evtHandlerConnect object firstId lastId eventId pclosure
 
 
 
@@ -2143,7 +2143,7 @@ unsafeClosureGetState closure def
 
 unsafeClosureGetData :: Closure () -> IO (Maybe a)
 unsafeClosureGetData closure
-  = if (ptrIsNull closure)
+  = if (objectIsNull closure)
      then return Nothing
      else do ptr <- closureGetData closure
              if (ptrIsNull ptr)
@@ -2163,9 +2163,11 @@ createClosure st destroy handler
        stptr   <- newStablePtr (Wrap st)
        closureCreate funptr (castStablePtrToPtr stptr)
   where
-    eventHandlerWrapper funptr stptr event
-      = do prev <- swapMVar currentEvent event
-           if (event==objectNull)
+    eventHandlerWrapper :: Ptr fun -> Ptr () -> Ptr (TEvent ()) -> IO ()
+    eventHandlerWrapper funptr stptr eventptr
+      = do let event = objectFromPtr eventptr
+           prev <- swapMVar currentEvent event
+           if (objectIsNull event)
             then do isDisconnecting <- varGet disconnecting
                     destroy (not isDisconnecting)
                     when (stptr/=ptrNull)
@@ -2178,4 +2180,4 @@ createClosure st destroy handler
 
 
 
-foreign import ccall "wrapper" wrapEventHandler :: (Ptr fun -> Ptr st -> Event () -> IO ()) -> IO (FunPtr (Ptr fun -> Ptr st -> Event () -> IO ()))
+foreign import ccall "wrapper" wrapEventHandler :: (Ptr fun -> Ptr st -> Ptr (TEvent ()) -> IO ()) -> IO (FunPtr (Ptr fun -> Ptr st -> Ptr (TEvent ()) -> IO ()))
