@@ -1,8 +1,10 @@
 #-----------------------------------------------------------------------
-#  Copyright 2003, Daan Leijen.
+#  Copyright (c) 2003, Daan Leijen.
+#  This file is distributed under the wxWindows library license.
+#  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.12 2003/07/17 23:23:56 dleijen Exp $
+# $Id: makefile,v 1.13 2003/07/21 00:11:31 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -158,7 +160,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 #--------------------------------------------------------------------------
 WXHASKELL-SOURCES= \
 	config.search configure makefile \
-	prologue.txt \
+	prologue.txt license.txt \
 	bin/macosx-app bin/reimp.exe \
 	bin/wxhaskell-register bin/wxhaskell-register.bat
 
@@ -171,6 +173,8 @@ SAMPLE-SOURCES= \
 	samples/wx/Layout.hs \
 	samples/wx/Minimal.hs \
 	samples/wx/Process.hs \
+	samples/wx/Paint.hs \
+	samples/wx/ImageViewer.hs \
 	\
 	samples/wxh/BouncingBalls.hs \
 	samples/wxh/ByeDemo.hs \
