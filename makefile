@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.56 2004/02/12 06:41:49 dleijen Exp $
+# $Id: makefile,v 1.57 2004/02/12 08:38:16 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -355,7 +355,7 @@ cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
 
 # usage: $(call cp-relative,<out topdir>,<local files>)
 cp-relative	=$(call ensure-dirs-of-files,$(patsubst %,$(1)/%,$(2))) && \
-		 $(foreach file,$(2),$(call cp-echo,$(file),$(1)/$(patsubst %/,%,$(dir $(file)))) && ):
+		 $(foreach file,$(2),$(call cp-echox,$(file),$(1)/$(patsubst %/,%,$(dir $(file)))) && ):
 
 cp-srcdist	=$(call cp-relative,$(TOPDIR)/$(SRCDIST-SRCDIR),$(1))
 cp-docdist	=$(CD) $(1) && $(call cp-relative,$(TOPDIR)/$(DOCDIST-SRCDIR),$(patsubst $(1)/%,%,$(2)))
@@ -445,7 +445,7 @@ srcdist-clean:
 	-@$(call safe-remove-file,$(DIST-SRC))
 
 # generic binary distribution as a zip
-bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
+bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
 ifeq ($(TOOLKIT),msw)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat)
@@ -456,6 +456,7 @@ ifeq ($(TOOLKIT),mac)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/macosx-app)
 endif
 	@$(RM) $(DIST-BIN)
+	@$(CP) $(DIST-DOC) $(DIST-BIN)
 	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
 
 bindist-clean:
@@ -794,6 +795,7 @@ webdoc: doc
 ifeq ($(HDOCFOUND),yes)
 docdist: docdist-clean doc
 	@echo "-- adding documentation"
+	@echo $(wildcard $(DOC-OUTDIR)/*)
 	@$(call cp-docdist,$(OUTDIR),$(wildcard $(DOC-OUTDIR)/*))
 else
 docdist:
