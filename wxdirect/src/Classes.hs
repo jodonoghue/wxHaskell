@@ -53,8 +53,7 @@ setWxcDir dir
 -----------------------------------------------------------------------------------------}
 ignoreClasses :: Set.Set String
 ignoreClasses
-  = Set.fromList
-    [ "wxFile", "wxDir"  ]
+  = Set.fromList [ "wxFile", "wxDir"  ]
 
 classes :: [Class]
 classes
