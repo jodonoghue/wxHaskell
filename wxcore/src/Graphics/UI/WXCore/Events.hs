@@ -1600,21 +1600,21 @@ data EventGrid  = GridCellMouse        !Row !Column !EventMouse
                 | GridLabelMouse       !Row !Column !EventMouse
                 | GridCellChange       !Row !Column !(IO ())
                 | GridCellSelect       !Row !Column !(IO ())
-                | GridCellDeSelect     !Row !Column
-                | GridEditorHidden     !Row !Column
-                | GridEditorShown      !Row !Column
+                | GridCellDeSelect     !Row !Column !(IO ())
+                | GridEditorHidden     !Row !Column !(IO ())
+                | GridEditorShown      !Row !Column !(IO ())
                 | GridEditorCreated    !Row !Column (IO (Control ())) 
                 | GridColSize          !Column !Point !Modifiers (IO ())
                 | GridRowSize          !Row !Point !Modifiers (IO ())
                 | GridRangeSelect      !Row !Column !Row !Column !Rect !Modifiers !(IO ())
-                | GridRangeDeSelect    !Row !Column !Row !Column !Rect !Modifiers
+                | GridRangeDeSelect    !Row !Column !Row !Column !Rect !Modifiers !(IO ())
                 | GridUnknown          !Row !Column !Int
 
 fromGridEvent :: GridEvent a -> IO EventGrid
 fromGridEvent gridEvent
   = do tp  <- eventGetEventType gridEvent
-       row <- gridEventGetCol gridEvent
-       col <- gridEventGetRow gridEvent
+       row <- gridEventGetRow gridEvent
+       col <- gridEventGetCol gridEvent
        case lookup tp gridEvents of
          Just make  -> make gridEvent row col 
          Nothing    -> return (GridUnknown row col tp)
@@ -1631,8 +1631,8 @@ gridEvents
     ,(wxEVT_GRID_LABEL_RIGHT_DCLICK, gridMouse GridLabelMouse MouseRightDClick)
     ,(wxEVT_GRID_CELL_CHANGE,        gridVeto  GridCellChange)
     ,(wxEVT_GRID_SELECT_CELL,        gridSelect)
-    ,(wxEVT_GRID_EDITOR_SHOWN,       gridNormal GridEditorShown)
-    ,(wxEVT_GRID_EDITOR_HIDDEN,      gridNormal GridEditorHidden)
+    ,(wxEVT_GRID_EDITOR_SHOWN,       gridVeto GridEditorShown)
+    ,(wxEVT_GRID_EDITOR_HIDDEN,      gridVeto GridEditorHidden)
     ]
   where
     gridMouse make makeMouse gridEvent row col
@@ -1651,10 +1651,8 @@ gridEvents
       = do selecting <- gridEventSelecting gridEvent
            if selecting
             then return (GridCellSelect row col (notifyEventVeto gridEvent))
-            else return (GridCellDeSelect row col)
+            else return (GridCellDeSelect row col (notifyEventVeto gridEvent))
 
-    gridNormal make gridEvent row col
-      = return (make row col)
 
 
 
