@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------
-#  Copyright (c) 2003, Daan Leijen.
+#  Copyright (c) 2003 2004 Daan Leijen.
 #  This file is distributed under the wxWindows library license.
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.62 2004/03/22 15:52:43 dleijen Exp $
+# $Id: makefile,v 1.63 2004/03/23 12:37:13 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -406,7 +406,7 @@ endif
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
 BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
-HCBIN-VERSION   =$(TOOLKIT)$(WXWIN-VERSION)-$(HCNAME)$(HCVERSION)-$(VERSION)
+HCBIN-VERSION   =$(HCNAME)$(HCVERSION)-$(BIN-VERSION)
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
@@ -731,10 +731,6 @@ ifneq ($(WXWIN-REZFILE),)
 	@$(call cp-bindist,$(dir $(WXWIN-REZFILE)),$(BINDIST-DLLDIR),$(basename $(WXWIN-REZFILE)).r)
 endif
 
-# ifeq ($(TOOLKIT),mac)
-#	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.r)
-#	@$(call cp-bindist,$(dir $(WXWINLIB)),$(BINDIST-DLLDIR),$(basename $(WXWINLIB))*.rsrc)
-# endif
 
 # install
 wxc-install: wxc-compress

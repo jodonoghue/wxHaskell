@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.36 2004/03/22 15:52:42 dleijen Exp $
+# $Id: configure,v 1.37 2004/03/23 12:37:13 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -47,11 +47,35 @@ wxconfig="wx-config"
 wxtoolkit=""
 wxversion=""
 extraldopts=""
+withopengl="no"
+
+#--------------------------------------------------------------------
+# Function "findprogram": find a program in the path
+#--------------------------------------------------------------------
+findprogram () {
+  if test -f $1; then return 0; fi
+
+  IFS=':'
+  for dir in $PATH; do
+    if test -z "$dir"; then dir=.; fi
+    if test -f $dir/$1; then return 0; fi
+  done
+  return 1
+}
+
+
+#--------------------------------------------------------------------
+# wx-config guess
+#--------------------------------------------------------------------
 
 # macosx: wx-config might be not in the path
-if sh ./config.search "$wxconfig"; then :; else
-  if test -f "/usr/local/wxhaskell/bin/wx-config"; then
+if findprogram "$wxconfig"; then :; else
+  if test -x "/usr/local/wxhaskell/bin/wx-config"; then
     wxconfig="/usr/local/wxhaskell/bin/wx-config"
+  else
+    if test -x "/usr/local/bin/wx-config"; then
+      wxconfig="/usr/local/bin/wx-config"
+    fi
   fi
 fi
 
@@ -60,6 +84,7 @@ case "$1" in
   -wx-config=*|--wx-config=*)
     wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`;;
 esac
+
 
 #--------------------------------------------------------------------
 # Improve guesses
@@ -71,7 +96,7 @@ fi
 
 # does 'cygpath' exist?
 cygpathfound=""
-if sh ./config.search "cygpath"; then
+if findprogram "cygpath"; then
   cygpathfound="yes"
 fi
 
@@ -86,7 +111,7 @@ fi
 fi
 
 # guess base.haddock location
-if sh ./config.search "ghc"; then
+if findprogram "ghc"; then
   guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/doc/html/base/base.haddock|'`"
   if test -f "$guesshdocbase"; then
     hdocbase="$guesshdocbase"
@@ -95,7 +120,7 @@ fi
 
 
 # improve the guesses if wx-config is present.
-if sh ./config.search "$wxconfig"; then
+if findprogram "$wxconfig"; then
   # improve prefix guess
   prefix="`$wxconfig --prefix`"
   
@@ -104,12 +129,14 @@ if sh ./config.search "$wxconfig"; then
 
   # guess toolkit
   wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
+  # to lowercase
+  wxtoolkit="`echo "$wxtoolkit" | sed -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|'`"
 
   # flaky way to guess library extensions
-  if test "$wxtoolkit" = "MSW"; then
+  if test "$wxtoolkit" = "msw"; then
     dll=".dll"
     lib=""
-  else if test "$wxtoolkit" = "MAC"; then
+  else if test "$wxtoolkit" = "mac"; then
     dll=".dylib"
     lib="lib"
     # use a standard prefix on MacOS X for the installer
@@ -174,6 +201,7 @@ while : ; do
         echo ""
         echo "wxwidgets options:"
         echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
+	echo " --with-opengl          enable openGL support [$withopengl]"
         echo " --wx-config=<program>  wxWidgets configure script (must be the first option!)"
         echo "                        [$wxconfig]"
         echo ""
@@ -221,6 +249,8 @@ while : ; do
 
     -wx-toolkit=*|--wx-toolkit=*)
         wxtoolkit="$arg";;
+    -with-opengl|--with-opengl)
+	withopengl="yes";;
     -wx-config=*|--wx-config=*)
         wxconfig="$arg";;
 
@@ -236,7 +266,7 @@ while : ; do
         withmsc="yes"
         lib=""
         dll=".dll"
-	wxtoolkit="MSW"
+	wxtoolkit="msw"
         wxwinlib="";;
     -wxc-libname=*|--wxc-libname=*)
         if test "$withmsc" = "yes"; then
@@ -295,12 +325,12 @@ echo "install libraries at : $libdir"
 #--------------------------------------------------------------------
 if test "$withmsc" != "yes"; then
   # we need wx-config
-  if sh ./config.search "$wxconfig"; then
+  if findprogram "$wxconfig"; then
     echo "wx-config found"
   else
     echo "error:"
     echo " Unable to find the 'wx-config' program: $wxconfig"
-    echo " Maybe you forgot to run 'make install' on wxWindows?"
+    echo " Maybe you forgot to run 'make install' on wxWidgets?"
     echo " Otherwise, add the install directory of wx-config to your path."
     if test "$WINDIR"; then
       echo " Or maybe you are trying to compile with Microsoft Visual C++?"
@@ -314,20 +344,27 @@ if test "$withmsc" != "yes"; then
   # initialize options for wxc
   cxx="`$wxconfig --cxx`"
   wxwincxxflags="`$wxconfig --cxxflags`"
-  wxwinlibs="`$wxconfig --libs  | tr '\n' ' '`"
+  
+  if test "$withopengl" = "yes"; then
+   wxwinlibs="`$wxconfig --libs --gl-libs | tr '\n' ' '`"
+  else
+   wxwinlibs="`$wxconfig --libs`"
+  fi
 
   # version
   wxversion="`$wxconfig --version`"
   
-  # extract the wxWidgets wxtoolkit: MSW, MAC, GTK etc.
+  # extract the wxWidgets wxtoolkit: msw, mac, gtk etc.
   if test -z "$wxtoolkit"; then
     wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
   fi
+  # to lowercase
+  wxtoolkit="`echo "$wxtoolkit" | sed -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|'`"
 
   # windows: 
   #  we append $prefix/include to the include directories
   #  we add "-lodbc32" since we use "SQL..." calls in the wrapper code :-(
-  if test "$wxtoolkit" = "MSW"; then
+  if test "$wxtoolkit" = "msw"; then
     wxwincxxflags="-I$prefix/include $wxwincxxflags"
     wxwinlibs="$wxwinlibs -lodbc32"
   fi
@@ -363,7 +400,7 @@ fi
 #--------------------------------------------------------------------
 
 # Do we have ghc?
-if sh ./config.search "$hc"; then
+if findprogram "$hc"; then
   echo "$hc found"
 else
   echo "error:"
@@ -400,13 +437,13 @@ if test "$hc" = "ghc"; then
 fi
 
 # Do we have ghc-pkg?
-if sh ./config.search "$hcpkg"; then
+if findprogram "$hcpkg"; then
   echo "$hcpkg found"
 else
   echo "error:"
   echo " Unable to find: $hcpkg"
   echo " Pleasy specify the path to ghc-pkg."
-  echo " For example: ./configure --hcpkg=/c/ghc/ghc-6.0.1/bin/ghc-pkg"
+  echo " For example: ./configure --hcpkg=/c/ghc/ghc-6.2/bin/ghc-pkg"
   hcpkg=echo
   exit 2
 fi
@@ -428,7 +465,7 @@ esac
 # Haddock
 #--------------------------------------------------------------------
 # Do we have haddock?
-if sh ./config.search "$hdoc"; then
+if findprogram "$hdoc"; then
   echo "$hdoc found"
   hdocfound="yes"
 else
@@ -445,7 +482,7 @@ fi
 
 # Find .haddock files
 if test "$hdocfound" = "yes"; then
-  if sh ./config.search "ghc"; then
+  if findprogram "ghc"; then
     ghcroot="`which ghc | sed -e 's|/bin/ghc||'`"
     docroot="$ghcroot/doc/html/libraries"
     # normalize the root since haddock doesn't like unix names
@@ -479,7 +516,7 @@ fi
 #--------------------------------------------------------------------
 # install
 #--------------------------------------------------------------------
-if sh ./config.search "install"; then
+if findprogram "install"; then
   echo "install program found"
   installdir="install -d"
   install="install -c"
@@ -495,7 +532,7 @@ fi
 # strip and upx
 #--------------------------------------------------------------------
 if test "$enablestrip" = "yes"; then
- if sh ./config.search "strip"; then
+ if findprogram "strip"; then
    echo "strip found"
  else
    echo "warning:"
@@ -506,7 +543,7 @@ if test "$enablestrip" = "yes"; then
 fi
 
 if test "$enableupx" = "yes"; then
- if sh ./config.search "upx"; then
+ if findprogram "upx"; then
    echo "upx found"
  else
    echo "warning:"
@@ -532,13 +569,10 @@ fi
 if test -z "$wxtoolkit"; then
   echo "warning:"
   echo " Unable to determine the wxWindow toolkit."
-  echo " Defaulting to 'MSW'."
+  echo " Defaulting to 'msw'."
   echo ""
-  wxtoolkit="MSW"
+  wxtoolkit="msw"
 fi
-
-# to lowercase
-wxtoolkit="`echo "$wxtoolkit" | sed -e 'y|ABCDEFGHIJKLMNOPQRSTUVWXYZ|abcdefghijklmnopqrstuvwxyz|'`"
 
 if test "$wxtoolkit" = "msw"; then
   bat=".bat"
@@ -556,7 +590,7 @@ echo " - config"
 mkdir -p config
 
 # Finish generated files
-if sh ./config.search "date"; then
+if findprogram "date"; then
   date="`date`"
 else
   date="<unknown>"
