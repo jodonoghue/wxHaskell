@@ -13,7 +13,7 @@
 module Graphics.UI.WXCore.OpenGL
    ( 
    -- * Attributes
-     GLAttribute
+     GLAttribute(..)
    -- * Creation
    , glCanvasCreateDefault
    , glCanvasCreateEx
