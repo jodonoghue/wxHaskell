@@ -32,6 +32,8 @@ module Graphics.UI.WX.Controls
       , ListBox, singleListBox, multiListBox
       -- ** RadioBox
       , RadioBox, radioBox
+      -- ** Spin Control
+      , SpinCtrl, spinCtrl
       -- ** Slider
       , Slider
       -- ** Gauge
@@ -411,3 +413,29 @@ radioBox parent direction labels props
 --------------------------------------------------------------------------------}
 instance Commanding (Slider a) where
   command = newEvent "command" sliderGetOnCommand sliderOnCommand
+
+{--------------------------------------------------------------------------------
+  SpinCtrl
+--------------------------------------------------------------------------------}
+-- | Create a spin control: a text field with up/down buttons. The value ('selection')
+-- is always between a specified minimum and maximum.
+spinCtrl :: Window a -> Int -> Int -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
+spinCtrl parent lo hi props
+  = do sc <- spinCtrlCreate parent idAny "" rectNull wxSP_ARROW_KEYS (min lo hi) (max lo hi) lo
+       set sc props
+       return sc
+
+instance Selection (SpinCtrl a) where
+  selection
+    = newAttr "selection" getter setter
+    where
+      getter sc
+        = do i  <- spinCtrlGetValue sc
+             lo <- spinCtrlGetMin sc
+             hi <- spinCtrlGetMax sc
+             return (max lo (min hi i))
+
+      setter sc i
+        = do lo <- spinCtrlGetMin sc
+             hi <- spinCtrlGetMax sc
+             spinCtrlSetValue sc (max lo (min hi i))
