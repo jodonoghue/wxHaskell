@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.26 2003/11/07 09:50:42 dleijen Exp $
+# $Id: configure,v 1.27 2003/11/09 08:55:18 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -704,8 +704,8 @@ EOF
 echo " - config/macosx-postinstall"
 cat > config/macosx-postinstall << EOF
 #!/bin/sh      
-env wxhlibdir="$libdir/lib" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
-env wxhlibdir="$libdir/lib" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
+env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
+env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
 EOF
 chmod a+x config/macosx-postinstall
 
