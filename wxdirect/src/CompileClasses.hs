@@ -23,7 +23,7 @@ import List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
 import Types
 import HaskellNames
-import Classes( isClassName, haskellClassDefs, objectClassNames )
+import Classes( isClassName, haskellClassDefs, objectClassNames, ClassInfo(..), classInfo, classIsManaged )
 import ParseC( parseC )
 import DeriveTypes( deriveTypes, classifyName, Name(..), Method(..), ClassName, MethodName, PropertyName )
 
@@ -209,7 +209,7 @@ property decl
       (Method name (Set propname), [Arg _ (Object objname),Arg _ tp]) | objname == name && noclass tp -> [(propname ++ "Set", [name])]
       other                       -> []
   where
-    noclass (Object name)   = not (isClassName name || isManaged name)
+    noclass (Object name)   = not (isClassName name || isBuiltin name)
     noclass _               = True
 -}
 {-
@@ -238,7 +238,7 @@ validShortNames decls
   $ MultiSet.toOccurList
   $ MultiSet.fromList
   $ filter (any isUpper)
-  $ filter (not.isManaged.headToUpper)
+  $ filter (not.isBuiltin.headToUpper)
   $ filter (not.isClassName.headToUpper)
   $ filter (not.isPrefixOf "wx")
   $ filter ((>1).length)
@@ -279,7 +279,10 @@ shortDecl validShorts decl
 isDeleteMethod :: Decl -> Bool
 isDeleteMethod decl
   = case (declRet decl, declArgs decl, classifyName (declName decl)) of
-      (Void,[self],Method cname (Normal mname)) -> (mname == "Delete" && cname `elem` objectClassNames)
+      (Void,[Arg [_] (Object selfName)],Method cname (Normal mname))
+         -> (mname == "Delete" || mname=="SafeDelete") 
+            && (selfName == cname) 
+            && (cname `elem` objectClassNames || classIsManaged cname)
       _  -> False
 
 
@@ -312,14 +315,20 @@ haskellSwapThis decl
 haskellDecl :: Decl -> String
 haskellDecl decl | isDeleteMethod decl
   = haskellDeclName (declName decl) ++ nlStart
-    ++ "objectDelete"
+    -- ++ "traceDelete \"" ++ (declName decl) ++ "\" . " 
+    ++ objDelete (classInfo (case classifyName (declName decl) of
+                                Method cname _ -> cname
+                                _              -> "wxObject"))
+
 
 haskellDecl decl
-  = haskellDeclName (declName decl) ++ " " ++ haskellArgs (haskellSwapThis decl) ++ nlStart
+  = methodName ++ " " ++ haskellArgs (haskellSwapThis decl) ++ nlStart
     ++ haskellToCResult decl (declRet decl) (
-           haskellToCArgsIO (haskellThisArgs decl)
+           haskellToCArgsIO methodName (haskellThisArgs decl)
         ++ foreignName (declName decl) ++ " " ++ haskellToCArgs decl (declArgs decl)
        )
+  where
+    methodName = haskellDeclName (declName decl)
 
 nl
   = "\n    "
@@ -340,18 +349,25 @@ haskellToCResult decl tp call
       Int _ -> "withIntResult $" ++ nl ++ call
       Bool  -> "withBoolResult $" ++ nl ++ call
       Char  -> "withCharResult $" ++ nl ++ call
-      Object obj | isManaged obj
+      {-
+      Object obj | isBuiltin obj
             -> "withManaged" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
       Object obj | obj == "wxTreeItemId"
             -> "with" ++ haskellTypeName obj ++ "Result $" ++ nl ++ call
       Object obj
             -> "withObjectResult $" ++ nl ++ call
+      -}
+      Object obj -> withResult (classInfo obj)  ++ " $" ++ nl ++ call
       String _ -> "withStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Vector _ -> "withVectorResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
       Size _   -> "withSizeResult $ \\pw ph -> " ++ nl ++ call ++ " pw ph"       -- always last argument!
       Rect _   -> "withRectResult $ \\px py pw ph -> " ++ nl ++ call ++ "px py pw ph"       -- always last argument!
-      RefObject name  -> "withRef" ++ haskellTypeName name ++ " $ \\pref -> " ++ nl ++ call ++ " pref"  -- always last argument!
+      
+      -- RefObject name  -> "withRef" ++ haskellTypeName name ++ " $ \\pref -> " ++ nl ++ call ++ " pref"  -- always last argument!
+      RefObject name -> case withRef (classInfo name) of
+                          ""     -> errorMsgDecl decl "illegal reference object" 
+                          action -> action ++ " $ \\pref -> " ++ nl ++ call ++ " pref"  -- always last argument!
       ArrayInt _    -> "withArrayIntResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
       ArrayString _ -> "withArrayStringResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
       ArrayObject name _ -> "withArrayObjectResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
@@ -364,19 +380,21 @@ haskellToCResult decl tp call
                    | otherwise -> body
 
 
-haskellToCArgsIO args
-  = concatMap (\(isSelf,arg) -> haskellToCArgIO isSelf arg) args
+haskellToCArgsIO methodName args
+  = concatMap (\(isSelf,arg) -> haskellToCArgIO methodName isSelf arg) args
 
-haskellToCArgIO isSelf arg
+haskellToCArgIO methodName isSelf arg
   = case argType arg of
       String _    -> "withCString " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCStringName (argName arg) ++ " -> " ++ nl
-      Object obj  | isManaged obj
+      {-
+      Object obj  | isBuiltin obj
                   -> "withManaged" ++ haskellTypeName obj ++ " " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCManagedName (argName arg) ++ " -> " ++ nl
       Object obj | obj == "wxTreeItemId"
                   -> "with" ++ haskellTypeName obj ++ " " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCManagedName (argName arg) ++ " -> " ++ nl
+      -}
       ArrayString _
                   -> "withArrayString " ++ haskellName (argName arg)
                      ++ " $ \\" ++ haskellArrayLenName (argName arg) ++ " " ++ haskellArrayName (argName arg)
@@ -389,7 +407,13 @@ haskellToCArgIO isSelf arg
                   -> "withArrayInt " ++ haskellName (argName arg)
                      ++ " $ \\" ++ haskellArrayLenName (argName arg) ++ " " ++ haskellArrayName (argName arg)
                      ++ " -> " ++ nl
+      {-
       Object obj  -> (if isSelf then "withObjectRef " else "withObjectPtr ") ++ haskellName (argName arg)
+                     ++ " $ \\" ++ haskellCObjectName (argName arg) ++ " -> " ++ nl
+      -}
+      Object obj  -> (if isSelf then withSelf (classInfo obj) ("\"" ++ methodName ++ "\"") 
+                                else withPtr (classInfo obj)) ++ " "
+                     ++ haskellName (argName arg)
                      ++ " $ \\" ++ haskellCObjectName (argName arg) ++ " -> " ++ nl
       other       -> ""
 
@@ -406,8 +430,10 @@ haskellToCArg decl arg
       Fun f -> pparens ("toCFunPtr " ++ name)
 
       String _   -> haskellCStringName (argName arg)
-      Object obj | isManaged obj -> haskellCManagedName (argName arg)
+      {-
+      Object obj | isBuiltin obj -> haskellCManagedName (argName arg)
       Object obj | obj == "wxTreeItemId" -> haskellCManagedName (argName arg)
+      -}
       Object obj -> haskellCObjectName (argName arg)
       Point _  -> pparens ("toCIntPointX " ++ name) ++ " " ++ pparens( "toCIntPointY " ++ name)
       Vector _ -> pparens ("toCIntVectorX " ++ name) ++ " " ++ pparens( "toCIntVectorY " ++ name)
@@ -430,8 +456,10 @@ haskellToCArg decl arg
 haskellCStringName name
   = "cstr_" ++ haskellName name
 
+{-
 haskellCManagedName name
   = "cobject_" ++ haskellName name
+-}
 
 haskellArrayName name
   = "carr_" ++ haskellName name
@@ -514,14 +542,16 @@ haskellType i tp
       ArrayInt _    -> "[Int]"
       ArrayObject name _ -> "[" ++ haskellTypeName name ++ typeVar i ++ "]"
       Rect _   -> "Rect"
+      {-
       RefObject "wxColour"  -> "Color"
       Object    "wxColour"  -> "Color"
       RefObject "wxTreeItemId"  -> "TreeItem"
       Object    "wxTreeItemId"  -> "TreeItem"
       Object    "wxString"      -> "String"
+      -}
       Fun f  -> "FunPtr " ++ pparens f
-      RefObject name  -> haskellTypeName name ++ typeVar i
-      Object name     -> haskellTypeName name ++ typeVar i
+      RefObject name  -> classTypeName (classInfo name) (typeVar i) -- haskellTypeName name ++ typeVar i
+      Object name     -> classTypeName (classInfo name) (typeVar i) -- haskellTypeName name ++ typeVar i
       other           -> error ("Non exaustive pattern: CompileClasses.haskellType: " ++ show tp)
 
 {-----------------------------------------------------------------------------------------
@@ -560,7 +590,7 @@ foreignResultType tp
       Vector _ -> "Ptr CInt -> Ptr CInt -> IO ()"
       Size _   -> "Ptr CInt -> Ptr CInt -> IO ()"
       Rect _   -> "Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()"
-      RefObject "wxColour"  -> "ColourPtr () -> IO ()"
+      -- RefObject "wxColour"  -> "ColourPtr () -> IO ()"
       RefObject name        -> foreignType 0 tp ++ " -> IO ()"
       EventId -> "IO CInt"
       other   -> "IO " ++ foreignTypePar 0 tp
@@ -589,11 +619,16 @@ foreignType i tp
       ArrayObject name _ -> "CInt -> Ptr " ++ foreignTypePar i (Object name)
       ArrayString _      -> "CInt -> Ptr (Ptr CChar)"
       ArrayInt _         -> "CInt -> Ptr CInt"
+      {-
       RefObject "wxColour"  -> "ColourPtr ()"
       Object    "wxColour"  -> "ColourPtr ()"
-      RefObject name -> "Ptr (T" ++ haskellUnManagedTypeName name ++ typeVar i ++ ")"
-      Object name    -> "Ptr (T" ++ haskellUnManagedTypeName name ++ typeVar i ++ ")"
-
+      -}
+      {-
+      RefObject name -> "Ptr (T" ++ haskellUnBuiltinTypeName name ++ typeVar i ++ ")"
+      Object name    -> "Ptr (T" ++ haskellUnBuiltinTypeName name ++ typeVar i ++ ")"
+      -}
+      RefObject name -> "Ptr (T" ++ haskellTypeName name ++ typeVar i ++ ")"
+      Object name    -> "Ptr (T" ++ haskellTypeName name ++ typeVar i ++ ")"
 
 parenType f tp
   = parenFun tp (f tp)

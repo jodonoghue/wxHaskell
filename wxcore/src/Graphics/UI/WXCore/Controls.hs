@@ -106,7 +106,7 @@ listBoxGetSelectionList listBox
 logDeleteAndSetActiveTarget :: Log a -> IO ()
 logDeleteAndSetActiveTarget log
   = do oldlog <- logSetActiveTarget log
-       logDelete oldlog
+       when (not (objectIsNull oldlog)) (logDelete oldlog)
        
 
 -- | Set a text control as a log target.

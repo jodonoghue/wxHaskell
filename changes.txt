@@ -46,8 +46,8 @@ Backward compatible additions:
   support wxOCaml better.
 - Added "frameCentre" method
 - Huge internal changes: split up wxcClasses in three files and added
-  initial support for managed objects like bitmaps. Also added checks
-  for NULL pointers. 
+  support for managed objects like bitmaps. Also added checks for NULL 
+  pointers. 
 
 
 Bug fixes:

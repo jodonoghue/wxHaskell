@@ -1,3 +1,4 @@
+{-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
 -----------------------------------------------------------------------------------------
 {-| Module      :  WxcObject
     Copyright   :  (c) Daan Leijen 2003, 2004
@@ -13,9 +14,11 @@
 module Graphics.UI.WXCore.WxcObject(
             -- * Object types
               Object, objectNull, objectIsNull, objectCast, objectIsManaged
-            , objectFromPtr, managedObjectFromPtr
-            , withObjectPtr, withObjectRef
-            , objectFinalize, withObjectResult, withManagedResultPtr 
+            , objectFromPtr, objectFromManagedPtr
+            , withObjectPtr
+            , objectFinalize, objectNoFinalize
+            -- * Managed objects
+            , ManagedPtr, TManagedPtr, CManagedPtr
             ) where
 
 import Control.Exception 
@@ -27,8 +30,11 @@ import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 
 {- note: for GHC 5.04, replace the following two imports by "import Foreign.ForeignPtr" -}
-import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
+import Foreign.ForeignPtr 
+{-
+hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
+-}
 
 {-----------------------------------------------------------------------------------------
     Objects
@@ -81,7 +87,13 @@ import Foreign.Concurrent
    that should be used with care are resources as bitmaps, fonts and brushes.
 -}
 data Object a   = Object  !(Ptr a)
-                | Managed !(ForeignPtr (Ptr a)) (Ptr a -> IO ())
+                | Managed !(ForeignPtr (TManagedPtr a))
+
+
+-- | Managed pointer (proxy) objects
+type ManagedPtr a   = Ptr (CManagedPtr a)
+type TManagedPtr a  = CManagedPtr a
+data CManagedPtr a  = CManagedPtr
 
 
 instance Eq (Object a) where
@@ -106,8 +118,8 @@ objectNull
 objectIsManaged :: Object a -> Bool
 objectIsManaged obj
   = case obj of
-      Managed fp final  -> True
-      _                 -> False
+      Managed fp -> True
+      _          -> False
 
 -- | Test for null object.
 objectIsNull :: Object a -> Bool
@@ -120,38 +132,32 @@ objectIsNull obj
 objectCast :: Object a -> Object b
 objectCast obj
   = case obj of
-      Object p         -> Object (castPtr p)
-      Managed fp final -> Managed (castForeignPtr fp) (\p -> final (castPtr p))
+      Object p   -> Object (castPtr p)
+      Managed fp -> Managed (castForeignPtr fp) 
 
 
 -- | Do something with the object pointer.
 withObjectPtr :: Object a -> (Ptr a -> IO b) -> IO b
 withObjectPtr obj f
   = case obj of
-      Object p         -> f p
-      Managed fp final -> withForeignPtr fp $ \pp ->
-                          do p <- peek pp
-                             f p
+      Object p   -> f p
+      Managed fp -> withForeignPtr fp $ \mp ->
+                    do p <- wxManagedPtr_GetPtr mp
+                       f p
 
 -- | Finalize a managed object manually. (no effect on unmanaged objects)
 objectFinalize :: Object a -> IO ()
 objectFinalize obj
   = case obj of
-      Object p  -> return ()
-      Managed fp final -> withForeignPtr fp $ \pp ->
-                          do p <- peek pp
-                             if (p == nullPtr)
-                              then return ()
-                              else do poke pp nullPtr    -- make NULL.
-                                      final p
-
--- | Extract the object pointer and raise an exception if @NULL@.
-withObjectRef :: Object a -> (Ptr a -> IO b) -> IO b
-withObjectRef obj f
-  = withObjectPtr obj $ \p ->
-    if (p == nullPtr)
-     then ioError (userError "wxHaskell: method call with NULL object")
-     else f p
+      Object p   -> return ()
+      Managed fp -> withForeignPtr fp $ wxManagedPtr_Finalize
+                          
+-- | Remove the finalizer on a managed object. (no effect on unmanaged objects)
+objectNoFinalize :: Object a -> IO ()
+objectNoFinalize obj
+  = case obj of
+      Object p   -> return ()
+      Managed fp -> withForeignPtr fp $ wxManagedPtr_NoFinalize
 
 
 -- | Create an unmanaged object.
@@ -160,30 +166,21 @@ objectFromPtr p
   = Object p
 
 -- | Create a managed object with a given finalizer.
-managedObjectFromPtr :: (Ptr a -> IO ()) -> Ptr a -> IO (Object a)
-managedObjectFromPtr final p
-  = do pp <- malloc
-       poke pp p
-       fp <- newForeignPtr pp (finalizer pp)
-       return (Managed fp final)
-  where
-    finalizer pp
-      = do p <- peek pp
-           if (p == nullPtr)
-            then return ()
-            else final p
-           free pp
+objectFromManagedPtr :: ManagedPtr a -> IO (Object a)
+objectFromManagedPtr mp
+  = do -- wxManagedPtr_NoFinalize mp    {- turn off finalization -}
+       fp <- newForeignPtr wxManagedPtrDeleteFunction mp
+       return (Managed fp)
 
 
--- | Create an unmanaged object.
-withObjectResult :: IO (Ptr a) -> IO (Object a)
-withObjectResult io
-  = do p <- io
-       return (objectFromPtr p)
+wxManagedPtrDeleteFunction :: FunPtr (ManagedPtr a -> IO ())
+wxManagedPtrDeleteFunction
+  = unsafePerformIO $ wxManagedPtr_GetDeleteFunction
 
--- | Create a managed object with a given finalizer.
-withManagedResultPtr :: (Ptr a -> IO ()) -> IO (Ptr a) -> IO (Object a)
-withManagedResultPtr final io
-  = do p <- io
-       managedObjectFromPtr final p
-
+{--------------------------------------------------------------------------
+  Managed pointers
+--------------------------------------------------------------------------}
+foreign import ccall wxManagedPtr_GetPtr     :: Ptr (TManagedPtr a) -> IO (Ptr a)
+foreign import ccall wxManagedPtr_Finalize   :: ManagedPtr a -> IO ()
+foreign import ccall wxManagedPtr_NoFinalize :: ManagedPtr a -> IO ()
+foreign import ccall wxManagedPtr_GetDeleteFunction :: IO (FunPtr (ManagedPtr a -> IO ()))

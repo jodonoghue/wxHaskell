@@ -15,10 +15,12 @@ module Graphics.UI.WXCore.Types(
             -- * Objects
               ( # )
             , Object, objectNull, objectIsNull, objectCast, objectIsManaged
-            , objectFromPtr, managedFromPtr
-            , objectDelete, withObjectPtr, withObjectRef, withObjectResult, withManagedResult
-            , objectFinalize, withManagedResultPtr, managedObjectFromPtr
-            , wxObject_Delete
+            , objectDelete
+            , withObjectPtr, withObjectRef
+            , withObjectResult, withManagedObjectResult
+            , objectFinalize, objectNoFinalize
+            , objectFromPtr, managedObjectFromPtr
+            
 
 --            , Managed, managedNull, managedIsNull, managedCast, createManaged, withManaged, managedTouch
 

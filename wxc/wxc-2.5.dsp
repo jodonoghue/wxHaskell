@@ -112,6 +112,10 @@ SOURCE=.\include\glcanvas.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\managed.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\wave.h
 # End Source File
 # Begin Source File
@@ -165,6 +169,10 @@ SOURCE=.\src\glcanvas.cpp
 # Begin Source File
 
 SOURCE=.\src\image.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\managed.cpp
 # End Source File
 # Begin Source File
 

@@ -76,3 +76,4 @@ run init
                      init
                      return ())
        performGC
+       performGC

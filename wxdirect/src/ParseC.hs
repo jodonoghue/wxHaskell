@@ -95,7 +95,8 @@ pdecl
 
 pfundecl :: Parser Decl
 pfundecl
-  = do declRet <- ptype
+  = do optional (reserved "EXPORT")
+       declRet <- ptype
        optional (reserved "_stdcall" <|> reserved "__cdecl")
        declName <- identifier <?> "function name"
        declArgs <- pargs
@@ -259,6 +260,7 @@ lexer
                       ,"TPointLong"
                       ,"TArrayLen","TArrayStringOut","TArrayStringOutVoid","TArrayObjectOut","TArrayObjectOutVoid"
                       ,"TColorRGB"
+                      ,"EXPORT"
                       ]
     }
 

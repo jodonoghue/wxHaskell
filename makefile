@@ -140,7 +140,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db glcanvas wave
+	treectrl image apppath db glcanvas wave managed
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -169,7 +169,8 @@ WXC-SPECS-EIFFEL = \
 
 WXC-SPECS-HEADER = \
 	wxc/include/wxc.h \
-	wxc/include/db.h wxc/include/glcanvas.h wxc/include/wave.h \
+	wxc/include/db.h wxc/include/glcanvas.h \
+	wxc/include/wave.h wxc/include/managed.h \
 	wxc/include/ewxw/wxc_glue.h 
 
 
@@ -743,5 +744,5 @@ docdist-clean:
 	
 
 # generate documentation with haddock
-$(DOCFILE): prologue.txt $(DOCSOURCES)
+$(DOCFILE): config/prologue.txt $(DOCSOURCES)
 	$(HDOC) $(HDOCFLAGS) $(DOCSOURCES)

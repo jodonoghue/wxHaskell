@@ -10,10 +10,16 @@
     Defines most of the classes in wxWindows.
 -}
 -----------------------------------------------------------------------------------------
-module Classes( isClassName, isManaged, haskellClassDefs
+module Classes( isClassName, isBuiltin, haskellClassDefs
               , objectClassNames, classNames
               , classExtends
               , getWxcDir, setWxcDir
+              -- * Class info
+              , ClassInfo(..)
+              , classInfo
+              , classIsManaged
+              , findManaged
+              , managedClasses
               ) where
 
 import System( getEnv )
@@ -21,7 +27,7 @@ import Char( isUpper )
 import List( sort, sortBy )
 import qualified Set
 import qualified Map
-import HaskellNames( haskellTypeName, isManaged )
+import HaskellNames( haskellTypeName, isBuiltin )
 import Types
 
 -- to parse a class hierarchy
@@ -54,7 +60,7 @@ setWxcDir dir
 -----------------------------------------------------------------------------------------}
 ignoreClasses :: Set.Set String
 ignoreClasses
-  = Set.fromList ["wxFile", "wxDir", "wxString"]
+  = Set.fromList ["wxFile", "wxDir", "wxString", "wxManagedPtr"]
 
 classes :: [Class]
 classes
@@ -83,268 +89,101 @@ mergeClass cls1@(Class name1 subs1)  (cls2@(Class name2 subs2) : cs)
   | otherwise       = cls2:mergeClass cls1 cs
 
 
-{-
-    [ final "AcceleratorEntry"
-    , final "BusyData"
-    , final "BusyInfo"
-    , final "BusyCursor"
-    , final "CalendarDateAttr"
-    , final "Caret"
-    , final "Colour"
-    , final "ConfigBase"
-    , final "Condition"
-    , final "CriticalSection"
-    , final "DataFormat"
-    , Class "DataObject"
-      [ Class "DataObjectSimple"
-        [ final "CustomDataObject"
-        , final "FileDataObject"
-        , final "TextDataObject"
-        , final "BitmapDataObject"
-        ]
-      , final "DataObjectComposite"
-      ]
-    , final "DateTime"
-    , final "DateSpan"
-    , final "DialUpManager"
-    , final "Dir"
-    , final "DirTraverser"
-    , final "DropSource"
-    , Class "DropTarget"
-      [ final "ELJDropTarget"
-      , Class "FileDropTarget" [final "ELJFileDropTarget"]
-      , Class "TextDropTarget" [final "ELJTextDropTarget"]
-      ]
-    , final "ELJDragDataObject"
-    , final "File"
-    , final "FileType"
-    , final "FFile"
-    , final "FileName"
-    , final "FontEnumerator"
-    , final "FontMapper"
-    , final "GridCellAttr"
-    , Class "GridCellEditor"
-      [ final "GridCellBoolEditor"
-      , final "GridCellChoiceEditor"
-      , final "GridCellFloatEditor"
-      , final "GridCellNumberEditor"
-      , final "GridCellTextEditor"
-      ]
-    , final "HtmlHelpController"
-    , Class "Locale" [final "ELJLocale"]
-    , Class "Log"
-      [ final "ELJLog"
-      , final "LogStdErr"
-      , final "LogStream"
-      , final "LogTextCtrl"
-      , final "LogWindow"
-      , final "LogGui"
-      , final "LogNull"
-      , final "LogChain"
-      , final "LogPassThrough"
-      ]
-    , final "Mutex"
-    , final "MutexLocker"
-    , final "Node"
-    , Class "Object"
-      [ final "AcceleratorTable"
-      , final "BitmapHandler"
-      , final "ClassInfo"
-      , final "ClientData"
-      , final "Clipboard"
-      , Class "Client" [final "ELJClient"]
-      , final "Closure"
-      , final "ColourData"
-      , Class "Connection" [final "ELJConnection"]
-      , Class "DC"
-        [ final "MemoryDC"
-        , final "MetafileDC"
-        , final "PostscriptDC"
-        , final "PrinterDC"
-        , final "ScreenDC"
-        , Class "WindowDC" [final "ClientDC", final "PaintDC" ]
-        ]
-      , final "EncodingConverter"
-      , Class "Event"
-        [ final "ActivateEvent"
-        , final "CalendarEvent"
-        , final "CalculateLayoutEvent"
-        , final "CloseEvent"
-        , Class "CommandEvent"
-          [ final "DialUpEvent"
-          , Class "NotifyEvent"
-            [ final "NotebookEvent"
-            , final "SpinEvent"
-            , final "TreeEvent"
-            , final "WizardEvent"
-            ]
-          , final "ScrollEvent"
-          , final "TabEvent"
-          , final "UpdateUIEvent"
-        ]
-        , final "DropFilesEvent"
-        , final "EraseEvent"
-        , final "FindDialogEvent"
-        , final "FocusEvent"
-        , final "KeyEvent"
-        , final "IconizeEvent"
-        , final "IdleEvent"
-        , final "InitDialogEvent"
-        , final "JoystickEvent"
-        , final "ListEvent"
-        , final "MaximizeEvent"
-        , final "MenuEvent"
-        , final "MouseCaptureChangedEvent"
-        , final "MouseEvent"
-        , final "MoveEvent"
-        , final "NavigationKeyEvent"
-        , final "PaintEvent"
-        , final "PaletteChangedEvent"
-        , final "ProcessEvent"
-        , final "QueryLayoutInfoEvent"
-        , final "QueryNewPaletteEvent"
-        , final "ScrollWinEvent"
-        , final "SizeEvent"
-        , final "ShowEvent"
-        , final "SocketEvent"
-        , final "SashEvent"
-        , final "SetCursorEvent"
-        , final "SysColourChangedEvent"
-        , final "TimerEvent"
-        , final "WindowCreateEvent"
-        , final "WindowDestroyEvent"
-        ]
-      , Class "EvtHandler"
-        [ final "Menu"
-        , final "MenuBar"
-        , final "Process"
-        , Class "Validator"
-          [ final "GenericValidator"
-          , Class "TextValidator" [final "ELJTextValidator"]
-          ]
-        , Class "Window"
-          [ Class "Control"
-            [ final "CalendarCtrl"
-            , Class "Button" [final "BitmapButton"]
-            , final "CheckBox"
-            , Class "Choice" [final "ComboBox"]
-            , final "Gauge"
-            , final "GenericDirCtrl"
-            , Class "ListBox" [final "CheckListBox"]
-            , final "ListCtrl"
-            , final "ListView"
-            , final "Notebook"
-            , final "RadioBox"
-            , final "RadioButton"
-            , final "ScrollBar"
-            , final "Slider"
-            , final "SpinButton"
-            , final "SpinCtrl"
-            , final "StaticBitmap"
-            , final "StaticBox"
-            , final "StaticLine"
-            , final "StaticText"
-            , final "TabCtrl"
-            , final "TextCtrl"
-            , final "TreeCtrl"
-            , final "ToggleButton"
-            , final "ToolBar"
-            ]
-          , Class "Dialog"
-            [ final "ColourDialog"
-            , final "DirDialog"
-            , final "FileDialog"
-            , final "FindReplaceDialog"
-            , final "FontDialog"
-            , final "MessageDialog"
-            , final "MultipleChoiceDialog"
-            , final "PageSetupDialog"
-            , final "PrintDialog"
-            , final "SingleChoiceDialog"
-            , final "TextEntryDialog"
-            , final "Wizard"
-            ]
-          , Class "Frame"
-            [ final "MDIChildFrame"
-            , final "MDIParentFrame"
-            , final "MiniFrame"
-            , Class "PreviewFrame" [final "ELJPreviewFrame"]
-            , final "SplashScreen"
-            ]
-          , Class "Panel"
-            [ Class "PreviewControlBar" [final "ELJPreviewControlBar"]
-            , Class "WizardPage" [final "WizardPageSimple"]
-            ]
-          , Class "SashWindow" [final "SashLayoutWindow"]
-          , Class "ScrolledWindow"
-            [ final "Grid"
-            , final "PreviewCanvas"
-            ]
-          , final "SplitterWindow"
-          , final "StatusBar"
-          , final "TipWindow"
-          ]
-        ]
-      , final "FileHistory"
-      , final "FontData"
-      , Class "GDIObject"
-        [ Class "Bitmap"  [final "Icon", final "Cursor"]
-        , final "Brush"
-        , final "Font"
-        , final "Pen"
-        ]
-      , final "Image"
-      , final "IndividualLayoutConstraint"
-      , final "LayoutConstraints"
-      , final "LayoutAlgorithm"
-      , Class "List"
-        [ final "BrushList"
-        , final "FontList"
-        , final "ImageList"
-        , final "Palette"
-        , final "PenList"
-        , final "Region"
-        ]
-      , final "ListItem"
-      , final "Mask"
-      , final "MenuItem"
-      , final "PageSetupData"
-      , final "PageSetupDialogData"
-      , final "Printer"
-      , Class "Printout" [final "ELJPrintout"]
-      , final "PrintPreview"
-      , final "PrintData"
-      , final "PrintDialogData"
-      , final "RegionIterator"
-      , Class "Sizer"
-        [ Class "GridSizer" [final "FlexGridSizer"]
-        , Class "BoxSizer"  [final "StaticBoxSizer"]
-        , final "NotebookSizer"
-        ]
-      , final "StopWatch"
-      , final "Timer"
-      ]
-    , final "MimeTypesManager"
-    , final "Scintilla"
-    , Class "Server" [final "ELJServer"]
-    , Class "StreamBase"
-      [ final "InputStream"
-      , final "OutputStream"
-      ]
-    , final "StreamToTextRedirector"
-    , final "TextFile"
-    , final "TimeSpan"
-    , final "TreeItemId"
-    , final "Variant"
-    -- fake: static stuff
---    , final "DllLoader"
---    , final "ELJSysError"
-    , final "SystemSettings"
---    , final "CApp"
-    ]
+{-----------------------------------------------------------------------------------------
+  Managed classes
+-----------------------------------------------------------------------------------------}
+data ClassInfo = ClassInfo{ classWxName   :: String
+                          , withSelf      :: String -> String
+                          , withPtr       :: String
+                          , withResult    :: String
+                          , withRef       :: String
+                          , objDelete     :: String
+                          , classTypeName :: String -> String
+                          }
+                  
+classIsManaged :: String -> Bool
+classIsManaged name
+  = case findManaged name of
+      Just info -> True
+      Nothing   -> False
+
+classInfo :: String -> ClassInfo
+classInfo name
+  = case findManaged name of
+      Just info -> info
+      Nothing   -> standardInfo name
+
+findManaged :: String -> Maybe ClassInfo
+findManaged name
+  = find managedClasses
   where
-    final name  = Class name []
--}
+    find [] = Nothing
+    find (info:rest) | classWxName info == name = Just info
+                     | otherwise                = find rest
+
+
+standardInfo :: String -> ClassInfo
+standardInfo name
+  = ClassInfo name (\methodName -> "withObjectRef " ++ methodName) "withObjectPtr" "withObjectResult" 
+                    "" "objectDelete" (\typevar -> haskellTypeName name ++ " " ++ typevar)
+
+managedClasses :: [ClassInfo]
+managedClasses 
+  = -- standard reference objects with a distinguished static object. (i.e. wxNullBitmap)
+    map standardNull 
+    ["Bitmap"
+    ,"Cursor"
+    ,"Icon"
+    ,"Font"
+    ,"Pen"
+    ,"Brush"
+    ] ++
+
+    -- standard reference objects
+    map standardRef
+    ["Image"
+    ,"FontData"
+    ,"ListItem"
+    ,"PrintData"
+    ,"PrintDialogData"
+    ,"PageSetupDialogData"] ++
+
+    -- standard reference object, but not a subclass of wxObject
+    [ ClassInfo "wxDateTime" (affix "withObjectRef") "withObjectPtr" "withManagedDateTimeResult" 
+                    "withRefDateTime" "dateTimeDelete" (affix "DateTime")
+    , ClassInfo "wxGridCellCoordsArray" (affix "withObjectRef") "withObjectPtr" 
+                    "withManagedGridCellCoordsArrayResult"   
+                    "withRefGridCellCoordsArray" "gridCellCoordsArrayDelete" (affix "GridCellCoordsArray")
+    ] ++
+
+
+    -- managed objects (that are not passed by reference)
+    map standard
+    ["Wave"] ++
+
+    -- translated directly to a Haskell datatype
+    [ ClassInfo "wxColour" (affix "withColourRef") "withColourPtr" "withManagedColourResult"
+                     "withRefColour" "const (return ())" (const "Color")
+    , ClassInfo "wxString" (affix "withStringRef") "withStringPtr" "withManagedStringResult"
+                     "withRefString" "const (return ())" (const "String")
+    , ClassInfo "wxTreeItemId" (affix "withTreeItemIdRef") "withTreeItemIdPtr" "withManagedTreeItemIdResult"
+                     "withRefTreeItemId" "const (return ())" (const "TreeItem")
+    ]
+
+
+  where
+    standardNull name
+      = (standardRef name){ withResult = "withManaged" ++ name ++ "Result" }
+
+    standardRef name
+      = (standard name){ withRef = "withRef" ++ name }
+
+    standard name
+      = ClassInfo ("wx" ++ name)  (affix "withObjectRef") "withObjectPtr" "withManagedObjectResult" 
+                    "" "objectDelete" (affix name)
+        
+    affix name arg
+      = name ++ " " ++ arg
 
 {-----------------------------------------------------------------------------------------
    Classes
@@ -369,7 +208,8 @@ isClassName s
 objectClassNames :: [String]
 objectClassNames
   = case filter isObject classes of
-      [classObject] -> filter (/="wxColour") $ flatten classObject
+      [classObject] -> -- filter (/="wxColour") $ 
+                       flatten classObject
       other         -> []
   where
     flatten (Class name derived)
@@ -410,10 +250,11 @@ haskellClassDefs
 
 
 haskellClass parents (Class name derived)
-  | isManaged name = []   -- handled as a basic type
-  | otherwise
-    = ( (tname,[tname,inheritName tname,className tname] ++ (if isManaged name then [tname ++ "Object"] else []))
-      ,   (if isManaged name
+--  | isBuiltin name = []   -- handled as a basic type
+--  | otherwise
+    = ( (tname,[tname,inheritName tname,className tname]) -- ++ (if isBuiltin name then [tname ++ "Object"] else []))
+      ,   ({-
+           if isBuiltin name
             then ("-- | Pointer to a managed object of type '" ++ tname ++ "'" ++
                   (if null parents then "" else ", derived from '" ++ head parents ++ "'") ++
                   ".\n" ++
@@ -421,7 +262,8 @@ haskellClass parents (Class name derived)
                   "Managed " ++ pparens (inheritName tname ++ " a") ++ "\n" ++
                   "-- | Pointer to an (unmanaged) object of type " ++ tname ++ ".\n" ++
                   "type " ++ tname ++ "Object" ++ " a  = " ++ "Object " ++ pparens (inheritName tname ++ " a"))
-            else ("-- | Pointer to an object of type '" ++ tname ++ "'" ++
+            else  -}
+                  ("-- | Pointer to an object of type '" ++ tname ++ "'" ++
                   (if null parents then "" else ", derived from '" ++ head parents ++ "'") ++
                   ".\n" ++
                   "type " ++ tname ++ " a  = " ++  inheritance)
