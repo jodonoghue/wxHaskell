@@ -39,6 +39,10 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
   /* wxPendingEvents = NULL; */
 
+#if defined(_MSC_VER)
+  wxPendingEvents = NULL; 
+#endif
+
 /* check memory leaks with visual C++ */
 #if (defined(__WXDEBUG__) && defined(_MSC_VER))
   _CrtMemCheckpoint( &memEnd );
@@ -89,7 +93,7 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   wxEntry(_argc,_argv);
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
-  wxPendingEvents = NULL;
+  /* wxPendingEvents = NULL; */
 }
 
 EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, void* _argv)
@@ -98,7 +102,7 @@ EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, v
   wxEntry(_argc, (char**)_argv);
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
-  wxPendingEvents = NULL;
+  /* wxPendingEvents = NULL; */
 }
 
 }
