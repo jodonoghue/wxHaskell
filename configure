@@ -11,43 +11,8 @@
 #--------------------------------------------------------------------
 # Versioning
 #--------------------------------------------------------------------
-version="0.8.1"
+version="0.8.3"
 release="0"
-
-#--------------------------------------------------------------------
-# Load the command line from the cache?
-#--------------------------------------------------------------------
-
-# see if --cache is the first argument
-case "$1" in
-  -cache|--cache)
-     if test -f "config/cache.txt"; then
-       # load from cache
-       cache=`cat config/cache.txt`
-       echo "using cached arguments:"
-       echo " $cache"
-       echo ""
-       $0 $cache
-       exit $?
-     else
-       # nothing cached yet
-       echo "warning:"
-       echo " Option --cache given, but no previous configuration was present."
-       echo ""
-       shift # remove --cache argument 
-     fi;;
-esac
-
-# save arguments
-arguments=$@
-
-# set cache argument for help options
-if test -f "config/cache.txt"; then
- cache=`cat config/cache.txt`
-else
- cache=""
-fi
-
 
 #--------------------------------------------------------------------
 # Variables
@@ -123,13 +88,87 @@ if findprogram "$wxconfig"; then :; else
   fi
 fi
 
-# see if wx-config is the first argument
-case "$1" in
-  -wx-config=*|--wx-config=*)
-    wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
-    wxconfig=`eval echo $wxconfig`   #expand ~ 
-    shift;;  # remove --wx-config argument
-esac
+#--------------------------------------------------------------------
+# Pre-process arguments
+#--------------------------------------------------------------------
+
+arguments_raw=$@	# raw arguments	
+arguments_exp=""	# arguments with "--cache" expanded
+arguments=""		# final arguments (with "wxconfig" and "withmsc" removed)
+usecached="no"
+
+# expand the "--cache" argument
+expand_cache () 
+{
+  while : ; do
+    case "$1" in
+     "") break;;
+     -cache|--cache)
+        if test -f "config/cache.txt"; then
+	  usecached="yes"
+	  cached=`cat config/cache.txt`
+	  arguments_exp="$arguments_exp $cached"
+	else
+	  # nothing cached yet
+	  echo "warning:"
+	  echo " Option --cache given, but no previous configuration was present."
+	  echo ""	  
+	fi;;
+     *)
+        arguments_exp="$arguments_exp $1";;    # save argument
+    esac
+    shift # next argument
+  done
+  return 0
+}
+
+expand_cache $arguments_raw	# set $arguments_exp
+if test "$usecached" = "yes"; then
+ echo "expanded arguments:"
+ echo " $arguments_exp"
+ echo ""
+fi
+
+# preprocess certain options that improve the guesses
+preprocess_args () 
+{
+  arg=""
+  while : ; do
+    # put optional argument in the $arg variable
+    case "$1" in
+     -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` 
+	   arg=`eval echo $arg`;;  # expand ~
+     *)    arg="";;
+    esac
+  
+    # check argument
+    case "$1" in
+     "") break;;
+     -wx-config=*|--wx-config=*)
+	wxconfig="$arg";;
+     -with-msc|--with-msc)
+	withmsc="yes"
+	lib=""
+	dll=".dll"
+	wxtoolkit="msw"
+	wxversion="2.4.2";;  # guess?
+     *)
+        arguments="$arguments $1";;    # save argument
+    esac
+    shift # next argument
+  done
+  return 0
+}
+
+preprocess_args $arguments_exp  # set $arguments
+
+
+# set cache argument for help options
+if test -f "config/cache.txt"; then
+ cache=`cat config/cache.txt`
+else
+ cache=""
+fi
 
 
 #--------------------------------------------------------------------
@@ -201,15 +240,11 @@ if findprogram "$wxconfig"; then
     fi
   fi
 else
-#wxconfig not found!
-  case "$1" in
-    -with-msc|--with-msc)
-	;;
-    *)
-      echo "warning:"
-      echo " Unable to find wxWidgets configuration ($wxconfig)."
-      echo "";;
-  esac
+  if test "$withmsc" != "yes"; then   
+    echo "warning:"
+    echo " Unable to find wxWidgets configuration ($wxconfig)."
+    echo ""
+  fi
 fi
 
 # initial completion rules
@@ -221,138 +256,143 @@ wxclib_doc="<libdir>/${lib}wxc${dll}"
 #--------------------------------------------------------------------
 # Parse command-line arguments
 #--------------------------------------------------------------------
-arg=""
-while : ; do
-  # put optional argument in the $arg variable
-  case "$1" in
-   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` 
-         arg=`eval echo $arg`;;  # expand ~
-   *)    arg="";;
-  esac
+process_args () 
+{
+  arg=""
+  while : ; do
+    # put optional argument in the $arg variable
+    case "$1" in
+     -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` 
+	   arg=`eval echo $arg`;;  # expand ~
+     *)    arg="";;
+    esac
 
-  # match on the arguments
-  case "$1" in
-    "") break;;
-    -?|--help)
-        echo "usage:"
-        echo " ./configure [options]"
-        echo ""
-        echo "options: [defaults in brackets]"
-        echo " --help                 show this information"
-        echo " --hc=<program>         the haskell compiler [$hc]"
-        echo " --hcpkg=<program>      package compiler [$hcpkg]"
-        echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
-        echo " --version=<version>    library version [$version]"
-        echo " --release=<version>    library release version [$release]"
-	echo " --cache                use previous configure options (must come first!)"
-	echo "                        [$cache]"
-        echo ""
-        echo "install options:"
-        echo " --prefix=<dir>         install directory [$prefix]"
-        echo " --exec-prefix=<dir>    platform dependent install directory [$execprefix_doc]"
-        echo " --libdir=<dir>         library files install directory [$libdir_doc]"
-	echo " --shared-prefix=<dir>  fixed path prefix for dynamic libraries [$sharedprefix]"
-        echo " --enable-strip         remove symbols from the libraries [$enablestrip]"
-        echo " --enable-upx           compress the dynamic libraries with upx [$enableupx]"
-        echo ""
-        echo "documentation options:"
-        echo " --username=<name>      username on sourceforge [$username]"
-        echo " --haddock=<program>    haddock documentation tool [$hdoc]"
-        echo ""
-        echo "wxwidgets options:"
-        echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
-	echo " --with-opengl          enable openGL support [$withopengl]"
-        echo " --wx-config=<program>  wxWidgets configure script (must be the first option!)"
-        echo "                        [$wxconfig]"
-        echo ""
-        echo "platform options:"
-        echo " --dllext=<extension>   dynamic link library extension [$dll]"
-        echo " --libprefix=<prefix>   library prefix [$lib]"
-        echo " --extra-ld-opts=<opts> extra link options [$extraldopts]"
-        echo " --with-msc             compile wxWidgets and wxc with microsoft vc++ [$withmsc]"
-        echo " --wxc-libname=<name>   wxc library base name [$wxclibname]"
-        echo ""
-        exit 1;;
-
-    -cache|--cache)
-	echo "warning:"
-	echo " Ignoring --cache option; this option must be the first (and only) option."
-	echo "";;
-
-    -hc=*|--hc=*)
-        hc="$arg";;
-    -hcpkg=*|--hcpkg=*)
-        hcpkg="$arg";;
-    -package-conf=*|--package-conf=*)
-        hcpkglocal="$arg";;
-    -version=*|--version=*)
-        version="$arg";;
-    -release=*|--release=*)
-        release="$arg";;
-
-    -prefix=*|--prefix=*)
-        prefix="$arg";;
-    -exec-prefix=*|--exec-prefix=*)
-        execprefix="$arg"
-        execprefix_doc="$arg";;
-    -libdir=*|--libdir=*)
-        libdir="$arg"
-        libdir_doc="$arg";;
-    -shared-prefix=*|--shared-prefix=*)
-        sharedprefix="$arg";;
-    -enable-strip|--enable-strip)
-        enablestrip="yes";;
-    -disable-strip|--disable-strip)
-        enablestrip="no";;
-    -enable-upx|--enable-upx)
-        enableupx="yes";;
-    -disable-upx|--disable-upx)
-        enableupx="no";;
-
-    -username=*|--username=*)
-        username="$arg";;
-    -haddock=*|--haddock=*)
-        hdoc="$arg";;
-
-    -wx-toolkit=*|--wx-toolkit=*)
-        wxtoolkit="$arg";;
-    -with-opengl|--with-opengl)
-	withopengl="yes";;
-    -wx-config=*|--wx-config=*)
-	echo "warning:"
-	echo " Ignoring --wx-config option; this option must be the first option."
-	echo "";;
-
-    -dllext=*|--dllext=*)
-        dll="$arg"
-        wxclib_doc="<libdir>/${lib}wxc${dll}";;
-    -libprefix=*|--libprefix=*)
-        lib="$arg"
-        wxclib_doc="<libdir>/${lib}wxc${dll}";;
-    -extra-ld-opts=*|--extra-ld-opts=*)
-        extraldopts="$arg";;
-    -with-msc|--with-msc)
-        withmsc="yes"
-        lib=""
-        dll=".dll"
-	wxtoolkit="msw"
-	wxversion="2.4.2";;  # guess?
-    -wxc-libname=*|--wxc-libname=*)
-        if test "$withmsc" = "yes"; then
-          wxclibname="$arg"
-        else
-          echo "warning:"
-          echo " Option --wxc-libname is only valid if preceded with --with-msc."
+    # match on the arguments
+    case "$1" in
+      "") break;;
+      -?|--help)
+	  echo "usage:"
+	  echo " ./configure [options]"
 	  echo ""
-        fi;;
-   *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
-       echo "" 1>&2
-       exit 2;;
-  esac
+	  echo "options: [defaults in brackets]"
+	  echo " --help                 show this information"
+	  echo " --hc=<program>         the haskell compiler [$hc]"
+	  echo " --hcpkg=<program>      package compiler [$hcpkg]"
+	  echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
+	  echo " --version=<version>    library version [$version]"
+	  echo " --release=<version>    library release version [$release]"
+	  echo " --cache                expands into previous configure options"
+	  echo "                        [$cache]"
+	  echo ""
+	  echo "install options:"
+	  echo " --prefix=<dir>         install directory [$prefix]"
+	  echo " --exec-prefix=<dir>    platform dependent install directory [$execprefix_doc]"
+	  echo " --libdir=<dir>         library files install directory [$libdir_doc]"
+	  echo " --shared-prefix=<dir>  fixed path prefix for dynamic libraries [$sharedprefix]"
+	  echo " --enable-strip         remove symbols from the libraries [$enablestrip]"
+	  echo " --enable-upx           compress the dynamic libraries with upx [$enableupx]"
+	  echo ""
+	  echo "documentation options:"
+	  echo " --username=<name>      username on sourceforge [$username]"
+	  echo " --haddock=<program>    haddock documentation tool [$hdoc]"
+	  echo ""
+	  echo "wxwidgets options:"
+	  echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
+	  echo " --with-opengl          enable openGL support [$withopengl]"
+	  echo " --wx-config=<program>  wxWidgets configure script [$wxconfig]"
+	  echo ""
+	  echo "platform options:"
+	  echo " --dllext=<extension>   dynamic link library extension [$dll]"
+	  echo " --libprefix=<prefix>   library prefix [$lib]"
+	  echo " --extra-ld-opts=<opts> extra link options [$extraldopts]"
+	  echo " --with-msc             compile wxWidgets and wxc with microsoft vc++ [$withmsc]"
+	  echo " --wxc-libname=<name>   wxc library base name [$wxclibname]"
+	  echo ""
+	  exit 1;;
 
-  # process next argument
-  shift
-done
+      -cache|--cache)
+	  echo "warning:"
+	  echo " Ignoring --cache option; this option must be the first (and only) option."
+	  echo "";;
+
+      -hc=*|--hc=*)
+	  hc="$arg";;
+      -hcpkg=*|--hcpkg=*)
+	  hcpkg="$arg";;
+      -package-conf=*|--package-conf=*)
+	  hcpkglocal="$arg";;
+      -version=*|--version=*)
+	  version="$arg";;
+      -release=*|--release=*)
+	  release="$arg";;
+
+      -prefix=*|--prefix=*)
+	  prefix="$arg";;
+      -exec-prefix=*|--exec-prefix=*)
+	  execprefix="$arg"
+	  execprefix_doc="$arg";;
+      -libdir=*|--libdir=*)
+	  libdir="$arg"
+	  libdir_doc="$arg";;
+      -shared-prefix=*|--shared-prefix=*)
+	  sharedprefix="$arg";;
+      -enable-strip|--enable-strip)
+	  enablestrip="yes";;
+      -disable-strip|--disable-strip)
+	  enablestrip="no";;
+      -enable-upx|--enable-upx)
+	  enableupx="yes";;
+      -disable-upx|--disable-upx)
+	  enableupx="no";;
+
+      -username=*|--username=*)
+	  username="$arg";;
+      -haddock=*|--haddock=*)
+	  hdoc="$arg";;
+
+      -wx-toolkit=*|--wx-toolkit=*)
+	  wxtoolkit="$arg";;
+      -with-opengl|--with-opengl)
+	  withopengl="yes";;
+      -wx-config=*|--wx-config=*)
+	  echo "warning:"
+	  echo " Ignoring --wx-config option; this option must be the first option."
+	  echo "";;
+
+      -dllext=*|--dllext=*)
+	  dll="$arg"
+	  wxclib_doc="<libdir>/${lib}wxc${dll}";;
+      -libprefix=*|--libprefix=*)
+	  lib="$arg"
+	  wxclib_doc="<libdir>/${lib}wxc${dll}";;
+      -extra-ld-opts=*|--extra-ld-opts=*)
+	  extraldopts="$arg";;
+      -with-msc|--with-msc)
+	  withmsc="yes"
+	  lib=""
+	  dll=".dll"
+	  wxtoolkit="msw"
+	  wxversion="2.4.2";;  # guess?
+      -wxc-libname=*|--wxc-libname=*)
+	  if test "$withmsc" = "yes"; then
+	    wxclibname="$arg"
+	  else
+	    echo "warning:"
+	    echo " Option --wxc-libname is only valid if preceded with --with-msc."
+	    echo ""
+	  fi;;
+     *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
+	 echo "" 1>&2
+	 exit 2;;
+    esac
+
+    # process next argument
+    shift
+  done
+  return 0;
+}
+
+process_args $arguments
 
 #--------------------------------------------------------------------
 # directories
@@ -769,7 +809,7 @@ Package
   , library_dirs=["\${wxhlibdir}"]
   , hs_libraries=["wxcore","wxcore0","wxcore1","wxcore2"]
   , extra_libraries=["${wxclibname}-${binversion}"]
-  , package_deps = ["base","data"]
+  , package_deps = ["base","lang","haskell98","concurrent"]
   , extra_ld_opts=[$extraldopts]
   }
 EOF
@@ -885,7 +925,7 @@ rm -f config/prologue.txt.temp
 
 # save arguments
 echo " config/cache.txt"
-echo "$arguments" > config/cache.txt
+echo "$arguments_exp" > config/cache.txt
 
 # show configuration
 echo ""

@@ -52,7 +52,7 @@ module Graphics.UI.WX.Classes
     , Framed( resizeable, maximizeable, minimizeable, closeable )
     , Checkable( checkable, checked )
     , Dockable( dockable )
-    , HasImage( image )
+    , Pictured( picture )
     , Valued( value )
     , Sized( size )
     ) where
@@ -77,10 +77,10 @@ class Textual w where
     = set w [text :~ (++s)]
 
 
--- | Widgets with an image.
-class HasImage w where
+-- | Widgets with a picture.
+class Pictured w where
   -- | The image of a widget.
-  image :: Attr w FilePath
+  picture :: Attr w FilePath
 
 
 -- | Widgets with a font.

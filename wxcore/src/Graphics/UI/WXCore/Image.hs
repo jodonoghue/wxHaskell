@@ -28,19 +28,32 @@ module Graphics.UI.WXCore.Image
     , imageTypeFromFileName
 
     -- * Direct image manipulation
-    , imageCreateFromPixelBuffer
-    , imageGetPixelBuffer
+    , imageGetPixels
+    , imageCreateFromPixels
+    , imageGetPixelArray
+    , imageCreateFromPixelArray
+    , imageGetSize
 
     -- ** Pixel buffer
+    , imageCreateFromPixelBuffer
+    , imageGetPixelBuffer
     , PixelBuffer
     , pixelBufferCreate
     , pixelBufferDelete
     , pixelBufferInit
     , pixelBufferSetPixel
     , pixelBufferGetPixel    
+    , pixelBufferSetPixels
+    , pixelBufferGetPixels    
+    , pixelBufferGetSize
     ) where
 
 import Char( toLower )
+import Data.Array
+import Foreign.Marshal.Array
+import Foreign.C.String
+import Foreign.Storable
+
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
@@ -180,7 +193,7 @@ imageTypeFromExtension ext
   Direct image manipulation
 -----------------------------------------------------------------------------------------}
 -- | An abstract pixel buffer (= array of RGB values)
-data PixelBuffer   = PixelBuffer Bool Size (Ptr Char)
+data PixelBuffer   = PixelBuffer Bool Size (Ptr CChar)
 
 -- | Create a pixel buffer. (To be deleted with 'pixelBufferDelete').
 pixelBufferCreate   :: Size -> IO PixelBuffer
@@ -188,10 +201,42 @@ pixelBufferCreate size
   = do buffer <- wxcMalloc (sizeW size * sizeH size * 3)
        return (PixelBuffer True size (ptrCast buffer))
 
--- | Delete a pixel buffer.
+-- | Delete a pixel buffer. 
 pixelBufferDelete  :: PixelBuffer -> IO ()
 pixelBufferDelete (PixelBuffer owned size buffer)
   = when (owned && not (ptrIsNull buffer)) (wxcFree buffer)
+
+-- | The size of a pixel buffer
+pixelBufferGetSize :: PixelBuffer -> Size
+pixelBufferGetSize (PixelBuffer owned size buffer)
+  = size
+
+-- | Get all the pixels of a pixel buffer as a single list.
+pixelBufferGetPixels :: PixelBuffer -> IO [Color]
+pixelBufferGetPixels (PixelBuffer owned (Size w h) buffer)
+  = do let count = w*h
+       rgbs <- peekCStringLen (buffer,3*count)                 -- peekArray seems buggy in ghc 6.2.1
+       return (convert rgbs)
+  where
+    convert :: [Char] -> [Color]
+    convert (r:g:b:xs)  = colorRGB (intFromCChar r) (intFromCChar g) (intFromCChar b): convert xs
+    convert []          = []
+
+intFromCChar :: Char -> Int                                          
+intFromCChar c  = fromEnum c
+
+intToCChar :: Int -> CChar
+intToCChar i    = fromIntegral i
+
+-- | Set all the pixels of a pixel buffer.
+pixelBufferSetPixels :: PixelBuffer -> [Color] -> IO ()
+pixelBufferSetPixels (PixelBuffer owned (Size w h) buffer) colors
+  = do let count = w*h
+       pokeArray buffer (convert (take count colors))
+  where
+    convert :: [Color] -> [CChar]
+    convert (c:cs) = intToCChar (colorRed c) : intToCChar (colorGreen c) : intToCChar (colorBlue c) : convert cs
+    convert []     = []
 
 -- | Initialize the pixel buffer with a grey color. The second argument
 -- specifies the /greyness/ as a number between 0.0 (black) and 1.0 (white).
@@ -202,18 +247,37 @@ pixelBufferInit (PixelBuffer owned size buffer) color
 -- | Set the color of a pixel.
 pixelBufferSetPixel :: PixelBuffer -> Point -> Color -> IO ()
 pixelBufferSetPixel (PixelBuffer owned size buffer) point color
-  = wxcSetPixelRGB buffer (sizeW size) point (intFromColor color)
+  = {-
+    do let idx = 3*(y*w + x)
+           r   = intToCChar (colorRed color)
+           g   = intToCChar (colorGreen color)
+           b   = intToCChar (colorBlue color)
+       pokeByteOff buffer idx r
+       pokeByteOff buffer (idx+1) g
+       pokeByteOff buffer (idx+2) b
+    -}
+    wxcSetPixelRGB buffer (sizeW size) point (intFromColor color)
+    
 
 -- | Get the color of a pixel
 pixelBufferGetPixel :: PixelBuffer -> Point -> IO Color
 pixelBufferGetPixel (PixelBuffer owned size buffer) point
-  = do rgb <- wxcGetPixelRGB buffer (sizeW size) point
+  = {-
+    do let idx = 3*(y*w + x)
+       r   <- peekByteOff buffer idx
+       g   <- peekByteOff buffer (idx+1)
+       b   <- peekByteOff buffer (idx+2)
+       return (colorRGB (intFromCChar r) (intFromCChar g) (intFromCChar b))
+    -}
+    do rgb <- wxcGetPixelRGB buffer (sizeW size) point
        return (colorFromInt rgb)
+      
   
--- | Create an image from a pixel buffer.
+-- | Create an image from a pixel buffer. Note: the image will
+-- delete the pixelbuffer.
 imageCreateFromPixelBuffer :: PixelBuffer -> IO (Image ())
 imageCreateFromPixelBuffer (PixelBuffer owned size buffer) 
-  = imageCreateFromDataEx size buffer True
+  = imageCreateFromDataEx size buffer False
 
 -- | Get the pixel buffer of an image.
 imageGetPixelBuffer :: Image a -> IO PixelBuffer
@@ -222,3 +286,38 @@ imageGetPixelBuffer image
        w   <- imageGetWidth image
        h   <- imageGetHeight image
        return (PixelBuffer False (sz w h) (ptrCast ptr))
+
+-- | Get the pixels of an image.
+imageGetPixels :: Image a -> IO [Color]
+imageGetPixels image
+  = do pb <- imageGetPixelBuffer image
+       pixelBufferGetPixels pb
+
+-- | Create an image from a list of pixels.
+imageCreateFromPixels :: Size -> [Color] -> IO (Image ())
+imageCreateFromPixels size colors
+  = do pb <- pixelBufferCreate size
+       pixelBufferSetPixels pb colors
+       imageCreateFromPixelBuffer pb   -- image deletes pixel buffer
+
+-- | Get the pixels of an image as an array
+imageGetPixelArray :: Image a -> IO (Array Point Color)
+imageGetPixelArray image
+  = do h  <- imageGetHeight image
+       w  <- imageGetWidth image
+       ps <- imageGetPixels image
+       let bounds = (pointZero, point (w-1) (h-1))
+       return (listArray bounds ps)        
+
+-- | Create an image from a pixel array
+imageCreateFromPixelArray :: Array Point Color -> IO (Image ())
+imageCreateFromPixelArray pixels
+  = let (Point x y) = snd (bounds pixels)
+    in imageCreateFromPixels (sz (x+1) (y+1)) (elems pixels)
+
+-- | Get the size of an image
+imageGetSize :: Image a -> IO Size
+imageGetSize image
+  = do h  <- imageGetHeight image
+       w  <- imageGetWidth image
+       return (Size w h)

@@ -190,9 +190,9 @@ bitmapButton parent props
        set bb props
        return bb
 
-instance HasImage (BitmapButton a) where
-  image 
-    = writeAttr "image" setter
+instance Pictured (BitmapButton a) where
+  picture
+    = writeAttr "picture" setter
     where
       setter w fname
         = do fpath <- getAbsoluteFilePath fname

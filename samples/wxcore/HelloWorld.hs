@@ -9,7 +9,7 @@ main
   = run helloWorld
 
 helloWorld
-  = do -- create file menu: we use standard Id's but could also use any other identifier, like 1 or 27.
+  = do -- create file menu
        fm <- menuCreate "" 0
        menuAppend fm wxID_ABOUT "&About.." "About wxHaskell" False {- not checkable -}
        menuAppendSeparator fm
@@ -20,7 +20,7 @@ helloWorld
        menuBarAppend m fm "&File"
 
        -- create top frame
-       f  <- frameCreate objectNull idAny "Hello world" rectZero 0
+       f  <- frameCreate objectNull idAny "Hello world" rectZero frameDefaultStyle
        windowSetBackgroundColour f white
        windowSetClientSize f (sz 300 250)
 

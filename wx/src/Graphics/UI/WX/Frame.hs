@@ -88,10 +88,10 @@ initialFrame cont
     cont id rect txt 
              
 
--- The image of a frame. 
-instance HasImage (Frame a) where
-  image
-    = writeAttr "image"  frameSetIconFromFile
+-- The icon of a frame. 
+instance Pictured (Frame a) where
+  picture
+    = writeAttr "picture"  frameSetIconFromFile
 
 
 instance Form (Frame a) where

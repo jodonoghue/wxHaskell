@@ -61,7 +61,7 @@ module Graphics.UI.WXCore.Types(
             , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
             -- ** Sizes
-            , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+            , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
             , sizeMin, sizeMax
 
             -- ** Vectors
@@ -84,6 +84,7 @@ import Graphics.UI.WXCore.WxcClasses( wxcSystemSettingsGetColour )
 import System.IO.Unsafe( unsafePerformIO )
 
 -- utility
+import Data.Array
 import Data.Bits
 import Data.IORef
 import qualified Control.Exception as CE
@@ -240,6 +241,31 @@ pointSub (Point x1 y1) (Point x2 y2) = Point (x1-x2) (y1-y2)
 pointScale :: Point -> Int -> Point
 pointScale (Point x y) v = Point (v*x) (v*y)
 
+
+instance Ord Point where
+  compare (Point x1 y1) (Point x2 y2)             
+    = case compare y1 y2 of
+        EQ  -> compare x1 x2
+        neq -> neq
+
+
+instance Ix Point where
+  range (Point x1 y1,Point x2 y2)             
+    = [Point x y | y <- [y1..y2], x <- [x1..x2]]
+
+  inRange (Point x1 y1, Point x2 y2) (Point x y)
+    = (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+
+  rangeSize (Point x1 y1, Point x2 y2) 
+    = let w = abs (x2 - x1) + 1
+          h = abs (y2 - y1) + 1
+      in w*h
+
+  index bnd@(Point x1 y1, Point x2 y2) p@(Point x y)
+    = if inRange bnd p
+       then let w = abs (x2 - x1) + 1
+            in (y-y1)*w + x
+       else error ("Point index out of bounds: " ++ show p ++ " not in " ++ show bnd)
 
 {-----------------------------------------------------------------------------------------
   Size

@@ -1387,7 +1387,7 @@ keyCodeToKey keyCode
 -- Use a big-endian patricia tree to efficiently map key codes to Haskell keys.
 -- Since it is a static map, we could maybe use one of Knuth's optimally balanced
 -- trees....
-keyCodeMap :: IntMap.IntMap Key
+-- keyCodeMap :: IntMap.IntMap Key
 keyCodeMap
   = IntMap.fromList
     [(wxK_BACK         , KeyBack)

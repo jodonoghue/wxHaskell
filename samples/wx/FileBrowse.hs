@@ -71,7 +71,7 @@ treeCtrlGetItemPath t item
 gui :: IO ()
 gui
   = do -- main gui elements: frame, panel
-       f <- frame [text := "File browser", image := "../bitmaps/wxwin.ico"]
+       f <- frame [text := "File browser" ] -- , image := "../bitmaps/wxwin.ico"]
        
        -- panel: just for the nice grey color
        p <- panel f []

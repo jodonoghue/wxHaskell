@@ -32,7 +32,7 @@ imageFiles
 imageViewer :: IO ()
 imageViewer
   = do -- the main frame, we use 'fullRepaintOnResize' to prevent flicker on resize
-       f      <- frame [text := "ImageViewer", image := "../bitmaps/eye.ico", fullRepaintOnResize := False]
+       f      <- frame [text := "ImageViewer", picture := "../bitmaps/eye.ico", fullRepaintOnResize := False]
 
        -- use a mutable variable to hold the image
        vbitmap <- variable [value := Nothing]

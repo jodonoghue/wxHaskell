@@ -4,6 +4,23 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
+Version 0.9
+-------------
+Non backward compatible changes:
+- Changed "image" attribute to "picture"
+
+Backward compatible additions:
+- Added "pixelBufferGetPixels" and "pixelBufferSetPixels" and
+  according functions for images.
+- Added "image" and made it an instance of the "Sized" class
+  exported "imageCreateFromPixels" and "imageCreateFromPixelArray"
+- Added "drawImage" 
+- Removed dependency on "readline" package in ghc 6.2.2
+- Added "--cache" argument to configure script
+
+Bug fixes:
+- fixed "on command" event handlers in submenus.
+
 Version 0.8
 -------------
 Non backward compatible changes:

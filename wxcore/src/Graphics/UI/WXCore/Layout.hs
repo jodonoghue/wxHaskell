@@ -784,6 +784,7 @@ windowReLayout w
 -- | Re-invoke layout algorithm to fit a window around its
 -- children. It will resize the window to its minimal 
 -- acceptable size ('windowFit').
+windowReLayoutMinimal :: Window a -> IO ()  
 windowReLayoutMinimal w
   = do windowLayout w
        szr <- windowGetSizer w

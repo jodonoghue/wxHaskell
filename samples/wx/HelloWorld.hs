@@ -10,7 +10,7 @@ main
 hello :: IO ()
 hello
   = do -- the application frame
-       f      <- frame         [text := "Hello world!", clientSize := sz 300 200]
+       f      <- frame         [text := "Hello world!", clientSize := sz 300 200]                               
 
        -- create file menu  
        file   <- menuPane      [text := "&File"]

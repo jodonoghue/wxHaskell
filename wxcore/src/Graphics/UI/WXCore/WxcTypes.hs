@@ -34,7 +34,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
 
             -- ** Size
-            , Size(Size,sizeW,sizeH), size, sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
+            , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
 
             -- ** Vector
             , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
@@ -95,8 +95,6 @@ module Graphics.UI.WXCore.WxcTypes(
             , CBool, toCBool, fromCBool, withBoolResult
             -- ** Pointers
             , Ptr, ptrNull, ptrIsNull, ptrCast, ForeignPtr, FunPtr, toCFunPtr
-
-            , traceDelete
             ) where
 
 import Control.Exception 
@@ -119,10 +117,6 @@ import Data.Dynamic
 import Graphics.UI.WXCore.WxcObject
 import Graphics.UI.WXCore.WxcClassTypes
 
-traceDelete msg io
-  = do putStrLn ("deleting: " ++ show msg)
-       io
-       putStrLn ("deleted")
 
 {-----------------------------------------------------------------------------------------
     Objects

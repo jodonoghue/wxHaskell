@@ -185,6 +185,9 @@ import Foreign.Marshal.Array
 import System.Time
 
 
+withValidObject :: (Object a -> IO ()) -> Object a -> IO ()
+withValidObject f p
+  = if (objectIsNull p) then return () else f p
 {----------------------------------------------------------
   Query
 ----------------------------------------------------------}
@@ -660,7 +663,7 @@ dbGetTableInfo db name
 dbGetInfo :: Db a -> IO DbInfo
 dbGetInfo db
   = bracket (dbGetCatalog db "")
-            (dbInfDelete)
+            (withValidObject dbInfDelete)
             (\dbInf ->do catalog  <- dbInfGetCatalogName dbInf
                          schema   <- dbInfGetSchemaName  dbInf
                          numTables<- dbInfGetNumTables   dbInf
@@ -683,7 +686,7 @@ dbGetColumnInfos :: Db a -> IO [ColumnInfo]
 dbGetColumnInfos db
   = alloca $ \pcnumCols ->
     bracket (dbGetResultColumns db pcnumCols)
-            (dbColInfArrayDelete)
+            (withValidObject dbColInfArrayDelete)
             (\colInfs  -> do cnumCols <- peek pcnumCols
                              let numCols = fromCInt cnumCols
                              mapM (\idx -> do colInf <- dbColInfArrayGetColInf colInfs (idx-1)
@@ -700,7 +703,7 @@ dbGetTableColumnInfos db tableName
   | otherwise =
     alloca $ \pcnumCols ->
     bracket (dbGetColumns db tableName pcnumCols "")
-            (dbColInfArrayDelete)
+            (withValidObject dbColInfArrayDelete)
             (\colInfs  -> do cnumCols <- peek pcnumCols
                              let numCols = fromCInt cnumCols
                              mapM (\idx -> do colInf <- dbColInfArrayGetColInf colInfs (idx-1)

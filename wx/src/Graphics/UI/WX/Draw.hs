@@ -25,7 +25,7 @@ module Graphics.UI.WX.Draw
     , circle, arc, ellipse, ellipticArc
     , line, polyline, polygon
     , drawPoint, drawRect, roundedRect
-    , drawText, rotatedText, drawBitmap
+    , drawText, rotatedText, drawBitmap, drawImage
     -- * Internal
     , dcWith, dcClear
     ) where
@@ -210,3 +210,10 @@ drawBitmap dc bitmap point transparent props
              if not ok 
               then return ()
               else dcWith dc props (dcDrawBitmap dc bitmap point transparent)
+
+-- | Draw an image. 
+drawImage :: DC a -> Image b -> Point -> [Prop (DC a)] -> IO ()
+drawImage dc image pt props
+  = do bm <- bitmapCreateFromImage image (-1)
+       drawBitmap dc bm pt False props
+       bitmapDelete bm

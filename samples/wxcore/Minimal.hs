@@ -8,7 +8,7 @@ main
 
 gui :: IO ()
 gui
-  = do frame <- frameCreateTopFrame "Hello World"
+  = do frame <- frameCreate objectNull idAny "Hello world" rectZero frameDefaultStyle
        windowShow frame
        windowRaise frame
        return ()
