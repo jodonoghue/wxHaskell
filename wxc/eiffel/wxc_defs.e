@@ -20,6 +20,12 @@ wxITEM_CHECK            : INTEGER is 1
 wxITEM_RADIO            : INTEGER is 2
 wxITEM_MAX              : INTEGER is 3
 
+wxCLOSE_BOX		: INTEGER is 4096
+wxFRAME_EX_CONTEXTHELP  : INTEGER is 4
+wxDIALOG_EX_CONTEXTHELP : INTEGER is 4
+wxFRAME_SHAPED		: INTEGER is 16
+wxFULLSCREEN_ALL	: INTEGER is 31
+
 
 wxTreeItemIcon_Normal			: INTEGER is 0
 wxTreeItemIcon_Selected			: INTEGER is 1

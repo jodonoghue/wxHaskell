@@ -75,7 +75,13 @@ menuBar
            frameSetMenuBar frame mb
            -- set delayed menu handlers on the frame
            mapM_ (evtHandlerSetAndResetMenuCommands frame) menus
-           return ()
+           -- work around menu bug in wxMac 2.5.1
+           vis <- windowIsShown frame
+           if (vis && wxToolkit == WxMac && (div wxVersion 100) == 25)
+            then do windowHide frame
+                    windowShow frame
+                    return ()
+            else return ()
 
     append mb menu
       = do title <- menuGetTitle menu

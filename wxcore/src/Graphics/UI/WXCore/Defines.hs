@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Defines(
             -- * GUI toolkit
-            WxToolkit(..), wxToolkit
+            WxToolkit(..), wxToolkit, wxVersion
             -- * Files
             , getAbsoluteFilePath
             , dirSep, pathSep
@@ -53,7 +53,8 @@ wxToolkit
                 ,("__WXOS2__", WxOSTwo)
                 ,("__WXX11__", WxXEleven)
                 ]
-   
+
+
 findDefine :: a -> [(String,a)] -> IO a
 findDefine def []
   = return def
@@ -62,6 +63,16 @@ findDefine def ((name,val):xs)
        if (defined)
         then return val
         else findDefine def xs
+
+
+{-# NOINLINE wxVersion #-}
+-- | Return the version of the wxWIndows library. It is composed of the major
+-- version times 1000, plus the minor version times 100, plus the release number.
+-- For example, version 2.1.15 would be 2115.
+wxVersion :: Int
+wxVersion
+  = unsafePerformIO $ versionNumber
+
 
 
 {-----------------------------------------------------------------------------------------

@@ -1218,6 +1218,21 @@ EWXWEXPORT(void, wxFrame_SetTitle) (void* _obj, char* _txt)
   ((wxFrame*)_obj)->SetTitle(_txt);
 }
 
+EWXWEXPORT(bool, wxFrame_SetShape)( wxFrame* self, wxRegion* region)
+{
+  return self->SetShape( *region );
+}
+
+EWXWEXPORT(bool, wxFrame_ShowFullScreen)( wxFrame* self, bool show, int style)
+{
+  return self->ShowFullScreen( show, style );
+}
+
+EWXWEXPORT(bool, wxFrame_IsFullScreen)( wxFrame* self )
+{
+  return self->IsFullScreen();
+}
+
 EWXWEXPORT(void, wxNotebook_AssignImageList)( wxNotebook* _obj, wxImageList* imageList )
 {
   _obj->AssignImageList(imageList);

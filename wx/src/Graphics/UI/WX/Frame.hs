@@ -58,7 +58,11 @@ frameEx :: Style -> [Prop (Frame ())]  -> Window a -> IO (Frame ())
 frameEx style props parent
   = do f <- frameCreate parent idAny "" rectNull (style .+. noFullRepaintOnResize props)
        wxcAppSetTopWindow f
-       set f [visible := True, clientSize := sizeZero] -- [bgcolor := white]
+       let initProps = if (containsProp "visible" props)
+                        then [] else [visible := True] ++
+                       if (containsProp "clientSize" props)
+                        then [] else [clientSize := sizeZero]
+       set f initProps
        set f props
        return f
 

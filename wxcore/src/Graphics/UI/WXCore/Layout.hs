@@ -586,7 +586,8 @@ updateOptions layout f
 -- the stretch and expansion mode of the box.
 boxed :: String -> Layout -> Layout
 boxed txt content
-  = TextBox optionsDefault{ stretchV = hasvstretch, stretchH = hashstretch, fillMode = hasfill }
+  = TextBox optionsDefault{ stretchV = hasvstretch, stretchH = hashstretch
+                          , fillMode = hasfill, adjustMinSize = True }
       txt (extramargin content)
   where
     hasvstretch  = stretchV (options content)
@@ -635,7 +636,9 @@ layoutFromWindow :: Window a -> Layout
 layoutFromWindow window
   = Widget optionsDefault{ adjustMinSize = adjust } (downcastWindow window)
   where
-    adjust  = instanceOf window classButton || instanceOf window classStaticText
+    adjust  =  instanceOf window classButton 
+            || instanceOf window classStaticText
+
 
 -- | (primitive) Empty layout with a given width and height.
 space :: Int -> Int -> Layout
