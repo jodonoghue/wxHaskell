@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.39 2004/03/24 13:28:24 dleijen Exp $
+# $Id: configure,v 1.40 2004/03/24 13:29:53 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -461,7 +461,7 @@ if test "$hcpkglocal"; then
 fi
 
 # Test if we can include the parsec package explicitly
-$hcpkg -s parsec > /dev/null 2> /dev/null || exit 100
+$hcpkg -s parsec > /dev/null 2> /dev/null
 case $? in
   0) pkgparsec="-package parsec";;
   *) pkgparsec="";;
