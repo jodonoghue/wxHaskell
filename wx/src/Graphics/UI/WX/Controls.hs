@@ -247,8 +247,7 @@ instance Checkable (CheckBox a) where
 -- | Create a new checkbox.
 checkBox :: Window a -> [Prop (CheckBox ())] -> IO (CheckBox ())
 checkBox parent props
-  = do c <- checkBoxCreate parent idAny (replicate 80 ' ') rectNull 0
-       set c [text := " "]
+  = do c <- checkBoxCreate parent idAny "" rectNull 0
        set c props
        return c
 

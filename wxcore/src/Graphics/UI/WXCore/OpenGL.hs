@@ -44,20 +44,20 @@ import Foreign.Marshal.Array
 data GLAttribute
   = GL_RGBA                -- ^ Use true colour  
   | GL_BUFFER_SIZE Int     -- ^ Bits for buffer if not 'GL_RGBA' defined also
-  | GL_LEVEL Int           -- ^ 0 for main buffer, >0 for overlay, <0 for underlay  
+  | GL_LEVEL Ordering      -- ^ 'EQ' for main buffer, 'GT' for overlay, 'LT' for underlay  
   | GL_DOUBLEBUFFER        -- ^ Use doublebuffer  
-  | GL_STEREO              --  ^ Use stereoscopic display  
+  | GL_STEREO              -- ^ Use stereoscopic display  
   | GL_AUX_BUFFERS Int     -- ^ Number of auxiliary buffers (not all implementation support this option)  
-  | GL_MIN_RED Int         -- ^ Use red buffer with at least /argument/ bits (> MIN_RED bits)  
-  | GL_MIN_GREEN Int       -- ^ Use green buffer with at least /argument/ bits (> MIN_GREEN bits)  
-  | GL_MIN_BLUE Int        -- ^ Use blue buffer with at least /argument/ bits (> MIN_BLUE bits)  
-  | GL_MIN_ALPHA Int       -- ^ Use alpha buffer with at least /argument/ bits (> MIN_ALPHA bits)  
+  | GL_MIN_RED Int         -- ^ Use red buffer with at least /argument/ bits 
+  | GL_MIN_GREEN Int       -- ^ Use green buffer with at least /argument/ bits 
+  | GL_MIN_BLUE Int        -- ^ Use blue buffer with at least /argument/ bits 
+  | GL_MIN_ALPHA Int       -- ^ Use alpha buffer with at least /argument/ bits
   | GL_DEPTH_SIZE Int      -- ^ Bits for Z-buffer (0,16,32)  
   | GL_STENCIL_SIZE Int    -- ^ Bits for stencil buffer  
-  | GL_MIN_ACCUM_RED Int   -- ^ Use red accum buffer with at least /argument/ bits (> MIN_ACCUM_RED bits)  
-  | GL_MIN_ACCUM_GREEN Int -- ^ Use green buffer with at least /argument/ bits (> MIN_ACCUM_GREEN bits)  
-  | GL_MIN_ACCUM_BLUE Int  -- ^ Use blue buffer with at least /argument/ bits (> MIN_ACCUM_BLUE bits)  
-  | GL_MIN_ACCUM_ALPHA Int -- ^ Use blue buffer with at least /argument/ bits (> MIN_ACCUM_ALPHA bits) 
+  | GL_MIN_ACCUM_RED Int   -- ^ Use red accum buffer with at least /argument/ bits 
+  | GL_MIN_ACCUM_GREEN Int -- ^ Use green buffer with at least /argument/ bits 
+  | GL_MIN_ACCUM_BLUE Int  -- ^ Use blue buffer with at least /argument/ bits 
+  | GL_MIN_ACCUM_ALPHA Int -- ^ Use blue buffer with at least /argument/ bits 
 
 
 encodeAttributes :: [GLAttribute] -> [Int]
@@ -68,7 +68,7 @@ encodeAttribute attr
   = case attr of
       GL_RGBA                -> [1]
       GL_BUFFER_SIZE n       -> [2,n]
-      GL_LEVEL n             -> [3,n]
+      GL_LEVEL n             -> [3,case n of { GT -> 1; LT -> (-1); other -> 0 }]
       GL_DOUBLEBUFFER        -> [4]
       GL_STEREO              -> [5]
       GL_AUX_BUFFERS n       -> [6,n]
