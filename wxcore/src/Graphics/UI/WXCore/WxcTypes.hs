@@ -93,6 +93,7 @@ import Foreign.Storable
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 
+{- note: for GHC 5.04, replace the following two imports by "import Foreign.ForeignPtr" -}
 import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
 
