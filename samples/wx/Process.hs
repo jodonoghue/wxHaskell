@@ -55,7 +55,7 @@ gui
 
     onEnter io (EventKey key mod pt)
       | key == KeyReturn  = io
-      | otherwise         = skipEvent
+      | otherwise         = propegateEvent
 
 
     onReceive message txt streamStatus

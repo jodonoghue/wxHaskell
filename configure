@@ -1,14 +1,14 @@
 #!/bin/sh
 
 #------------------------------------------------------------------------
-#  wxc: The C wrapper around the wxWindows interface.
+#  Configure script for wxHaskell
 #
-#  Daan Leijen.
+#  Copyright 2003, Daan Leijen.
 #
-#  Copyright 2001, Daan Leijen.
+#  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.4 2003/07/21 08:49:38 dleijen Exp $
+# $Id: configure,v 1.5 2003/07/21 10:57:54 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables

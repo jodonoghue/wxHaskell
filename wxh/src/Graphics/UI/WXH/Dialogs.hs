@@ -83,7 +83,7 @@ fileOpenDialog parent rememberCurrentDir allowReadOnly message wildcards directo
 --
 -- The @overwritePrompt@ argument determines whether the user gets a prompt for confirmation when
 -- overwriting a file. The other arguments are as in 'fileOpenDialog'.
-fileSaveDialog :: Window a -> Bool -> Bool -> String -> FilePath -> FilePath -> IO Bool
+fileSaveDialog :: Window a -> Bool -> Bool -> String -> FilePath -> FilePath -> IO (Maybe FilePath)
 fileSaveDialog parent rememberCurrentDir overwritePrompt message directory filename
   = fileDialog parent result flags message [] directory filename
   where
@@ -91,7 +91,10 @@ fileSaveDialog parent rememberCurrentDir overwritePrompt message directory filen
       = wxSAVE .+. (if rememberCurrentDir then wxCHANGE_DIR else 0) .+. (if overwritePrompt then wxOVERWRITE_PROMPT else 0)
 
     result fd r
-      = return (r == wxID_OK)
+      = if (r /= wxID_OK)
+         then return Nothing
+         else do fname <- fileDialogGetPath fd
+                 return (Just fname)
 
 fileDialog :: Window a -> (FileDialog () -> Int -> IO b) -> Int -> String -> [(String,[String])] -> FilePath -> FilePath -> IO b
 fileDialog parent processResult flags message wildcards directory filename
