@@ -231,8 +231,9 @@ mouseFilter name filter
       = ioError (userError ("WX.Events: the " ++ name ++ " event is write-only."))
 
     set prev new mouseEvent
-      = do when (filter mouseEvent) (new (mousePos mouseEvent))
-           prev mouseEvent
+      = if (filter mouseEvent) 
+         then new (mousePos mouseEvent)
+         else prev mouseEvent
 
 {--------------------------------------------------------------------
   Keyboard filter events
@@ -298,8 +299,9 @@ keyboardFilter1 name filter
       = ioError (userError ("WX.Events: the " ++ name ++ " event is write-only."))
 
     set prev new keyboardEvent
-      = do when(filter keyboardEvent) (new (keyKey keyboardEvent))
-           prev keyboardEvent
+      = if (filter keyboardEvent) 
+         then new (keyKey keyboardEvent)
+         else prev keyboardEvent
 
 
 
