@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.58 2004/02/19 11:20:09 dleijen Exp $
+# $Id: makefile,v 1.59 2004/02/29 12:46:53 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -178,7 +178,7 @@ WXHASKELL-SOURCES= \
 	bin/macosx-app-template bin/reimp.exe \
 	bin/macosx-builddmg bin/macosx-package  \
 	bin/wxhaskell-register bin/wxhaskell-unregister \
-	bin/wxhaskell-register-template.bat bin/wxhaskell-unregister-template.bat
+	bin/wxhaskell-register-template.bat bin/wxhaskell-unregister-template.bat bin/setcd
 
 SAMPLE-SOURCES= \
 	samples/wx/BouncingBalls.hs \
@@ -448,7 +448,7 @@ srcdist-clean:
 bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
 ifeq ($(TOOLKIT),msw)
-	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat)
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat config/setcd)
 else
 	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register bin/wxhaskell-unregister)
 endif

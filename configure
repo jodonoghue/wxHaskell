@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.31 2004/02/20 15:15:54 dleijen Exp $
+# $Id: configure,v 1.32 2004/02/29 12:46:53 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -696,6 +696,8 @@ echo "@SET wxclibname=${wxclibname}-${version}"	>  config/wxhaskell-unregister-t
 cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
 rm -f config/wxhaskell-unregister-temp
 
+echo " - config/setcd"
+cp bin/setcd config/setcd
 
 # generate maxosx installer files.
 echo " - config/macosx-install.info"

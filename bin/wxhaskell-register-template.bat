@@ -11,7 +11,13 @@ SET installdir=%1
 GOTO check
 
 :noarg
-SET installdir=%CD%\..
+COPY /B /Y setcd setcd.bat
+CD ..
+CD >> bin\setcd.bat
+CD bin
+CALL setcd.bat
+DEL setcd.bat
+SET installdir=%CURDIR%
 GOTO check
 
 :check
@@ -51,13 +57,14 @@ goto end
 
 :notfound
 ECHO error:
-ECHO   unable to find the wxHaskell packages (wx.pkg)
+ECHO   Unable to find the wxHaskell packages (bin\wx.pkg)
+ECHO   Maybe the installation directory is not properly specified?
 ECHO.
 GOTO help
 
 :help
 ECHO usage:
-ECHO   wxhaskell-register [^<installdir^>]
+ECHO   wxhaskell-register [installdir]
 ECHO.
 ECHO (or just double click on the batch file from the explorer)
 ECHO.

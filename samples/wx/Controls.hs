@@ -81,7 +81,7 @@ gui
                                                          , row 0 [floatLeft $ widget c1
                                                                  ,floatRight $ row 5 [label "sorted: ", widget c2]]]
                     ,tab "listbox" $ 
-                     container p4 $ margin 10 $ column 5 [ hstretch  $ widget sc1
+                     container p4 $ margin 10 $ column 5 [ hstretch  $ dynamic $ widget sc1
                                                          , floatLeft $
                                                            row 0 [widget sl1, widget sl2]]
                     ,tab "slider" $ 

@@ -35,7 +35,7 @@ GOTO end
 
 :help
 ECHO usage:
-ECHO   wxhaskell-unregister [^<installdir^>]
+ECHO   wxhaskell-unregister
 ECHO.
 ECHO   (or just double click on the batch file from the explorer)
 ECHO.
