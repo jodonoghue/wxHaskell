@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.67 2004/03/24 13:28:24 dleijen Exp $
+# $Id: makefile,v 1.68 2004/03/24 14:01:21 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -350,6 +350,8 @@ macdist:
 	@echo "See <http://wxhaskell.sourceforge.net> for more information." > $(RESOURCEDIR)/Readme.txt
 	# create package
 	bin/macosx-package $(BINDIST-OUTDIR)/$(WXHASKELLVER) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
+	$(CP) -R $(DOCDIST-SRCDIR)/doc $(PACKAGEDIR)
+	$(CP) -R $(DOCDIST-SRCDIR)/samples $(PACKAGEDIR)
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
 	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
