@@ -125,9 +125,12 @@ module Graphics.UI.WXCore.Db
    , dbRowGetInt, dbRowGetIntMb
    , dbRowGetDouble, dbRowGetDoubleMb
    , dbRowGetInteger, dbRowGetIntegerMb
+   , dbRowGetClockTime, dbRowGetClockTimeMb
+
    -- ** Generic values
-   , DbValue( dbValueRead )
+   , DbValue( dbValueRead, toSqlValue )
    , dbRowGetValue, dbRowGetValueMb
+   
    -- ** Column information
    , dbRowGetColumnInfo, dbRowGetColumnInfos
      
@@ -153,6 +156,8 @@ module Graphics.UI.WXCore.Db
    
    -- * Sql types
    , DbType(..), SqlType(..)
+   , toSqlTableName, toSqlColumnName
+   , toSqlString, toSqlTime, toSqlDate, toSqlTimeStamp
 
    -- * Internal
    , dbStringRead, dbGetDataNull, toSqlType, fromSqlType
@@ -171,7 +176,7 @@ import Foreign
 import Foreign.Ptr
 import Foreign.C.String
 import Foreign.Marshal.Array
-
+import System.Time
 
 
 {----------------------------------------------------------
@@ -277,6 +282,10 @@ class DbValue a where
   -- used when implementing this behaviour).
   dbValueRead :: Db b -> ColumnInfo -> IO (Maybe a)
 
+  -- | Convert a value to a string representation that can be
+  -- used directly in a SQL statement.
+  toSqlValue  :: a -> String
+
 instance DbValue Bool where
   dbValueRead db columnInfo 
     = alloca $ \pint ->
@@ -285,7 +294,8 @@ instance DbValue Bool where
           then return Nothing
           else do i <- peek pint
                   return (Just (i/=0))
-
+  toSqlValue b
+    = if b then "TRUE" else "FALSE"
 
 instance DbValue Int where
   dbValueRead db columnInfo 
@@ -295,6 +305,8 @@ instance DbValue Int where
           then return Nothing
           else do i <- peek pint
                   return (Just (fromCInt i))
+  toSqlValue i
+    = show i
 
 instance DbValue Double where
   dbValueRead db columnInfo 
@@ -305,6 +317,8 @@ instance DbValue Double where
           else do d <- peek pdouble
                   return (Just d)
 
+  toSqlValue d
+    = show d
 
 instance DbValue Integer where
   dbValueRead db columnInfo 
@@ -321,6 +335,29 @@ instance DbValue Integer where
                ('.':frac) | all isDigit frac 
                           -> Just (read (val ++ adjust (columnDecimalDigits columnInfo) frac))
                other      -> Nothing
+
+  toSqlValue i
+    = show i
+
+
+instance DbValue ClockTime where
+  dbValueRead db columnInfo
+    = alloca $ \pfraction ->
+      alloca $ \psecs ->
+      do poke pfraction (toCInt 0)
+         isNull <- dbGetDataNull db $
+                   case columnSqlType columnInfo of
+                     SqlDate -> dbGetDataDate db (columnIndex columnInfo) psecs
+                     SqlTime -> dbGetDataTime db (columnIndex columnInfo) psecs
+                     other   -> dbGetDataTimeStamp db (columnIndex columnInfo) psecs pfraction
+         if (isNull)
+          then return Nothing
+          else do secs     <- peek psecs
+                  fraction <- peek pfraction
+                  return (Just (TOD (fromIntegral secs) (fromIntegral fraction * 1000)))
+
+  toSqlValue ctime
+    = toSqlTimeStamp ctime
 
 
 -- | Read an 'Bool' from the database. 
@@ -370,6 +407,18 @@ dbRowGetInteger = dbRowGetValue
 dbRowGetIntegerMb :: DbRow a -> ColumnName -> IO (Maybe Integer)
 dbRowGetIntegerMb = dbRowGetValueMb
 
+-- | Read an 'ClockTime' from the database (from a SQL Time, TimeStamp, or Date field). 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
+dbRowGetClockTime :: DbRow a -> ColumnName -> IO ClockTime
+dbRowGetClockTime = dbRowGetValue
+
+-- | Read an 'ClockTime' from the database (from a SQL Time, TimeStamp, or Date field). 
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetClockTimeMb :: DbRow a -> ColumnName -> IO (Maybe ClockTime)
+dbRowGetClockTimeMb = dbRowGetValueMb
+
+
 -- | Read a string value from the database. Returns the empty
 -- string when a @NULL@ value is encountered.
 -- Raises a 'DbError' on failure.
@@ -386,12 +435,12 @@ dbRowGetStringMb row@(DbRow db columnInfos) name
   = do info <- dbRowGetColumnInfo row name
        dbStringRead db info 
 
--- | Internal: Low level string reading.
+-- | Low level string reading.
 dbStringRead :: Db a -> ColumnInfo -> IO (Maybe String)
 dbStringRead db info 
   = alloca $ \pbuf ->
     alloca $ \plen ->
-    do dbHandleExn db $ dbGetDataBinary db (columnIndex info) initLen pbuf plen
+    do dbHandleExn db $ dbGetDataBinary db (columnIndex info) True pbuf plen
        len <- peek plen
        if (fromCInt len == wxSQL_NULL_DATA)
         then do buf <- peek pbuf
@@ -401,21 +450,37 @@ dbStringRead db info
                 s   <- peekCStringLen (buf,fromCInt len)
                 wxcFree buf
                 return (Just s)
-  where
-    initLen  | columnSize info > 0  = columnSize info + 1
-             | otherwise            = 0
 
-{-
-  = allocaArray maxLen $ \cstr ->
-    do isNull <- dbGetDataNull db $ dbGetDataString db (columnIndex info) cstr maxLen 
-       if isNull
-        then return Nothing
-        else do s <- peekCString cstr 
-                return (Just s)
+-- | Convert a string to SQL string
+toSqlString :: String -> String
+toSqlString s
+  = "'" ++ concatMap quote s ++ "'"
   where
-    maxLen  | columnSize info > 0   = columnSize info + 1
-            | otherwise             = 4096  -- just something ?
--}
+    quote '\''  = "''"
+    quote c     = [c]
+
+-- | Convert a 'ClockTime' to a SQL date string (without hours\/minutes\/seconds).
+toSqlDate :: ClockTime -> String    
+toSqlDate ctime
+    = "'" ++ show (ctYear t) ++ "-" ++ show (ctMonth t) ++ "-" ++ show (ctDay t) ++ "'"
+    where
+      t = toUTCTime ctime
+
+-- | Convert a 'ClockTime' to a SQL full date (timestamp) string.
+toSqlTimeStamp :: ClockTime -> String    
+toSqlTimeStamp ctime
+    = "'" ++ show (ctYear t) ++ "-" ++ show (ctMonth t) ++ "-" ++ show (ctDay t)
+      ++ " " ++ show (ctHour t) ++ ":" ++ show (ctMin t) ++ ":" ++ show (ctSec t) ++ "'"
+    where
+      t = toUTCTime ctime
+
+-- | Convert a 'ClockTime' to a SQL time string (without year\/month\/day).
+toSqlTime :: ClockTime -> String    
+toSqlTime ctime
+    = "'" ++ show (ctHour t) ++ ":" ++ show (ctMin t) ++ ":" ++ show (ctSec t) ++ "'"
+    where
+      t = toUTCTime ctime
+
 
 -- | Internal: used to implement 'dbReadValue' methods.
 -- Takes a @dbGetData...@ method and supplies the @Ptr CInt@ argument.
@@ -1040,6 +1105,18 @@ toSqlType i
 fromSqlType :: SqlType -> Int
 fromSqlType tp
   = unsafePerformIO (dbStandardSqlTypeToSqlType (fromEnum tp))
+
+-- | Convert a table name to a format that can be used directly in SQL statements.
+-- For example, this call can do case conversion and quoting.
+toSqlTableName :: Db a -> TableName -> TableName
+toSqlTableName db name
+  = unsafePerformIO $ dbSQLTableName db name
+
+-- | Convert a column name to a format that can be used directly in SQL statements.
+-- For example, this call can do case conversion and quoting.
+toSqlColumnName :: Db a -> ColumnName -> ColumnName
+toSqlColumnName db name
+  = unsafePerformIO $ dbSQLColumnName db name
 
 
 {----------------------------------------------------------

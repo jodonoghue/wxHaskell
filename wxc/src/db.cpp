@@ -469,50 +469,125 @@ EWXWEXPORT(int,wxDb_GetDataDouble)(wxDb* db, int column, double* d, int* usedLen
 #endif
 }
 
-EWXWEXPORT(int,wxDb_GetDataString)(wxDb* db, int column, char* buf, int bufLen, int* usedLen ) 
+
+EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, bool asChars, char** pbuf, int* plen ) 
 {
+  /* DAAN: A rather complicated procedure to retrieve SQL data as a string or
+     binary value. Since there is no trustworthy way to retrieve the size of
+     the returned data beforehand, we start with a static buffer that is at
+     least large enough to hold all basic data types. We than allocate the
+     correct size in the heap, or when the data buffer was too small, we
+     repetively call GetData to retrieve the rest of the data.
+  */
 #ifdef wxUSE_ODBC
-  long used;
-  bool result = db->GetData( column, SQL_C_CHAR, buf, bufLen, &used );
-  if (usedLen) *usedLen = used;
-  return result;
+#define STATICBUF_LEN 512
+  long  needed   = 0;
+  bool  ok       = false;
+  int   sqlType  = (asChars ? SQL_C_CHAR : SQL_C_BINARY);  
+  char  staticBuf[STATICBUF_LEN+1];
+
+  /* init args */
+  *pbuf = NULL;
+  *plen = 0;    
+
+  /* get data */
+  ok = db->GetData( column, sqlType, staticBuf, STATICBUF_LEN, &needed );
+  
+  /* case 1: no error and data is in 'staticBuf' */    
+  if (ok) {
+    if (needed > 0 && needed != SQL_NULL_DATA) {
+      *pbuf = (char*)malloc( needed );
+      if (*pbuf==NULL) return false;
+      memcpy( *pbuf, staticBuf, needed );
+    }
+    *plen = needed;
+    return ok;
+  }
+  
+  /* case 2: buffer was too small, repetitively read data */
+  else if (db->DB_STATUS == DB_ERR_DATA_TRUNCATED)
+  {
+    char* buf      = NULL;
+    long  bufLen   = 0;
+    long  totalLen = (asChars ? STATICBUF_LEN-1 : STATICBUF_LEN); /* less the terminating 0 ? */
+    
+    /* try to allocate correct length */
+    if (needed > totalLen && needed != SQL_NO_TOTAL) 
+      bufLen = needed + 16; /* DAAN: somehow, we need at least 2 more items to prevent reallocs */
+    else
+      bufLen = 2*STATICBUF_LEN;
+
+    buf = (char*)malloc( bufLen );
+    if (buf==NULL) return false;
+    memcpy( buf, staticBuf, totalLen );
+    
+    ok = db->GetData( column, sqlType, buf+totalLen, bufLen-totalLen, &needed ); 
+    while (!ok && db->DB_STATUS == DB_ERR_DATA_TRUNCATED)
+    {
+      char* newbuf;
+      totalLen = (asChars ? bufLen-1 : bufLen);  /* less the terminating 0 ? */
+    
+      /* realloc the buffer exponentially */
+      newbuf = (char*)realloc( buf, 2*bufLen );
+      if (newbuf == NULL) {
+        free(buf);
+        return false;
+      }
+      buf    = newbuf;
+      bufLen = 2*bufLen;
+
+      /* add more data */
+      ok = db->GetData( column, sqlType, buf+totalLen, bufLen-totalLen, &needed );
+    }
+    
+    /* check for errors */
+    if (!ok || needed == SQL_NO_TOTAL) {
+      free(buf);
+      return false;
+    }
+    
+    /* add the last added data length to the total length */
+    totalLen += needed;
+
+    /* set results */
+    *pbuf = buf;
+    *plen = totalLen;
+    return ok;
+  }
+  
+  /* case 3: real error */
+  else {
+    *plen = needed; /* could contain error code */
+    return ok;
+  }
 #else
+  if (pbuf) *pbuf = NULL;
+  if (plen) *plen = 0;
   return false;
 #endif
 }
 
-EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, int startLen, char** pbuf, int* plen ) 
+
+EWXWEXPORT(int,wxDb_GetDataDate)(wxDb* db, int column, int* ctime, int* usedLen ) 
 {
-#ifdef wxUSE_ODBC
-  long  used;
-  char* buf    = NULL;
-  int   bufLen = (startLen <= 0 ? 512 : startLen);
-  bool  ok;
-  
-  /* init */
-  *pbuf = NULL;
-  *plen = 0;    
-  buf   = (char*)malloc(bufLen);  
-  if (buf==NULL) return false;
-  
-  /* get data */
-  ok = db->GetData( column, SQL_C_CHAR, buf, bufLen, &used );
-  while (!ok && db->DB_STATUS == DB_ERR_DATA_TRUNCATED) {
-    char* newbuf = (char*)realloc( buf, 2*bufLen );
-    if (newbuf == NULL) {
-      free(buf);
-      ok = false;
-      break;
-    }
-    buf    = newbuf;
-    ok     = db->GetData( column, SQL_C_CHAR, buf+bufLen, bufLen, &used );
-    bufLen = 2*bufLen;
-  }
-  
-  /* return results */
-  if (ok) {
-    *pbuf = buf;
-    *plen = (used == SQL_NO_TOTAL ? bufLen : used);
+#if defined(wxUSE_ODBC) && defined(SQL_C_TYPE_DATE)
+  SQL_DATE_STRUCT date;
+  long used;
+  bool ok;
+
+  if (ctime) *ctime = -1;
+  ok = db->GetData( column, SQL_C_TYPE_DATE, &date, sizeof(date), &used );
+  if (usedLen) *usedLen = used;
+  if (ok && used != SQL_NULL_DATA) {
+    struct tm datetm;
+    time_t    secs;
+    memset(&datetm,0,sizeof(datetm));
+    datetm.tm_year  = date.year - 1900;
+    datetm.tm_mon   = date.month - 1;
+    datetm.tm_mday  = date.day;
+    datetm.tm_isdst = -1;
+    secs = mktime(&datetm);
+    if (ctime) *ctime = secs;
   }
   return ok;
 #else
@@ -520,24 +595,56 @@ EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, int startLen, char** pb
 #endif
 }
 
-EWXWEXPORT(wxString*,wxDb_GetDataVarString)(wxDb* db, int column, int startLen ) 
+EWXWEXPORT(int,wxDb_GetDataTimeStamp)(wxDb* db, int column, int* ctime, int* fraction, int* usedLen ) 
 {
-#ifdef wxUSE_ODBC
-  char* buf = NULL;
-  int   len = 0;
-  bool ok = wxDb_GetDataBinary(db,column,startLen,&buf,&len);
-  if (ok && len > 0 && buf != NULL) {
-    wxString* s = new wxString(buf,len);
-    free(buf);
-    if (s!=NULL) { db->DB_STATUS = DB_SUCCESS; }
-    return s;
+#if defined(wxUSE_ODBC) && defined(SQL_C_TYPE_TIMESTAMP)
+  SQL_TIMESTAMP_STRUCT date;
+  long used;
+  bool ok;
+
+  if (ctime)    *ctime = -1;
+  if (fraction) *fraction = -1;
+printf("get timestamp\n" );
+  ok = db->GetData( column, SQL_C_TYPE_TIMESTAMP, &date, sizeof(date), &used );
+printf("result: %i, year: %i\n", (ok ? 1 : 0), date.year );
+  if (usedLen) *usedLen = used;
+  if (ok && used != SQL_NULL_DATA) {
+    struct tm datetm;
+    time_t    secs;
+    memset(&datetm,0,sizeof(datetm));
+    datetm.tm_year  = date.year - 1900;
+    datetm.tm_mon   = date.month - 1;
+    datetm.tm_mday  = date.day;
+    datetm.tm_hour  = date.hour;
+    datetm.tm_min   = date.minute;
+    datetm.tm_sec   = date.second;
+    datetm.tm_isdst = -1;
+    secs = mktime(&datetm);
+    if (ctime)    *ctime = secs;
+    if (fraction) *fraction = date.fraction;
   }
-  else {
-    if (buf) free(buf);
-    return NULL;
-  }
+  return ok;
 #else
-  return NULL;
+  return false;
+#endif
+}
+
+EWXWEXPORT(int,wxDb_GetDataTime)(wxDb* db, int column, int* secs, int* usedLen ) 
+{
+#if defined(wxUSE_ODBC) && defined(SQL_C_TYPE_TIME)
+  SQL_TIME_STRUCT sqltime;
+  long used;
+  bool ok;
+
+  if (secs)    *secs = -1;
+  ok = db->GetData( column, SQL_C_TYPE_TIME, &sqltime, sizeof(sqltime), &used );
+  if (usedLen) *usedLen = used;
+  if (ok && used != SQL_NULL_DATA) {
+    if (secs)  *secs = 3600*sqltime.hour + 60*sqltime.minute + sqltime.second;
+  }
+  return ok;
+#else
+  return false;
 #endif
 }
 
@@ -1110,3 +1217,76 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
 }
 
 
+#if 0
+
+EWXWEXPORT(int,wxDb_GetDataBinary)(wxDb* db, int column, bool asChars, char** pbuf, int* plen ) 
+{
+#ifdef wxUSE_ODBC
+  long  needed   = 0;
+  long  totalLen = 0;
+  char* buf      = NULL;
+  long  bufLen   = 0;
+  bool  ok       = false;
+  int   sqlType  = (asChars ? SQL_C_CHAR : SQL_C_BINARY);
+  
+  /* init args */
+  *pbuf = NULL;
+  *plen = 0;    
+
+  /* try to get length */
+  db->GetData( column, sqlType, NULL, 0, &needed );
+  
+  
+  /* return when null value encountered */
+  if (needed == SQL_NULL_DATA) {
+    *plen = SQL_NULL_DATA;
+    return true;
+  }
+
+  /* try to allocate needed length immediately */
+  if (needed >= 0 && needed != SQL_NO_TOTAL) 
+    bufLen = needed+1;
+  else 
+    bufLen = 512;
+  
+  buf = (char*)malloc(bufLen);  
+  if (buf==NULL) return false;
+  
+  /* get data */
+  ok = db->GetData( column, sqlType, buf, bufLen, &needed );
+
+  /* while we haven't retrieved all data.. */
+  while (!ok && db->DB_STATUS == DB_ERR_DATA_TRUNCATED) {    
+    char* newbuf;
+    totalLen = (asChars ? bufLen-1 : bufLen);  /* less the terminating 0 ? */
+    
+    /* realloc the buffer exponentially */
+    newbuf = (char*)realloc( buf, 2*bufLen );
+    if (newbuf == NULL) {
+      free(buf);
+      return false;
+    }
+    buf    = newbuf;
+    bufLen = 2*bufLen;
+
+    /* add more data */
+    ok = db->GetData( column, sqlType, buf+totalLen, bufLen - totalLen, &needed );
+  }
+  /* add the last added data length to the total length */
+  if (needed == SQL_NO_TOTAL) {
+    free(buf);
+    return false;
+  }
+  totalLen += needed;
+  
+  /* return results */
+  if (ok) {
+    *pbuf = buf;
+    *plen = totalLen;
+  }
+  return ok;
+#else
+  return false;
+#endif
+}
+#endif

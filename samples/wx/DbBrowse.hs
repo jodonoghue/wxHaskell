@@ -84,11 +84,3 @@ main
             | otherwise = n
              
 
-toSqlTableName :: Db a -> String -> TableName
-toSqlTableName db name
-  = unsafePerformIO $ dbSQLTableName db name
-
-toSqlColumnName :: Db a -> String -> ColumnName
-toSqlColumnName db name
-  = unsafePerformIO $ dbSQLColumnName db name
-

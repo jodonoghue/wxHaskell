@@ -61,10 +61,11 @@ TBoolInt wxDb_GetNext(TSelf(wxDb) db);
 TBoolInt wxDb_GetData(TSelf(wxDb) db, int column, int ctype, void* data, int dataLen, int* usedLen );
 TBoolInt wxDb_GetDataInt(TSelf(wxDb) db, int column, int* i, int* usedLen );
 TBoolInt wxDb_GetDataDouble(TSelf(wxDb) db, int column, double* d, int* usedLen );
-TBoolInt wxDb_GetDataString(TSelf(wxDb) db, int column, void* buf, int bufLen, int* usedLen );
-TClass(wxString) wxDb_GetDataVarString( TSelf(wxDb) db, int column, int initLen );
-/** usage: @dbGetDataBinary db column initLen pbuffer plen@. Returns binary data to given buffer. (must be deallocated using 'wxcFree'). */
-TBoolInt wxDb_GetDataBinary(TSelf(wxDb) db, int column, int startLen, void* pbuf, int* len );
+/** usage: @dbGetDataBinary db column asChars pbuffer plen@. Returns binary data to given buffer (that must be deallocated using 'wxcFree'). The return length is 'wxSQL_NULL_DATA' if @NULL@ data was encountered. If @asChars@ is 'True', the data is returned as characters, true binary data is than returned as a string of hex values (@3E002C...@).*/
+TBoolInt wxDb_GetDataBinary(TSelf(wxDb) db, int column, TBool asChars, void* pbuf, int* len );
+TBoolInt wxDb_GetDataDate(TSelf(wxDb) db, int column, int* ctime, int* usedLen );
+TBoolInt wxDb_GetDataTimeStamp(TSelf(wxDb) db, int column, int* ctime, int* fraction, int* usedLen );
+TBoolInt wxDb_GetDataTime(TSelf(wxDb) db, int column, int* secs, int* usedLen );
 
 int wxDb_Dbms(TSelf(wxDb) db);
 TClass(wxString) wxDb_GetDatabaseName(TSelf(wxDb) db);
