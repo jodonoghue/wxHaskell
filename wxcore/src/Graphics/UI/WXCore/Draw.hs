@@ -32,7 +32,7 @@ module Graphics.UI.WXCore.Draw
         -- * Brush
         , BrushStyle(..), BrushKind(..)
         , HatchStyle(..)
-        , brushDefault, brushSolid
+        , brushDefault, brushSolid, brushTransparent
         , dcSetBrushStyle, dcGetBrushStyle
         , withBrushStyle, dcWithBrushStyle, dcWithBrush
         , brushCreateFromStyle, brushGetBrushStyle
@@ -538,6 +538,10 @@ brushSolid :: Color -> BrushStyle
 brushSolid color
   = BrushStyle BrushSolid color
 
+-- | A transparent brush.
+brushTransparent :: BrushStyle
+brushTransparent
+  = BrushStyle BrushTransparent white
 -- | Use a brush that is automatically deleted at the end of the computation.
 dcWithBrushStyle :: DC a -> BrushStyle -> IO b -> IO b
 dcWithBrushStyle dc brushStyle io
@@ -579,7 +583,9 @@ brushCreateFromStyle :: BrushStyle -> IO (Brush (), IO ())
 brushCreateFromStyle brushStyle
   = case brushStyle of
       BrushStyle BrushTransparent color
-        -> do brush <- brushCreateFromStock 7   {- transparent brush -}
+        -> do brush <- if (wxToolkit == WxMac)
+	                then brushCreateFromColour color wxTRANSPARENT
+			else brushCreateFromStock 7   {- transparent brush -}
               return (brush,return ())
       BrushStyle BrushSolid color
         -> case lookup color stockBrushes of
@@ -817,7 +823,9 @@ dcBufferWithRefEx dc clear mbVar view draw
                                  brushDelete brush)
                    (\brush -> do -- set the background to the owner brush
                                  dcSetBackground memdc brush
-                                 when (wxToolkit /= WxMac) (dcSetBrush memdc brush)
+                                 if (wxToolkit == WxMac)
+				  then withBrushStyle brushTransparent (dcSetBrush memdc)
+				  else dcSetBrush memdc brush
                                  clear (downcastDC memdc)
 				 -- and finally do the drawing!
                                  draw (downcastDC memdc) -- down cast
