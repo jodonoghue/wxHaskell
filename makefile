@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.7 2003/07/15 23:01:36 dleijen Exp $
+# $Id: makefile,v 1.8 2003/07/15 23:12:38 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -446,7 +446,7 @@ $(WXD-EXE): $(WXD-OBJS)
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(compile-hs,$@,$<,$(HCFLAGS) -i$(WXD-OUTDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) -i$(WXD-OUTDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)
