@@ -411,6 +411,8 @@ instance Items (ComboBox a) String where
 -- * Instances: 'Selecting', 'Commanding','Selection','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --             
+-- A 'command' event is triggered when the @enter@ key is pressed and when
+-- 'processEnter' has been set to 'True'.
 comboBox :: Window a -> Bool -> [String] -> [Prop (ComboBox ())] -> IO (ComboBox ())
 comboBox parent sorted labels props
   = do cb <- comboBoxCreate parent idAny "" rectNull labels ((if sorted then wxCB_SORT else 0) .+. wxCB_DROPDOWN)
