@@ -11,6 +11,8 @@
 #include "ewxw/wxc_types.h"
 #include "ewxw/wxc_glue.h"
 #include "db.h"
+#include "glcanvas.h"
+#include "wave.h"
 
 /* wxClosure */
 TClassDefExtend(wxClosure,wxObject)

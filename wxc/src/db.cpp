@@ -896,7 +896,7 @@ EWXWEXPORT(int,wxDbColInf_GetPkCol)( wxDbColInf* self )
 #ifdef wxUSE_ODBC
   return self->PkCol;
 #else
-  return (-1);
+  return 0;
 #endif
 }
 
@@ -905,7 +905,7 @@ EWXWEXPORT(int,wxDbColInf_GetFkCol)( wxDbColInf* self )
 #ifdef wxUSE_ODBC
   return self->FkCol;
 #else
-  return (-1);
+  return 0;
 #endif
 }
 

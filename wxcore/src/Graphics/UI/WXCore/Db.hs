@@ -1,20 +1,110 @@
 --------------------------------------------------------------------------------
-{-| Module      :  Controls
+{-| Module      :  Db
     Copyright   :  (c) Daan Leijen 2003
     License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
     Stability   :  provisional
     Portability :  portable
+  
+This module provides convenient access to the database classes
+('Db') of wxWindows. These classes have been donated to the wxWindows
+library by Remstar International. (Note: these classes are not supported
+on MacOS X at the time of writing (november 2003)). 
+These database objects support ODBC connections and have been tested 
+with wxWindows on the following databases:
+
+Oracle (v7, v8, v8i), 
+Sybase (ASA and ASE),
+MS SQL Server (v7 - minimal testing), MS Access (97 and 2000),
+MySQL, DBase (IV, V) (using ODBC emulation), PostgreSQL, INFORMIX, VIRTUOSO, DB2, 
+Interbase, Pervasive SQL .
+
+The database functions also work with console applications and do /not/
+need to initialize the WXCore libraries.
+
+The examples in this document are all based on the @pubs@ database
+that is available in MS Access 97 and \'comma separated text\' format
+from <http://wxhaskell.sourceforge.net/download/pubs.zip>. We assume
+that your system is configured in such a way that @pubs@ is the
+datasource name of this database. (On Windows XP for example, this is 
+done using the /start - settings - control panel - administrative tools
+- data sources (ODBC)/ menu.)
+
+The available data sources on your system can be retrieved using
+'dbGetDataSources'. Here is an example from my system:
+
+> *Main> dbGetDataSources >>= print
+> [("pubs","Microsoft Access Driver (*.mdb)")]
+
+Connections are established with the 'dbWithConnection' call.
+It takes a datasource name, a user name, a password, and a function
+that is applied to the resulting database connection:
+
+> dbWithConnection "pubs" "" "" (\db -> ...)
+
+(Note that most database operations automatically raise a database exception ('DbError')
+on failure. These exceptions can be caught using 'catchDbError'.)
+
+The resulting database ('Db') can be queried using 'dbQuery'.
+The 'dbQuery' call applies a function to each row ('DbRow') in the result
+set. Using calls like 'dbRowGetValue' and 'dbRowGetString', you can 
+retrieve the values from the result rows.
 
 > printAuthorNames
 >   = do names <- dbWithConnection "pubs" "" "" (\db ->
 >                  dbQuery db "SELECT au_fname, au_lname FROM authors" 
->                    (\row -> do fname <- dbRowGetStringValue row "au_fname"
->                                lname <- dbRowGetStringValue row "au_lname"
+>                    (\row -> do fname <- dbRowGetString row "au_fname"
+>                                lname <- dbRowGetString row "au_lname"
 >                                return (fname ++ " " ++ lname)
 >                    ))
 >        putStrLn (unlines names)
+
+The overloaded function 'dbRowGetValue' can retrieve any kind of 
+database value ('DbValue') (except for strings since standard Haskell98 
+does not support overlapping instances). For most datatypes, there is
+also a non-overloaded version, like 'dbRowGetInteger' and 'dbRowGetString'.
+The @dbRowGet...@ functions are also available as @dbRowGet...Mb@, which
+returns 'Nothing' when a @NULL@ value is encountered (instead of raising
+an exception), for example, 'dbRowGetIntegerMb' and 'dbRowGetStringMb'.
+
+If necessary, more data types can be supported by defining your own
+'DbValue' instances and using 'dbRowGetValue' to retrieve those values.
+
+You can use 'dbRowGetColumnInfo' to retrieve column information ('ColumnInfo')
+about a particular column, for example, to retieve the number of decimal
+digits in a currency value.
+
+Complete meta information about a particular data source can be retrieved 
+using 'dbGetDataSourceInfo', that takes a data source name, user name,
+and password as arguments, and returns a 'DbInfo' structure:
+
+> *Main> dbGetDataSourceInfo "pubs" "" "" >>= print
+> catalog: C:\daan\temp\db\pubs2
+> schema :
+> tables :
+>  ...
+>  8: name   : authors
+>     type   : TABLE
+>     remarks:
+>     columns:
+>      1: name   : au_id
+>         index  : 1
+>         type   : VARCHAR
+>         size   : 12
+>         sqltp  : SqlVarChar
+>         type id: DbVarChar
+>         digits : 0
+>         prec   : 0
+>         remarks: Author Key
+>         pkey   : False
+>         ptable :
+>         fkey   : False
+>         ftable :
+>      2: name   : au_fname
+>         index  : 2
+>         type   : VARCHAR
+>  ...
 
 -}
 --------------------------------------------------------------------------------
@@ -26,33 +116,44 @@ module Graphics.UI.WXCore.Db
    -- * Queries
    , dbQuery, dbQuery_, dbExecute
 
-   -- * Result sets
-   , DbRow, DbValue( dbValueRead )
-   , dbRowGetValue, dbRowGetNullValue
-   , dbRowGetStringValue, dbRowGetStringNullValue
+   -- * Rows
+   , DbRow
+   -- ** Standard values
+   , dbRowGetString, dbRowGetStringMb
+   , dbRowGetBool, dbRowGetBoolMb
+   , dbRowGetInt, dbRowGetIntMb
+   , dbRowGetDouble, dbRowGetDoubleMb
+   , dbRowGetInteger, dbRowGetIntegerMb
+   -- ** Generic values
+   , DbValue( dbValueRead )
+   , dbRowGetValue, dbRowGetValueMb
+   -- ** Column information
    , dbRowGetColumnInfo, dbRowGetColumnInfos
      
    -- * Meta information
    -- ** Data sources
-   , DatasourceName, dbGetDataSources, dbGetDatasourceInfo
-   
-   -- ** Dbms
-   , Dbms(..), dbGetDbms
+   , DataSourceName, dbGetDataSources, dbGetDataSourceInfo   
    
    -- ** Tables and columns
    , TableName, ColumnName, ColumnIndex
    , DbInfo(..), TableInfo(..), ColumnInfo(..)
    , dbGetInfo, dbGetTableColumnInfos, dbGetColumnInfos
 
+   -- ** Dbms
+   , Dbms(..), dbGetDbms   
+
    -- * Exceptions
-   , DbStatus(..), dbGetDbStatus
    , DbError(..)
    , catchDbError, raiseDbError
    , dbHandleExn, dbCheckExn, dbRaiseExn
    , dbGetErrorMessages
+   , dbGetDbStatus, DbStatus(..)
    
    -- * Sql types
-   , DbType(..), SqlType(..), toSqlType, fromSqlType
+   , DbType(..), SqlType(..)
+
+   -- * Internal
+   , dbStringRead, dbGetDataNull, toSqlType, fromSqlType
    ) where
 
 
@@ -74,6 +175,15 @@ import Foreign.Marshal.Array
 {----------------------------------------------------------
   Query
 ----------------------------------------------------------}
+-- | Execute a SQL query against a database. Takes a function
+-- as argument that is applied to every database row ('DbRow').
+-- The results of these applications are returned as a list.
+-- Raises a 'DbError' on failure.
+--
+-- >  do names <- dbQuery db "SELECT au_fname FROM authors" 
+-- >                (\row -> dbRowGetString row "au_fname")
+-- >     putStr (unlines names)
+--
 dbQuery  :: Db a -> String -> (DbRow a -> IO b) -> IO [b]
 dbQuery db select action
   = do dbExecute db select
@@ -87,7 +197,14 @@ dbQuery db select action
             else do x <- action row
                     walkRows row (x:acc)
 
-
+-- | Execute a SQL query against a database. Takes a function
+-- as argument that is applied to every row in the database.
+-- Raises a 'DbError' on failure.
+--
+-- >  dbQuery_ db "SELECT au_fname FROM authors" 
+-- >    (\row -> do fname <- dbRowGetString row "au_fname"
+-- >                putStrLn fname)
+--
 dbQuery_ :: Db a -> String -> (DbRow a -> IO b) -> IO ()
 dbQuery_ db select action
   = do dbHandleExn db $ dbExecSql db select
@@ -111,31 +228,45 @@ dbExecute db sql
 {----------------------------------------------------------
   Result rows of a query
 ----------------------------------------------------------}
+-- | An abstract database row.
 data DbRow a = DbRow (Db a) [ColumnInfo]
 
+-- | Get the column information of a row.
 dbRowGetColumnInfos :: DbRow a -> [ColumnInfo]
 dbRowGetColumnInfos (DbRow db columnInfos)
   = columnInfos
 
-dbRowGetNullValue   :: DbValue b => DbRow a -> ColumnName -> IO (Maybe b)
-dbRowGetNullValue row@(DbRow db columnInfos) name
-  = do info <- dbRowGetColumnInfo row name
-       dbValueRead db info 
-
+-- | The column information of a particular column. 
+-- Raises a 'DbError' on failure.
 dbRowGetColumnInfo :: DbRow a -> ColumnName -> IO ColumnInfo
 dbRowGetColumnInfo (DbRow db columnInfos) name
   = case lookup name (zip (map columnName columnInfos) columnInfos) of
       Just info -> return info
       Nothing   -> raiseDbInvalidColumnName db name
 
+-- | Get a database value ('DbValue') from a row.
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetValueMb   :: DbValue b => DbRow a -> ColumnName -> IO (Maybe b)
+dbRowGetValueMb row@(DbRow db columnInfos) name
+  = do info <- dbRowGetColumnInfo row name
+       dbValueRead db info 
+
+-- | Get a database value ('DbValue') from a row. 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
 dbRowGetValue :: DbValue b => DbRow a -> ColumnName -> IO b
 dbRowGetValue row@(DbRow db columnInfos) columnName
-  = do mbValue <- dbRowGetNullValue row columnName
+  = do mbValue <- dbRowGetValueMb row columnName
        case mbValue of
          Just x  -> return x
          Nothing -> raiseDbFetchNull db
 
+-- | Class of values that are supported by the database.
 class DbValue a where
+  -- | Read a value at a specified column from the database. 
+  -- Return 'Nothing' when a @NULL@ value is encountered
+  -- Raises a 'DbError' on failure. ('dbGetDataNull' can be
+  -- used when implementing this behaviour).
   dbValueRead :: Db b -> ColumnInfo -> IO (Maybe a)
 
 instance DbValue Bool where
@@ -184,17 +315,70 @@ instance DbValue Integer where
                other      -> Nothing
 
 
-dbRowGetStringValue :: DbRow a -> ColumnName -> IO String
-dbRowGetStringValue row name
-  = do mbStr <- dbRowGetStringNullValue row name
+-- | Read an 'Bool' from the database. 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
+dbRowGetBool :: DbRow a -> ColumnName -> IO Bool
+dbRowGetBool = dbRowGetValue
+
+-- | Read an 'Bool' from the database. 
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetBoolMb :: DbRow a -> ColumnName -> IO (Maybe Bool)
+dbRowGetBoolMb = dbRowGetValueMb
+
+
+-- | Read an 'Int' from the database. 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
+dbRowGetInt :: DbRow a -> ColumnName -> IO Int
+dbRowGetInt = dbRowGetValue
+
+-- | Read an 'Int' from the database. 
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetIntMb :: DbRow a -> ColumnName -> IO (Maybe Int)
+dbRowGetIntMb = dbRowGetValueMb
+
+
+-- | Read an 'Double' from the database. 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
+dbRowGetDouble :: DbRow a -> ColumnName -> IO Double
+dbRowGetDouble = dbRowGetValue
+
+-- | Read an 'Double' from the database. 
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetDoubleMb :: DbRow a -> ColumnName -> IO (Maybe Double)
+dbRowGetDoubleMb = dbRowGetValueMb
+
+
+-- | Read an 'Integer' from the database. 
+-- Raises a 'DbError' on failure or when a @NULL@ value is encountered.
+dbRowGetInteger :: DbRow a -> ColumnName -> IO Integer
+dbRowGetInteger = dbRowGetValue
+
+-- | Read an 'Integer' from the database. 
+-- Returns 'Nothing' when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetIntegerMb :: DbRow a -> ColumnName -> IO (Maybe Integer)
+dbRowGetIntegerMb = dbRowGetValueMb
+
+-- | Read a string value from the database. Returns the empty
+-- string when a @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetString :: DbRow a -> ColumnName -> IO String
+dbRowGetString row name
+  = do mbStr <- dbRowGetStringMb row name
        return (maybe "" id mbStr)
 
-dbRowGetStringNullValue :: DbRow a -> ColumnName -> IO (Maybe String)
-dbRowGetStringNullValue row@(DbRow db columnInfos) name
+-- | Read a string from the database. Returns 'Nothing' when a
+-- @NULL@ value is encountered.
+-- Raises a 'DbError' on failure.
+dbRowGetStringMb :: DbRow a -> ColumnName -> IO (Maybe String)
+dbRowGetStringMb row@(DbRow db columnInfos) name
   = do info <- dbRowGetColumnInfo row name
        dbStringRead db info 
 
-
+-- | Internal: Low level string reading.
 dbStringRead :: Db a -> ColumnInfo -> IO (Maybe String)
 dbStringRead db info 
   = allocaArray maxLen $ \cstr ->
@@ -207,7 +391,8 @@ dbStringRead db info
     maxLen  | columnSize info > 0   = columnSize info + 1
             | otherwise             = 4096  -- just something ?
 
--- | Takes a @dbGetData...@ method and supplies the @Ptr CInt@ argument.
+-- | Internal: used to implement 'dbReadValue' methods.
+-- Takes a @dbGetData...@ method and supplies the @Ptr CInt@ argument.
 -- It raises and exception on error. Otherwise, it returns 'True' when a
 -- @NULL@ value is read.
 dbGetDataNull :: Db a -> (Ptr CInt -> IO Bool) -> IO Bool
@@ -225,7 +410,7 @@ dbGetDataNull db getData
    arguments. Raises a database exception ('DbError') when the connection
    fails.
 -}
-dbWithConnection :: DatasourceName -> String -> String -> (Db () -> IO b) -> IO b
+dbWithConnection :: DataSourceName -> String -> String -> (Db () -> IO b) -> IO b
 dbWithConnection name userid password f
   = bracket (dbConnect name userid password)
             (dbDisconnect)
@@ -234,7 +419,7 @@ dbWithConnection name userid password f
 -- | (@dbConnect name userId password@) creates a connection to a 
 -- data source @name@. Raises a database exception ('DbError') when the connection fails.
 -- Use 'dbDisconnect' to close the connection.
-dbConnect :: DatasourceName -> String -> String -> IO (Db ())
+dbConnect :: DataSourceName -> String -> String -> IO (Db ())
 dbConnect name userId password
   = bracket (dbConnectInfCreate nullHENV name userId password "" "" "" )
             (dbConnectInfDelete)
@@ -259,7 +444,7 @@ dbDisconnect db
 {----------------------------------------------------------
   Database meta information
 ----------------------------------------------------------}
-type DatasourceName = String
+type DataSourceName = String
 type TableName      = String
 type ColumnName     = String
 type ColumnIndex    = Int
@@ -292,21 +477,21 @@ data ColumnInfo
 
               , columnDecimalDigits    :: Int     -- ^ Number of decimal digits
               , columnNumPrecRadix     :: Int     -- ^ Radix precision
-              , columnIsForeignKey     :: Bool    -- ^ Is this a foreign key column?
-              , columnIsPrimaryKey     :: Bool    -- ^ Is this a primary key column?
-              , columnForeignTableName :: String  -- ^ Tables that use this foreign key.
-              , columnPrimaryTableName :: String  -- ^ Tables that use this primary key.
+              , columnForeignKey       :: Int -- ^ Is this a foreign key column? 0 = no, 1 = first key, 2 = second key, etc. (not supported on all systems)
+              , columnPrimaryKey        :: Int -- ^ Is this a primary key column? 0 = no, 1 = first key, 2 = second key, etc. (not supported on all systems)
+              , columnForeignKeyTableName :: TableName  -- ^ Table that has this foreign key as a primary key.
+              , columnPrimaryKeyTableNames :: [TableName]  -- ^ Tables that use this primary key as a foreign key.
               }
 
 
 -- | Get the complete meta information of a data source. Takes the
 -- data source name, a user id, and password as arguments.
 --
--- > do info <- dbGetDatasourceInfo "pubs" "" ""
+-- > do info <- dbGetDataSourceInfo "pubs" "" ""
 -- >    print info
 -- 
-dbGetDatasourceInfo :: DatasourceName -> String -> String -> IO DbInfo
-dbGetDatasourceInfo dataSource userId password
+dbGetDataSourceInfo :: DataSourceName -> String -> String -> IO DbInfo
+dbGetDataSourceInfo dataSource userId password
   = bracket (dbConnectInfCreate nullHENV dataSource userId password "" "" "") 
             (dbConnectInfDelete)
             (\connectInf ->
@@ -391,14 +576,22 @@ dbColInfGetInfo info idx
        pk         <- dbColInfGetPkCol info
        pkname     <- dbColInfGetPkTableName info
        return (ColumnInfo columnName idx columnSize nullable (toEnum tp) (toSqlType sqltp) tpname remarks
-                          decdigits numprecrad (fk/=0) (pk/=0) fkname pkname )
+                          decdigits numprecrad fk pk fkname (parseTables pkname) )
+  where
+    -- tables formatted as: "[name1][name2]...". Parser basically admits anything :-)
+    parseTables []        = []  -- done
+    parseTables ('[':xs)  = let (name,ys) = span (/=']') xs  -- take till close bracket
+                            in name : parseTables ys
+    parseTables (']':xs)  = parseTables xs    -- ignore ']'
+    parseTables (' ':xs)  = parseTables xs    -- ignore ' '
+    parseTables xs        = [xs]              -- should not happen: take rest as a single database name
 
 
 {----------------------------------------------------------
   Data sources
 ----------------------------------------------------------}
 -- | Returns the name and description of the data sources on the system.
-dbGetDataSources :: IO [(DatasourceName,String)]
+dbGetDataSources :: IO [(DataSourceName,String)]
 dbGetDataSources 
   = do connectInf <- dbConnectInfCreate nullHENV "" "" "" "" "" ""
        henv       <- dbConnectInfGetHenv connectInf
@@ -430,6 +623,11 @@ dbGetDataSourceEx henv isFirst
     dsnLen  = 255
     descLen = 1024
 
+
+-- | Get the data source name of a database.
+dbGetDataSourceName :: Db a -> IO DataSourceName
+dbGetDataSourceName db
+  = dbGetDatasourceName db
 
 {----------------------------------------------------------
   Dbms
@@ -468,7 +666,7 @@ dbGetDbms db
 -- | Database error type.
 data DbError
   = DbError   { dbErrorMsg   :: String
-              , dbDataSource :: DatasourceName
+              , dbDataSource :: DataSourceName
               , dbErrorCode  :: DbStatus 
               , dbNativeCode :: Int
               , dbSqlState   :: String  
@@ -505,7 +703,7 @@ dbRaiseExn db
   = do errorMsg  <- dbGetErrorMessage db 0
        errorCode <- dbGetDbStatus db
        nativeCode<- dbGetNativeError db
-       dataSource<- dbGetDatasourceName db
+       dataSource<- dbGetDataSourceName db
        raiseDbError (DbError (extractMessage errorMsg) dataSource errorCode nativeCode (extractSqlState errorMsg))
   where
     extractSqlState msg
@@ -534,23 +732,23 @@ dbGetErrorMessages db
 -- | Raise a type mismatch error
 raiseDbTypeMismatch :: Db a -> IO b
 raiseDbTypeMismatch db
-  = do dataSource <- dbGetDatasourceName db
+  = do dataSource <- dbGetDataSourceName db
        raiseDbError (DbError "Type mismatch" dataSource DB_ERR_TYPE_MISMATCH 0 "" )
 
 -- | Raise a fetch null error
 raiseDbFetchNull :: Db a -> IO b
 raiseDbFetchNull db
-  = do dataSource <- dbGetDatasourceName db
+  = do dataSource <- dbGetDataSourceName db
        raiseDbError (DbError "Unexpected NULL value" dataSource DB_ERR_FETCH_NULL 0 "")
 
 -- | Raise an invalid column name error
 raiseDbInvalidColumnName :: Db a -> ColumnName -> IO b
 raiseDbInvalidColumnName db name
-  = do dataSource <- dbGetDatasourceName db
+  = do dataSource <- dbGetDataSourceName db
        raiseDbError (DbError ("Invalid column name (" ++ name ++ ")") dataSource DB_ERR_INVALID_COLUMN_NAME 0 "")
 
 -- | Raise a connection error
-raiseDbConnect :: DatasourceName -> IO a
+raiseDbConnect :: DataSourceName -> IO a
 raiseDbConnect name
   = raiseDbError (DbError ("Unable to establish a connection to the '" ++ name ++ "' database") 
                  name DB_ERR_CONNECT 0 "")
@@ -818,10 +1016,10 @@ showColumnInfo info
     ,"digits : " ++ show (columnDecimalDigits info)
     ,"prec   : " ++ show (columnNumPrecRadix info)
     ,"remarks: " ++ columnRemarks info
-    ,"pkey   : " ++ show (columnIsPrimaryKey info)
-    ,"ptable : " ++ columnPrimaryTableName info
-    ,"fkey   : " ++ show (columnIsForeignKey info)
-    ,"ftable : " ++ columnForeignTableName info
+    ,"pkey   : " ++ show (columnPrimaryKey info)
+    ,"ptable : " ++ show (columnPrimaryKeyTableNames info)
+    ,"fkey   : " ++ show (columnForeignKey info)
+    ,"ftable : " ++ columnForeignKeyTableName info
     ]
 
 

@@ -12,6 +12,7 @@ TClass(wxHSTMT) Null_HSTMT();
 /*-----------------------------------------------------------------------------
   Global
 -----------------------------------------------------------------------------*/
+/** Are the database classes supported on this platform ? */
 TBool wxDb_IsSupported();
 int   wxDb_SqlTypeToStandardSqlType( int sqlType );
 int   wxDb_StandardSqlTypeToSqlType( int sqlType );

@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.22 2003/10/17 15:43:18 dleijen Exp $
+# $Id: configure,v 1.23 2003/10/27 23:31:20 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -316,9 +316,12 @@ if test "$withmsc" != "yes"; then
     wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
   fi
 
-  # windows: we append $prefix/include to the include directories
+  # windows: 
+  #  we append $prefix/include to the include directories
+  #  we add "-lodbc32" since we use "SQL..." calls in the wrapper code :-(
   if test "$wxtoolkit" = "MSW"; then
     wxwincxxflags="-I$prefix/include $wxwincxxflags"
+    wxwinlibs="$wxwinlibs -lodbc32"
   fi
 
   # windows: we normalize $prefix and $exec-prefix include directories and libraries

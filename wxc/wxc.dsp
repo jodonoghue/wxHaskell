@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmsw.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmsw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxc.lib	move libwxc.a ..\out\wxc	move wxc.def ..\out\wxc	echo Done.
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswd.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd.dll" /pdbtype:sept /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd.dll" /pdbtype:sept /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxcd.lib	move libwxcd.a ..\out\wxc	move wxcd.def ..\out\wxc	echo Done.
@@ -105,6 +105,14 @@ SOURCE=.\include\db.h
 # Begin Source File
 
 SOURCE=.\include\ewxw_def.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\glcanvas.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\wave.h
 # End Source File
 # Begin Source File
 
@@ -152,11 +160,19 @@ SOURCE=.\src\extra.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\glcanvas.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\image.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\treectrl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\wave.cpp
 # End Source File
 # Begin Source File
 

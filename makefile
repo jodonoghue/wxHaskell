@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.50 2003/10/27 11:22:24 dleijen Exp $
+# $Id: makefile,v 1.51 2003/10/27 23:31:20 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -89,6 +89,7 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/Image \
 	Graphics/UI/WXCore/Controls \
 	Graphics/UI/WXCore/Db \
+	Graphics/UI/WXCore/OpenGL \
 	Graphics/UI/WXCore
 
 WXCORE-CORE-SOURCES = \
@@ -127,7 +128,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db
+	treectrl image apppath db glcanvas wave
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -156,7 +157,7 @@ WXC-SPECS-EIFFEL = \
 
 WXC-SPECS-HEADER = \
 	wxc/include/wxc.h \
-	wxc/include/db.h \
+	wxc/include/db.h wxc/include/glcanvas.h wxc/include/wave.h \
 	wxc/include/ewxw/wxc_glue.h 
 
 
