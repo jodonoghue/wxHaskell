@@ -181,7 +181,10 @@ WXC-SPECS-HEADER = \
 
 
 # distributed in a source distribution
-WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard wxc/src/ewxw/*.h)\
+WXC-SRCS1=$(wildcard wxc/src/*.cpp)   
+
+WXC-SRCS2=$(wildcard wxc/src/ewxw/*.cpp) \
+	 $(wildcard wxc/src/ewxw/*.h)\
 	 $(wildcard wxc/include/*.h) $(wildcard wxc/include/ewxw/*.h) \
 	 $(wildcard wxc/eiffel/*.e)  $(wildcard wxc/eiffel/ewxw/*.e) \
 	 wxc/src/wxc.rc \
@@ -651,8 +654,9 @@ wxc-compress: wxc
 	@$(call run-compress,$(WXC-LIB))
 
 # source dist
-wxc-dist: $(WXC-SRCS)
-	@$(call cp-srcdist, $^)
+wxc-dist: $(WXC-SRCS1) $(WXC-SRCS2)
+	@$(call cp-srcdist, $(WXC-SRCS1))
+	@$(call cp-srcdist, $(WXC-SRCS2))
 
 # binary distribution. A complication is that sometimes wxWindows is in a separate dll
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).

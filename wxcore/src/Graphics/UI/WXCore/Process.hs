@@ -197,19 +197,20 @@ type OnEndProcess  = Int -> IO ()
 
 
 
--- | (@processExecAsyncTimer command onEndProcess onOutput onErrorOutput parent@) starts
+-- | (@processExecAsyncTimer command processOutputOnEnd onEndProcess onOutput onErrorOutput parent@) starts
 -- the @command@ asynchronously. The handler @onEndProcess@ is called when the process
 -- terminates. @onOutput@ receives the output from @stdout@, while @onErrorOutput@ receives
--- output from @stderr@. The calls returns a triple (@send,process,pid@):
+-- output from @stderr@. If @processOutputOnEnd@ is 'True', the remaining output of a terminated
+-- process is processed (calling @onOutput@). The call returns a triple (@send,process,pid@):
 -- The @send@ function is used to send input to the @stdin@ pipe of the process. The
 -- process object is returned in @process@ and the process identifier in @pid@.
 --
 -- Note: The method uses idle event timers to process the output channels. On
 -- many platforms this is uch more thrustworthy and robust than the 'processExecAsync' that
 -- uses threads (which can cause all kinds of portability problems).
-processExecAsyncTimed :: Window a -> String -> OnEndProcess -> OnReceive -> OnReceive
+processExecAsyncTimed :: Window a -> String -> Bool -> OnEndProcess -> OnReceive -> OnReceive
                       -> IO (String -> IO StreamStatus, Process (), Int)
-processExecAsyncTimed parent cmd onEndProcess onOutput onErrOutput
+processExecAsyncTimed parent cmd readInputOnEnd onEndProcess onOutput onErrOutput
   = do process    <- processCreateDefault parent idAny
        processRedirect process
        pid        <- wxcAppExecuteProcess cmd wxEXEC_ASYNC process
@@ -265,7 +266,10 @@ processExecAsyncTimed parent cmd onEndProcess onOutput onErrOutput
       = do unregister
            withProcess v () $ \process -> 
             do varSet v Nothing
-               -- handleAllInput process  -- handle remaining input?
+               if (readInputOnEnd)
+                then do inputPipe <- processGetInputStream process
+                        handleAllInput inputPipe onOutput  -- handle remaining input
+                else return ()
                onEndProcess exitCode
                processDelete process 
                return ()

@@ -230,7 +230,7 @@ if findprogram "$wxconfig"; then
   fi
 
   # guess extra link options
-  extraldopts="`$wxconfig --ldflags`"
+  extraldopts=""		# "`$wxconfig --ldflags`"
   pthread="`$wxconfig --libs | sed -e \"s|.* -pthread .*|yes|\"`"
   if test "$pthread" = "yes"; then
     if test -z "$extraldopts"; then

@@ -29,7 +29,7 @@ gui
     startProcess f input stop message
       = do txt <- get input text
            appendText input txt
-           (send,process,pid) <- processExecAsyncTimed f txt 
+           (send,process,pid) <- processExecAsyncTimed f txt True {- process all input on termination -}
                                   (onEndProcess f input stop message) (onReceive message) (onReceive message)
            let sendLn txt = send (txt ++ "\n")
            if (pid /= 0)
