@@ -89,7 +89,8 @@ fi
 # see if wx-config is the first argument
 case "$1" in
   -wx-config=*|--wx-config=*)
-    wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`;;
+    wxconfig=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
+    wxconfig=`eval echo $wxconfig`;;   #expand ~ 
 esac
 
 
@@ -130,7 +131,7 @@ fi
 if findprogram "$wxconfig"; then
   # improve prefix guess
   prefix="`$wxconfig --prefix`"
-  
+
   # guess version
   wxversion="`$wxconfig --version`"
 
@@ -161,6 +162,13 @@ if findprogram "$wxconfig"; then
       extraldopts="$extraldopts -pthread"
     fi
   fi
+else
+#wxconfig not found!
+  echo "warning:"
+  echo " Unable to find wxWidgets configuration ($wxconfig)."
+#  echo " Either install wxWidgets or specify the location of wx-config."
+#  echo " For example: ./configure --wx-config=~/local/bin/wx-config"
+  echo ""
 fi
 
 # initial completion rules
@@ -176,7 +184,8 @@ arg=""
 while : ; do
   # put optional argument in the $arg variable
   case "$1" in
-   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` 
+         arg=`eval echo $arg`;;  # expand ~
    *)    arg="";;
   esac
 
@@ -285,6 +294,7 @@ while : ; do
           echo "warning:"
           echo "  option --wxc-libname is only valid if preceded with --with-msc."
         fi;;
+   $*) ;;
    *) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
        echo "" 1>&2
        exit 2;;
