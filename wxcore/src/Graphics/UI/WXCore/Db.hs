@@ -98,7 +98,7 @@ and password as arguments, and returns a 'DbInfo' structure:
 >         prec   : 0
 >         remarks: Author Key
 >         pkey   : 0
->         ptable :
+>         ptables: []
 >         fkey   : 0
 >         ftable :
 >      2: name   : au_fname
@@ -573,7 +573,7 @@ type DataSourceName = String
 type TableName      = String
 
 -- | Column names. Note that a column name consisting of a number can
--- be used to retrieve a value by index, for example: 'dbGetString' @db \"1\"'.
+-- be used to retrieve a value by index, for example: 'dbGetString' @db \"1\"@.
 type ColumnName     = String
 type ColumnIndex    = Int
 
@@ -1164,7 +1164,7 @@ showColumnInfo info
     ,"prec   : " ++ show (columnNumPrecRadix info)
     ,"remarks: " ++ columnRemarks info
     ,"pkey   : " ++ show (columnPrimaryKey info)
-    ,"ptable : " ++ show (columnPrimaryKeyTableNames info)
+    ,"ptables: " ++ show (columnPrimaryKeyTableNames info)
     ,"fkey   : " ++ show (columnForeignKey info)
     ,"ftable : " ++ columnForeignKeyTableName info
     ]
