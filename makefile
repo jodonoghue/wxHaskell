@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.28 2003/09/16 12:52:03 dleijen Exp $
+# $Id: makefile,v 1.29 2003/09/19 09:23:18 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -185,6 +185,7 @@ SAMPLE-SOURCES= \
 	samples/wx/ImageViewer.hs \
 	samples/wx/TimeFlows.hs \
 	samples/wx/TimeFlowsEx.hs \
+	samples/wx/FileBrowse.hs \
 	\
 	samples/wxcore/BouncingBalls.hs \
 	samples/wxcore/ByeDemo.hs \
