@@ -8,7 +8,7 @@
 #  Copyright (c) 2003, Daan Leijen, Arthur Baars
 #------------------------------------------------------------------------
 
-# $Id: macosx-app,v 1.3 2003/07/22 14:24:42 dleijen Exp $
+# $Id: macosx-app,v 1.4 2003/09/29 14:13:21 dleijen Exp $
 arg=""
 
 # variables
@@ -16,43 +16,8 @@ program="a.out"
 rescomp="/Developer/Tools/Rez"
 libdir=""
 eprefix=""
-
-# Find a wx-config along the path
-wxconfigfound="no"
-if test -f wx-config; then
-  wxconfigfound="yes"
-else
-  IFS=':'
-  for dir in $PATH; do
-   if test -z "$dir"; then
-     dir=.
-   fi
-   if test -f "$dir/wx-config"; then
-     wxconfigfound="yes"
-   fi
-  done
-fi
-
-# guess prefix & version
-if test "$wxconfigfound" = "yes"; then
-  prefix="`wx-config --exec-prefix`"
-  version="`wx-config --version`"
-else
-  if test -d "/usr/local"; then
-    prefix="/usr/local"
-  else
-    prefix="/usr"
-  fi
-  version="2.4.1"
-fi
-
-# wxwindows library name
-mainversion="`echo \"$version\" | sed -e \"s|\\.[0-9]\$||\"`"
-if test "$version" = "2.4.1"; then
-  libname="libwx_mac-2.4.0"
-else
-  libname="libwx_mac-$mainversion"
-fi
+prefix="/usr/local/wxhaskell"
+libname="libwx_mac-2.4.0"
 
 # nicely shown names
 eprefix_doc="<prefix>"

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.29 2003/09/19 09:23:18 dleijen Exp $
+# $Id: makefile,v 1.30 2003/09/29 14:13:14 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -164,13 +164,18 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp)   $(wildcard wxc/src/ewxw/*.cpp) $(wildcard w
 #--------------------------------------------------------------------------
 # wxhaskell project itself
 #--------------------------------------------------------------------------
+SCRIPT-CONFIGS= \
+        config/macosx-app
+	
+SCRIPT-BINS= \
+        bin/wxhaskell-register \
+	bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat
+
 WXHASKELL-SOURCES= \
 	config.search configure makefile \
 	prologue.txt license.txt \
-	bin/macosx-app bin/reimp.exe \
-	bin/macosx-builddmg bin/macosx-package  \
-	bin/wxhaskell-register bin/wxhaskell-register.bat \
-	bin/wxhaskell-uninstall.bat
+	bin/macosx-app-template bin/reimp.exe \
+	bin/macosx-builddmg bin/macosx-package  \	
 
 SAMPLE-SOURCES= \
 	samples/wx/Camels.hs samples/wx/desert.bmp \
@@ -341,17 +346,28 @@ OUTDIR	= out
 
 # main targets
 all:		wx
-install:	wx-install
-uninstall:	wx-uninstall wxcore-uninstall wxc-uninstall
 clean:		wxc-clean wxd-clean wxcore-clean wx-clean 
 
 realclean: wxcore-realclean 
 	-@$(call full-remove-dir,$(OUTDIR)) 
 
 #--------------------------------------------------------------------------
+# Install (unfortunately with extra clauses for the mac)
+#--------------------------------------------------------------------------
+install:	wx-install
+ifeq ($(TOOLKIT),mac)
+	@$(call install-files,config,$(BINDIR),config/macosx-app)
+endif
+	
+uninstall:	wx-uninstall wxcore-uninstall wxc-uninstall
+ifeq ($(TOOLKIT),mac)
+	-@$(call uninstall-files,config,$(BINDIR),config/macosx-app)
+endif
+
+#--------------------------------------------------------------------------
 # Distribution
 #--------------------------------------------------------------------------
-.PHONY: dist srcdist bindist docdist dist-dirs
+.PHONY: dist srcdist bindist docdist dist-dirs macdist
 #.PHONY: wxc-dist wxd-dist wxcore-dist wx-dist
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 
@@ -408,7 +424,7 @@ else
 	@$(call cp-bindist,bin,$(BINDIST-LIBDIR),bin/wxhaskell-register)
 endif
 ifeq ($(TOOLKIT),mac)
-	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/macosx-app)
+	@$(call cp-bindist,bin,$(BINDIST-BINDIR),config/macosx-app)
 endif
 	@$(RM) $(DIST-BIN)
 	@$(CD) $(BINDIST-OUTDIR) && $(call zip-add-rec,$(DIST-BIN),*)
@@ -436,7 +452,6 @@ macdist: bindist
 	# create package
 	bin/macosx-package $(BINDIST-OUTDIR) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
-
 
 #--------------------------------------------------------------------------
 # WX: the medium level abstraction on wxcore

@@ -8,7 +8,7 @@
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.11 2003/09/19 09:27:49 dleijen Exp $
+# $Id: configure,v 1.12 2003/09/29 14:13:14 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -46,6 +46,13 @@ wxconfig="wx-config"
 wxtoolkit=""
 wxwinlib=""
 extraldopts=""
+
+# macosx: wx-config might be not in the path
+if sh ./config.search "$wxconfig"; then :; else
+  if test -f "/usr/local/wxhaskell/bin/wx-config"; then
+    wxconfig="/usr/local/wxhaskell/bin/wx-config"
+  fi
+fi
 
 # see if wx-config is the first argument
 case "$1" in
@@ -324,6 +331,19 @@ if test "$withmsc" != "yes"; then
     wxwincxxflags="`echo $wxwincxxflags | sed -e \"s|$wxprefix|$wwxprefix|g\"`"
     wxwinlibs="`echo $wxwinlibs | sed -e \"s|$wxexecprefix|$wwxexecprefix|g\"`"
   fi
+  
+  # macosx: we get the resource compiler flags
+  if test "$wxtoolkit" = "MAC"; then
+    wxrezcomp="`$wxconfig --rezflags`"
+    wxrezfile=""
+    for word in $wxrezcomp; do
+      temp="`echo $word | grep '[^_]*_mac-[^r]*r'`"
+      if test "$temp"; then
+        wxrezfile="$temp"
+      fi
+    done
+    echo "resource file: $wxrezfile"
+  fi
 fi
 
 
@@ -539,6 +559,7 @@ HCPKG=$hcpkg
 CXX=$cxx
 
 # Installation
+BINDIR=$execprefix/bin
 LIBDIR=$libdir
 
 # Compression function
@@ -611,6 +632,8 @@ Package
   }
 EOF
 
+echo "creating utility scripts"
+
 # generate compress utility
 if test "$enableupx" = "yes"; then
   echo " - config/compress"
@@ -653,6 +676,19 @@ env installdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx
 EOF
 chmod a+x config/macosx-postinstall
 
+# generate macosx application builder script
+echo " - config/macosx-app"
+cat > config/macosx-app-temp << EOF
+#!/bin/sh
+rezcomp="$wxrezcomp"
+rezfile="$wxrezfile"
+
+EOF
+cat config/macosx-app-temp bin/macosx-app-template > config/macosx-app
+rm -f config/macosx-app-temp
+chmod a+x config/macosx-app
+
+# we are done.
 echo ""
 echo "done:"
 echo " - type 'make' to build the libraries."
