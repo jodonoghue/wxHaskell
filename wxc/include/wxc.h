@@ -319,7 +319,7 @@ int wxColour_GetInt( TSelf(wxColour) colour);
 /* basic pixel manipulation */
 void wxcSetPixelRGB( void* buffer, int width, TPoint(x,y), int rgb  );
 int  wxcGetPixelRGB( void* buffer, int width, TPoint(x,y) );
-void wxcSetPixelRowRGB( void* buffer, int width, TPoint(x,y), int rgb0, int rgb1, int count );
+void wxcSetPixelRowRGB( void* buffer, int width, TPoint(x,y), int rgbStart, int rgbEnd, int count );
 void wxcInitPixelsRGB( void* buffer, TSize(width,height), int rgb );
 
 /* malloc/free */

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.35 2003/09/30 13:38:18 dleijen Exp $
+# $Id: makefile,v 1.36 2003/10/01 09:18:52 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -173,7 +173,6 @@ WXHASKELL-SOURCES= \
 	bin/wxhaskell-register.bat bin/wxhaskell-uninstall.bat
 
 SAMPLE-SOURCES= \
-	samples/wx/Camels.hs samples/wx/desert.bmp \
 	samples/wx/BouncingBalls.hs \
 	samples/wx/ByeDemo.hs \
 	samples/wx/Controls.hs \
@@ -181,7 +180,7 @@ SAMPLE-SOURCES= \
 	samples/wx/Layout.hs \
 	samples/wx/Minimal.hs \
 	samples/wx/Process.hs \
-	samples/wx/Paint.hs samples/wx/PaintDirect.hs \
+	samples/wx/Paint.hs \
 	samples/wx/ImageViewer.hs \
 	samples/wx/TimeFlows.hs \
 	samples/wx/TimeFlowsEx.hs \
@@ -192,7 +191,7 @@ SAMPLE-SOURCES= \
 	samples/wxcore/HelloWorld.hs \
 	samples/wxcore/Minimal.hs \
 	samples/wxcore/Paint.hs \
-	samples/wxcore/ImageViewer.hs samples/wxcore/ImageViewer.ico \
+	samples/wxcore/ImageViewer.hs \
 	\
 	samples/bitmaps/computer.ico \
 	samples/bitmaps/disk.ico \
@@ -203,8 +202,14 @@ SAMPLE-SOURCES= \
 	samples/bitmaps/fileopen16.png \
 	samples/bitmaps/hsicon.ico \
 	samples/bitmaps/wxwin16.png \
-	samples/bitmaps/wxwin.ico
-
+	samples/bitmaps/wxwin.ico \
+	samples/bitmaps/desert.bmp \
+	\
+	samples/contrib/Camels.hs \
+	samples/contrib/PaintDirect.hs \
+	samples/contrib/NotebookRight.hs \
+	
+	
 #--------------------------------------------------------------------------
 # Functions  ($(1) means first argument etc.)
 #--------------------------------------------------------------------------
