@@ -3,12 +3,12 @@
 #------------------------------------------------------------------------
 #  Configure script for wxHaskell
 #
-#  Copyright 2003, Daan Leijen.
+#  Copyright (c) 2003, 2004 Daan Leijen.
 #
 #  See license.txt for details.
 #------------------------------------------------------------------------
 
-# $Id: configure,v 1.35 2004/03/22 14:31:31 dleijen Exp $
+# $Id: configure,v 1.36 2004/03/22 15:52:42 dleijen Exp $
 
 #--------------------------------------------------------------------
 # Variables
@@ -30,6 +30,7 @@ topdir="`pwd`"
 prefix="/usr"
 execprefix=""
 libdir=""
+sharedprefix="<libdir>"
 
 # dll extension and lib prefix
 exe=""
@@ -41,9 +42,10 @@ cxx="c++"
 wxwincxxflags=""
 wxwinlibs=""
 
-# wxwindows
+# wxwidgets
 wxconfig="wx-config"
 wxtoolkit=""
+wxversion=""
 extraldopts=""
 
 # macosx: wx-config might be not in the path
@@ -96,6 +98,9 @@ fi
 if sh ./config.search "$wxconfig"; then
   # improve prefix guess
   prefix="`$wxconfig --prefix`"
+  
+  # guess version
+  wxversion="`$wxconfig --version`"
 
   # guess toolkit
   wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
@@ -129,6 +134,7 @@ execprefix_doc="<prefix>"
 libdir_doc="<exec-prefix>/lib"
 wxclib_doc="<libdir>/${lib}wxc${dll}"
 
+
 #--------------------------------------------------------------------
 # Parse command-line arguments
 #--------------------------------------------------------------------
@@ -145,7 +151,7 @@ while : ; do
     "") break;;
     -?|--help)
         echo "usage:"
-        echo "   ./configure [options]"
+        echo " ./configure [options]"
         echo ""
         echo "options: [defaults in brackets]"
         echo " --help                 show this information"
@@ -155,9 +161,10 @@ while : ; do
         echo " --version=<version>    library version [$version]"
         echo ""
         echo "install options:"
-        echo " --prefix=<dir>         platform independent install directory [$prefix]"
+        echo " --prefix=<dir>         install directory [$prefix]"
         echo " --exec-prefix=<dir>    platform dependent install directory [$execprefix_doc]"
         echo " --libdir=<dir>         library files install directory [$libdir_doc]"
+	echo " --shared-prefix=<dir>  fixed path prefix for dynamic libraries [$sharedprefix]"
         echo " --enable-strip         remove symbols from the libraries [$enablestrip]"
         echo " --enable-upx           compress the dynamic libraries with upx [$enableupx]"
         echo ""
@@ -165,16 +172,16 @@ while : ; do
         echo " --username=<name>      username on sourceforge [$username]"
         echo " --haddock=<program>    haddock documentation tool [$hdoc]"
         echo ""
-        echo "wxwindows options:"
-        echo " --wx-toolkit=<name>    wxWindows gui toolkit [$wxtoolkit]"
-        echo " --wx-config=<program>  wxWindows configure script (must be the first option!)"
+        echo "wxwidgets options:"
+        echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
+        echo " --wx-config=<program>  wxWidgets configure script (must be the first option!)"
         echo "                        [$wxconfig]"
         echo ""
         echo "platform options:"
         echo " --dllext=<extension>   dynamic link library extension [$dll]"
         echo " --libprefix=<prefix>   library prefix [$lib]"
         echo " --extra-ld-opts=<opts> extra link options [$extraldopts]"
-        echo " --with-msc             compile wxWindows and wxc with microsoft vc++ [$withmsc]"
+        echo " --with-msc             compile wxWidgets and wxc with microsoft vc++ [$withmsc]"
         echo " --wxc-libname=<name>   wxc library name [$wxclibname]"
         echo ""
         exit 1;;
@@ -196,6 +203,8 @@ while : ; do
     -libdir=*|--libdir=*)
         libdir="$arg"
         libdir_doc="$arg";;
+    -shared-prefix=*|--shared-prefix=*)
+        sharedprefix="$arg";;
     -enable-strip|--enable-strip)
         enablestrip="yes";;
     -disable-strip|--disable-strip)
@@ -261,6 +270,17 @@ if test "$dll" = ".dll"; then
   exe=".exe"
 fi
 
+if test "$sharedprefix" = "<libdir>"; then
+  sharedprefix="$libdir"
+fi
+
+# add "/" to shared-prefix if not empty or already ending on "/"
+if test "$sharedprefix"; then
+  case "$sharedprefix" in
+    */) ;;
+    *) sharedprefix="$sharedprefix/";;
+  esac
+fi
 
 # normalize the library and imports directory since ghc-pkg doesn't like unix names
 if test "$cygpathfound"; then
@@ -296,7 +316,10 @@ if test "$withmsc" != "yes"; then
   wxwincxxflags="`$wxconfig --cxxflags`"
   wxwinlibs="`$wxconfig --libs  | tr '\n' ' '`"
 
-  # extract the wxWindows wxtoolkit: MSW, MAC, GTK etc.
+  # version
+  wxversion="`$wxconfig --version`"
+  
+  # extract the wxWidgets wxtoolkit: MSW, MAC, GTK etc.
   if test -z "$wxtoolkit"; then
     wxtoolkit="`$wxconfig --cxxflags | sed -e 's|.*-D__WX\([A-Z]*\)__.*|\1|'`"
   fi
@@ -563,6 +586,7 @@ CXX=$cxx
 # Installation
 BINDIR=$execprefix/bin
 LIBDIR=$libdir
+SHARED-PREFIX=$sharedprefix
 
 # Compression function
 run-compress=$runcompress
@@ -572,7 +596,7 @@ WITHMSC=$withmsc
 WXC-LIBNAME=$wxclibname
 
 # WxWidgets
-WXWINLIB=$wxwinlib
+WXWIN-VERSION=$wxversion
 WXWIN-LIBS=$wxwinlibs
 WXWIN-CXXFLAGS=$wxwincxxflags
 WXWIN-REZFILE=$wxrezfile
@@ -610,6 +634,8 @@ if test "$extraldopts"; then
 fi
 
 # create packages
+binversion="${wxtoolkit}${wxversion}-${version}"
+
 echo "creating package descriptions"
 echo " - config/wxcore.pkg"
 cat > config/wxcore.pkg << EOF
@@ -618,7 +644,7 @@ Package
   , import_dirs=["\${wxhlibdir}/imports"]
   , library_dirs=["\${wxhlibdir}"]
   , hs_libraries=["wxcore","wxcore0"]
-  , extra_libraries=["${wxclibname}-${version}"]
+  , extra_libraries=["${wxclibname}-${binversion}"]
   , package_deps = ["base","data"]
   , extra_ld_opts=[$extraldopts]
   }
@@ -636,7 +662,7 @@ Package
 EOF
 
 updateversion () {
-  sed -e "s|wxc-[\\.0-9]\+\\.|wxc-${version}.|g" -e "s|wxcd-[\\.0-9]\+\\.|wxcd-${version}.|g" -e "s|\$|\\r|g" $1 > $1.out
+  sed -e "s|wxc-msw[\\.0-9]\+-[\\.0-9]\+\\.|wxc-${binversion}.|g" -e "s|wxcd-msw[\\.0-9]\+-[\\.0-9]\+\\.|wxcd-${binversion}.|g" -e "s|\$|\\r|g" $1 > $1.out
   mv -f $1.out $1
 }
 
@@ -668,12 +694,12 @@ fi
 
 # generate windows installer files.
 echo " - config/wxhaskell-register.bat"
-echo "@SET wxclibname=${wxclibname}-${version}"	>  config/wxhaskell-register-temp
+echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-register-temp
 cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\$|\\r|g" > config/wxhaskell-register.bat
 rm -f config/wxhaskell-register-temp
 
 echo " - config/wxhaskell-unregister.bat"
-echo "@SET wxclibname=${wxclibname}-${version}"	>  config/wxhaskell-unregister-temp
+echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-unregister-temp
 cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
 rm -f config/wxhaskell-unregister-temp
 

@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.61 2004/03/22 14:31:32 dleijen Exp $
+# $Id: makefile,v 1.62 2004/03/22 15:52:43 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -405,12 +405,13 @@ endif
 #.PHONY: wxc-dist wxd-dist wxcore-dist wx-dist
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
-BIN-VERSION	=$(HCNAME)$(HCVERSION)-$(VERSION)
+BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
+HCBIN-VERSION   =$(TOOLKIT)$(WXWIN-VERSION)-$(HCNAME)$(HCVERSION)-$(VERSION)
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
-DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(BIN-VERSION).zip
+DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
 SRCDIST-OUTDIR  =$(DIST-OUTDIR)/srcdist
@@ -467,7 +468,7 @@ bindist-clean:
 
 # specific binary distributions
 WXHASKELLINS=wxhaskell
-WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(TOOLKIT)-$(HC)$(HCVERSION)-$(VERSION).dmg
+WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(HCBIN-VERSION).dmg
 RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLINS)
 INFOFILE=$(PACKAGEDIR).info
@@ -694,11 +695,8 @@ WXC-OUTDIR	=$(OUTDIR)/$(WXC)
 WXC-SRCDIR	=$(WXC)/src
 WXC-INCDIR	=$(WXC)/include
 
-WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME)-$(VERSION).a
-WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)-$(VERSION)$(DLL)
-
-MSC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME).a
-MSC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)$(DLL)
+WXC-ARCHIVE	=$(WXC-OUTDIR)/lib$(WXC-LIBNAME)-$(BIN-VERSION).a
+WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)-$(BIN-VERSION)$(DLL)
 
 WXC-OBJS	=$(call make-objs, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-DEPS	=$(call make-deps, $(WXC-OUTDIR), $(WXC-SOURCES))
@@ -758,12 +756,12 @@ endif
 
 # dynamic link library on unix: generates single .so file
 $(basename $(WXC-LIB)).so: $(WXC-OBJS)
-	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$(LIBDIR)/$@
+	$(CXX) -shared -o $@ $^ $(WXC-LIBS) -Wl --soname=$(SHARED-PREFIX)$@
 
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^ $(WXC-LIBS)
-	$(CXX) -dynamiclib -install_name $(LIBDIR)/$@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
+	$(CXX) -dynamiclib -install_name $(SHARED-PREFIX)$@ -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
 # create an object file from source files
