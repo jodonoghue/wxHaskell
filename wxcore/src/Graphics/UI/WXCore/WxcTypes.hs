@@ -39,7 +39,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
             -- ** Color
-            , Color(Color,colorRed,colorGreen,colorBlue), rgb, colorRGB, colorOk
+            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk
 
             -- * Marshalling
             -- ** Basic types
@@ -99,7 +99,7 @@ import Foreign.Marshal.Array
 import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
 
-
+import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 
 {-----------------------------------------------------------------------------------------
     Objects
@@ -776,7 +776,7 @@ foreign import ccall "wxTreeItemId_Delete" treeItemIdDelete :: Object a -> IO ()
   Color
 -----------------------------------------------------------------------------------------}
 -- | An abstract data type to define colors.
-data Color = Color{ colorRed :: !Int, colorGreen :: !Int, colorBlue :: !Int } deriving Eq
+newtype Color = Color Int deriving Eq
 
 instance Show Color where
   showsPrec d c
@@ -787,38 +787,46 @@ instance Show Color where
 
 -- | Create a color from a red\/green\/blue triple.
 colorRGB :: Int -> Int -> Int -> Color
-colorRGB r g b = Color r g b
+colorRGB r g b = Color (shiftL r 16 .|. shiftL g 8 .|. b)
 
 -- | Create a color from a red\/green\/blue triple.
 rgb :: Int -> Int -> Int -> Color
-rgb r g b = Color r g b
+rgb r g b = colorRGB r g b
 
-{-
+
+-- | Return an 'Int' where the three least significant bytes contain
+-- the red, green, and blue component of a color.
+intFromColor :: Color -> Int
+intFromColor (Color rgb)
+  = rgb
+
+-- | Set the color according to an rgb integer. (see 'rgbIntFromColor').
+colorFromInt :: Int -> Color
+colorFromInt rgb
+  = Color rgb
+
 -- | Returns a red color component
 colorRed   :: Color -> Int
-colorRed   (Color r g b) = r
+colorRed   (Color rgb) = (shiftR rgb 16) .&. 0xFF
 
 -- | Returns a green color component
 colorGreen :: Color -> Int
-colorGreen (Color r g b) = g
+colorGreen (Color rgb) = (shiftR rgb 8) .&. 0xFF
 
 -- | Returns a blue color component
 colorBlue  :: Color -> Int
-colorBlue  (Color r g b) = b
--}
+colorBlue  (Color rgb) = rgb .&. 0xFF
+
 
 -- | This is an illegal color, corresponding to @nullColour@.
 colorNull :: Color
 colorNull
-  = rgb (-1) (-1) (-1)
+  = Color (-1)
 
 -- | Check of a color is valid (@Colour::Ok@)
 colorOk :: Color -> Bool
-colorOk (Color r g b)
-  = bound r && bound g && bound b
-  where
-    bound x = (x >= 0) && (x <= 255)
-
+colorOk (Color rgb)
+  = (rgb >= 0)
 
 -- marshalling
 type Colour a        = Managed (CColour a)
@@ -836,24 +844,22 @@ withManagedColourResult io
        color <- do ok <- colourOk pcolour
                    if (ok==0)
                     then return colorNull
-                    else do r <- colourRed pcolour
-                            g <- colourGreen pcolour
-                            b <- colourBlue pcolour
-                            return (Color (fromIntegral r) (fromIntegral g) (fromIntegral b))
+                    else do rgb <- colourGetInt pcolour
+                            return (colorFromInt (fromCInt rgb))
        colourDelete pcolour
        return color
 
 withManagedColour :: Color -> (ColourObject () -> IO b) -> IO b
-withManagedColour (Color r g b) f
-  = do pcolour <- colourCreateRGB (fromIntegral r) (fromIntegral g) (fromIntegral b)
+withManagedColour c f
+  = do pcolour <- colourCreateFromInt (toCInt (intFromColor c))
        x <- f pcolour
        colourDelete pcolour
        return x
 
 colourFromColor :: Color -> IO (Colour ())
-colourFromColor color@(Color r g b)
-  = if (colorOk color)
-     then do pcolour <- colourCreateRGB (fromIntegral r) (fromIntegral g) (fromIntegral b)
+colourFromColor c
+  = if (colorOk c)
+     then do pcolour <- colourCreateFromInt (toCInt (intFromColor c))
              newForeignPtr pcolour (colourDelete pcolour)
      else do pcolour <- colourNull
              newForeignPtr pcolour (return ())
@@ -864,14 +870,14 @@ colorFromColour c
     do ok <- colourOk pcolour
        if (ok==0)
         then return colorNull
-        else do r <- colourRed pcolour
-                g <- colourGreen pcolour
-                b <- colourBlue pcolour
-                return (Color (fromIntegral r) (fromIntegral g) (fromIntegral b))
+        else do rgb <- colourGetInt pcolour
+                return (colorFromInt (fromCInt rgb))
 
 
 foreign import ccall "wxColour_CreateEmpty" colourCreate    :: IO (ColourObject ())
 foreign import ccall "wxColour_CreateRGB" colourCreateRGB :: CUChar -> CUChar -> CUChar -> IO (ColourObject ())
+foreign import ccall "wxColour_CreateFromInt" colourCreateFromInt :: CInt -> IO (ColourObject ())
+foreign import ccall "wxColour_GetInt" colourGetInt   :: ColourObject a -> IO CInt
 foreign import ccall "wxColour_Delete" colourDelete   :: ColourObject a -> IO ()
 foreign import ccall "wxColour_Red"   colourRed       :: ColourObject a -> IO CUChar
 foreign import ccall "wxColour_Green" colourGreen     :: ColourObject a -> IO CUChar

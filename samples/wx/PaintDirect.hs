@@ -11,9 +11,9 @@ main
 
 gui :: IO ()
 gui
-  = do pb  <- pixelBufferCreate rgbSize
+  = do im <- imageCreateSized rgbSize
+       pb <- imageGetPixelBuffer im
        fillGreenBlue pb
-       im  <- imageCreateFromPixelBuffer pb
        bm  <- bitmapCreateFromImage im (-1)
        f   <- frame [text := "Paint demo"]
        sw  <- scrolledWindow f [on paintRaw := onpaint bm, virtualSize := rgbSize, scrollRate := size 10 10 ]
@@ -21,7 +21,6 @@ gui
              ,clientSize := size 200 200
              ,on closing := do bitmapDelete bm
                                imageDelete im
-                               pixelBufferDelete pb
                                propagateEvent
              ]
        return ()

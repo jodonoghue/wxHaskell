@@ -1166,6 +1166,16 @@ EWXWEXPORT(int, wxIsDefined)( char* s )
   return 0;
 }
 
+EWXWEXPORT(void*, wxcMalloc)(int size )
+{
+  return malloc(size);
+}
+
+EWXWEXPORT(void, wxcFree)( void* p )
+{
+  if (p!=NULL) free(p);
+}
+
 /*-----------------------------------------------------------------------------
   delete
 -----------------------------------------------------------------------------*/

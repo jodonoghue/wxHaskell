@@ -310,26 +310,21 @@ TClass(wxBitmap) wxBitmap_CreateFromImage( TClass(wxImage) image, int depth );
 TClass(wxImage) wxImage_CreateFromDataEx( TSize(width,height), void* data, TBoolInt isStaticData);
 void wxImage_Delete( TSelf(wxImage) image );
 
-/* basic (zbuffer) pixel manipulation */
-void wxcSetPixel( void* buffer, int width, TPoint(x,y), int r, int g, int b );
+/** Create from rgb int. */
+TClass(wxColour) wxColour_CreateFromInt(int rgb);
+/** Return colors as an rgb int. */
+int wxColour_GetInt( TSelf(wxColour) colour);
+
+
+/* basic pixel manipulation */
 void wxcSetPixelRGB( void* buffer, int width, TPoint(x,y), int rgb  );
 int  wxcGetPixelRGB( void* buffer, int width, TPoint(x,y) );
-void wxcSetZPixel( void* buffer, void* zbuffer, int width, TPoint(x,y), int z, int r, int g, int b );
-void wxcSetZPixelRGB( void* buffer, void* zbuffer, int width, TPoint(x,y), int z, int rgb );
-int  wxcGetZValue( void* zbuffer, int width, int x, int y );
-void wxcSetZValue( void* zbuffer, int width, int x, int y, int z );
-/** usage: @wxcUpdateZValue zbuffer width xy z@. Updates the z-buffer with the new z value when it is /less/ than the previous z value. Returns 'True' in this case, and 'False' otherwise. */ 
-TBoolInt  wxcUpdateZValue( void* zbuffer, int width, int x, int y, int z );
-/* buffer helpers */
-void* wxcMalloc( int size );
-void* wxcMallocInts( int count );
+void wxcSetPixelRowRGB( void* buffer, int width, TPoint(x,y), int rgb0, int rgb1, int count );
+void wxcInitPixelsRGB( void* buffer, TSize(width,height), int rgb );
+
+/* malloc/free */
+void* wxcMalloc(int size );
 void  wxcFree( void* p );
-int  wxcPeekByte( void* buffer, int index );
-void wxcPokeByte( void* buffer, int index, int i );
-int  wxcPeekInt( void* buffer, int index );
-void wxcPokeInt( void* buffer, int index, int i );
-void wxcPokeBytes( void* buffer, int index, int count, int i );
-void wxcPokeInts( void* buffer, int index, int count, int i );
 
 
 /* ELJApp */

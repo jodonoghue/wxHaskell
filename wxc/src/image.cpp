@@ -24,15 +24,22 @@ EWXWEXPORT(void, wxImage_Delete)( wxImage* image )
   delete image;
 }
 
-/* basic (zbuffer) pixel manipulation */
-EWXWEXPORT(void, wxcSetPixel)( unsigned char* buffer, int width, int x, int y, int r, int g, int b )
+
+/* colours */
+EWXWEXPORT(void*, wxColour_CreateFromInt) (int rgb)
 {
-  int indexR = 3*(width*y + x);
-  buffer[indexR]   = r;
-  buffer[indexR+1] = g;
-  buffer[indexR+2] = b;
+  return (void*) new wxColour((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
 }
 
+EWXWEXPORT(int, wxColour_GetInt) (wxColour* colour)
+{
+  int r = colour->Red();
+  int g = colour->Green();
+  int b = colour->Blue();
+  return ((r << 16) | (g << 8) | b);
+}
+
+/* basic pixel manipulation */
 EWXWEXPORT(void, wxcSetPixelRGB)( unsigned char* buffer, int width, int x, int y, int rgb )
 {
   int indexR = 3*(width*y + x);
@@ -51,103 +58,65 @@ EWXWEXPORT(int, wxcGetPixelRGB)( unsigned char* buffer, int width, int x, int y 
   return ((r << 16) | (g << 8) | b);
 }
 
-EWXWEXPORT(void, wxcSetZPixel)( unsigned char* buffer, int* zbuffer, int width, int x, int y, int z, int r, int g, int b )
+EWXWEXPORT(void, wxcSetPixelRowRGB)( unsigned char* buffer, int width, int x, int y, int rgb0, int rgb1, int count )
 {
-  int index  = width*y + x;
-  if (z < zbuffer[index]) {
-    int indexR = 3*index;
-    zbuffer[index]   = z;
-    buffer[indexR]   = r;
-    buffer[indexR+1] = g;
-    buffer[indexR+2] = b;
+  int r0  = ((rgb0 >> 16) && 0xFF);
+  int g0  = ((rgb0 >>  8) && 0xFF);
+  int b0  = (rgb0 && 0xFF);
+  int start = 3*(width*y+x);
+  int i;
+  
+  if (rgb0 == rgb1) {
+    /* same color */
+    for( i=0; i < count*3; i +=3) {
+      buffer[start+i]   = r0;
+      buffer[start+i+1] = g0;
+      buffer[start+i+2] = b0;
+    }
+  }
+  else {  
+    /* do linear interpolation of the color */
+    int r1  = ((rgb1 >> 16) && 0xFF);
+    int g1  = ((rgb1 >>  8) && 0xFF);
+    int b1  = (rgb1 && 0xFF);
+
+    int rd  = ((r1 - r0) << 16) / (count-1);
+    int gd  = ((g1 - g0) << 16) / (count-1);
+    int bd  = ((b1 - b0) << 16) / (count-1);
+
+    int r   = r0 << 16;
+    int g   = g0 << 16;
+    int b   = b0 << 16;
+
+    for( i = 0; i < count*3; i += 3 ) {
+      buffer[start+i]   = (r >> 16);
+      buffer[start+i+1] = (g >> 16);
+      buffer[start+i+2] = (b >> 16);
+      r += rd;
+      g += gd;
+      b += bd;
+    }
   }
 }
 
-EWXWEXPORT(void, wxcSetZPixelRGB)( unsigned char* buffer, int* zbuffer, int width, int x, int y, int z, int rgb )
+EWXWEXPORT(void, wxcInitPixelsRGB)( unsigned char* buffer, int width, int height, int rgb )
 {
-  int index  = width*y + x;
-  if (z < zbuffer[index]) {
-    int indexR = 3*index;
-    zbuffer[index]   = z;
-    buffer[indexR]   = rgb >> 16;
-    buffer[indexR+1] = rgb >>  8;
-    buffer[indexR+2] = rgb;
-  }
-}
+  int count        = width*height*3;
+  unsigned char r  = ((rgb >> 16) && 0xFF);
+  unsigned char g  = ((rgb >>  8) && 0xFF);
+  unsigned char b  = rgb && 0xFF;
+  int i;
 
-EWXWEXPORT(int,  wxcGetZValue)( int* zbuffer, int width, int x, int y )
-{
-  return zbuffer[width*y + x];
-}
-
-EWXWEXPORT(void, wxcSetZValue)( int* zbuffer, int width, int x, int y, int z )
-{
-  zbuffer[width*y+x] = z;
-}
-
-EWXWEXPORT(int,  wxcUpdateZValue)( int* zbuffer, int width, int x, int y, int z )
-{
-  int index = width*y + x;
-  if (z < zbuffer[index]) {
-    zbuffer[index] = z;
-    return TRUE;
-  }
-  else return FALSE;
-}
-
-/* buffer helpers */
-
-EWXWEXPORT(void*, wxcMalloc)( int size )
-{
-  return malloc(size);
-}
-
-EWXWEXPORT(void*, wxcMallocInts)( int count )
-{
-  return malloc(count * sizeof(int));
-}
-
-EWXWEXPORT(void, wxcFree)( void* p )
-{
-  if (p) { free(p); }
-}
-
-
-EWXWEXPORT(int, wxcPeekByte)( unsigned char* buffer, int index )
-{
-  return buffer[index];
-}
-
-EWXWEXPORT(void, wxcPokeByte)( unsigned char* buffer, int index, int i )
-{
-  buffer[index] = i;
-}
-
-EWXWEXPORT(int, wxcPeekInt)( int* buffer, int index )
-{
-  return buffer[index];
-}
-
-EWXWEXPORT(void, wxcPokeInt)( int* buffer, int index, int i )
-{
-  buffer[index] = i;
-}
-
-
-EWXWEXPORT(void, wxcPokeBytes)( unsigned char* buffer, int index, int count, int i )
-{
-  memset( &buffer[index], i, count );
-}
-
-EWXWEXPORT(void, wxcPokeInts)( int* buffer, int index, int count, int i )
-{
-  if (i >= 0 && i <= 255) {
-    memset( &buffer[index], i, count*sizeof(int) );
+  if (r==g && g==b) {
+    for( i=0; i < count; i++ ) {
+      buffer[i] = r;
+    }
   }
   else {
-    int n;
-    for (n = 0; n < count; n++) {
-      buffer[index+n] = i;
+    for( i=0; i < count; i += 3) {
+      buffer[i]   = r;
+      buffer[i+1] = g;
+      buffer[i+2] = b;
     }
   }
 }

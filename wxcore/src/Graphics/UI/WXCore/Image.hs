@@ -35,18 +35,9 @@ module Graphics.UI.WXCore.Image
     , PixelBuffer
     , pixelBufferCreate
     , pixelBufferDelete
-    , pixelBufferInitGrey
+    , pixelBufferInit
     , pixelBufferSetPixel
     , pixelBufferGetPixel    
-
-    -- ** Z-buffer
-    , ZBuffer
-    , zbufferCreate
-    , zbufferDelete
-    , zbufferInit
-    , zbufferUpdate
-    , pixelBufferSetZPixel
-    
     ) where
 
 import Char( toLower )
@@ -185,40 +176,33 @@ imageTypeFromExtension ext
 -- | An abstract pixel buffer (= array of RGB values)
 data PixelBuffer   = PixelBuffer Bool Size (Ptr Char)
 
-bufferLength :: Size -> Int
-bufferLength size
-  = sizeW size * sizeH size * 3
-
 -- | Create a pixel buffer. (To be deleted with 'pixelBufferDelete').
 pixelBufferCreate   :: Size -> IO PixelBuffer
 pixelBufferCreate size
-  = do buffer <- wxcMalloc (bufferLength size)
+  = do buffer <- wxcMalloc (sizeW size * sizeH size * 3)
        return (PixelBuffer True size (ptrCast buffer))
 
 -- | Delete a pixel buffer.
 pixelBufferDelete  :: PixelBuffer -> IO ()
 pixelBufferDelete (PixelBuffer owned size buffer)
-  = when (owned && not (ptrIsNull buffer)) (cFree buffer)
+  = when (owned && not (ptrIsNull buffer)) (wxcFree buffer)
 
 -- | Initialize the pixel buffer with a grey color. The second argument
 -- specifies the /greyness/ as a number between 0.0 (black) and 1.0 (white).
-pixelBufferInitGrey :: PixelBuffer -> Float -> IO ()
-pixelBufferInitGrey (PixelBuffer owned size buffer) greyness
-  = wxcPokeBytes buffer 0 (mod (round (greyness * 255.0)) 256) (bufferLength size)
+pixelBufferInit :: PixelBuffer -> Color -> IO ()
+pixelBufferInit (PixelBuffer owned size buffer) color
+  = wxcInitPixelsRGB buffer size (intFromColor color)
 
 -- | Set the color of a pixel.
 pixelBufferSetPixel :: PixelBuffer -> Point -> Color -> IO ()
-pixelBufferSetPixel (PixelBuffer owned size buffer) point (Color r g b)
-  = wxcSetPixel buffer (sizeW size) point r g b
+pixelBufferSetPixel (PixelBuffer owned size buffer) point color
+  = wxcSetPixelRGB buffer (sizeW size) point (intFromColor color)
 
 -- | Get the color of a pixel
 pixelBufferGetPixel :: PixelBuffer -> Point -> IO Color
 pixelBufferGetPixel (PixelBuffer owned size buffer) point
   = do rgb <- wxcGetPixelRGB buffer (sizeW size) point
-       let b = mod rgb 256
-           g = mod (div rgb 256) 256
-           r = mod (div rgb (256*256)) 256
-       return (colorRGB r g b)
+       return (colorFromInt rgb)
   
 -- | Create an image from a pixel buffer.
 imageCreateFromPixelBuffer :: PixelBuffer -> IO (Image ())
@@ -232,38 +216,3 @@ imageGetPixelBuffer image
        w   <- imageGetWidth image
        h   <- imageGetHeight image
        return (PixelBuffer False (sz w h) (ptrCast ptr))
-
-
--- | Abstract representation of an 'Int' based Z-buffer (i.e. depth of a pixel).
-data ZBuffer      = ZBuffer Size (Ptr Int)
-
--- | Create a 'ZBuffer' of a certain size.
-zbufferCreate :: Size -> IO ZBuffer
-zbufferCreate size
-  = do buffer <- wxcMallocInts (sizeW size * sizeH size)
-       return (ZBuffer size (ptrCast buffer))
-
--- | Delete a 'ZBuffer'.
-zbufferDelete :: ZBuffer -> IO ()
-zbufferDelete (ZBuffer size buffer)
-  = when (not (ptrIsNull buffer)) (wxcFree buffer)
-
--- | Initialize a 'ZBuffer' with a certain depth.
-zbufferInit :: ZBuffer -> Int -> IO ()
-zbufferInit (ZBuffer size buffer) i
-  = wxcPokeInts buffer 0 (sizeW size * sizeH size) i
-
--- | Update a z-value. Returns 'True' when the new z-value is /less/ than
--- the value in the Z-buffer. The Z-buffer is updated with the new z value
--- when this is the case.
-zbufferUpdate :: ZBuffer -> Point -> Int -> IO Bool
-zbufferUpdate (ZBuffer size buffer) point z
-  = wxcUpdateZValue buffer (sizeW size) point z
-
--- | Set a pixel in a 'PixelBuffer' based on the depth in a 'ZBuffer'. The
--- pixel is only drawn when the depth is /less/ than the current z-value of the
--- pixel. The 'ZBuffer' is updated when the pixel is drawn. This function basically
--- combines 'zbufferUpdate' with 'pixelBufferSetPixel'.
-pixelBufferSetZPixel :: PixelBuffer -> ZBuffer -> Point -> Color -> Int -> IO ()
-pixelBufferSetZPixel (PixelBuffer owned size buffer) (ZBuffer _ zbuffer) point (Color r g b) z
-  = wxcSetZPixel buffer zbuffer (sizeW size) point z r g b 
