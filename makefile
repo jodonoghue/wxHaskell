@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.5 2003/07/15 22:10:36 dleijen Exp $
+# $Id: makefile,v 1.6 2003/07/15 22:57:03 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -13,6 +13,8 @@
 #       wx-clean
 #       wxh-clean
 #       wxc-clean
+#	doc-clean
+#	dist-clean
 # make realclean - remove all generated files (including documentation)
 # make dist	 - create distribution files
 #       srcdist
@@ -190,6 +192,7 @@ make-his =$(patsubst %,$(1)/%.hi,$(2))
 
 # usage: $(call run-silent,<command>)
 run-silent	=$(1) > /dev/null 2> /dev/null
+run-with-echo   =echo "$(1)"; $(1)
 
 # usage: $(call relative-to,<root-dir>,<relative files>)
 relative-to	=$(patsubst $(1)/%,%,$(2))
@@ -205,6 +208,50 @@ dirs-of-files   =$(sort $(foreach file,$(1),$(dir $(file))))
 ensure-dir	=if test -d "$(1)" -o "$(1)" = "./"; then :; else $(MKDIR) $(1); fi
 ensure-dirs-of-files=$(foreach dir,$(call dirs-of-files,$(1)),$(call ensure-dir,$(dir));)
 
+# full-remove-dir
+# safe-remove-dir
+safe-remove-dir	=if test -d $(1); then $(call run-with-echo,$(RMDIR) $(1)); fi
+safe-remove-dir-contents = if test -d $(1); then $(call run-with-echo,$(RM) -r $(1)/*); fi
+full-remove-dir	  =$(call safe-remove-dir-contents,$(1)); $(call safe-remove-dir,$(1))
+
+# safe-move-file(<source>,<destination (directory)>)
+# safe-remove-file(<file>)
+safe-move-file	   =if test -f $(1); then $(call run-with-echo,$(MV) $(1) $(2)); fi
+safe-remove-file   =if test -f $(1); then $(call run-with-echo,$(RM) $(1)); fi
+safe-remove-files  =$(foreach file,$(1),$(call safe-remove-file,$(file));)
+
+
+
+
+# silent-move-file
+silent-move-file   =if test -f $(1); then $(MV) $(1) $(2); fi
+silent-remove-file =if test -f $(1); then $(RM) $(1); fi
+
+# make-c-obj(<output .o>,<input .c>,<compile flags>)
+make-c-obj	=$(call run-with-echo,$(CXX) -c $(2) -o $(1) $(3))
+
+# compile-c(<output .o>,<input .c>,<compile flags>)
+compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)); \
+		 $(silent-move-file,$(notdir $(basename $(1))).d,$(dir $(1)))
+
+# silent-move-stubs(<output .o>,<input .c>)
+silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))); \
+		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
+
+# make-hs-obj(<output .o>,<input .hs>,<compile flags>)
+make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o$(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
+
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>)
+make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d; \
+		 sed -i -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d; \
+		 $(call silent-remove-file,$(basename $(1)).d.bak)
+
+# compile-hs(<output .o>,<input .hs>,<compile flags>)
+compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)); \
+		 $(call silent-move-stubs,$(1),$(2)); \
+		 $(call make-hs-deps,$(1),$(2),$(3))
+
+
 # install files, keeping directory structure intact (that is why we use 'foreach').
 # we circumvent a 'ld' bug on the mac by also re-indexing archives on installation
 # usage: $(call install-files,<local dir>,<install dir>,<files>)
@@ -215,9 +262,9 @@ install-dir     =echo "install directory: $(1)"; $(INSTALLDIR) $(1);
 install-files   =$(foreach dir,$(call dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))),$(call install-dir,$(dir))) \
 	         $(foreach file,$(3),$(call install-file,$(file),$(call relative-fromto,$(1),$(2),$(file))))
 
-uninstall-file  =if test -e "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
+uninstall-file  =if test -f "$(1)"; then echo "uninstall: $(1)"; $(RM) $(1); fi;
 uninstall-dir   =if test -d "$(2)" -a "$(2)" != "./"; then echo "uninstall directory: $(1)/$(2)"; $(call run-silent,$(RMDIR) -p $(2)); fi;
-uninstall-filesx=$(foreach file,$(2),$(call uninstall-file,$(file))) \
+uninstall-filesx=$(foreach file,$(2),$(call safe-remove-file,$(file))) \
 		 $(CD) $(1); \
 		 $(foreach dir,$(call dirs-of-files,$(call relative-to,$(1),$(2))),$(call uninstall-dir,$(1),$(dir)))
 uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$(3)))
@@ -249,8 +296,7 @@ uninstall:	wx-uninstall wxh-uninstall wxc-uninstall
 clean:		wxc-clean wxd-clean wxh-clean wx-clean 
 
 realclean: wxhrealclean 
-	-$(RM) -r $(OUTDIR)/*
-	-$(RMDIR) $(OUTDIR)
+	-@$(call full-remove-dir,$(OUTDIR)) 
 
 #--------------------------------------------------------------------------
 # Distribution
@@ -285,7 +331,7 @@ dist-dirs:
 	@$(call ensure-dirs-of-files,$(DISTS))
 
 dist-clean:
-	-$(RM) $(DISTS)
+	-@$(call safe-remove-files,$(DISTS))
 
 # source distribution
 srcdist: dist-dirs wxc-dist wxd-dist wxh-dist wx-dist
@@ -333,7 +379,7 @@ wx-dirs:
 	@$(call ensure-dirs-of-files,$(WX-OBJS))
 
 wx-clean:
-	-$(RM) -r $(WX-OUTDIR)/*
+	-@$(call full-remove-dir,$(WX-OUTDIR))
 
 # bindist
 wx-bindist: wx
@@ -360,35 +406,9 @@ $(WX-OBJ): $(WX-OBJS)
 $(WX-LIB): $(WX-OBJS)
 	  $(AR) -sr  $@ $^
 
-run-and-echo    =echo "$(1)"; $(1)
-
-safe-move-file	=if test -f $(1); then $(MV) $(1) $(2); fi
-safe-remove-file=if test -f $(1); then $(RM) $(1); fi
-
-safe-move-stubs =$(call safe-move-file,$(basename $(2))_stub.h,$(dir $(1))); \
-		 $(call safe-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
-
-make-hs-obj     =$(call run-and-echo,$(HC) -c $(2) -o$(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
-
-make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d; \
-		 sed -i -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d; \
-		 $(call safe-remove-file,$(basename $(1)).d.bak)
-
-compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)); \
-		 $(call safe-move-stubs,$(1),$(2)); \
-		 $(call make-hs-deps,$(1),$(2),$(3))
-
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
-	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WX-IMPORTSDIR)/$(*D) $(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR)
 	@$(call compile-hs,$@,$<,$(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR))
-	@# move stub files
-	@#$(call safe-move-stubs,$@,$<)
-	@# create dependency file
-	@#$(call make-hs-deps,$@,$<,$(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXH-IMPORTSDIR))
-	@#$(HC) $< $(WX-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WX-IMPORTSDIR) -i$(WXH-IMPORTSDIR)
-	@#sed -e 's|$(subst .hs,,$<)\.o|$(WX-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WX-IMPORTSDIR)/$*.d
-	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WX-DEPS)
@@ -413,7 +433,8 @@ wxd-dirs:
 	@$(call ensure-dirs-of-files,$(WXD-OBJS))
 
 wxd-clean:
-	-$(RM) -r $(WXD-OUTDIR)/*
+	-@$(call full-remove-dir,$(WXD-OUTDIR))
+
 
 # source dist
 wxd-dist: $(WXD-HS)
@@ -426,13 +447,6 @@ $(WXD-EXE): $(WXD-OBJS)
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
 	@$(compile-hs,$@,$<,$(HCFLAGS) -i$(WXD-OUTDIR))
-	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXD-OUTDIR)/$(*D) $(HCFLAGS) -i$(WXD-OUTDIR)
-	@# move stub files
-	@#-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXD-OUTDIR)/$(*D); fi
-	@# create dependency file
-	@#$(HC) $< $(HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXD-OUTDIR)
-	@#sed -e 's|$(subst .hs,,$<)\.o|$(WXD-OUTDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXD-OUTDIR)/$*.d
-	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)
@@ -473,10 +487,10 @@ wxh-dirs:
 	@$(call ensure-dirs-of-files,$(WXH-OBJS))
 
 wxh-clean:
-	-$(RM) -r $(WXH-OUTDIR)/*
+	-@$(call full-remove-dir,$(WXH-OUTDIR))
 
 wxhrealclean: wxh-clean
-	-$(RM) $(WXH-GEN-HS)
+	-@$(call safe-remove-files,$(WXH-GEN-HS))
 
 # bindist
 wxh-bindist: wxh
@@ -523,15 +537,6 @@ $(WXH-CORE-LIB): $(WXH-CORE-OBJS)
 # create an object file from source files.
 $(WXH-CORE-OBJS) $(WXH-OBJS): $(WXH-IMPORTSDIR)/%.o: $(WXH-SRCDIR)/%.hs
 	@$(call compile-hs,$@,$<,$(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR) -Iwxc/include)
-	@#$(HC) -c $< -o $@ -ohi $(subst .o,.hi,$@) -odir $(WXH-IMPORTSDIR)/$(*D) $(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR) -Iwxc/include
-	@# move stub files
-	@#-if test -f $(<D)/$(*F)_stub.h; then $(MV) $(<D)/$(*F)_stub.* $(WXH-IMPORTSDIR)/$(*D); fi
-	@#$(call safe-move-stubs,$@,$<)
-	@# create dependency file
-	@#$(call make-hs-deps,$@,$<,$(WXH-HCFLAGS) -i$(WXH-IMPORTSDIR))
-	@#$(HC) $< $(WXH-HCFLAGS) -M -optdep-f -optdep$(*F).d -i$(WXH-IMPORTSDIR)
-	@#sed -e 's|$(subst .hs,,$<)\.o|$(WXH-IMPORTSDIR)/$*\.o|' -e 's|\.hi|\.o|g' $(*F).d > $(WXH-IMPORTSDIR)/$*.d
-	@#$(RM) $(*F).d
 
 # automatically include all dependency information.
 -include $(WXH-DEPS)
@@ -569,7 +574,7 @@ wxc-dirs:
 	@$(call ensure-dirs-of-files,$(WXC-OBJS))
 
 wxc-clean:
-	-$(RM) -r $(WXC-OUTDIR)/*
+	-@$(call full-remove-dir,$(WXC-OUTDIR))
 
 wxc-compress: wxc
 	@$(call run-compress,$(WXC-LIB))
@@ -625,11 +630,9 @@ $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
 	$(CXX) -dynamiclib -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
 	$(RM) -f $(WXC-OUTDIR)/master.o
 	
-
 # create an object file from source files
 $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
-	$(CXX) -c $< -o $@ $(WXC-CXXFLAGS) -MD
-	@-if test -f $(*F).d; then mv $(*F).d $(WXC-OUTDIR)/$(*D); fi
+	@$(call compile-c,$@,$<,$(WXC-CXXFLAGS))
 
 # automatically include dependencies
 -include $(WXC-DEPS)
@@ -652,6 +655,9 @@ doc: doc-dirs $(DOCFILE)
 
 doc-dirs:
 	@$(call ensure-dir,$(DOC-OUTDIR))
+
+doc-clean:
+	-@$(call full-remove-dir,$(DOC-OUTDIR))
 
 # copy documentation to the wxhaskell website
 webdoc: doc
