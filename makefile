@@ -2,7 +2,7 @@
 #  Copyright 2003, Daan Leijen.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.6 2003/07/15 22:57:03 dleijen Exp $
+# $Id: makefile,v 1.7 2003/07/15 23:01:36 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -239,7 +239,7 @@ silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1)));
 		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
 
 # make-hs-obj(<output .o>,<input .hs>,<compile flags>)
-make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o$(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
+make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
 
 # make-hs-deps(<output .o>,<input .hs>,<compile flags>)
 make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d; \
