@@ -4,7 +4,7 @@
 #  See "license.txt" for more details.
 #-----------------------------------------------------------------------
 
-# $Id: makefile,v 1.19 2003/08/20 12:38:18 dleijen Exp $
+# $Id: makefile,v 1.20 2003/08/21 12:16:54 dleijen Exp $
 
 #--------------------------------------------------------------------------
 # make [all]	 - build the libraries (in "lib").
@@ -303,8 +303,9 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(1),$(2),$
 install-pkg=env installdir=$(1) $(HCPKG) -u -i $(2)
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
-# copy files
-cp-echo		=echo  "copy $(1) to $(2)" && $(CP) -d $(1) $(2)
+# copy files.
+# use -R switch to copy symbolic links literally instead of following the links.
+cp-echo		=echo  "copy $(1) to $(2)" && $(CP) -R $(1) $(2)
 cp-fromto	=$(call ensure-dirs-of-files,$(call relative-fromto,$(1),$(2),$(3))) && \
 		 $(foreach file,$(3),$(call cp-echo,$(file),$(dir $(call relative-fromto,$(1),$(2),$(file)))) && ) :
 cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
