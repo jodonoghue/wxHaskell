@@ -11,7 +11,7 @@
 #--------------------------------------------------------------------
 # Versioning
 #--------------------------------------------------------------------
-version="0.9"
+version="1.0"
 release="0"
 
 #--------------------------------------------------------------------
@@ -527,6 +527,7 @@ fi
 
 # save haskell compiler name (as $hc also gets flags)
 hcname="$hc"
+ghcold="no"
 
 # check ghc version
 hcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
@@ -538,7 +539,10 @@ if test "$hc" = "ghc"; then
 	echo " Ghc versions prior to 6.0 have garbage collector bugs that make wxHaskell"
 	echo " applications *crash* and may contain incompatible libraries."
 	echo " It is strongly advised to upgrade to a newer version."
-	echo "";;
+	echo ""
+	ghcold="yes";;
+    6.0* | 6.1* | 6.2*)
+	ghcold="yes";;
     6.*) ;;
     7.*) ;;
     8.*) ;;
@@ -739,6 +743,7 @@ HCVERSION=$hcversion
 HCNAME=$hcname
 HCFLAGS=
 HCPKG=$hcpkg
+GHCOLD=$ghcold
 
 # Packages
 PKG-PARSEC=$pkgparsec
@@ -802,6 +807,38 @@ binversion="${wxtoolkit}${wxversion}-${version}"
 
 #echo " package descriptions"
 echo " config/wxcore.pkg"
+if test "$ghcold" != "yes"; then
+cat > config/wxcore.pkg << EOF
+name:wxcore
+version:$version
+homepage:http://wxhaskell.sf.net
+author:Daan Leijen
+exposed:True
+exposed-modules: Graphics.UI.WXCore
+import-dirs:${libdir}/imports
+library-dirs:${libdir}
+hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
+extra-libraries:${wxclibname}-${binversion}
+depends: base,lang,haskell98,concurrent
+extra-ld-opts:$extraldopts
+EOF
+
+echo " config/wx.pkg"
+cat > config/wx.pkg << EOF
+name:wx
+version:$version
+homepage:http://wxhaskell.sf.net
+author:Daan Leijen
+exposed:True
+exposed-modules: Graphics.UI.WX
+import-dirs:${libdir}/imports
+library-dirs:${libdir}
+hs-libraries:wx
+depends:wxcore-${version}
+EOF
+
+else
+# pre ghc 6.4
 cat > config/wxcore.pkg << EOF
 Package
   { name="wxcore"
@@ -824,13 +861,15 @@ Package
   , package_deps=["wxcore"]
   }
 EOF
+fi
 
+
+# set version in msc project file
 updateversion () {
   sed -e "s|wxc-msw[\\.0-9]\+-[\\.0-9]\+\\.|wxc-${binversion}.|g" -e "s|wxcd-msw[\\.0-9]\+-[\\.0-9]\+\\.|wxcd-${binversion}.|g" -e "s|\$|\\r|g" $1 > $1.out
   mv -f $1.out $1
 }
 
-# set version in msc project file
 if test "$withmsc" = "yes"; then
   echo " update version number in visual c++ project file"
   for dsp in wxc/*.dsp

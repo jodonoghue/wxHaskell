@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 wxzlib.lib wxregex.lib wxpng.lib wxjpeg.lib wxtiff.lib wxexpat.lib wxbase25.lib wxbase25_net.lib wxbase25_odbc.lib wxbase25_xml.lib wxmsw25_adv.lib wxmsw25_core.lib wxmsw25_dbgrid.lib wxmsw25_gl.lib wxmsw25_html.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\out\wxc\wxc-msw2.4.2-0.8.3.dll" /libpath:"..\..\wxWindows-2.5.1\lib\vc_lib"
+# ADD LINK32 wxzlib.lib wxregex.lib wxpng.lib wxjpeg.lib wxtiff.lib wxexpat.lib wxbase25.lib wxbase25_net.lib wxbase25_odbc.lib wxbase25_xml.lib wxmsw25_adv.lib wxmsw25_core.lib wxmsw25_dbgrid.lib wxmsw25_gl.lib wxmsw25_html.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\out\wxc\wxc-msw2.4.2-1.0.dll" /libpath:"..\..\wxWindows-2.5.1\lib\vc_lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxc-msw2.4.2-0.8.3.lib	move libwxc-msw2.4.2-0.8.3.a ..\out\wxc	move wxc-msw2.4.2-0.8.3.def ..\out\wxc	echo Done.
+PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxc-msw2.4.2-1.0.lib	move libwxc-msw2.4.2-1.0.a ..\out\wxc	move wxc-msw2.4.2-1.0.def ..\out\wxc	echo Done.
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "wxc - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wxmsw25d_core.lib wxmsw25d_adv.lib wxmsw25d_dbgrid.lib wxmsw25d_gl.lib wxmsw25d_html.lib wxbase25d.lib wxbase25d_net.lib wxbase25d_odbc.lib wxbase25d_xml.lib wxzlibd.lib wxregexd.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd-msw2.4.2-0.8.3.dll" /pdbtype:sept /libpath:"..\..\wxWindows-2.5.1\lib\vc_lib"
+# ADD LINK32 wxmsw25d_core.lib wxmsw25d_adv.lib wxmsw25d_dbgrid.lib wxmsw25d_gl.lib wxmsw25d_html.lib wxbase25d.lib wxbase25d_net.lib wxbase25d_odbc.lib wxbase25d_xml.lib wxzlibd.lib wxregexd.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd-msw2.4.2-1.0.dll" /pdbtype:sept /libpath:"..\..\wxWindows-2.5.1\lib\vc_lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxcd-msw2.4.2-0.8.3.lib	move libwxcd-msw2.4.2-0.8.3.a ..\out\wxc	move wxcd-msw2.4.2-0.8.3.def ..\out\wxc	echo Done.
+PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxcd-msw2.4.2-1.0.lib	move libwxcd-msw2.4.2-1.0.a ..\out\wxc	move wxcd-msw2.4.2-1.0.def ..\out\wxc	echo Done.
 # End Special Build Tool
 
 !ENDIF 

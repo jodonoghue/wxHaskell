@@ -389,75 +389,6 @@ macdist: docdist bindist
 	echo "created: $(WXHASKELLDMG)"
 
 
-
-#--------------------------------------------------------------------------
-# WX: the medium level abstraction on wxcore
-#--------------------------------------------------------------------------
-WX		=wx
-WX-SRCDIR	=$(WX)/src
-WX-PKG		=config/$(WX).pkg
-WX-OUTDIR	=$(OUTDIR)/$(WX)
-WX-IMPORTSDIR	=$(WX-OUTDIR)/imports
-WX-OBJ		=$(WX-OUTDIR)/$(WX).o
-WX-LIB		=$(WX-OUTDIR)/lib$(WX).a
-WX-LIBS		=$(WX-LIB) $(WX-OBJ)
-
-WX-OBJS		=$(call make-objs, $(WX-IMPORTSDIR), $(WX-SOURCES))
-WX-DEPS		=$(call make-deps, $(WX-IMPORTSDIR), $(WX-SOURCES))
-WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
-WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
-WX-DOCS		=$(WX-HS)
-WX-BINS		=$(WX-HIS) $(WX-LIBS)
-WX-HCFLAGS	=$(HCFLAGS) -package-name $(WX)
-
-# build main library
-wx: wxcore wx-dirs $(WX-LIBS)
-
-wx-dirs:
-	@$(call ensure-dirs-of-files,$(WX-OBJS))
-
-wx-clean:
-	-@$(call full-remove-dir,$(WX-OUTDIR))
-
-# source dist
-wx-dist: $(WX-HS)
-	@$(call cp-srcdist, $^)
-
-# bindist
-wx-bindist: wx
-	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
-
-# install
-wx-register:
-	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
-
-wx-install-files: wx wxcore-install-files
-	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
-	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
-
-wx-unregister:
-	-@$(call uninstall-pkg  ,$(WX))
-
-wx-uninstall-files: 
-	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
-	-@$(call uninstall-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
-
-# build ghci object files
-$(WX-OBJ): $(WX-OBJS)
-	$(call combine-objs,$@,$^)
-
-# build a library
-$(WX-LIB): $(WX-OBJS)
-	$(call make-archive,$@,$^)
-
-# create an object file from source files.
-$(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(WX-HCFLAGS) -i$(WX-IMPORTSDIR):$(WXCORE-IMPORTSDIR))
-
-# automatically include all dependency information.
--include $(WX-DEPS)
-
-
 #--------------------------------------------------------------------------
 # wxdirect: generates haskell marshall modules
 #--------------------------------------------------------------------------
@@ -490,7 +421,7 @@ $(WXD-EXE): $(WXD-OBJS)
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) -i$(WXD-OUTDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)
@@ -502,8 +433,10 @@ WXCORE		=wxcore
 WXCORE-PKG	=config/$(WXCORE).pkg
 WXCORE-SRCDIR	=$(WXCORE)/src
 WXCORE-HPATH	=Graphics/UI/WXCore
-WXCORE-OUTDIR	=$(OUTDIR)/$(WXCORE)
+WXCORE-OUTDIR	=$(OUTDIR)/wx
 WXCORE-IMPORTSDIR=$(WXCORE-OUTDIR)/imports
+
+WXCORE-HSDIRS	=-i$(WXCORE-SRCDIR) -i$(WXD-SRCDIR)
 
 WXCORE-OBJ	=$(WXCORE-OUTDIR)/$(WXCORE).o
 WXCORE-LIB	=$(WXCORE-OUTDIR)/lib$(WXCORE).a
@@ -617,10 +550,84 @@ $(WXCORE-CORE-C-LIB): $(WXCORE-CORE-C-OBJS)
 
 # create an object file from source files.
 $(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS) $(WXCORE-OBJS): $(WXCORE-IMPORTSDIR)/%.o: $(WXCORE-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(WXCORE-HCFLAGS) -i$(WXCORE-IMPORTSDIR) -Iwxc/include)
+	@$(call compile-hs,$@,$<,$(WXCORE-HCFLAGS) -Iwxc/include,$(WXCORE-IMPORTSDIR),$(WXCORE-HSDIRS) )
+
+$(WXCORE-STUB-OBJS): $(WXCORE-IMPORTSDIR)/%_stub.o: $(WXCORE-SRCDIR)/%.hs
+	$(HC) -c $(basename $@).c
 
 # automatically include all dependency information.
 -include $(WXCORE-DEPS)
+
+
+#--------------------------------------------------------------------------
+# WX: the medium level abstraction on wxcore
+#--------------------------------------------------------------------------
+WX		=wx
+WX-SRCDIR	=$(WX)/src
+WX-PKG		=config/$(WX).pkg
+WX-OUTDIR	=$(OUTDIR)/$(WX)
+WX-IMPORTSDIR	=$(WX-OUTDIR)/imports
+WX-OBJ		=$(WX-OUTDIR)/$(WX).o
+WX-LIB		=$(WX-OUTDIR)/lib$(WX).a
+WX-LIBS		=$(WX-LIB) $(WX-OBJ)
+
+WX-OBJS		=$(call make-objs, $(WX-IMPORTSDIR), $(WX-SOURCES))
+WX-DEPS		=$(call make-deps, $(WX-IMPORTSDIR), $(WX-SOURCES))
+WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
+WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
+WX-DOCS		=$(WX-HS)
+WX-BINS		=$(WX-HIS) $(WX-LIBS)
+WX-HCFLAGS	=$(HCFLAGS) -package-name $(WX)
+
+WX-HSDIRS	=-i$(WX-SRCDIR) $(WXCORE-HSDIRS) 
+
+# build main library
+wx: wxcore wx-dirs $(WX-LIBS)
+
+wx-dirs:
+	@$(call ensure-dirs-of-files,$(WX-OBJS))
+
+wx-clean:
+	-@$(call full-remove-dir,$(WX-OUTDIR))
+
+# source dist
+wx-dist: $(WX-HS)
+	@$(call cp-srcdist, $^)
+
+# bindist
+wx-bindist: wx
+	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
+
+# install
+wx-register:
+	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
+
+wx-install-files: wx wxcore-install-files
+	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
+
+wx-unregister:
+	-@$(call uninstall-pkg  ,$(WX))
+
+wx-uninstall-files: 
+	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+	-@$(call uninstall-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
+
+# build ghci object files
+$(WX-OBJ): $(WX-OBJS)
+	$(call combine-objs,$@,$^)
+
+# build a library
+$(WX-LIB): $(WX-OBJS)
+	$(call make-archive,$@,$^)
+
+# create an object file from source files.
+$(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
+	@$(call compile-hs,$@,$<,$(WX-HCFLAGS) -i$(WXCORE-IMPORTSDIR),$(WX-IMPORTSDIR),$(WX-HSDIRS))
+
+# automatically include all dependency information.
+-include $(WX-DEPS)
+
 
 
 #--------------------------------------------------------------------------

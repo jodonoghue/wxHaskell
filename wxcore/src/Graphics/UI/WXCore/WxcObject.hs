@@ -103,6 +103,13 @@ instance Eq (Object a) where
       withObjectPtr obj2 $ \p2 ->
       return (p1 == p2)
 
+instance Ord (Object a) where
+  compare obj1 obj2
+    = unsafePerformIO $
+      withObjectPtr obj1 $ \p1 ->
+      withObjectPtr obj2 $ \p2 ->
+      return (compare p1 p2)
+
 instance Show (Object a) where
   show obj
     = unsafePerformIO $

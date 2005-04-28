@@ -111,23 +111,59 @@ compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
 # Haskell compilation
 #--------------------------------------------------------------------------
 
+
+ifeq ($(GHCOLD),yes)
+# pre GHC 6.4
 # silent-move-stubs(<output .o>,<input .c>)
 silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
 		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
 
-# make-hs-obj(<output .o>,<input .hs>,<compile flags>)
-make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
+# make-hs-obj(<output .o>,<input .hs>,<compile flags>,<top output directory>)
+make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -i$(4) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
 
-# make-hs-deps(<output .o>,<input .hs>,<compile flags>)
-make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d.in && \
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>)
+make-hs-deps	=$(HC) $(2) $(3) -i$(4) -M -optdep-f -optdep$(basename $(1)).d.in && \
 		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d && \
 		 $(call silent-remove-file,$(basename $(1)).d.in)
 
-# compile-hs(<output .o>,<input .hs>,<compile flags>)
-compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)) && \
+# compile-hs(<output .o>,<input .hs>,<compile flags>,<top output directory>)
+compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
 		 $(call silent-move-stubs,$(1),$(2)) && \
-		 $(call make-hs-deps,$(1),$(2),$(3))
+		 $(call make-hs-deps,$(1),$(2),$(3),$(4))
 
+# make-hs-obj(<output .o>,<input .hs>,<compile flags>)
+#make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
+
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>)
+#make-hs-deps	=$(HC) $(2) $(3) -M -optdep-f -optdep$(basename $(1)).d.in && \
+#		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d && \
+#		 $(call silent-remove-file,$(basename $(1)).d.in)
+
+# compile-hs(<output .o>,<input .hs>,<compile flags>)
+#compile-hs      =$(call make-hs-obj,$(1),$(2),$(3)) && \
+#		 $(call silent-move-stubs,$(1),$(2)) && \
+#		 $(call make-hs-deps,$(1),$(2),$(3))
+
+else
+# GHC 6.4+ and others
+# make-hs-obj(<output .o>,<input .hs>,<compile flags>,<top output directory>)
+# silent-move-stubs(<output .o>,<input .c>)
+silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
+		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1))) 
+
+make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -i$(4) -odir $(4) -hidir $(4) $(3))
+
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
+make-hs-deps	=$(call run-with-echo,$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -optdep-f -optdep$(basename $(1)).d.in) && \
+		 sed -e 's|\.hi|\.o|g' $(basename $(1)).d.in | grep '^$(1)' > $(basename $(1)).d 
+
+# compile-hs(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
+compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
+		 $(call silent-move-stubs,$(1),$(2)) && \
+		 $(call make-hs-deps,$(1),$(2),$(3),$(4),$(5))
+
+
+endif
 
 #--------------------------------------------------------------------------
 # Linking
