@@ -15,7 +15,11 @@ EWXWEXPORT(void, wxIcon_Delete)(void* _obj)
 
 EWXWEXPORT(void*, wxIcon_FromRaw)(void* data, int width, int height)
 {
-	return (void*) new wxIcon((const char*) data, width, height);
+#ifdef __WIN32__
+	return (void*) new wxIcon((const char*) data, wxBITMAP_TYPE_ICO, width, height);
+#else
+	return (void*) new wxIcon((const char*) data, wxBITMAP_TYPE_ANY, width, height);
+#endif
 }
 
 EWXWEXPORT(void*, wxIcon_FromXPM)(void* data)
@@ -25,15 +29,15 @@ EWXWEXPORT(void*, wxIcon_FromXPM)(void* data)
 
 EWXWEXPORT(void*, wxIcon_CreateLoad) (void* name, long type, int width, int height)
 {
-	return (void*) new wxIcon((char*)name, type, width, height);
+	return (void*) new wxIcon((char*)name, (wxBitmapType)type, width, height);
 }
 
 EWXWEXPORT(int, wxIcon_Load)(void* _obj, void* name, long type, int width, int height)
 {
 #ifdef __WIN32__
-	return (int)((wxIcon*)_obj)->LoadFile((char*)name, type, width, height);
+	return (int)((wxIcon*)_obj)->LoadFile((char*)name, (wxBitmapType)type, width, height);
 #else
-	return (int)((wxIcon*)_obj)->LoadFile((char*)name, type);
+	return (int)((wxIcon*)_obj)->LoadFile((char*)name, (wxBitmapType)type);
 #endif
 }
 

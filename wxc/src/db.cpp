@@ -1,5 +1,14 @@
 #include "wrapper.h"
-#include "wx/db.h"
+
+#if wxUSE_ODBC
+# include "wx/db.h"
+#else
+class wxDb;
+class wxDbColInf; 
+class wxDbInf;
+class wxDbTableInf;
+typedef void* HENV;
+#endif
 
 /* testing */
 // #define wxUSE_ODBC 0
@@ -178,7 +187,7 @@ EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, char* dsn, int dsnLen, char* des
 #ifdef wxUSE_ODBC
   return wxDbGetDataSource( (HENV)(henv), dsn, dsnLen, description, descLen, direction);
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -808,7 +817,7 @@ EWXWEXPORT(int,wxDb_TranslateSqlState)(wxDb* db, wxString* sqlState)
 #ifdef wxUSE_ODBC
   return db->TranslateSqlState(*sqlState);
 #else
-  return NULL;
+  return 0;
 #endif
 }
 

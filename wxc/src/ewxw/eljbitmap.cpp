@@ -48,12 +48,20 @@ EWXWEXPORT(void, wxBitmap_GetSubBitmap)(void* _obj, int x, int y, int w, int h, 
 	
 EWXWEXPORT(int, wxBitmap_LoadFile)(void* _obj, void* name, int type)
 {
+#if wxVERSION_NUMBER >= 2400
+	return (int)((wxBitmap*)_obj)->LoadFile((char*)name, (wxBitmapType)type);
+#else
 	return (int)((wxBitmap*)_obj)->LoadFile((char*)name, (long)type);
+#endif
 }
 	
 EWXWEXPORT(int, wxBitmap_SaveFile)(void* _obj, void* name, int type, void* cmap)
 {
+#if wxVERSION_NUMBER >= 2400
+	return (int)((wxBitmap*)_obj)->SaveFile((char*) name, (wxBitmapType)type, (wxPalette*) cmap);
+#else
 	return (int)((wxBitmap*)_obj)->SaveFile((char*) name, type, (wxPalette*) cmap);
+#endif
 }
 	
 EWXWEXPORT(void*, wxBitmap_GetMask)(void* _obj)

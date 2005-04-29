@@ -88,12 +88,20 @@ EWXWEXPORT(int, wxRadioBox_Number)(void* _obj)
 	
 EWXWEXPORT(int, wxRadioBox_GetNumberOfRowsOrCols)(void* _obj)
 {
+#if wxVERSION_NUMBER >= 2600
+	return ((wxRadioBox*)_obj)->GetCount();
+#else
 	return ((wxRadioBox*)_obj)->GetNumberOfRowsOrCols();
+#endif
 }
 	
 EWXWEXPORT(void, wxRadioBox_SetNumberOfRowsOrCols)(void* _obj, int n)
 {
+#if wxVERSION_NUMBER >= 2600
+	return;
+#else
 	((wxRadioBox*)_obj)->SetNumberOfRowsOrCols(n);
+#endif
 }
 
 }

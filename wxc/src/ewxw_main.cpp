@@ -1,6 +1,6 @@
 #include "wrapper.h"
 
-#ifdef wxUSE_ODBC
+#if wxUSE_ODBC
 #include "wx/db.h"
 #endif
 
