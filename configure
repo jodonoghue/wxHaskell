@@ -11,7 +11,7 @@
 #--------------------------------------------------------------------
 # Versioning
 #--------------------------------------------------------------------
-version="1.0"
+version="0.9.4"
 release="0"
 
 #--------------------------------------------------------------------
@@ -529,9 +529,16 @@ fi
 hcname="$hc"
 ghcold="no"
 
+if findprogram "basename"; then
+  hcbasename="`basename $hcname | sed -e 's|-[0-9].*||' -e 's|\..*||'`"
+else
+  hcbasename="`echo $hcname | sed -e 's|-[0-9].*||' -e 's|\..*||'`"
+fi
+
+
 # check ghc version
 hcversion="`$hc --version | sed -e 's|[A-Za-z \t,]*||'`"
-if test "$hc" = "ghc"; then
+if test "$hcbasename" = "ghc"; then
   case "$hcversion" in
     0* | 1* |  2* |  3* |  4* |  5.*)
 	echo "WARNING:"
@@ -569,6 +576,13 @@ fi
 
 # save name (hcpkg also gets flags)
 hcpkgname="$hcpkg"	
+
+if findprogram "basename"; then
+  hcpkgbasename="`basename $hcpkgname | sed -e 's|-[0-9].*||' -e 's|\..*||'`"
+else
+  hcpkgbasename="`echo $hcpkgname | sed -e 's|-[0-9].*||' -e 's|\..*||'`"
+fi
+
 
 # Add local package flags
 if test "$hcpkglocal"; then
@@ -741,6 +755,7 @@ TOOLKIT=$wxtoolkit
 HC=$hc
 HCVERSION=$hcversion
 HCNAME=$hcname
+HCBASENAME=$hcbasename
 HCFLAGS=
 HCPKG=$hcpkg
 GHCOLD=$ghcold
@@ -808,34 +823,74 @@ binversion="${wxtoolkit}${wxversion}-${version}"
 #echo " package descriptions"
 echo " config/wxcore.pkg"
 if test "$ghcold" != "yes"; then
-cat > config/wxcore.pkg << EOF
+# ghc 6.4+, the partial packages are only used for the windows installer
+cat > config/wxcore-partial.pkg << EOF
 name:wxcore
 version:$version
-homepage:http://wxhaskell.sf.net
+homepage:http://wxhaskell.sourceforge.net
 author:Daan Leijen
 exposed:True
-exposed-modules: Graphics.UI.WXCore
-import-dirs:${libdir}/imports
-library-dirs:${libdir}
+exposed-modules: Graphics.UI.WXCore,
+	Graphics.UI.WXCore.WxcClasses,
+	Graphics.UI.WXCore.WxcClassInfo,
+	Graphics.UI.WXCore.WxcDefs,
+	Graphics.UI.WXCore.IntMap,
+	Graphics.UI.WXCore.Types,
+	Graphics.UI.WXCore.Defines,
+	Graphics.UI.WXCore.Draw,
+	Graphics.UI.WXCore.Events,
+	Graphics.UI.WXCore.Frame,
+	Graphics.UI.WXCore.Layout,
+	Graphics.UI.WXCore.Process,
+	Graphics.UI.WXCore.Print,
+	Graphics.UI.WXCore.Dialogs,
+	Graphics.UI.WXCore.Image,
+	Graphics.UI.WXCore.Controls,
+	Graphics.UI.WXCore.Db,
+	Graphics.UI.WXCore.OpenGL,
+	Graphics.UI.WXCore.WxcObject,
+	Graphics.UI.WXCore.WxcClassTypes,
+	Graphics.UI.WXCore.WxcTypes,
+	Graphics.UI.WXCore.WxcClassesAL,
+	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
 depends: base,lang,haskell98,concurrent
 extra-ld-opts:$extraldopts
 EOF
+cp -f config/wxcore-partial.pkg config/wxcore.pkg
+echo "import-dirs:\${wxhlibdir}/imports" >> config/wxcore.pkg
+echo "library-dirs:\${wxhlibdir}"	 >> config/wxcore.pkg
+
 
 echo " config/wx.pkg"
-cat > config/wx.pkg << EOF
+cat > config/wx-partial.pkg << EOF
 name:wx
 version:$version
-homepage:http://wxhaskell.sf.net
+homepage:http://wxhaskell.sourceforge.net
 author:Daan Leijen
 exposed:True
-exposed-modules: Graphics.UI.WX
-import-dirs:${libdir}/imports
-library-dirs:${libdir}
+exposed-modules: Graphics.UI.WX,
+	Graphics.UI.WX.Types,
+	Graphics.UI.WX.Attributes,
+	Graphics.UI.WX.Layout,
+	Graphics.UI.WX.Classes,
+	Graphics.UI.WX.Variable,
+	Graphics.UI.WX.Events,
+	Graphics.UI.WX.Window,
+	Graphics.UI.WX.Frame,
+	Graphics.UI.WX.Media,
+	Graphics.UI.WX.Menu,
+	Graphics.UI.WX.Timer,
+	Graphics.UI.WX.Draw,
+	Graphics.UI.WX.Controls,
+	Graphics.UI.WX.Dialogs
 hs-libraries:wx
 depends:wxcore-${version}
 EOF
+cp -f config/wx-partial.pkg config/wx.pkg
+echo "import-dirs:\${wxhlibdir}/imports" >> config/wx.pkg
+echo "library-dirs:\${wxhlibdir}"	 >> config/wx.pkg
 
 else
 # pre ghc 6.4
@@ -884,12 +939,21 @@ fi
 # generate windows installer files.
 echo " config/wxhaskell-register.bat"
 echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-register-temp
-cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\$|\\r|g" > config/wxhaskell-register.bat
+if test "$ghcold" = "yes"; then
+  cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\${hcregister}|ghc-pkg -u -i|g" -e "s|\$|\\r|g" > config/wxhaskell-register.bat
+else
+  echo "@SET generate=yes" >> config/wxhaskell-register-temp
+  cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\${hcregister}|ghc-pkg update|g" -e "s|\$|\\r|g" > config/wxhaskell-register.bat
+fi
 rm -f config/wxhaskell-register-temp
 
 echo " config/wxhaskell-unregister.bat"
 echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-unregister-temp
-cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
+if test "$ghcold" = "yes"; then
+  cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\${hcunregister}|ghc-pkg -r|g" -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
+else
+  cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\${hcunregister}|ghc-pkg unregister|g" -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
+fi
 rm -f config/wxhaskell-unregister-temp
 
 echo " config/setcd"
@@ -915,11 +979,20 @@ EOF
 
 # generate macosx post-install files.
 echo " config/macosx-postinstall"
+if test "$ghcold" = "yes"; then
 cat > config/macosx-postinstall << EOF
 #!/bin/sh      
 env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
 env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
 EOF
+else
+cat > config/macosx-postinstall << EOF
+#!/bin/sh      
+cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
+cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
+EOF
+fi
+
 chmod a+x config/macosx-postinstall
 
 # generate macosx application builder script
@@ -935,8 +1008,7 @@ rm -f config/macosx-app-temp
 chmod a+x config/macosx-app
 
 # generate RPM spec file
-hcbasename="`echo $hcname | sed -e 's|-[0-9].*||'`"
-hcpkgbasename="`echo $hcpkgname | sed -e 's|-[0-9].*||'`"
+
 # to uppercase
 wxToolkit="`echo "$wxtoolkit" | sed -e 'y|abcdefghijklmnopqrstuvwxyz|ABCDEFGHIJKLMNOPQRSTUVWXYZ|'`"
 

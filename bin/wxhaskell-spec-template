@@ -63,13 +63,24 @@ mv %buildroot%{wxhlibdir}/%{libwxc} %buildroot%{_libdir}
 rm -rf $RPM_BUILD_ROOT
 
 %post %{wxhpackage}
-env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wxcore.pkg
-env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wx.pkg
+if %{hc-pkg}-%{version} list > /dev/null 2> /dev/null; then
+ wxhlibdir=%{wxhlibdir}
+ cat %{wxhlibdir}/wxcore.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} update -
+ cat %{wxhlibdir}/wx.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} update -
+else
+ env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wxcore.pkg
+ env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wx.pkg
+fi
 
 %preun %{wxhpackage}
 if [ "$1" = 0 ]; then
-  %{hcpkg}-%{hcversion} -r wx || :
-  %{hcpkg}-%{hcversion} -r wxcore || :
+  if %{hc-pkg}-%{version} list > /dev/null 2> /dev/null; then
+   %{hcpkg}-%{hcversion} unregister wx || :
+   %{hcpkg}-%{hcversion} unregister wxcore || :
+  else
+   %{hcpkg}-%{hcversion} -r wx || :
+   %{hcpkg}-%{hcversion} -r wxcore || :
+  fi
 fi
 
 %files %{wxhpackage}
@@ -78,6 +89,8 @@ fi
 %{_libdir}/%{libwxc}
 
 %changelog
+* Fri Apr 30 2005 Daan Leijen <http://www.cs.uu.nl/~daan> - 0.9.4
+- Updated for ghc-pkg version 6.4+
 * Fri Mar 26 2004 Daan Leijen <http://www.cs.uu.nl/~daan> - 0.7-0
 - Initial build
 - Original spec file was kindly provided by Jens Petersen <petersen@haskell.org>.

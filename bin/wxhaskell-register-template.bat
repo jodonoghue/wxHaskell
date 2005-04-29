@@ -21,13 +21,29 @@ SET installdir=%CURDIR%
 GOTO check
 
 :check
-IF NOT EXIST %installdir%\bin\wx.pkg GOTO notfound
+IF "%generate%"=="yes" GOTO generate
+GOTO checkfile
+
+:generate
+IF NOT EXIST %installdir%\bin\wx-partial.pkg GOTO notfound
+COPY /Y %installdir%\bin\wx-partial.pkg %installdir%\bin\wx.pkg
+ECHO import-dirs:%installdir%\lib\imports >> %installdir%\bin\wx.pkg
+ECHO library-dirs:%installdir%\lib        >> %installdir%\bin\wx.pkg
+COPY /Y %installdir%\bin\wxcore-partial.pkg %installdir%\bin\wxcore.pkg
+ECHO import-dirs:%installdir%\lib\imports >> %installdir%\bin\wxcore.pkg
+ECHO library-dirs:%installdir%\lib        >> %installdir%\bin\wxcore.pkg
+GOTO checkfile
+
+:checkfile
+IF NOT EXIST "%installdir%\bin\wx.pkg" GOTO notfound
 
 :install
 ECHO - register packages
 SET wxhlibdir=%installdir%\lib
-ghc-pkg -u -i "%installdir%\bin\wxcore.pkg"
-ghc-pkg -u -i "%installdir%\bin\wx.pkg"
+${hcregister} "%installdir%\bin\wxcore.pkg"
+${hcregister} "%installdir%\bin\wx.pkg"
+
+IF ERRORLEVEL 1 GOTO regerror
 
 ECHO.
 IF "%OS%"=="Windows_NT" GOTO copyNT
@@ -44,6 +60,13 @@ IF ERRORLEVEL 1 GOTO copyerror
 
 ECHO - done!
 GOTO end
+
+:regerror
+ECHO error:
+ECHO   Unable to register the package using "ghc-pkg". 
+ECHO   Maybe you have an incompatible version of ghc installed?
+ECHO.
+goto end
 
 :copyerror
 ECHO error:

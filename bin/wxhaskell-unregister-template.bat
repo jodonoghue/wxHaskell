@@ -9,8 +9,8 @@ IF "%1"=="/?"     GOTO help
 ECHO uninstall wxhaskell:
 
 ECHO - unregister packages
-ghc-pkg -r wx
-ghc-pkg -r wxcore
+${hcunregister} wx
+${hcunregister} wxcore
 
 ECHO.
 ECHO - removing wxhaskell libraries from the windows system directory

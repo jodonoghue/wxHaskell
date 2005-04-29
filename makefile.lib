@@ -222,7 +222,11 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(patsubst 
 # install packages
 # usage: $(call install-pkg,<install dir>,<package file>)
 # usage: $(call uninstall-pkg,<package name>)
+ifeq ($(GHCOLD),yes)
 install-pkg=env wxhlibdir=$(1) $(HCPKG) -u -i $(2)
+else
+install-pkg=cat $(2) | sed -e "s|\$${wxhlibdir}|$(1)|" | $(HCPKG) update -
+endif
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 

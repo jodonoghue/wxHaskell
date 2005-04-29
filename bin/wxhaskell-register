@@ -53,5 +53,12 @@ if test ! -e "${bindir}/wx.pkg"; then
 fi
 
 # register the packages.
-env wxhlibdir=${libdir} ghc-pkg -u -i ${bindir}/wxcore.pkg
-env wxhlibdir=${libdir} ghc-pkg -u -i ${bindir}/wx.pkg
+if ghc-pkg list > /dev/null 2> /dev/null; then
+ # ghc-pkg 6.4 +
+ cat ${bindir}/wxcore.pkg | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
+ cat ${bindir}/wx.pkg | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
+else
+ # pre ghc-pkg 6.4
+ env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wxcore.pkg
+ env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wx.pkg
+fi

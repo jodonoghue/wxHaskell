@@ -290,7 +290,7 @@ endif
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
 BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
-REL-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(HCNAME)$(HCVERSION)-$(VERSION)-$(RELEASE)
+REL-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(HCBASENAME)$(HCVERSION)-$(VERSION)-$(RELEASE)
 
 
 DIST-OUTDIR	=$(OUTDIR)
@@ -335,6 +335,9 @@ srcdist-clean:
 bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
 ifeq ($(TOOLKIT),msw)
+ifeq ($(GHCOLD),no)
+	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore-partial.pkg config/wx-partial.pkg)
+endif
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat config/setcd)
 else
 	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register bin/wxhaskell-unregister)
@@ -493,7 +496,7 @@ wxcore-bindist: wxcore
 
 # install
 wxcore-register: 
-	@$(call install-pkg  ,$(LIBDIR),$(WXCORE-PKG))
+	$(call install-pkg  ,$(LIBDIR),$(WXCORE-PKG))
 
 wxcore-install-files: wxcore wxc-install-files 
 	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
