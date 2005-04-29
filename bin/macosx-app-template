@@ -6,16 +6,12 @@
 #  Copyright (c) 2003,2004 Daan Leijen, Arthur Baars
 #------------------------------------------------------------------------
 
-# $Id: macosx-app-template,v 1.3 2004/03/22 15:52:47 dleijen Exp $
+# $Id: macosx-app-template,v 1.4 2005/04/29 14:16:51 dleijen Exp $
 arg=""
 
 # variables
 program=""
 verbose="no"
-
-if test -z "$rezfile"; then
- rezfile="/usr/local/wxhaskell/lib/libwx_mac-2.4.2.r"
-fi
 
 if test -z "$rezcomp"; then
  rezcomp="/Developer/Tools/Rez -t APPL Carbon.r $rezfile -o"
@@ -72,9 +68,11 @@ show()
 }
 
 # link with default resources
-show "creating resource:" 
-show " > $rezcomp $program"
-$rezcomp $program
+if test "$rezcomp"; then
+ show "creating resource:" 
+ show " > $rezcomp $program"
+ $rezcomp $program
+fi
 
 # create a bundle
 bundle="$program.app/Contents"
@@ -91,7 +89,9 @@ show " - $bundle/Resources"
 mkdir -p $bundle/Resources
 
 # standard files
-cp -f ${rezfile}src $bundle/Resources/$program.rsrc
+if test "$rezfile"; then
+ cp -f ${rezfile}src $bundle/Resources/$program.rsrc
+fi
 cp -f $program $bundle/MacOS/
 
 # no icons for now :-(
