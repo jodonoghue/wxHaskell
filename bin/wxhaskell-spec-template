@@ -63,10 +63,10 @@ mv %buildroot%{wxhlibdir}/%{libwxc} %buildroot%{_libdir}
 rm -rf $RPM_BUILD_ROOT
 
 %post %{wxhpackage}
-if %{hc-pkg}-%{version} list > /dev/null 2> /dev/null; then
+if %{hcpkg}-%{hcversion} list > /dev/null 2> /dev/null; then
  wxhlibdir=%{wxhlibdir}
- cat %{wxhlibdir}/wxcore.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} update -
- cat %{wxhlibdir}/wx.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} update -
+ cat %{wxhlibdir}/wxcore.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} --global update -
+ cat %{wxhlibdir}/wx.pkg | sed -e "s|\${wxhlibdir}|${wxhlibdir}|" | %{hcpkg}-%{hcversion} --global update -
 else
  env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wxcore.pkg
  env wxhlibdir=%{wxhlibdir} %{hcpkg}-%{hcversion} -u -i %{wxhlibdir}/wx.pkg
@@ -74,7 +74,7 @@ fi
 
 %preun %{wxhpackage}
 if [ "$1" = 0 ]; then
-  if %{hc-pkg}-%{version} list > /dev/null 2> /dev/null; then
+  if %{hcpkg}-%{hcversion} list > /dev/null 2> /dev/null; then
    %{hcpkg}-%{hcversion} unregister wx || :
    %{hcpkg}-%{hcversion} unregister wxcore || :
   else

@@ -1022,7 +1022,7 @@ echo "%define wxtoolkit    $wxtoolkit"		>> config/wxhaskell.spec.temp
 echo "%define wxToolkit    $wxToolkit"		>> config/wxhaskell.spec.temp
 echo "%define wxversion    $wxversion"		>> config/wxhaskell.spec.temp
 echo "%define sourceroot   $topdir/out/"        >> config/wxhaskell.spec.temp
-echo "%define configflags  $configflags"	>> config/wxhaskell.spec.temp
+echo "%define configflags  $arguments_exp"	>> config/wxhaskell.spec.temp
 echo ""						>> config/wxhaskell.spec.temp
 cat config/wxhaskell.spec.temp bin/wxhaskell-spec-template > config/wxhaskell.spec
 rm -f config/wxhaskell.spec.temp
