@@ -988,8 +988,8 @@ EOF
 else
 cat > config/macosx-postinstall << EOF
 #!/bin/sh      
-cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
-cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\${wxhlibdir}|${libdir}|" | ghc-pkg update -
+cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | /usr/local/bin/ghc-pkg --global update -
+cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | /usr/local/bin/ghc-pkg --global update -
 EOF
 fi
 
