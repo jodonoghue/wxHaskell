@@ -1,8 +1,17 @@
 ----------------------------------------------------------------------
-  Copyright (c) 2003, 2004 Daan Leijen.
+  Copyright (c) 2003, 2004, 2005 Daan Leijen.
 
   See license.txt for details.
 ----------------------------------------------------------------------
+
+Version 0.9.4
+-------------
+Backward compatible additions:
+- Adapted the configuration, make files, and install scripts to work 
+  with GHC 6.4.
+- Adapted the wxHaskell C-layer to work with wxWidgets 2.6.0
+- Made "Object" an instance of Ord
+
 
 Version 0.9
 -------------
