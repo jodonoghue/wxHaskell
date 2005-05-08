@@ -580,7 +580,7 @@ WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
 WX-DOCS		=$(WX-HS)
 WX-BINS		=$(WX-HIS) $(WX-LIBS)
-WX-HCFLAGS	=$(HCFLAGS) -package-name $(WX)
+WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)
 
 WX-HSDIRS	=-i$(WX-SRCDIR) $(WXCORE-HSDIRS) 
 
