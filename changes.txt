@@ -4,6 +4,12 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
+Version 0.9.4-1
+-------------
+Bugfixes:
+- Compile the wx library with -fvia-C. This prevents crashes in   
+   GHCi-6.4.(Fix is found by Sigbjorn Finne)
+
 Version 0.9.4
 -------------
 Backward compatible additions:
