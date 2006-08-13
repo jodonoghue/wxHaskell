@@ -358,7 +358,7 @@ haskellToCResult decl tp call
             -> "withObjectResult $" ++ nl ++ call
       -}
       Object obj -> withResult (classInfo obj)  ++ " $" ++ nl ++ call
-      String _ -> "withStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
+      String _ -> "withWStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Vector _ -> "withVectorResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
       Size _   -> "withSizeResult $ \\pw ph -> " ++ nl ++ call ++ " pw ph"       -- always last argument!
@@ -369,7 +369,7 @@ haskellToCResult decl tp call
                           ""     -> errorMsgDecl decl "illegal reference object" 
                           action -> action ++ " $ \\pref -> " ++ nl ++ call ++ " pref"  -- always last argument!
       ArrayInt _    -> "withArrayIntResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
-      ArrayString _ -> "withArrayStringResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
+      ArrayString _ -> "withArrayWStringResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
       ArrayObject name _ -> "withArrayObjectResult $ \\arr -> " ++ nl ++ call ++ " arr" -- always last
       other -> call
   where
@@ -385,7 +385,7 @@ haskellToCArgsIO methodName args
 
 haskellToCArgIO methodName isSelf arg
   = case argType arg of
-      String _    -> "withCString " ++ haskellName (argName arg)
+      String _    -> "withCWString " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCStringName (argName arg) ++ " -> " ++ nl
       {-
       Object obj  | isBuiltin obj
@@ -396,7 +396,7 @@ haskellToCArgIO methodName isSelf arg
                       ++ " $ \\" ++ haskellCManagedName (argName arg) ++ " -> " ++ nl
       -}
       ArrayString _
-                  -> "withArrayString " ++ haskellName (argName arg)
+                  -> "withArrayWString " ++ haskellName (argName arg)
                      ++ " $ \\" ++ haskellArrayLenName (argName arg) ++ " " ++ haskellArrayName (argName arg)
                      ++ " -> " ++ nl
       ArrayObject tp _
@@ -425,7 +425,7 @@ haskellToCArg decl arg
       RefObject name -> traceError "reference object as argument" decl $ name
       EventId        -> traceError "event id as argument" decl $ name
       Int _ -> pparens ("toCInt " ++ name)
-      Char  -> pparens ("toCChar " ++ name)
+      Char  -> pparens ("toCWchar " ++ name)
       Bool  -> pparens ("toCBool " ++ name)
       Fun f -> pparens ("toCFunPtr " ++ name)
 
@@ -583,9 +583,9 @@ foreignArg decl i arg
 foreignResultType tp
   = case tp of
       ArrayInt _    -> "Ptr CInt -> IO CInt"
-      ArrayString _ -> "Ptr (Ptr CChar) -> IO CInt"
+      ArrayString _ -> "Ptr (Ptr CWchar) -> IO CInt"
       ArrayObject name _ -> "Ptr " ++ foreignTypePar 0 (Object name) ++ " -> IO CInt"
-      String _ -> "Ptr CChar -> IO CInt"
+      String _ -> "Ptr CWchar -> IO CInt"
       Point _  -> "Ptr CInt -> Ptr CInt -> IO ()"
       Vector _ -> "Ptr CInt -> Ptr CInt -> IO ()"
       Size _   -> "Ptr CInt -> Ptr CInt -> IO ()"
@@ -603,13 +603,13 @@ foreignType i tp
       Bool   -> "CBool"
       Int _  -> "CInt"
       Void   -> "()"
-      Char   -> "CChar"
+      Char   -> "CWchar"
       Double -> "Double"
       Float  -> "Float"
       Ptr Void  -> "Ptr " ++ typeVar i
       Ptr t     -> "Ptr " ++ foreignTypePar i t
       -- special
-      String _ -> "CString"
+      String _ -> "CWString"
       Point _  -> "CInt -> CInt"
       Vector _ -> "CInt -> CInt"
       Size _   -> "CInt -> CInt"
@@ -617,7 +617,7 @@ foreignType i tp
       Rect _   -> "CInt -> CInt -> CInt -> CInt"
       Fun f    -> "Ptr " ++ pparens f
       ArrayObject name _ -> "CInt -> Ptr " ++ foreignTypePar i (Object name)
-      ArrayString _      -> "CInt -> Ptr (Ptr CChar)"
+      ArrayString _      -> "CInt -> Ptr (Ptr CWchar)"
       ArrayInt _         -> "CInt -> Ptr CInt"
       {-
       RefObject "wxColour"  -> "ColourPtr ()"
