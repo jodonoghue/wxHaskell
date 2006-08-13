@@ -53,8 +53,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , withSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
             , withVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
             , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
-            , withArrayString, withArrayInt, withArrayObject
-            , withArrayIntResult, withArrayStringResult, withArrayObjectResult
+            , withArrayString, withArrayWString, withArrayInt, withArrayObject
+            , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
 
             , colourFromColor, colorFromColour
             , colourCreate, colourSafeDelete -- , colourCreateRGB, colourRed, colourGreen, colourBlue
@@ -87,10 +87,12 @@ module Graphics.UI.WXCore.WxcTypes(
             -- ** Primitive types
             -- *** CString
             , CString, withCString, withStringResult
+            , CWString, withCWString, withWStringResult
             -- *** CInt
             , CInt, toCInt, fromCInt, withIntResult
             -- *** CChar
             , CChar, toCChar, fromCChar, withCharResult
+            , CWchar, toCWchar,
             -- *** CBool
             , CBool, toCBool, fromCBool, withBoolResult
             -- ** Pointers
@@ -502,6 +504,16 @@ withStringResult f
              do f cstr
                 peekCString cstr
 
+withWStringResult :: (Ptr CWchar -> IO CInt) -> IO String
+withWStringResult f
+  = do len <- f nullPtr
+       if (len<=0)
+        then return ""
+        else withCWString (replicate (fromCInt len) ' ') $ \cstr ->
+             do f cstr
+                peekCWString cstr
+
+
 {-----------------------------------------------------------------------------------------
   Arrays
 -----------------------------------------------------------------------------------------}
@@ -515,6 +527,19 @@ withArrayStringResult f
              do f carr
                 arr <- peekArray len carr
                 mapM peekCString arr
+
+-- FIXME: factorise with withArrayStringResult
+withArrayWStringResult :: (Ptr (Ptr CWchar) -> IO CInt) -> IO [String]
+withArrayWStringResult f
+  = do clen <- f nullPtr
+       let len = fromCInt clen
+       if (len <= 0)
+        then return []
+        else allocaArray len $ \carr ->
+             do f carr
+                arr <- peekArray len carr
+                mapM peekCWString arr
+
 
 withArrayIntResult :: (Ptr CInt -> IO CInt) -> IO [Int]
 withArrayIntResult f
@@ -552,6 +577,22 @@ withArrayString xs f
       = withCString x $ \cx ->
         withCStrings xs (cx:cxs) f
 
+-- FIXME: factorise with withArrayString
+withArrayWString :: [String] -> (CInt -> Ptr CWString -> IO a) -> IO a
+withArrayWString xs f
+  = withCWStrings xs [] $ \cxs ->
+    withArray0 ptrNull cxs $ \carr ->
+    f (toCInt len) carr
+  where
+    len = length xs
+
+    withCWStrings [] cxs f
+      = f (reverse cxs)
+    withCWStrings (x:xs) cxs f
+      = withCWString x $ \cx ->
+        withCWStrings xs (cx:cxs) f
+
+
 withArrayInt :: [Int] -> (CInt -> Ptr CInt -> IO a) -> IO a
 withArrayInt xs f
   = withArray0 0 (map toCInt xs) $ \carr ->
@@ -566,17 +607,27 @@ withArrayObject xs f
   CCHar
 -----------------------------------------------------------------------------------------}
 toCChar :: Char -> CChar
-toCChar c
-  = fromIntegral (fromEnum c)
+toCChar = castCharToCChar
 
-withCharResult :: IO CChar -> IO Char
+-- generalised to work with Char and CChar
+withCharResult :: (Num a, Integral a) => IO a -> IO Char
 withCharResult io
   = do x <- io
-       return (fromCChar x)
+       return (fromCWchar x)
 
 fromCChar :: CChar -> Char
-fromCChar cc
-  = toEnum (fromIntegral cc)
+fromCChar = castCCharToChar
+
+{-----------------------------------------------------------------------------------------
+  CCHar
+-----------------------------------------------------------------------------------------}
+toCWchar :: (Num a) => Char -> a
+toCWchar = fromIntegral . fromEnum
+
+
+fromCWchar :: (Num a, Integral a) => a -> Char
+fromCWchar = toEnum . fromIntegral
+
 
 {-----------------------------------------------------------------------------------------
   CFunPtr
@@ -889,13 +940,15 @@ type TWxStringObject a  = CWxStringObject a
 data CWxStringObject a  = CWxStringObject
 -}
 
+-- FIXME: I am blithely changing these over to use CWString instead of String
+-- whereas in the rest of the code, I actually make a new version of the fns
 withStringRef :: String -> String -> (Ptr (TWxString s) -> IO a) -> IO a
 withStringRef msg s f
   = withStringPtr s $ \p -> withValidPtr msg p f
 
 withStringPtr :: String -> (Ptr (TWxString s) -> IO a) -> IO a
 withStringPtr s f
-  = withCString s $ \cstr -> 
+  = withCWString s $ \cstr ->
     bracket (wxString_Create cstr)
             (wxString_Delete)
             f
@@ -903,15 +956,15 @@ withStringPtr s f
 withManagedStringResult :: IO (Ptr (TWxString a)) -> IO String
 withManagedStringResult io
   = do wxs <- io
-       s   <- withStringResult (wxString_GetString wxs)
+       s   <- withWStringResult (wxString_GetString wxs)
        wxString_Delete wxs
        return s
 
 
-foreign import ccall "wxString_Create"    wxString_Create    :: Ptr CChar -> IO (Ptr (TWxString a))
-foreign import ccall "wxString_CreateLen" wxString_CreateLen :: Ptr CChar -> CInt -> IO (Ptr (TWxString a))
+foreign import ccall "wxString_Create"    wxString_Create    :: Ptr CWchar -> IO (Ptr (TWxString a))
+foreign import ccall "wxString_CreateLen" wxString_CreateLen :: Ptr CWchar -> CInt -> IO (Ptr (TWxString a))
 foreign import ccall "wxString_Delete"    wxString_Delete    :: Ptr (TWxString a) -> IO ()
-foreign import ccall "wxString_GetString" wxString_GetString :: Ptr (TWxString a) -> Ptr CChar -> IO CInt
+foreign import ccall "wxString_GetString" wxString_GetString :: Ptr (TWxString a) -> Ptr CWchar -> IO CInt
 
 
 {-----------------------------------------------------------------------------------------

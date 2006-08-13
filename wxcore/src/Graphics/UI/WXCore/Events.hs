@@ -931,7 +931,7 @@ inputSinkEventLastString inputSinkEvent
        if (n <= 0)
         then return ""
         else do buffer <- inputSinkEventLastInput inputSinkEvent
-                peekCStringLen (buffer,n)
+                peekCWStringLen (buffer,n)
 
 
 {-----------------------------------------------------------------------------------------
@@ -2048,7 +2048,7 @@ appOnInit init
   = do closure  <- createClosure (return () :: IO ()) onDelete (\ev -> return ())   -- run init on destroy !
        progName <- getProgName
        args     <- getArgs
-       argv     <- mapM newCString (progName:args)
+       argv     <- mapM newCWString (progName:args)
        let argc = length argv
        withArray (argv ++ [nullPtr]) $ \cargv -> wxcAppInitializeC closure argc cargv
        mapM_ free argv
