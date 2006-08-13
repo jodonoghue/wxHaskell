@@ -12,7 +12,7 @@ EWXWEXPORT(void*,wxSingleInstanceChecker_CreateDefault)()
 	
 EWXWEXPORT(int,wxSingleInstanceChecker_Create)(void* _obj, void* name, void* path)
 {
-	return (int)((wxSingleInstanceChecker*)_obj)->Create((char*)name, (char*)path);
+	return (int)((wxSingleInstanceChecker*)_obj)->Create((wxChar*)name, (wxChar*)path);
 }
 	
 EWXWEXPORT(int,wxSingleInstanceChecker_IsAnotherRunning)(void* _obj)

@@ -15,7 +15,7 @@ EWXWEXPORT(void*, wxColour_CreateRGB) (char _red, char _green, char _blue)
 
 EWXWEXPORT(void*, wxColour_CreateByName) (void* _name)
 {
-	return (void*) new wxColour((char*)_name);
+	return (void*) new wxColour((wxChar*)_name);
 }
 
 EWXWEXPORT(void*, wxColour_CreateFromStock) (int _id)
@@ -75,11 +75,19 @@ EWXWEXPORT(char, wxColour_Blue)(void* _obj)
 {
 	return ((wxColour*)_obj)->Blue();
 }
-	
-EWXWEXPORT(int, wxColour_GetPixel)(void* _obj)
-{
-	return ((wxColour*)_obj)->GetPixel();
-}
+
+// FIXME: the return type on this is platform dependent
+// and thus evil.  If you really want a GetPixel method,
+// please hack this code and throw in the relevant 
+// ifdefs, cuz I don't want to deal with it.
+//   Windows - WXCOLORREF
+//   GTK     - int
+//   X11     - long
+//   Mac     - (WXCOLORREF&)
+// EWXWEXPORT(WXCOLORREF, wxColour_GetPixel)(void* _obj)
+// {
+// 	return ((wxColour*)_obj)->GetPixel();
+// }
 
 EWXWEXPORT(void, wxColour_Copy)(void* _obj, void* _other)
 {
@@ -88,12 +96,12 @@ EWXWEXPORT(void, wxColour_Copy)(void* _obj, void* _other)
 
 EWXWEXPORT(void, wxColour_SetByName)(void* _obj, void* _name)
 {
-	(*((wxColour*)_obj)) = (char*)_name;
+	(*((wxColour*)_obj)) = (wxChar*)_name;
 }
 
 EWXWEXPORT(int, wxColour_ValidName)(void* _name)
 {
-	return (int) wxTheColourDatabase->FindColour ((char*)_name);
+	return (int) wxTheColourDatabase->FindColour ((wxChar*)_name);
 }
 
 }

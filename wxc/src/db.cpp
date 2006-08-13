@@ -286,11 +286,11 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMsg)(wxDb* db)
 {
 #ifdef wxUSE_ODBC
   if (db==NULL)
-    return new wxString("unconnected database (is NULL)");
+    return new wxString(wxT("unconnected database (is NULL)"));
   else
     return new wxString(db->errorMsg,db->cbErrorMsg);
 #else
-  return new wxString("ODBC is not supported on this platform (recompile with ODBC support)");
+  return new wxString(wxT("ODBC is not supported on this platform (recompile with ODBC support)"));
 #endif
 }
 
@@ -316,17 +316,17 @@ EWXWEXPORT(wxString*,wxDb_GetErrorMessage)(wxDb* db, int index)
 {
 #ifdef wxUSE_ODBC
   int n,idx;
-  if (db==NULL) return new wxString("");
+  if (db==NULL) return new wxString(wxT(""));
   n = wxDb_GetNumErrorMessages(db);
   if (index >= n) index = n-1;
   if (index < 0)  index = 0;  
   idx = n - index - 1;
   if (idx < 0 || idx >= DB_MAX_ERROR_HISTORY)
-    return new wxString("unknown error");
+    return new wxString(wxT("unknown error"));
   else
     return new wxString(db->errorList[n - index - 1]);
 #else
-  return new wxString("ODBC is not supported on this platform (recompile with ODBC support)");
+  return new wxString(wxT("ODBC is not supported on this platform (recompile with ODBC support)"));
 #endif
 }
 

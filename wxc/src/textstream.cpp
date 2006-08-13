@@ -26,7 +26,7 @@ EWXWEXPORT( void, wxTextInputStream_Delete)( wxTextInputStream* self )
 EWXWEXPORT( wxString*, wxTextInputStream_ReadLine)( wxTextInputStream* self )
 {
   if (!self) 
-    return new wxString("");
+    return new wxString(wxT(""));
   else
     return new wxString( self->ReadLine() );
 }

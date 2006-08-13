@@ -26,7 +26,7 @@ EWXWEXPORT(void*,wxLocale_GetLocale)(void* _obj)
 	
 EWXWEXPORT(void,wxLocale_AddCatalogLookupPathPrefix)(void* _obj, void* prefix)
 {
-	((wxLocale*)_obj)->AddCatalogLookupPathPrefix((const char*)prefix);
+	((wxLocale*)_obj)->AddCatalogLookupPathPrefix((const wxChar*)prefix);
 }
 	
 EWXWEXPORT(int,wxLocale_AddCatalog)(void* _obj, void* szDomain)
@@ -47,8 +47,7 @@ EWXWEXPORT(void*,wxLocale_GetString)(void* _obj, void* szOrigString, void* szDom
 EWXWEXPORT(int,wxLocale_GetName)(void* _obj, void* _ref)
 {
 	wxString res = ((wxLocale*)_obj)->GetName();
-	if (_ref) memcpy (_ref, res.c_str(), res.Length());
-	return res.Length();
+	return copyStrToBuf(_ref, res);
 }
 	
 

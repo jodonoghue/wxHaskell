@@ -5,7 +5,7 @@ extern "C"
 
 EWXWEXPORT(void*, wxDataFormat_CreateFromId) (void* name)
 {
-	return (void*) new wxDataFormat ((char*)name);
+	return (void*) new wxDataFormat ((wxChar*)name);
 }
 
 EWXWEXPORT(void*, wxDataFormat_CreateFromType) (int typ)
@@ -25,9 +25,8 @@ EWXWEXPORT(int, wxDataFormat_IsEqual) (void* _obj, void* other)
 
 EWXWEXPORT(int, wxDataFormat_GetId) (void* _obj, void* _buf)
 {
-	wxString result =((wxDataFormat*)_obj)->GetId();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+        wxString result = ((wxDataFormat*)_obj)->GetId();
+        return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(int, wxDataFormat_GetType) (void* _obj)
@@ -37,7 +36,7 @@ EWXWEXPORT(int, wxDataFormat_GetType) (void* _obj)
 
 EWXWEXPORT(void, wxDataFormat_SetId) (void* _obj, void* id)
 {
-	((wxDataFormat*)_obj)->SetId((char*) id);
+	((wxDataFormat*)_obj)->SetId((wxChar*) id);
 }
 
 EWXWEXPORT(void, wxDataFormat_SetType) (void* _obj, int typ)

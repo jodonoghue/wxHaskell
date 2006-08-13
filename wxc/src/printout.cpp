@@ -340,7 +340,7 @@ EWXWEXPORT( void, wxcPrintEvent_SetPageLimits)( wxcPrintEvent* self, int startPa
 EWXWEXPORT(int, wxPrintout_GetTitle)(void* _obj, void* _buf)
 {
 	wxString title = ((wxPrintout*)_obj)->GetTitle();
-	if (_buf) strncpy ((char*)_buf, title.c_str(), title.Length());
+	if (_buf) wxStrncpy ((wxChar*)_buf, title.c_str(), title.Length());
 	return title.Length();
 }
 	

@@ -181,8 +181,7 @@ EWXWEXPORT(void, wxTreeCtrl_SetStateImageList)(void* _obj, void* imageList)
 EWXWEXPORT(int, wxTreeCtrl_GetItemText)(void* _obj, void* item, void* _buf)
 {
 	wxString result = ((wxTreeCtrl*)_obj)->GetItemText(*(wxTreeItemId*)item);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxTreeCtrl_GetItemImage)(void* _obj, void* item, int which)
@@ -203,7 +202,7 @@ EWXWEXPORT(void*, wxTreeCtrl_GetItemClientClosure)(void* _obj, void* item)
 	
 EWXWEXPORT(void, wxTreeCtrl_SetItemText)(void* _obj, void* item, void* text)
 {
-	((wxTreeCtrl*)_obj)->SetItemText(*((wxTreeItemId*) item), (char*)text);
+	((wxTreeCtrl*)_obj)->SetItemText(*((wxTreeItemId*) item), (wxChar*)text);
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_SetItemImage)(void* _obj, void* item, int image, int which)
@@ -370,39 +369,39 @@ EWXWEXPORT(void, wxTreeCtrl_GetPrevVisible)(void* _obj, void* item, void* _item)
 	
 EWXWEXPORT(void, wxTreeCtrl_AddRoot)(void* _obj, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AddRoot((char*) text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AddRoot((wxChar*) text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_PrependItem)(void* _obj, void* parent, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->PrependItem(*((wxTreeItemId*)parent), (char*)text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->PrependItem(*((wxTreeItemId*)parent), (wxChar*)text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_InsertItem)(void* _obj, void* parent, void* idPrevious, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), (char*)text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), (wxChar*)text, image, selectedImage, new wxcTreeItemData(data));
 }
 
 EWXWEXPORT(void, wxTreeCtrl_InsertItem2)(void* _obj, void* parent, void* idPrevious, void* text, int image, int selectedImage, wxClosure* closure, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), (char*)text, image, selectedImage, new wxcTreeItemData(closure));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), (wxChar*)text, image, selectedImage, new wxcTreeItemData(closure));
 }
 
 	
 EWXWEXPORT(void, wxTreeCtrl_InsertItemByIndex)(void* _obj, void* parent, int index, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, (char*)text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, (wxChar*)text, image, selectedImage, new wxcTreeItemData(data));
 }
 
 EWXWEXPORT(void, wxTreeCtrl_InsertItemByIndex2)(void* _obj, void* parent, int index, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, (char*)text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, (wxChar*)text, image, selectedImage, new wxcTreeItemData(data));
 }
 
 	
 EWXWEXPORT(void, wxTreeCtrl_AppendItem)(void* _obj, void* parent, void* text, int image, int selectedImage, wxClosure* data, void* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AppendItem(*((wxTreeItemId*) parent), (char*)text, image, selectedImage, new wxcTreeItemData(data));
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AppendItem(*((wxTreeItemId*) parent), (wxChar*)text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_Delete)(void* _obj, void* item)

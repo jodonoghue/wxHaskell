@@ -43,7 +43,7 @@ EWXWEXPORT(int, wxWindow_IsBeingDeleted)(void* _obj)
 	return (int)((wxWindow*)_obj)->IsBeingDeleted();
 }
 	
-EWXWEXPORT(void, wxWindow_SetLabel)(void* _obj, char* _title)
+EWXWEXPORT(void, wxWindow_SetLabel)(void* _obj, wxChar* _title)
 {
 	((wxWindow*)_obj)->SetLabel(_title);
 }
@@ -51,8 +51,7 @@ EWXWEXPORT(void, wxWindow_SetLabel)(void* _obj, char* _title)
 EWXWEXPORT(int, wxWindow_GetLabel)(void* _obj, void* _buf)
 {
 	wxString result = ((wxWindow*)_obj)->GetLabel().c_str();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxWindow_GetLabelEmpty)(void* _obj)
@@ -60,7 +59,7 @@ EWXWEXPORT(int, wxWindow_GetLabelEmpty)(void* _obj)
 	return (int)((wxWindow*)_obj)->GetLabel().IsEmpty();
 }
 	
-EWXWEXPORT(void, wxWindow_SetName)(void* _obj, char* _name)
+EWXWEXPORT(void, wxWindow_SetName)(void* _obj, wxChar* _name)
 {
 	((wxWindow*)_obj)->SetName(_name);
 }
@@ -68,8 +67,7 @@ EWXWEXPORT(void, wxWindow_SetName)(void* _obj, char* _name)
 EWXWEXPORT(int, wxWindow_GetName)(void* _obj, void* _buf)
 {
 	wxString result =((wxWindow*)_obj)->GetName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxWindow_SetId)(void* _obj, int _id)
@@ -265,7 +263,7 @@ EWXWEXPORT(int, wxWindow_IsTopLevel)(void* _obj)
 	return (int)((wxWindow*)_obj)->IsTopLevel();
 }
 	
-EWXWEXPORT(void*, wxWindow_FindWindow)(void* _obj, char* name )
+EWXWEXPORT(void*, wxWindow_FindWindow)(void* _obj, wxChar* name )
 {
 	return (void*)((wxWindow*)_obj)->FindWindow( name );
 }
@@ -455,7 +453,7 @@ EWXWEXPORT(int, wxWindow_GetCharWidth)(void* _obj)
 	return ((wxWindow*)_obj)->GetCharWidth();
 }
 	
-EWXWEXPORT(void, wxWindow_GetTextExtent)(void* _obj, char* string, int* x, int* y, int* descent, int* externalLeading, void* theFont)
+EWXWEXPORT(void, wxWindow_GetTextExtent)(void* _obj, wxChar* string, int* x, int* y, int* descent, int* externalLeading, void* theFont)
 {
 	((wxWindow*)_obj)->GetTextExtent(string, x,  y, descent, externalLeading, (const wxFont*) theFont );
 }
@@ -506,7 +504,7 @@ EWXWEXPORT(void, wxWindow_ScrollWindowRect)(void* _obj, int dx, int dy, int x, i
 	((wxWindow*)_obj)->ScrollWindow(dx, dy, &rect);
 }
 	
-EWXWEXPORT(void, wxWindow_SetToolTip)(void* _obj, char* tip )
+EWXWEXPORT(void, wxWindow_SetToolTip)(void* _obj, wxChar* tip )
 {
 	((wxWindow*)_obj)->SetToolTip( tip );
 }
@@ -517,9 +515,8 @@ EWXWEXPORT(int, wxWindow_GetToolTip)(void* _obj, void* _buf)
 
 	if (tip)
 	{
-		if (_buf)
-			strcpy ((char*)_buf, tip->GetTip().c_str());
-		return tip->GetTip().Length();
+                wxString res = tip->GetTip();
+		return copyStrToBuf(_buf, res);
 	}
 	return 0;
 }

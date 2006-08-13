@@ -123,8 +123,7 @@ EWXWEXPORT(void, wxCommandEvent_SetString)(void* _obj, char* s)
 EWXWEXPORT(int, wxCommandEvent_GetString)(void* _obj, void* _buf)
 {
 	wxString result = ((wxCommandEvent*)_obj)->GetString();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxCommandEvent_IsChecked)(void* _obj)
@@ -667,8 +666,7 @@ EWXWEXPORT(int, wxUpdateUIEvent_GetEnabled)(void* _obj)
 EWXWEXPORT(int, wxUpdateUIEvent_GetText)(void* _obj, void* _buf)
 {
 	wxString result =((wxUpdateUIEvent*)_obj)->GetText();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxUpdateUIEvent_GetSetText)(void* _obj)
@@ -865,15 +863,13 @@ EWXWEXPORT(void, wxListEvent_GetPoint)(void* _obj, void* x, void* y)
 EWXWEXPORT(int, wxListEvent_GetLabel)(void* _obj, void* _buf)
 {
 	wxString result = ((wxListEvent*)_obj)->GetLabel();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxListEvent_GetText)(void* _obj, void* _buf)
 {
 	wxString result = ((wxListEvent*)_obj)->GetText();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxListEvent_GetImage)(void* _obj)
@@ -930,8 +926,7 @@ EWXWEXPORT(int, wxTreeEvent_GetCode)(void* _obj)
 EWXWEXPORT(int, wxTreeEvent_GetLabel)(void* _obj, void* _buf)
 {
 	wxString result = ((wxTreeEvent*)_obj)->GetLabel();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxSpinEvent_GetPosition)(void* _obj)
@@ -987,9 +982,7 @@ EWXWEXPORT(void,wxHelpEvent_SetPosition)(void* _obj, int x, int y)
 EWXWEXPORT(int,wxHelpEvent_GetLink)(void* _obj, void* _ref)
 {
 	wxString tmp =((wxHelpEvent*)_obj)->GetLink();
-	if (_ref)
-		memcpy (_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 EWXWEXPORT(void,wxHelpEvent_SetLink)(void* _obj, void* link)
@@ -1000,9 +993,7 @@ EWXWEXPORT(void,wxHelpEvent_SetLink)(void* _obj, void* link)
 EWXWEXPORT(int,wxHelpEvent_GetTarget)(void* _obj, void* _ref)
 {
 	wxString tmp =((wxHelpEvent*)_obj)->GetTarget();
-	if (_ref)
-		memcpy (_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 EWXWEXPORT(void,wxHelpEvent_SetTarget)(void* _obj, void* target)

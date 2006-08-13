@@ -12,7 +12,7 @@ bool wxScintilla::EnsureDll()
 	if (done) return TRUE;
 
 	done = TRUE;
-	return (bool)LoadLibrary ("SciLexer.dll");
+	return (bool)LoadLibrary (wxT("SciLexer.dll"));
 }
 
 bool wxScintilla::Create(wxWindow *parent,

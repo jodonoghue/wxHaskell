@@ -7,7 +7,7 @@ extern "C"
 
 EWXWEXPORT(void*,wxToggleButton_Create)(void* parent, int id, void* label, int x, int y, int w, int h, int style)
 {
-	return (void*)new wxToggleButton((wxWindow*)parent, (wxWindowID)id, (char*)label, wxPoint(x, y), wxSize(w, h), (long)style);
+	return (void*)new wxToggleButton((wxWindow*)parent, (wxWindowID)id, (wxChar*)label, wxPoint(x, y), wxSize(w, h), (long)style);
 }
 	
 EWXWEXPORT(void,wxToggleButton_SetValue)(void* _obj, int state)
@@ -22,7 +22,7 @@ EWXWEXPORT(int,wxToggleButton_GetValue)(void* _obj)
 	
 EWXWEXPORT(void,wxToggleButton_SetLabel)(void* _obj, void* label)
 {
-	((wxToggleButton*)_obj)->SetLabel((char*)label);
+	((wxToggleButton*)_obj)->SetLabel((wxChar*)label);
 }
 	
 EWXWEXPORT(int,wxToggleButton_Enable)(void* _obj, int enable)

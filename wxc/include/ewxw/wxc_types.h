@@ -65,7 +65,11 @@
 #endif
 
 /* basic types */
+#ifdef wxUSE_UNICODE
+#define TChar             wchar_t
+#else
 #define TChar             char
+#endif
 
 /* boolean as int */
 #define TBoolInt          int

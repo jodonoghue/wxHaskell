@@ -25,9 +25,9 @@ EWXWEXPORT(void*, wxBitmap_CreateEmpty)(int _width, int _height, int _depth)
 EWXWEXPORT(void*, wxBitmap_CreateLoad)(void* name, int type)
 {
 #if wxVERSION_NUMBER >= 2400
-	return (void*) new wxBitmap((char*)name, (wxBitmapType)type);
+	return (void*) new wxBitmap((wxChar*)name, (wxBitmapType)type);
 #else
-	return (void*) new wxBitmap((char*)name, (long)type);
+	return (void*) new wxBitmap((wxChar*)name, (long)type);
 #endif
 }
 
@@ -49,18 +49,18 @@ EWXWEXPORT(void, wxBitmap_GetSubBitmap)(void* _obj, int x, int y, int w, int h, 
 EWXWEXPORT(int, wxBitmap_LoadFile)(void* _obj, void* name, int type)
 {
 #if wxVERSION_NUMBER >= 2400
-	return (int)((wxBitmap*)_obj)->LoadFile((char*)name, (wxBitmapType)type);
+	return (int)((wxBitmap*)_obj)->LoadFile((wxChar*)name, (wxBitmapType)type);
 #else
-	return (int)((wxBitmap*)_obj)->LoadFile((char*)name, (long)type);
+	return (int)((wxBitmap*)_obj)->LoadFile((wxChar*)name, (long)type);
 #endif
 }
 	
 EWXWEXPORT(int, wxBitmap_SaveFile)(void* _obj, void* name, int type, void* cmap)
 {
 #if wxVERSION_NUMBER >= 2400
-	return (int)((wxBitmap*)_obj)->SaveFile((char*) name, (wxBitmapType)type, (wxPalette*) cmap);
+	return (int)((wxBitmap*)_obj)->SaveFile((wxChar*) name, (wxBitmapType)type, (wxPalette*) cmap);
 #else
-	return (int)((wxBitmap*)_obj)->SaveFile((char*) name, type, (wxPalette*) cmap);
+	return (int)((wxBitmap*)_obj)->SaveFile((wxChar*) name, type, (wxPalette*) cmap);
 #endif
 }
 	
@@ -92,7 +92,7 @@ EWXWEXPORT(void, wxBitmap_InsertHandler)(void* handler)
 EWXWEXPORT(int, wxBitmap_RemoveHandler)(void* name)
 {
 #ifdef __WIN32__
-	return (int) wxBitmap::RemoveHandler((char*) name);
+	return (int) wxBitmap::RemoveHandler((wxChar*) name);
 #else
 	return 0;
 #endif
@@ -101,7 +101,7 @@ EWXWEXPORT(int, wxBitmap_RemoveHandler)(void* name)
 EWXWEXPORT(void*, wxBitmap_FindHandlerByName)(void* name)
 {
 #ifdef __WIN32__
-	return (void*)wxBitmap::FindHandler((char*) name);
+	return (void*)wxBitmap::FindHandler((wxChar*) name);
 #else
 	return NULL;
 #endif
@@ -110,7 +110,7 @@ EWXWEXPORT(void*, wxBitmap_FindHandlerByName)(void* name)
 EWXWEXPORT(void*, wxBitmap_FindHandlerByExtension)(void* extension, int type)
 {
 #ifdef __WIN32__
-	return (void*)wxBitmap::FindHandler((char*)extension, (long)type);
+	return (void*)wxBitmap::FindHandler((wxChar*)extension, (long)type);
 #else
 	return NULL;
 #endif

@@ -16,7 +16,7 @@ EWXWEXPORT(void,wxFileHistory_Delete)(void* _obj)
 	
 EWXWEXPORT(void,wxFileHistory_AddFileToHistory)(void* _obj, void* file)
 {
-	((wxFileHistory*)_obj)->AddFileToHistory((const char*)file);
+	((wxFileHistory*)_obj)->AddFileToHistory((const wxChar*)file);
 }
 	
 EWXWEXPORT(void,wxFileHistory_RemoveFileFromHistory)(void* _obj, int i)
@@ -60,8 +60,7 @@ EWXWEXPORT(void,wxFileHistory_AddFilesToMenu)(void* _obj, void* menu)
 EWXWEXPORT(int,wxFileHistory_GetHistoryFile)(void* _obj, int i, void* _buf)
 {
 	wxString tmp = ((wxFileHistory*)_obj)->GetHistoryFile(i);
-	if (_buf) memcpy (_buf, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return copyStrToBuf(_buf, tmp);
 }
 	
 EWXWEXPORT(int,wxFileHistory_GetCount)(void* _obj)

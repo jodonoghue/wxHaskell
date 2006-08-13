@@ -3,12 +3,12 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxComboBox_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, int _n, void* _str, int _stl)
+EWXWEXPORT(void*, wxComboBox_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, int _n, void* _str, int _stl)
 {
 	wxString* list = new wxString[_n];
 
 	for (int i = 0; i < _n; i++)
-		list[i] = ((char**)_str)[i];
+		list[i] = ((wxChar**)_str)[i];
 
 	wxComboBox* result = new wxComboBox ((wxWindow*)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _n, list, _stl, wxDefaultValidator);
 
@@ -57,7 +57,7 @@ EWXWEXPORT(int, wxComboBox_GetLastPosition)(void* _obj)
 	return ((wxComboBox*)_obj)->GetLastPosition();
 }
 	
-EWXWEXPORT(void, wxComboBox_Replace)(void* _obj, int from, int to, char* value)
+EWXWEXPORT(void, wxComboBox_Replace)(void* _obj, int from, int to, wxChar* value)
 {
 	((wxComboBox*)_obj)->Replace(from, to, value);
 }
@@ -84,19 +84,17 @@ EWXWEXPORT(void, wxComboBox_SetEditable)(void* _obj, int editable)
 	
 EWXWEXPORT(int, wxComboBox_GetStringSelection)(void* _obj, void* _buf)
 {
-	wxString result = ((wxComboBox*)_obj)->GetStringSelection();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+        wxString result = ((wxComboBox*)_obj)->GetStringSelection();
+        return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxComboBox_GetValue)(void* _obj, void* _buf)
 {
-	wxString result = ((wxComboBox*)_obj)->GetValue();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+        wxString result = ((wxComboBox*)_obj)->GetValue();
+        return copyStrToBuf(_buf, result);
 }
 	
-EWXWEXPORT(void, wxComboBox_Append)(void* _obj, char* item)
+EWXWEXPORT(void, wxComboBox_Append)(void* _obj, wxChar* item)
 {
 	((wxComboBox*)_obj)->Append(item);
 #if wxVERSION_NUMBER < 2400
@@ -106,7 +104,7 @@ EWXWEXPORT(void, wxComboBox_Append)(void* _obj, char* item)
 #endif
 }
 	
-EWXWEXPORT(void, wxComboBox_AppendData)(void* _obj, char* item, void* d)
+EWXWEXPORT(void, wxComboBox_AppendData)(void* _obj, wxChar* item, void* d)
 {
 #if defined(__WXMAC__)
     ((wxComboBox*)_obj)->Append(item);
@@ -155,16 +153,15 @@ EWXWEXPORT(void, wxComboBox_SetSelection)(void* _obj, int n)
 	((wxComboBox*)_obj)->SetSelection(n);
 }
 	
-EWXWEXPORT(int, wxComboBox_FindString)(void* _obj, char* s)
+EWXWEXPORT(int, wxComboBox_FindString)(void* _obj, wxChar* s)
 {
 	return ((wxComboBox*)_obj)->FindString(s);
 }
 	
 EWXWEXPORT(int, wxComboBox_GetString)(void* _obj, int n, void* _buf)
 {
-	wxString result = ((wxComboBox*)_obj)->GetString(n);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+        wxString result = ((wxComboBox*)_obj)->GetString(n);
+        return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxComboBox_SetString)(void* _obj, int n, char* s)

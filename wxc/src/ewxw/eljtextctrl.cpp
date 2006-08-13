@@ -3,7 +3,7 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxTextCtrl_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, long _stl)
+EWXWEXPORT(void*, wxTextCtrl_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, long _stl)
 {
 	return (void*) new wxTextCtrl ((wxWindow*)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
@@ -11,11 +11,10 @@ EWXWEXPORT(void*, wxTextCtrl_Create) (void* _prt, int _id, char* _txt, int _lft,
 EWXWEXPORT(int, wxTextCtrl_GetValue)(void* _obj, void* _buf)
 {
 	wxString result = ((wxTextCtrl*)_obj)->GetValue();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
-EWXWEXPORT(void, wxTextCtrl_SetValue)(void* _obj, char* value)
+EWXWEXPORT(void, wxTextCtrl_SetValue)(void* _obj, wxChar* value)
 {
 	((wxTextCtrl*)_obj)->SetValue(value);
 }
@@ -28,8 +27,7 @@ EWXWEXPORT(int, wxTextCtrl_GetLineLength)(void* _obj, long lineNo)
 EWXWEXPORT(int, wxTextCtrl_GetLineText)(void* _obj, long lineNo, void* _buf)
 {
 	wxString result = ((wxTextCtrl*)_obj)->GetLineText(lineNo);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxTextCtrl_GetNumberOfLines)(void* _obj)
@@ -57,7 +55,7 @@ EWXWEXPORT(void, wxTextCtrl_Clear)(void* _obj)
 	((wxTextCtrl*)_obj)->Clear();
 }
 	
-EWXWEXPORT(void, wxTextCtrl_Replace)(void* _obj, long from, long to, char* value)
+EWXWEXPORT(void, wxTextCtrl_Replace)(void* _obj, long from, long to, wxChar* value)
 {
 	((wxTextCtrl*)_obj)->Replace(from, to, value);
 }
@@ -67,12 +65,12 @@ EWXWEXPORT(void, wxTextCtrl_Remove)(void* _obj, long from, long to)
 	((wxTextCtrl*)_obj)->Remove(from, to);
 }
 	
-EWXWEXPORT(int, wxTextCtrl_LoadFile)(void* _obj, char* file)
+EWXWEXPORT(int, wxTextCtrl_LoadFile)(void* _obj, wxChar* file)
 {
 	return (int)((wxTextCtrl*)_obj)->LoadFile(file);
 }
 	
-EWXWEXPORT(int, wxTextCtrl_SaveFile)(void* _obj, char* file)
+EWXWEXPORT(int, wxTextCtrl_SaveFile)(void* _obj, wxChar* file)
 {
 	return (int)((wxTextCtrl*)_obj)->SaveFile(file);
 }
@@ -82,12 +80,12 @@ EWXWEXPORT(void, wxTextCtrl_DiscardEdits)(void* _obj)
 	((wxTextCtrl*)_obj)->DiscardEdits();
 }
 	
-EWXWEXPORT(void, wxTextCtrl_WriteText)(void* _obj, char* text)
+EWXWEXPORT(void, wxTextCtrl_WriteText)(void* _obj, wxChar* text)
 {
 	((wxTextCtrl*)_obj)->WriteText(text);
 }
 	
-EWXWEXPORT(void, wxTextCtrl_AppendText)(void* _obj, char* text)
+EWXWEXPORT(void, wxTextCtrl_AppendText)(void* _obj, wxChar* text)
 {
 	((wxTextCtrl*)_obj)->AppendText(text);
 }

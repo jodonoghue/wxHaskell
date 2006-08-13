@@ -126,7 +126,7 @@ void ELJDropTarget::OnLeave()
 bool ELJFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
 	bool result = false;
-	const char** arr = (const char**)malloc (sizeof(char*) * filenames.GetCount());
+	const wxChar** arr = (const wxChar**)malloc (sizeof(wxChar*) * filenames.GetCount());
 	
 	for (unsigned int i = 0; i < filenames.GetCount(); i++)
 		arr[i] = filenames.Item(i).c_str();
@@ -167,7 +167,7 @@ EWXWEXPORT(void, ELJTextDropTarget_Delete)(void* _obj)
 
 EWXWEXPORT(void*, TextDataObject_Create)(void* _txt)
 {
-	return (void*) new wxTextDataObject((char*)_txt);
+	return (void*) new wxTextDataObject((wxChar*)_txt);
 }
 
 EWXWEXPORT(void, TextDataObject_Delete)(void* _obj)
@@ -181,7 +181,7 @@ EWXWEXPORT(void*, FileDataObject_Create)(void* _lst, int _cnt)
 	if (_cnt)
 	{
 		for (int i = 0; i < _cnt; i++)
-			result->AddFile(((char**)_lst)[i]);
+			result->AddFile(((wxChar**)_lst)[i]);
 	}
 	return (void*) result;
 }
@@ -193,7 +193,7 @@ EWXWEXPORT(void, FileDataObject_Delete)(void* _obj)
 
 EWXWEXPORT(void, FileDataObject_AddFile)(void* _obj, void* _fle)
 {
-	((wxFileDataObject*)_obj)->AddFile((char*)_fle);
+	((wxFileDataObject*)_obj)->AddFile((wxChar*)_fle);
 }
 
 EWXWEXPORT(int, FileDataObject_GetFilenames)(void* _obj, void* _lst)
@@ -202,7 +202,7 @@ EWXWEXPORT(int, FileDataObject_GetFilenames)(void* _obj, void* _lst)
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((const char**)_lst)[i] = strdup (arr.Item(i).c_str());
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
 	}
 	return arr.GetCount();
 }
@@ -350,7 +350,7 @@ EWXWEXPORT(void, wxDropTarget_SetDataObject)(void* _obj, void* _dat)
 
 EWXWEXPORT(void*, ELJDragDataObject_Create)(void* _obj, void* _fmt, void* _func1, void* _func2, void* _func3)
 {
-	return (void*) new ELJDragDataObject(_obj, (char*)_fmt, (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
+	return (void*) new ELJDragDataObject(_obj, (wxChar*)_fmt, (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
 }
 
 EWXWEXPORT(void, ELJDragDataObject_Delete)(void* _obj)

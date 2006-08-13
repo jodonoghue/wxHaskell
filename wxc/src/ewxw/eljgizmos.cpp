@@ -132,9 +132,7 @@ EWXWEXPORT(int,wxLEDNumberCtrl_GetDrawFaded)(void* _obj)
 EWXWEXPORT(int,wxLEDNumberCtrl_GetValue)(void* _obj, void* _ref)
 {
 	wxString res = ((wxLEDNumberCtrl*)_obj)->GetValue();
-	if (_ref)
-		memcpy (_ref, res.c_str(), res.Length());
-	return res.Length();
+        return copyStrToBuf(_ref, res);
 }
 	
 EWXWEXPORT(void,wxLEDNumberCtrl_SetAlignment)(void* _obj, int Alignment, int Redraw)

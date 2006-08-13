@@ -103,7 +103,7 @@ EWXWEXPORT(void, wxGridCellEditor_Destroy)(void* _obj)
 	
 EWXWEXPORT(void, wxGridCellEditor_SetParameters)(void* _obj, void* params)
 {
-	((wxGridCellEditor*)_obj)->SetParameters((char*)params);
+	((wxGridCellEditor*)_obj)->SetParameters((wxChar*)params);
 }
 	
 EWXWEXPORT(void*, wxGridCellTextEditor_Ctor)()
@@ -131,7 +131,7 @@ EWXWEXPORT(void*, wxGridCellChoiceEditor_Ctor)(int count, void* choices, int all
 	wxString items[256];
 
 	for (int i = 0; i < count; i++)
-		items[i] = ((char**)choices)[i];
+		items[i] = ((wxChar**)choices)[i];
 
 	return (void*) new wxGridCellChoiceEditor (count, items, allowOthers != 0);
 }
@@ -474,7 +474,7 @@ EWXWEXPORT(void, wxGrid_DrawColLabel)(void* _obj, void* dc, int col)
 	
 EWXWEXPORT(void, wxGrid_DrawTextRectangle)(void* _obj, void* dc, void* txt, int x, int y, int w, int h, int horizontalAlignment, int verticalAlignment)
 {
-	((wxGrid*)_obj)->DrawTextRectangle(*((wxDC*) dc), (char*)txt, wxRect(x, y, w, h), horizontalAlignment, verticalAlignment);
+	((wxGrid*)_obj)->DrawTextRectangle(*((wxDC*) dc), (wxChar*)txt, wxRect(x, y, w, h), horizontalAlignment, verticalAlignment);
 }
 	
 EWXWEXPORT(int, wxGrid_StringToLines)(void* _obj,  void* value, void* lines)
@@ -482,14 +482,14 @@ EWXWEXPORT(int, wxGrid_StringToLines)(void* _obj,  void* value, void* lines)
 	int result = 0;
 	wxArrayString arr;
 	
-	((wxGrid*)_obj)->StringToLines((char*)value, arr);
+	((wxGrid*)_obj)->StringToLines((wxChar*)value, arr);
 	
 	result = arr.GetCount();
 	
 	if (lines)
 	{
 		for (int i = 0; i < result; i++)
-			((const char**)lines)[i] = strdup (arr[i].c_str());
+			((const wxChar**)lines)[i] = wxStrdup (arr[i].c_str());
 	}
 	return result;
 }
@@ -499,7 +499,7 @@ EWXWEXPORT(void, wxGrid_GetTextBoxSize)(void* _obj, void* dc, int count, void* l
 	wxArrayString arr;
 
 	for (int i = 0; i < count; i++)
-		arr[i] = ((char**)lines)[i];
+		arr[i] = ((wxChar**)lines)[i];
 
 	((wxGrid*)_obj)->GetTextBoxSize(*((wxDC*) dc), arr, (long*)width, (long*)height);
 }
@@ -734,15 +734,13 @@ EWXWEXPORT(void, wxGrid_GetColLabelAlignment)(void* _obj, void* horiz, void* ver
 EWXWEXPORT(int, wxGrid_GetRowLabelValue)(void* _obj, int row, void* _buf)
 {
 	wxString result =((wxGrid*)_obj)->GetRowLabelValue(row);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxGrid_GetColLabelValue)(void* _obj, int col, void* _buf)
 {
 	wxString result =((wxGrid*)_obj)->GetColLabelValue(col);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxGrid_GetGridLineColour)(void* _obj, void* colour)
@@ -792,12 +790,12 @@ EWXWEXPORT(void, wxGrid_SetColLabelAlignment)(void* _obj, int horiz, int vert)
 	
 EWXWEXPORT(void, wxGrid_SetRowLabelValue)(void* _obj, int row, void* label)
 {
-	((wxGrid*)_obj)->SetRowLabelValue(row, (char*)label);
+	((wxGrid*)_obj)->SetRowLabelValue(row, (wxChar*)label);
 }
 	
 EWXWEXPORT(void, wxGrid_SetColLabelValue)(void* _obj, int col, void* label)
 {
-	((wxGrid*)_obj)->SetColLabelValue(col, (char*)label);
+	((wxGrid*)_obj)->SetColLabelValue(col, (wxChar*)label);
 }
 	
 EWXWEXPORT(void, wxGrid_SetGridLineColour)(void* _obj, void* col)
@@ -882,7 +880,7 @@ EWXWEXPORT(void, wxGrid_SetColFormatFloat)(void* _obj, int col, int width, int p
 	
 EWXWEXPORT(void, wxGrid_SetColFormatCustom)(void* _obj, int col, void* typeName)
 {
-	((wxGrid*)_obj)->SetColFormatCustom(col, (char*)typeName);
+	((wxGrid*)_obj)->SetColFormatCustom(col, (wxChar*)typeName);
 }
 	
 EWXWEXPORT(void, wxGrid_EnableGridLines)(void* _obj, int enable)
@@ -1093,13 +1091,12 @@ EWXWEXPORT(void*, wxGrid_GetCellEditor)(void* _obj, int row, int col)
 EWXWEXPORT(int, wxGrid_GetCellValue)(void* _obj, int row, int col, void* _buf)
 {
 	wxString result =((wxGrid*)_obj)->GetCellValue(row, col);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxGrid_SetCellValue)(void* _obj,  int row, int col, void* s)
 {
-	((wxGrid*)_obj)->SetCellValue(row, col, (char*) s);
+	((wxGrid*)_obj)->SetCellValue(row, col, (wxChar*) s);
 }
 	
 EWXWEXPORT(int, wxGrid_IsReadOnly)(void* _obj, int row, int col)
@@ -1178,7 +1175,7 @@ EWXWEXPORT(void, wxGrid_SetSelectionForeground)(void* _obj, void* c)
 	
 EWXWEXPORT(void, wxGrid_RegisterDataType)(void* _obj, void* typeName, void* renderer, void* editor)
 {
-	((wxGrid*)_obj)->RegisterDataType((char*) typeName, (wxGridCellRenderer*) renderer, (wxGridCellEditor*) editor);
+	((wxGrid*)_obj)->RegisterDataType((wxChar*) typeName, (wxGridCellRenderer*) renderer, (wxGridCellEditor*) editor);
 }
 	
 EWXWEXPORT(void*, wxGrid_GetDefaultEditorForCell)(void* _obj, int row, int col)
@@ -1193,12 +1190,12 @@ EWXWEXPORT(void*, wxGrid_GetDefaultRendererForCell)(void* _obj, int row, int col
 	
 EWXWEXPORT(void*, wxGrid_GetDefaultEditorForType)(void* _obj, void* typeName)
 {
-	return (void*)((wxGrid*)_obj)->GetDefaultEditorForType((char*) typeName);
+	return (void*)((wxGrid*)_obj)->GetDefaultEditorForType((wxChar*) typeName);
 }
 	
 EWXWEXPORT(void*, wxGrid_GetDefaultRendererForType)(void* _obj, void* typeName)
 {
-	return (void*)((wxGrid*)_obj)->GetDefaultRendererForType((char*) typeName);
+	return (void*)((wxGrid*)_obj)->GetDefaultRendererForType((wxChar*) typeName);
 }
 	
 EWXWEXPORT(void, wxGrid_SetMargins)(void* _obj, int extraWidth, int extraHeight)

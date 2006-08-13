@@ -3,7 +3,7 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxSpinCtrl_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, long _stl, int _min, int _max, int _init)
+EWXWEXPORT(void*, wxSpinCtrl_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, long _stl, int _min, int _max, int _init)
 {
 	return (void*) new wxSpinCtrl ((wxWindow*)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, _min, _max, _init);
 }

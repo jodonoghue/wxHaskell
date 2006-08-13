@@ -20,7 +20,7 @@ EWXWEXPORT(void*, wxPrinter_CreateAbortWindow)(void* _obj, void* parent, void* p
 	
 EWXWEXPORT(void, wxPrinter_ReportError)(void* _obj, void* parent, void* printout, void* message)
 {
-	((wxPrinter*)_obj)->ReportError((wxWindow*)parent, (wxPrintout*)printout, (char*)message);
+	((wxPrinter*)_obj)->ReportError((wxWindow*)parent, (wxPrintout*)printout, (wxChar*)message);
 }
 	
 EWXWEXPORT(void, wxPrinter_GetPrintDialogData)(void* _obj, void* _ref)
@@ -65,7 +65,7 @@ EWXWEXPORT(void, ELJPrintout_Delete)(void* _obj)
 EWXWEXPORT(int, ELJPrintout_GetTitle)(void* _obj, void* _buf)
 {
 	wxString title = ((ELJPrintout*)_obj)->GetTitle();
-	if (_buf) strncpy ((char*)_buf, title.c_str(), title.Length());
+	if (_buf) wxStrncpy ((wxChar*)_buf, title.c_str(), title.Length());
 	return title.Length();
 }
 	
@@ -331,7 +331,7 @@ EWXWEXPORT(int, wxPrintData_GetOrientation)(void* _obj)
 EWXWEXPORT(int, wxPrintData_GetPrinterName)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterName();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
@@ -379,7 +379,7 @@ EWXWEXPORT(void, wxPrintData_SetOrientation)(void* _obj, int orient)
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterName)(void* _obj, void* name)
 {
-	((wxPrintData*)_obj)->SetPrinterName((char*)name);
+	((wxPrintData*)_obj)->SetPrinterName((wxChar*)name);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetColour)(void* _obj, int colour)
@@ -410,35 +410,35 @@ EWXWEXPORT(void, wxPrintData_SetQuality)(void* _obj, int quality)
 EWXWEXPORT(int, wxPrintData_GetPrinterCommand)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterCommand();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPrinterOptions)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterOptions();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPreviewCommand)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetPreviewCommand();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
 EWXWEXPORT(int, wxPrintData_GetFilename)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetFilename();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
 EWXWEXPORT(int, wxPrintData_GetFontMetricPath)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetFontMetricPath();
-	if (_ref) strncpy ((char*)_ref, tmp.c_str(), tmp.Length());
+	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
 }
 	
@@ -469,27 +469,27 @@ EWXWEXPORT(int, wxPrintData_GetPrintMode)(void* _obj)
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterCommand)(void* _obj, void* command)
 {
-	((wxPrintData*)_obj)->SetPrinterCommand((char*)command);
+	((wxPrintData*)_obj)->SetPrinterCommand((wxChar*)command);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterOptions)(void* _obj, void* options)
 {
-	((wxPrintData*)_obj)->SetPrinterOptions((char*)options);
+	((wxPrintData*)_obj)->SetPrinterOptions((wxChar*)options);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPreviewCommand)(void* _obj, void* command)
 {
-	((wxPrintData*)_obj)->SetPreviewCommand((char*)command);
+	((wxPrintData*)_obj)->SetPreviewCommand((wxChar*)command);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetFilename)(void* _obj, void* filename)
 {
-	((wxPrintData*)_obj)->SetFilename((char*)filename);
+	((wxPrintData*)_obj)->SetFilename((wxChar*)filename);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetFontMetricPath)(void* _obj, void* path)
 {
-	((wxPrintData*)_obj)->SetFontMetricPath((char*)path);
+	((wxPrintData*)_obj)->SetFontMetricPath((wxChar*)path);
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterScaleX)(void* _obj, double x)

@@ -22,9 +22,9 @@ wxString GetApplicationPath()
   {
 /* Windows */
 #ifdef __WXMSW__
-    char buf[512] = "";
+    wxChar buf[512] = wxT("");
     GetModuleFileName(NULL, buf, 511);
-    path = buf;
+    path = wxString(buf, wxConvUTF8);
 
 /* UNIX & MAC*/
 #else
@@ -37,8 +37,11 @@ wxString GetApplicationPath()
       size_t bufLen = 512;
       buf[0] = 0;
       ((NSGetExecutablePathProcPtr) NSAddressOfSymbol(NSLookupAndBindSymbol("__NSGetExecutablePath")))(buf, &bufLen);
-      if (strlen(buf) > 0) {
-        path = buf;
+      wxString strBuf = wxString();
+      size_t actualBuflen = strlen(buf);
+      if (actualBuflen > 0) {
+        // FIXME: we *assume* that the NS stuff returns utf-8 encoded strings
+        path = wxString(buf, wxConvUTF8);
         found=true;
         return path;
       }
@@ -82,7 +85,7 @@ wxString GetApplicationDir()
   /* check APPDIR on unix's */
 #ifndef __WXMSW__
 # ifndef __WXMAC__
-  path = wxGetenv("APPDIR");
+  wxGetEnv(wxT("APPDIR"), &path);
   if (!path.IsEmpty()) return path;
 # endif
 #endif
@@ -101,14 +104,14 @@ extern "C"
 EWXWEXPORT(int, wxGetApplicationDir)(char* buffer)
 {
   wxString result = GetApplicationDir();
-  if (buffer) memcpy(buffer, result.c_str(), result.Length());
+  if (buffer) memcpy(buffer, result.mb_str(), result.Length());
   return result.Length(); 
 }
 
 EWXWEXPORT(int, wxGetApplicationPath)(char* buffer)
 {
   wxString result = GetApplicationPath();
-  if (buffer) memcpy(buffer, result.c_str(), result.Length());
+  if (buffer) memcpy(buffer, result.mb_str(), result.Length());
   return result.Length(); 
 }
 }

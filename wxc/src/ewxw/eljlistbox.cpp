@@ -8,7 +8,7 @@ EWXWEXPORT(void*, wxListBox_Create) (void* _prt, int _id, int _lft, int _top, in
 	wxListBox* result = new wxListBox ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), 0, NULL, _stl, wxDefaultValidator);
 
 	for (int i = 0; i < _n; i++)
-		result->Append(((char**)_str)[i]);
+		result->Append(((wxChar**)_str)[i]);
 
 	return (void*) result;
 }
@@ -31,16 +31,15 @@ EWXWEXPORT(int, wxListBox_GetCount)(void* _obj)
 EWXWEXPORT(int, wxListBox_GetString)(void* _obj, int n, void* _buf)
 {
 	wxString result = ((wxListBox*)_obj)->GetString(n);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
-EWXWEXPORT(void, wxListBox_SetString)(void* _obj, int n, char* s)
+EWXWEXPORT(void, wxListBox_SetString)(void* _obj, int n, wxChar* s)
 {
 	((wxListBox*)_obj)->SetString(n, s);
 }
 	
-EWXWEXPORT(int, wxListBox_FindString)(void* _obj, char* s)
+EWXWEXPORT(int, wxListBox_FindString)(void* _obj, wxChar* s)
 {
 	return ((wxListBox*)_obj)->FindString(s);
 }
@@ -71,12 +70,12 @@ EWXWEXPORT(int, wxListBox_GetSelections)(void* _obj, int* aSelections, int alloc
 	return result;
 }
 	
-EWXWEXPORT(void, wxListBox_Append)(void* _obj, char* item)
+EWXWEXPORT(void, wxListBox_Append)(void* _obj, wxChar* item)
 {
 	((wxListBox*)_obj)->Append(item);
 }
 	
-EWXWEXPORT(void, wxListBox_AppendData)(void* _obj, char* item, void* _data)
+EWXWEXPORT(void, wxListBox_AppendData)(void* _obj, wxChar* item, void* _data)
 {
 	((wxListBox*)_obj)->Append(item, _data);
 }
@@ -86,7 +85,7 @@ EWXWEXPORT(void, wxListBox_InsertItems)(void* _obj, void* items, int pos, int co
 	wxArrayString array;
 	
 	for (int i = 0; i< count; i++)
-		array[i] = ((char**)items)[i];
+		array[i] = ((wxChar**)items)[i];
 	
 	((wxListBox*)_obj)->InsertItems(array, pos);
 }
@@ -106,7 +105,7 @@ EWXWEXPORT(void*, wxListBox_GetClientData)(void* _obj, int n)
 	return (void*)((wxListBox*)_obj)->GetClientData(n);
 }
 	
-EWXWEXPORT(void, wxListBox_SetStringSelection)(void* _obj, char* str, int sel)
+EWXWEXPORT(void, wxListBox_SetStringSelection)(void* _obj, wxChar* str, int sel)
 {
 	((wxListBox*)_obj)->SetStringSelection(str, sel != 0);
 }

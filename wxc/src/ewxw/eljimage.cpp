@@ -20,7 +20,7 @@ EWXWEXPORT(void*, wxImage_CreateFromData)(int width, int height, void* data)
 
 EWXWEXPORT(void*, wxImage_CreateFromFile)(void* name)
 {
-	return (void*) new wxImage((char*)name);
+	return (void*) new wxImage((wxChar*)name);
 }
 
 EWXWEXPORT(void*, wxImage_CreateFromBitmap)(void* bitmap)
@@ -111,17 +111,17 @@ EWXWEXPORT(char, wxImage_GetBlue)(void* _obj, int x, int y)
 	
 EWXWEXPORT(int, wxImage_CanRead)(void* name)
 {
-	return (int)wxImage::CanRead((char*)name);
+	return (int)wxImage::CanRead((wxChar*)name);
 }
 	
 EWXWEXPORT(int, wxImage_LoadFile)(void* _obj, void* name, int type)
 {
-	return (int)((wxImage*)_obj)->LoadFile((char*)name, (long)type);
+	return (int)((wxImage*)_obj)->LoadFile((wxChar*)name, (long)type);
 }
 	
 EWXWEXPORT(int, wxImage_SaveFile)(void* _obj, void* name, int type)
 {
-	return (int)((wxImage*)_obj)->SaveFile((char*)name, (long)type);
+	return (int)((wxImage*)_obj)->SaveFile((wxChar*)name, (long)type);
 }
 	
 EWXWEXPORT(int, wxImage_Ok)(void* _obj)

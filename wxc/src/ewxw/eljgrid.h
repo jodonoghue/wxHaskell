@@ -76,7 +76,7 @@ class ELJGridTable : public wxGridTableBase
 		
 		int GetNumberRows() {return EifGetNumberRows(EiffelObject);};
 		int GetNumberCols() {return EifGetNumberCols(EiffelObject);};
-		wxString GetValue(int row, int col) {return (char*)EifGetValue(EiffelObject, row, col);};
+		wxString GetValue(int row, int col) {return (wxChar*)EifGetValue(EiffelObject, row, col);};
 		void SetValue(int row, int col, const wxString& s) {EifSetValue(EiffelObject, row, col, (void*)s.c_str());};
 		bool IsEmptyCell(int row, int col) {return EifIsEmptyCell(EiffelObject, row, col) != 0;};
 
@@ -90,8 +90,8 @@ class ELJGridTable : public wxGridTableBase
 
 		void SetRowLabelValue(int row, const wxString& s) {EifSetRowLabelValue(EiffelObject, row, (void*)s.c_str());};
 		void SetColLabelValue(int col, const wxString& s) {EifSetColLabelValue(EiffelObject, col, (void*)s.c_str());};
-		wxString GetRowLabelValue(int row) {return (char*)EifGetRowLabelValue(EiffelObject, row);};
-		wxString GetColLabelValue(int col) {return (char*)EifGetColLabelValue(EiffelObject, col);};
+		wxString GetRowLabelValue(int row) {return (wxChar*)EifGetRowLabelValue(EiffelObject, row);};
+		wxString GetColLabelValue(int col) {return (wxChar*)EifGetColLabelValue(EiffelObject, col);};
 };
 
 #endif

@@ -27,7 +27,11 @@ EWXWEXPORT(int,wxDialUpManager_GetISPNames)(void* _obj, void* _lst)
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((char**)_lst)[i] = strdup(arr.Item(i).c_str());
+#ifdef wxUSE_UNICODE
+			((wxChar**)_lst)[i] = wcsdup(arr.Item(i).c_str());
+#else
+			((wxChar**)_lst)[i] = strdup(arr.Item(i).c_str());
+#endif
 	}
 
 	return arr.GetCount();
@@ -35,7 +39,7 @@ EWXWEXPORT(int,wxDialUpManager_GetISPNames)(void* _obj, void* _lst)
 	
 EWXWEXPORT(int,wxDialUpManager_Dial)(void* _obj, void* nameOfISP, void* username, void* password, int async)
 {
-	return (int)((wxDialUpManager*)_obj)->Dial((const char*)nameOfISP, (const char*)username, (const char*)password, async != 0);
+	return (int)((wxDialUpManager*)_obj)->Dial((const wxChar*)nameOfISP, (const wxChar*)username, (const wxChar*)password, async != 0);
 }
 	
 EWXWEXPORT(int,wxDialUpManager_IsDialing)(void* _obj)
@@ -80,12 +84,12 @@ EWXWEXPORT(void,wxDialUpManager_DisableAutoCheckOnlineStatus)(void* _obj)
 	
 EWXWEXPORT(void,wxDialUpManager_SetWellKnownHost)(void* _obj, void* hostname, int portno)
 {
-	((wxDialUpManager*)_obj)->SetWellKnownHost((const char*)hostname, portno);
+	((wxDialUpManager*)_obj)->SetWellKnownHost((const wxChar*)hostname, portno);
 }
 	
 EWXWEXPORT(void,wxDialUpManager_SetConnectCommand)(void* _obj, void* commandDial, void* commandHangup)
 {
-	((wxDialUpManager*)_obj)->SetConnectCommand((const char*)commandDial, (const char*)commandHangup);
+	((wxDialUpManager*)_obj)->SetConnectCommand((const wxChar*)commandDial, (const wxChar*)commandHangup);
 }
 	
 

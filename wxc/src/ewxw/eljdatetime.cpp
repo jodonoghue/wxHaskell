@@ -61,15 +61,13 @@ EWXWEXPORT(int, wxDateTime_GetNumberOfDaysMonth)(int month, int year, int cal)
 EWXWEXPORT(int, wxDateTime_GetMonthName)(int month, int flags, void* _buf)
 {
 	wxString result = wxDateTime::GetMonthName((wxDateTime::Month)month, (wxDateTime::NameFlags)flags);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_GetWeekDayName)(int weekday, int flags, void* _buf)
 {
 	wxString result = wxDateTime::GetWeekDayName((wxDateTime::WeekDay)weekday, (wxDateTime::NameFlags)flags);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_GetAmString)(void* _buf)
@@ -77,8 +75,7 @@ EWXWEXPORT(int, wxDateTime_GetAmString)(void* _buf)
 	wxString am;
 	wxString pm;
 	wxDateTime::GetAmPmStrings(&am, &pm);
-	if (_buf) memcpy (_buf, am.c_str(), am.Length());
-	return am.Length();
+	return copyStrToBuf(_buf, am);
 }
 	
 EWXWEXPORT(int, wxDateTime_GetPmString)(void* _buf)
@@ -86,8 +83,7 @@ EWXWEXPORT(int, wxDateTime_GetPmString)(void* _buf)
 	wxString am;
 	wxString pm;
 	wxDateTime::GetAmPmStrings(&am, &pm);
-	if (_buf) memcpy (_buf, pm.c_str(), pm.Length());
-	return pm.Length();
+	return copyStrToBuf(_buf, pm);
 }
 	
 EWXWEXPORT(int, wxDateTime_IsDSTApplicable)(int year, int country)
@@ -435,36 +431,31 @@ EWXWEXPORT(void*, wxDateTime_ParseTime)(void* _obj, void* time)
 EWXWEXPORT(int, wxDateTime_Format)(void* _obj, void* format, int tz, void* _buf)
 {
 	wxString result = ((wxDateTime*)_obj)->Format((const wxChar*)format, wxDateTime::TimeZone((wxDateTime::TZ)tz));
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_FormatDate)(void* _obj, void* _buf)
 {
 	wxString result = ((wxDateTime*)_obj)->FormatDate();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_FormatTime)(void* _obj, void* _buf)
 {
 	wxString result = ((wxDateTime*)_obj)->FormatTime();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_FormatISODate)(void* _obj, void* _buf)
 {
 	wxString result = ((wxDateTime*)_obj)->FormatISODate();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxDateTime_FormatISOTime)(void* _obj, void* _buf)
 {
 	wxString result = ((wxDateTime*)_obj)->FormatISOTime();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void*, wxDateTime_wxDateTime)(long hi_long, unsigned long lo_long)

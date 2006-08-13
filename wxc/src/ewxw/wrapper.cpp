@@ -76,8 +76,7 @@ EWXWEXPORT(void, ELJApp_Dispatch)()
 EWXWEXPORT(int, ELJApp_GetAppName)(void* _buf)
 {
 	wxString result = wxGetApp().GetAppName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, ELJApp_SetAppName)(char* name)
@@ -88,8 +87,7 @@ EWXWEXPORT(void, ELJApp_SetAppName)(char* name)
 EWXWEXPORT(int, ELJApp_GetClassName)(void* _buf)
 {
 	wxString result = wxGetApp().GetClassName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, ELJApp_SetClassName)(char* name)
@@ -100,8 +98,7 @@ EWXWEXPORT(void, ELJApp_SetClassName)(char* name)
 EWXWEXPORT(int, ELJApp_GetVendorName)(void* _buf)
 {
 	wxString result = wxGetApp().GetVendorName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, ELJApp_SetVendorName)(char* name)
@@ -236,22 +233,19 @@ EWXWEXPORT(void*, ELJApp_GetApp)()
 EWXWEXPORT(int, ELJApp_GetUserId)(void* _buf)
 {
 	wxString result = wxGetUserId();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(int, ELJApp_GetUserName)(void* _buf)
 {
 	wxString result = wxGetUserName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(int, ELJApp_GetUserHome)(void* _usr, void* _buf)
 {
 	wxString result = wxGetUserHome((const char*)_usr);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(int, ELJApp_ExecuteProcess)(void* _cmd, int _snc, void* _prc)
@@ -277,8 +271,7 @@ EWXWEXPORT(int, ELJApp_GetOsVersion)(void* _maj, void* _min)
 EWXWEXPORT(int, ELJApp_GetOsDescription)(void* _buf)
 {
 	wxString result = wxGetOsDescription();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(void, ELJApp_Sleep)(int _scs)

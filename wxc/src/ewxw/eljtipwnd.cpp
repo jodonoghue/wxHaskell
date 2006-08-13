@@ -7,7 +7,7 @@ extern "C"
 
 EWXWEXPORT(void*,wxTipWindow_Create)(void*parent, void* text, int maxLength)
 {
-	return (void*)new wxTipWindow((wxWindow*)parent, (char*)text, (wxCoord)maxLength);
+	return (void*)new wxTipWindow((wxWindow*)parent, (wxChar*)text, (wxCoord)maxLength);
 }
 	
 EWXWEXPORT(void,wxTipWindow_SetTipWindowPtr)(void* _obj, void* windowPtr)

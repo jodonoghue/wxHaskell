@@ -9,6 +9,15 @@
 #endif
 
 /*-----------------------------------------------------------------------------
+    Miscellaneous helper functions
+-----------------------------------------------------------------------------*/
+
+int copyStrToBuf(void* dst, wxString& src) {
+  if (dst) wxStrcpy ((wxChar*) dst, src.c_str());
+  return src.Length();
+}
+
+/*-----------------------------------------------------------------------------
     The global idle timer
 -----------------------------------------------------------------------------*/
 class wxIdleTimer : public wxTimer
@@ -323,11 +332,10 @@ EWXWEXPORT(void, ELJApp_Dispatch)()
 EWXWEXPORT(int, ELJApp_GetAppName)(void* _buf)
 {
         wxString result = wxGetApp().GetAppName();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
-EWXWEXPORT(void, ELJApp_SetAppName)(char* name)
+EWXWEXPORT(void, ELJApp_SetAppName)(wxChar* name)
 {
         wxGetApp().SetAppName(name);
 }
@@ -335,11 +343,10 @@ EWXWEXPORT(void, ELJApp_SetAppName)(char* name)
 EWXWEXPORT(int, ELJApp_GetClassName)(void* _buf)
 {
         wxString result = wxGetApp().GetClassName();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
-EWXWEXPORT(void, ELJApp_SetClassName)(char* name)
+EWXWEXPORT(void, ELJApp_SetClassName)(wxChar* name)
 {
         wxGetApp().SetClassName(name);
 }
@@ -347,11 +354,10 @@ EWXWEXPORT(void, ELJApp_SetClassName)(char* name)
 EWXWEXPORT(int, ELJApp_GetVendorName)(void* _buf)
 {
         wxString result = wxGetApp().GetVendorName();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
-EWXWEXPORT(void, ELJApp_SetVendorName)(char* name)
+EWXWEXPORT(void, ELJApp_SetVendorName)(wxChar* name)
 {
         wxGetApp().SetVendorName(name);
 }
@@ -460,12 +466,12 @@ EWXWEXPORT(void, ELJApp_MousePosition)(void* x, void* y)
 
 EWXWEXPORT(void*, ELJApp_FindWindowByLabel)(void* _lbl, void* _prt)
 {
-        return (void*)wxFindWindowByLabel((char*)_lbl, (wxWindow*)_prt);
+        return (void*)wxFindWindowByLabel((wxChar*)_lbl, (wxWindow*)_prt);
 }
 
 EWXWEXPORT(void*, ELJApp_FindWindowByName)(void* _lbl, void* _prt)
 {
-        return (void*)wxFindWindowByName((char*)_lbl, (wxWindow*)_prt);
+        return (void*)wxFindWindowByName((wxChar*)_lbl, (wxWindow*)_prt);
 }
 
 EWXWEXPORT(void*, ELJApp_FindWindowById)(int _id, void* _prt)
@@ -482,27 +488,24 @@ EWXWEXPORT(void*, ELJApp_GetApp)()
 EWXWEXPORT(int, ELJApp_GetUserId)(void* _buf)
 {
         wxString result = wxGetUserId();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(int, ELJApp_GetUserName)(void* _buf)
 {
         wxString result = wxGetUserName();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
-EWXWEXPORT(int, ELJApp_GetUserHome)(char* _usr, void* _buf)
+EWXWEXPORT(int, ELJApp_GetUserHome)(wxChar* _usr, void* _buf)
 {
-        wxString result = wxGetUserHome((const char*)_usr);
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        wxString result = wxGetUserHome((const wxChar*)_usr);
+        return copyStrToBuf(_buf, result);
 }
 
-EWXWEXPORT(int, ELJApp_ExecuteProcess)(char* _cmd, int _snc, void* _prc)
+EWXWEXPORT(int, ELJApp_ExecuteProcess)(wxChar* _cmd, int _snc, void* _prc)
 {
-        return (int)wxExecute((const char*)_cmd, _snc != 0, (wxProcess*)_prc);
+        return (int)wxExecute((const wxChar*)_cmd, _snc != 0, (wxProcess*)_prc);
 }
 
 EWXWEXPORT(int, ELJApp_Yield)()
@@ -523,8 +526,7 @@ EWXWEXPORT(int, ELJApp_GetOsVersion)(void* _maj, void* _min)
 EWXWEXPORT(int, ELJApp_GetOsDescription)(void* _buf)
 {
         wxString result = wxGetOsDescription();
-        if (_buf) memcpy (_buf, result.c_str(), result.Length());
-        return result.Length();
+        return copyStrToBuf(_buf, result);
 }
 
 EWXWEXPORT(void, ELJApp_Sleep)(int _scs)
@@ -671,7 +673,7 @@ EWXWEXPORT(int, wxDllLoader_LoadLibrary)(void* _name, void* _success)
 {
         bool success;
 
-        wxDllType result = wxDllLoader::LoadLibrary ((const char*)_name, &success);
+        wxDllType result = wxDllLoader::LoadLibrary ((const wxChar*)_name, &success);
 
         if (success)
                 *((int*)_success) = 1;
@@ -688,7 +690,7 @@ EWXWEXPORT(void, wxDllLoader_UnloadLibrary)(int _handle)
 
 EWXWEXPORT(void*, wxDllLoader_GetSymbol)(int _handle, void* _name)
 {
-        return wxDllLoader::GetSymbol ((wxDllType)_handle, (const char*)_name);
+        return wxDllLoader::GetSymbol ((wxDllType)_handle, (const wxChar*)_name);
 }
 */
 EWXWEXPORT(void, wxCFree) (void* _ptr)
@@ -698,7 +700,7 @@ EWXWEXPORT(void, wxCFree) (void* _ptr)
 
 EWXWEXPORT(void*, wxClassInfo_CreateClassByName) (void* _inf)
 {
-        wxClassInfo* inf = wxClassInfo::FindClass ((char*)_inf);
+        wxClassInfo* inf = wxClassInfo::FindClass ((wxChar*)_inf);
         if (inf)
                 return inf->CreateObject();
         return NULL;
@@ -714,7 +716,7 @@ EWXWEXPORT(void*, wxClassInfo_GetClassName) (void* _obj)
 
 EWXWEXPORT(int, wxClassInfo_IsKindOf) (void* _obj, void* _name)
 {
-        wxClassInfo* inf = wxClassInfo::FindClass ((char*)_name);
+        wxClassInfo* inf = wxClassInfo::FindClass ((wxChar*)_name);
         if (inf)
                 return (int)((wxObject*)_obj)->IsKindOf(inf);
         return 0;

@@ -23,17 +23,13 @@ EWXWEXPORT(void,wxFindReplaceData_Delete)(void* _obj)
 EWXWEXPORT(int,wxFindReplaceData_GetFindString)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-	if (_ref)
-		memcpy(_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 EWXWEXPORT(int,wxFindReplaceData_GetReplaceString)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-	if (_ref)
-		memcpy(_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 EWXWEXPORT(int,wxFindReplaceData_GetFlags)(void* _obj)
@@ -48,12 +44,12 @@ EWXWEXPORT(void,wxFindReplaceData_SetFlags)(void* _obj, int flags)
 	
 EWXWEXPORT(void,wxFindReplaceData_SetFindString)(void* _obj, void* str)
 {
-	((wxFindReplaceData*)_obj)->SetFindString((char*)str);
+	((wxFindReplaceData*)_obj)->SetFindString((wxChar*)str);
 }
 	
 EWXWEXPORT(void,wxFindReplaceData_SetReplaceString)(void* _obj, void* str)
 {
-	((wxFindReplaceData*)_obj)->SetReplaceString((char*)str);
+	((wxFindReplaceData*)_obj)->SetReplaceString((wxChar*)str);
 }
 	
 
@@ -65,23 +61,19 @@ EWXWEXPORT(int,wxFindDialogEvent_GetFlags)(void* _obj)
 EWXWEXPORT(int,wxFindDialogEvent_GetFindString)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-	if (_ref)
-		memcpy(_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 EWXWEXPORT(int,wxFindDialogEvent_GetReplaceString)(void* _obj, void* _ref)
 {
 	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-	if (_ref)
-		memcpy(_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        return copyStrToBuf(_ref, tmp);
 }
 	
 
 EWXWEXPORT(void*,wxFindReplaceDialog_Create)(void* parent, void* data, void* title, int style)
 {
-	return (void*)new wxFindReplaceDialog((wxWindow*)parent, (wxFindReplaceData*)data, (char*)title, style);
+	return (void*)new wxFindReplaceDialog((wxWindow*)parent, (wxFindReplaceData*)data, (wxChar*)title, style);
 }
 	
 EWXWEXPORT(void*,wxFindReplaceDialog_GetData)(void* _obj)

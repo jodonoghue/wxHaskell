@@ -10,7 +10,7 @@ EWXWEXPORT(void*, ELJConnection_CreateDefault)()
 
 EWXWEXPORT(void*, ELJConnection_Create)(void* buffer, int size)
 {
-	return new ELJConnection((char*)buffer, size);
+	return new ELJConnection((wxChar*)buffer, size);
 }
 
 EWXWEXPORT(void, ELJConnection_Delete)(void* _obj)
@@ -25,27 +25,27 @@ EWXWEXPORT(int, ELJConnection_Execute)(void* _obj, void* data, int size, int for
 	
 EWXWEXPORT(void*, ELJConnection_Request)(void* _obj, void* item, void* size, int format)
 {
-	return (void*)((ELJConnection*)_obj)->Request((char*)item, (int*)size, (wxIPCFormat)format);
+	return (void*)((ELJConnection*)_obj)->Request((wxChar*)item, (int*)size, (wxIPCFormat)format);
 }
 	
 EWXWEXPORT(int, ELJConnection_Poke)(void* _obj, void* item, void* data, int size, int format)
 {
-	return (int)((ELJConnection*)_obj)->Poke((char*)item, (wxChar*)data, size, (wxIPCFormat)format);
+	return (int)((ELJConnection*)_obj)->Poke((wxChar*)item, (wxChar*)data, size, (wxIPCFormat)format);
 }
 	
 EWXWEXPORT(int, ELJConnection_StartAdvise)(void* _obj, void* item)
 {
-	return (int)((ELJConnection*)_obj)->StartAdvise((char*)item);
+	return (int)((ELJConnection*)_obj)->StartAdvise((wxChar*)item);
 }
 	
 EWXWEXPORT(int, ELJConnection_StopAdvise)(void* _obj, void* item)
 {
-	return (int)((ELJConnection*)_obj)->StopAdvise((char*)item);
+	return (int)((ELJConnection*)_obj)->StopAdvise((wxChar*)item);
 }
 	
 EWXWEXPORT(int, ELJConnection_Advise)(void* _obj, void* item, void* data, int size, int format)
 {
-	return (int)((ELJConnection*)_obj)->Advise((char*)item, (char*)data, size, (wxIPCFormat)format);
+	return (int)((ELJConnection*)_obj)->Advise((wxChar*)item, (wxChar*)data, size, (wxIPCFormat)format);
 }
 	
 EWXWEXPORT(int, ELJConnection_Disconnect)(void* _obj)
@@ -105,7 +105,7 @@ EWXWEXPORT(void, ELJServer_Delete)(void* _obj)
 
 EWXWEXPORT(int, ELJServer_Initialize)(void* _obj, void* name)
 {
-	return ((ELJServer*)_obj)->Create((char*)name);
+	return ((ELJServer*)_obj)->Create((wxChar*)name);
 }
 	
 EWXWEXPORT(void*, ELJClient_Create)(void* _eobj, void* _cnct)
@@ -120,7 +120,7 @@ EWXWEXPORT(void, ELJClient_Delete)(void* _obj)
 
 EWXWEXPORT(void, ELJClient_MakeConnection)(void* _obj, void* host, void* server, void* topic)
 {
-	((ELJClient*)_obj)->MakeConnection((char*)host, (char*)server, (char*)topic);
+	((ELJClient*)_obj)->MakeConnection((wxChar*)host, (wxChar*)server, (wxChar*)topic);
 }
 	
 }

@@ -44,10 +44,8 @@ EWXWEXPORT(void*,wxHelpProvider_Set)(void* helpProvider)
 	
 EWXWEXPORT(int,wxHelpProvider_GetHelp)(void* _obj, void* window, void* _ref)
 {
-	wxString tmp = ((wxHelpProvider*)_obj)->GetHelp((wxWindowBase*)window);
-	if (_ref)
-		memcpy (_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+        wxString result = ((wxHelpProvider*)_obj)->GetHelp((wxWindowBase*)window);
+        return copyStrToBuf( _ref, result );
 }
 	
 EWXWEXPORT(int,wxHelpProvider_ShowHelp)(void* _obj, void* window)
@@ -57,12 +55,12 @@ EWXWEXPORT(int,wxHelpProvider_ShowHelp)(void* _obj, void* window)
 	
 EWXWEXPORT(void,wxHelpProvider_AddHelp)(void* _obj, void* window, void* text)
 {
-	((wxHelpProvider*)_obj)->AddHelp((wxWindowBase*)window, (char*)text);
+	((wxHelpProvider*)_obj)->AddHelp((wxWindowBase*)window, (wxChar*)text);
 }
 	
 EWXWEXPORT(void,wxHelpProvider_AddHelpById)(void* _obj, int id, void* text)
 {
-	((wxHelpProvider*)_obj)->AddHelp((wxWindowID)id, (char*)text);
+	((wxHelpProvider*)_obj)->AddHelp((wxWindowID)id, (wxChar*)text);
 }
 	
 EWXWEXPORT(void,wxHelpProvider_RemoveHelp)(void* _obj, void* window)

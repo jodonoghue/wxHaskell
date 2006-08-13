@@ -1104,7 +1104,7 @@ TClass(wxColour) wxColour_CreateEmpty(  );
 TClass(wxColour) wxColour_CreateFromStock( int id );
 void*      wxColour_CreateRGB( TChar _red, TChar _green, TChar _blue );
 void       wxColour_Delete( TSelf(wxColour) _obj );
-int        wxColour_GetPixel( TSelf(wxColour) _obj );
+//WXCOLORREF wxColour_GetPixel( TSelf(wxColour) _obj );
 TChar      wxColour_Green( TSelf(wxColour) _obj );
 TBool      wxColour_Ok( TSelf(wxColour) _obj );
 TChar      wxColour_Red( TSelf(wxColour) _obj );

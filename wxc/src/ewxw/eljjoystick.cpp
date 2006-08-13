@@ -91,8 +91,7 @@ EWXWEXPORT(int,wxJoystick_GetProductId)(void* _obj)
 EWXWEXPORT(int,wxJoystick_GetProductName)(void* _obj, void* _buf)
 {
 	wxString res = ((wxJoystick*)_obj)->GetProductName();
-	if (_buf)memcpy (_buf, res.c_str(), res.Length());
-	return res.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int,wxJoystick_GetXMin)(void* _obj)

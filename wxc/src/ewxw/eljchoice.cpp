@@ -8,7 +8,7 @@ EWXWEXPORT(void*, wxChoice_Create) (void* _prt, int _id, int _lft, int _top, int
 	wxString* list = new wxString[_n];
 
 	for (int i = 0; i < _n; i++)
-		list[i] = ((char**)_str)[i];
+		list[i] = ((wxChar**)_str)[i];
 
 	wxChoice* result = new wxChoice ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _n, list, _stl, wxDefaultValidator);
 
@@ -17,7 +17,7 @@ EWXWEXPORT(void*, wxChoice_Create) (void* _prt, int _id, int _lft, int _top, int
 	return result;
 }
 
-EWXWEXPORT(void, wxChoice_Append)(void* _obj, char* item)
+EWXWEXPORT(void, wxChoice_Append)(void* _obj, wxChar* item)
 {
 	((wxChoice*)_obj)->Append(item);
 }
@@ -47,7 +47,7 @@ EWXWEXPORT(void, wxChoice_SetSelection)(void* _obj, int n)
 	((wxChoice*)_obj)->SetSelection(n);
 }
 	
-EWXWEXPORT(int, wxChoice_FindString)(void* _obj, char* s)
+EWXWEXPORT(int, wxChoice_FindString)(void* _obj, wxChar* s)
 {
 	return ((wxChoice*)_obj)->FindString(s);
 }
@@ -55,11 +55,10 @@ EWXWEXPORT(int, wxChoice_FindString)(void* _obj, char* s)
 EWXWEXPORT(int, wxChoice_GetString)(void* _obj, int n, void* _buf)
 {
 	wxString result = ((wxChoice*)_obj)->GetString(n);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
-EWXWEXPORT(void, wxChoice_SetString)(void* _obj, int n, char* s)
+EWXWEXPORT(void, wxChoice_SetString)(void* _obj, int n, wxChar* s)
 {
 	((wxChoice*)_obj)->SetString(n, s);
 }

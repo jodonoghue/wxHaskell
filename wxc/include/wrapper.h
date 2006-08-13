@@ -55,7 +55,7 @@ typedef int  _cdecl (*ValidateFunc) (void* _obj);
 
 typedef int   _cdecl (*TCPAdviseFunc)      (void* _obj, void* _topic, void* _item, void* _data, int _size, int _fmt);
 typedef int   _cdecl (*TCPExecuteFunc)     (void* _obj, void* _topic, void* _data, int _size, int _fmt);
-typedef char* _cdecl (*TCPRequestFunc)     (void* _obj, void* _topic, void* _item, void* _size, int _fmt);
+typedef wxChar* _cdecl (*TCPRequestFunc)     (void* _obj, void* _topic, void* _item, void* _size, int _fmt);
 typedef int   _cdecl (*TCPPokeFunc)        (void* _obj, void* _topic, void* _item, void* _data, int _size, int _fmt);
 typedef int   _cdecl (*TCPStartAdviseFunc) (void* _obj, void* _topic, void* _item);
 typedef int   _cdecl (*TCPStopAdviseFunc)  (void* _obj, void* _topic, void* _item);
@@ -71,6 +71,10 @@ typedef int  _cdecl (*PreviewFrameFunc) (void* _obj);
 
 typedef int  _cdecl (*TreeCompareFunc) (void* _obj, void* _itm1, void* _itm2);
 }
+
+/* Miscellaneous helper functions */
+/* Copies the contents of a wxString to a buffer and returns the length of the string */
+int copyStrToBuf(void* dst, wxString& src);
 
 /* A Closure is used to call foreign functions. They are closures
  because they don't just contain a function pointer but also some
@@ -169,7 +173,7 @@ class ELJDragDataObject : public wxDataObjectSimple
                 DataGetDataHere OnGetDataHere;
                 DataSetData     OnSetData;
         public:
-                ELJDragDataObject(void* _obj, char* _fmt, DataGetDataSize _func1, DataGetDataHere _func2, DataSetData _func3) : wxDataObjectSimple(_fmt)
+                ELJDragDataObject(void* _obj, wxChar* _fmt, DataGetDataSize _func1, DataGetDataHere _func2, DataSetData _func3) : wxDataObjectSimple(_fmt)
                 {obj = _obj; OnGetDataSize = _func1; OnGetDataHere = _func2; OnSetData = _func3;}
                 size_t GetDataSize() const {return (size_t)OnGetDataSize(obj);}
                 bool GetDataHere(void* buf) const {return OnGetDataHere(obj, buf) != 0;}
@@ -254,7 +258,7 @@ class ELJTextValidator : public wxTextValidator
 {
         public:
                 ELJTextValidator(void* _obj, void* _fnc, void* _txt, long _stl) : wxTextValidator (_stl, &buf)
-                {obj = _obj; fnc = (ValidateFunc)_fnc; buf = (const char*) _txt;};
+                {obj = _obj; fnc = (ValidateFunc)_fnc; buf = (const wxChar*) _txt;};
 
                 ELJTextValidator(const ELJTextValidator& other)
                 {
@@ -297,7 +301,7 @@ class ELJConnection : public wxTCPConnection
                         EiffelObject = NULL;
                 }
 
-                ELJConnection(char* _buf, int _sze) : wxTCPConnection(_buf, _sze)
+                ELJConnection(wxChar* _buf, int _sze) : wxTCPConnection(_buf, _sze)
                 {
                         DoOnAdvise = NULL;
                         DoOnExecute = NULL;
@@ -324,11 +328,11 @@ class ELJConnection : public wxTCPConnection
                                wxIPCFormat format )
                              { return DoOnExecute ? DoOnExecute (EiffelObject, (void*)topic.c_str(), data, size, (int) format) != 0 : FALSE; };
 
-  virtual char *OnRequest    ( const wxString& topic,
+  virtual wxChar *OnRequest    ( const wxString& topic,
                                const wxString& item,
                                int *size,
                                wxIPCFormat format )
-                             { return DoOnRequest ? DoOnRequest (EiffelObject, (void*)topic.c_str(), (void*)item.c_str(), (void*)size, (int) format) : (char*)NULL; };
+                             { return DoOnRequest ? DoOnRequest (EiffelObject, (void*)topic.c_str(), (void*)item.c_str(), (void*)size, (int) format) : (wxChar*)NULL; };
 
   virtual bool OnPoke        ( const wxString& topic,
                                const wxString& item,
@@ -409,7 +413,7 @@ class ELJPrintout : public wxPrintout
                                         void* _DoOnPreparePrinting,
                                         void* _DoOnPrintPage,
                                         void* _DoOnHasPage,
-                                        void* _DoOnPageInfo) : wxPrintout((char*)title)
+                                        void* _DoOnPageInfo) : wxPrintout((wxChar*)title)
                 {
                         EiffelObject = _obj;
                         DoOnBeginDocument = (PrintBeginDocument)_DoOnBeginDocument;
@@ -468,7 +472,7 @@ class ELJPreviewFrame: public wxPreviewFrame
                                                 int style) :
         wxPreviewFrame( (wxPrintPreviewBase*)preview,
                                                 (wxFrame*)parent,
-                                                (char*)title,
+                                                (wxChar*)title,
                                                 wxPoint(x, y),
                                                 wxSize(w, h),
                                                 (long)style)
@@ -531,7 +535,7 @@ class ELJTreeControl : public wxTreeCtrl
                        const wxSize& size = wxDefaultSize,
                        long style = wxTR_HAS_BUTTONS | wxTR_LINES_AT_ROOT,
                        const wxValidator& validator = wxDefaultValidator,
-                       const wxString& name = "wxTreeCtrl") :
+                       const wxString& name = wxT("wxTreeCtrl")) :
                 wxTreeCtrl (parent, id, pos, size, style, validator, name)
                 {
                         EiffelObject = _obj;

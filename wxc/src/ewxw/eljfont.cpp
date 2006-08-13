@@ -36,7 +36,7 @@ class ELJFontEnumerator : public wxFontEnumerator
 extern "C"
 {
 
-EWXWEXPORT(void*, wxFont_Create) (int pointSize, int family, int style, int weight, int underlined, char* face, int enc)
+EWXWEXPORT(void*, wxFont_Create) (int pointSize, int family, int style, int weight, int underlined, wxChar* face, int enc)
 {
 	return new wxFont (pointSize, family, style, weight, underlined != 0, face, (wxFontEncoding)enc);
 }
@@ -84,8 +84,7 @@ EWXWEXPORT(int, wxFont_GetUnderlined)(void* _obj)
 EWXWEXPORT(int, wxFont_GetFaceName)(void* _obj, void* _buf)
 {
 	wxString result = ((wxFont*)_obj)->GetFaceName();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxFont_GetEncoding)(void* _obj)
@@ -113,7 +112,7 @@ EWXWEXPORT(void, wxFont_SetWeight)(void* _obj, int weight)
 	((wxFont*)_obj)->SetWeight(weight);
 }
 	
-EWXWEXPORT(void, wxFont_SetFaceName)(void* _obj, char* faceName)
+EWXWEXPORT(void, wxFont_SetFaceName)(void* _obj, wxChar* faceName)
 {
 	((wxFont*)_obj)->SetFaceName(faceName);
 }
@@ -131,22 +130,19 @@ EWXWEXPORT(void, wxFont_SetEncoding)(void* _obj, int encoding)
 EWXWEXPORT(int, wxFont_GetFamilyString)(void* _obj, void* _buf)
 {
 	wxString result = ((wxFont*)_obj)->GetFamilyString();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxFont_GetStyleString)(void* _obj, void* _buf)
 {
 	wxString result = ((wxFont*)_obj)->GetStyleString();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxFont_GetWeightString)(void* _obj, void* _buf)
 {
 	wxString result = ((wxFont*)_obj)->GetWeightString();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxFont_GetDefaultEncoding)(void* _obj)
@@ -177,7 +173,7 @@ EWXWEXPORT(int,wxFontEnumerator_EnumerateFacenames)(void* _obj, int encoding, in
 	
 EWXWEXPORT(int,wxFontEnumerator_EnumerateEncodings)(void* _obj, void* facename)
 {
-	return (int)((ELJFontEnumerator*)_obj)->EnumerateEncodings((const char*)facename);
+	return (int)((ELJFontEnumerator*)_obj)->EnumerateEncodings((const wxChar*)facename);
 }
 	
 
@@ -188,12 +184,12 @@ EWXWEXPORT(void*, wxFontMapper_Create)()
 
 EWXWEXPORT(int,wxFontMapper_GetAltForEncoding)(void* _obj, int encoding, void* alt_encoding, void* _buf)
 {
-	return (int)((wxFontMapper*)_obj)->GetAltForEncoding((wxFontEncoding)encoding, (wxFontEncoding*)alt_encoding, (const char*)_buf, false);
+	return (int)((wxFontMapper*)_obj)->GetAltForEncoding((wxFontEncoding)encoding, (wxFontEncoding*)alt_encoding, (const wxChar*)_buf, false);
 }
 	
 EWXWEXPORT(int,wxFontMapper_IsEncodingAvailable)(void* _obj, int encoding, void* _buf)
 {
-	return (int)((wxFontMapper*)_obj)->IsEncodingAvailable((wxFontEncoding)encoding, (const char*)_buf);
+	return (int)((wxFontMapper*)_obj)->IsEncodingAvailable((wxFontEncoding)encoding, (const wxChar*)_buf);
 }
 	
 

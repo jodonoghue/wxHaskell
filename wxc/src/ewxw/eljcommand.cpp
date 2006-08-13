@@ -43,9 +43,7 @@ EWXWEXPORT(void,ELJCommand_Delete)(void* _obj)
 
 EWXWEXPORT(int,ELJCommand_GetName)(void* _obj, void* _buf)
 {
-	wxString tmp = ((ELJCommand*)_obj)->GetName();
-	if (_buf) memcpy (_buf, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return copyStrToBuf(_buf, ((ELJCommand*)_obj)->GetName());
 }
 
 EWXWEXPORT(int,ELJCommand_CanUndo)(void* _obj)

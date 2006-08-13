@@ -3,7 +3,7 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxMDIParentFrame_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
+EWXWEXPORT(void*, wxMDIParentFrame_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
 	return (void*) new wxMDIParentFrame ((wxWindow*)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl);
 }
@@ -64,7 +64,7 @@ EWXWEXPORT(void, wxMDIParentFrame_ActivatePrevious)(void* _obj)
 	((wxMDIParentFrame*)_obj)->ActivatePrevious();
 }
 	
-EWXWEXPORT(void*, wxMDIChildFrame_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
+EWXWEXPORT(void*, wxMDIChildFrame_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
 	return (void*) new wxMDIChildFrame ((wxMDIParentFrame *)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl);
 }

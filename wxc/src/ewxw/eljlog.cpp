@@ -108,12 +108,12 @@ EWXWEXPORT(void,ELJLog_SetTraceMask)(void* _obj, int ulMask)
 	
 EWXWEXPORT(void,ELJLog_AddTraceMask)(void* _obj, void* str)
 {
-	((ELJLog*)_obj)->AddTraceMask((const char*)str);
+	((ELJLog*)_obj)->AddTraceMask((const wxChar*)str);
 }
 	
 EWXWEXPORT(void,ELJLog_RemoveTraceMask)(void* _obj, void* str)
 {
-	((ELJLog*)_obj)->RemoveTraceMask((const char*)str);
+	((ELJLog*)_obj)->RemoveTraceMask((const wxChar*)str);
 }
 	
 EWXWEXPORT(void,ELJLog_SetTimestamp)(void* _obj, void* ts)
@@ -153,22 +153,22 @@ EWXWEXPORT(void*,ELJSysErrorMsg)(int nErrCode)
 
 EWXWEXPORT(void,LogErrorMsg)(void* _msg)
 {
-	wxLogError((char*)_msg);
+	wxLogError((wxChar*)_msg);
 }
 
 EWXWEXPORT(void,LogFatalErrorMsg)(void* _msg)
 {
-	wxLogFatalError((char*)_msg);
+	wxLogFatalError((wxChar*)_msg);
 }
 
 EWXWEXPORT(void,LogWarningMsg)(void* _msg)
 {
-	wxLogWarning((char*)_msg);
+	wxLogWarning((wxChar*)_msg);
 }
 
 EWXWEXPORT(void,LogMessageMsg)(void* _msg)
 {
-	wxLogMessage((char*)_msg);
+	wxLogMessage((wxChar*)_msg);
 }
 
 

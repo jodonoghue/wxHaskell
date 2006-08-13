@@ -115,12 +115,12 @@ EWXWEXPORT(void, wxDC_DrawBitmap)(void* _obj, void* bmp, int x, int y, int useMa
 	
 EWXWEXPORT(void, wxDC_DrawText)(void* _obj, void* text, int x, int y)
 {
-	((wxDC*)_obj)->DrawText((char*)text, (wxCoord)x, (wxCoord)y);
+	((wxDC*)_obj)->DrawText((wxChar*)text, (wxCoord)x, (wxCoord)y);
 }
 	
 EWXWEXPORT(void, wxDC_DrawRotatedText)(void* _obj, void* text, int x, int y, double angle)
 {
-	((wxDC*)_obj)->DrawRotatedText((char*)text, (wxCoord)x, (wxCoord)y, angle);
+	((wxDC*)_obj)->DrawRotatedText((wxChar*)text, (wxCoord)x, (wxCoord)y, angle);
 }
 	
 EWXWEXPORT(int, wxDC_Blit)(void* _obj, int xdest, int ydest, int width, int height, void* source, int xsrc, int ysrc, int rop, int useMask)
@@ -135,7 +135,7 @@ EWXWEXPORT(void, wxDC_Clear)(void* _obj)
 	
 EWXWEXPORT(int, wxDC_StartDoc)(void* _obj, void* msg)
 {
-	return (int)((wxDC*)_obj)->StartDoc((char*)msg);
+	return (int)((wxDC*)_obj)->StartDoc((wxChar*)msg);
 }
 	
 EWXWEXPORT(void, wxDC_EndDoc)(void* _obj)
@@ -215,7 +215,7 @@ EWXWEXPORT(int, wxDC_GetCharWidth)(void* _obj)
 	
 EWXWEXPORT(void, wxDC_GetTextExtent)(void* _obj, void* string, void* x, void* y, void* descent, void* externalLeading, void* theFont)
 {
-	((wxDC*)_obj)->GetTextExtent((char*)string, (wxCoord*)x, (wxCoord*)y, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
+	((wxDC*)_obj)->GetTextExtent((wxChar*)string, (wxCoord*)x, (wxCoord*)y, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
 }
 	
 EWXWEXPORT(void, wxDC_GetSize)(void* _obj, void* width, void* height)
@@ -528,7 +528,7 @@ EWXWEXPORT(void*,wxMetafileDC_Create)(void* _file)
 #else
 	wxString file;
 	
-	if (_file) file = (char*)_file;
+	if (_file) file = (wxChar*)_file;
 
     return (void*)new wxMetafileDC(file);
 #endif
@@ -557,7 +557,7 @@ EWXWEXPORT(void*,wxMetafile_Create)(void* _file)
 #else
 	wxString file;
 	
-	if (_file) file = (char*)_file;
+	if (_file) file = (wxChar*)_file;
 
     return (void*)new wxMetafile(file);
 #endif

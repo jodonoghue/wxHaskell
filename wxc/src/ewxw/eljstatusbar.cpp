@@ -24,14 +24,13 @@ EWXWEXPORT(int, wxStatusBar_GetFieldsCount)(void* _obj)
 	
 EWXWEXPORT(void, wxStatusBar_SetStatusText)(void* _obj, void* text, int number)
 {
-	((wxStatusBar*)_obj)->SetStatusText((char*)text, number);
+	((wxStatusBar*)_obj)->SetStatusText((wxChar*)text, number);
 }
 	
 EWXWEXPORT(int, wxStatusBar_GetStatusText)(void* _obj, int number, void* _buf)
 {
 	wxString result = ((wxStatusBar*)_obj)->GetStatusText(number);
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxStatusBar_SetStatusWidths)(void* _obj, int n, int* widths)

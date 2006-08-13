@@ -8,7 +8,7 @@ EWXWEXPORT(void*, wxCheckListBox_Create) (void* _prt, int _id, int _lft, int _to
 	wxCheckListBox* result = new wxCheckListBox ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), 0, NULL, _stl, wxDefaultValidator);
 
 	for (int i = 0; i < _n; i++)
-		result->Append(((char**)_str)[i]);
+		result->Append(((wxChar**)_str)[i]);
 
 	return (void*) result;
 }

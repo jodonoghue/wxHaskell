@@ -62,7 +62,7 @@ EWXWEXPORT(void, wxListItem_SetStateMask)(void* _obj, int stateMask)
 	
 EWXWEXPORT(void, wxListItem_SetText)(void* _obj, void* text)
 {
-	((wxListItem*)_obj)->SetText((char*)text);
+	((wxListItem*)_obj)->SetText((wxChar*)text);
 }
 	
 EWXWEXPORT(void, wxListItem_SetImage)(void* _obj, int image)
@@ -128,8 +128,7 @@ EWXWEXPORT(int, wxListItem_GetState)(void* _obj)
 EWXWEXPORT(int, wxListItem_GetText)(void* _obj, void* _buf)
 {
 	wxString result = ((wxListItem*)_obj)->GetText();
-	if (_buf) memcpy (_buf, result.c_str(), result.Length());
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(int, wxListItem_GetImage)(void* _obj)
@@ -238,7 +237,7 @@ EWXWEXPORT(int, wxListCtrl_SetItemFromInfo)(void* _obj, void* info)
 	
 EWXWEXPORT(int, wxListCtrl_SetItem)(void* _obj, int index, int col, void* label, int imageId)
 {
-	return (int)((wxListCtrl*)_obj)->SetItem((long)index, col, (char*)label, imageId);
+	return (int)((wxListCtrl*)_obj)->SetItem((long)index, col, (wxChar*)label, imageId);
 }
 	
 EWXWEXPORT(int, wxListCtrl_GetItemState)(void* _obj, int item, int stateMask)
@@ -259,16 +258,12 @@ EWXWEXPORT(int, wxListCtrl_SetItemImage)(void* _obj, int item, int image, int se
 EWXWEXPORT(int, wxListCtrl_GetItemText)(void* _obj, int item, void* buf)
 {
 	wxString res = ((wxListCtrl*)_obj)->GetItemText((long)item);
-
-	if (buf)
-		memcpy(buf, res.c_str(), res.Length());
-
-	return res.Length();
+        return copyStrToBuf(buf, res);
 }
 	
 EWXWEXPORT(void, wxListCtrl_SetItemText)(void* _obj, int item, void* str)
 {
-	((wxListCtrl*)_obj)->SetItemText((long)item, (char*)str);
+	((wxListCtrl*)_obj)->SetItemText((long)item, (wxChar*)str);
 }
 	
 EWXWEXPORT(int, wxListCtrl_GetItemData)(void* _obj, int item)
@@ -426,7 +421,7 @@ EWXWEXPORT(int, wxListCtrl_EnsureVisible)(void* _obj, int item)
 	
 EWXWEXPORT(int, wxListCtrl_FindItem)(void* _obj, int start, void* str, int partial)
 {
-	return (long)((wxListCtrl*)_obj)->FindItem((long)start, (char*) str, partial != 0);
+	return (long)((wxListCtrl*)_obj)->FindItem((long)start, (wxChar*) str, partial != 0);
 }
 	
 EWXWEXPORT(int, wxListCtrl_FindItemByData)(void* _obj, int start, int data)
@@ -451,7 +446,7 @@ EWXWEXPORT(int, wxListCtrl_InsertItem)(void* _obj, void* info)
 	
 EWXWEXPORT(int, wxListCtrl_InsertItemWithData)(void* _obj, int index, void* label)
 {
-	return (int)((wxListCtrl*)_obj)->InsertItem((long)index, (char*)label);
+	return (int)((wxListCtrl*)_obj)->InsertItem((long)index, (wxChar*)label);
 }
 	
 EWXWEXPORT(int, wxListCtrl_InsertItemWithImage)(void* _obj, int index, int imageIndex)
@@ -461,7 +456,7 @@ EWXWEXPORT(int, wxListCtrl_InsertItemWithImage)(void* _obj, int index, int image
 	
 EWXWEXPORT(int, wxListCtrl_InsertItemWithLabel)(void* _obj, int index, void* label, int imageIndex)
 {
-	return (int)((wxListCtrl*)_obj)->InsertItem((long)index, (char*)label, imageIndex);
+	return (int)((wxListCtrl*)_obj)->InsertItem((long)index, (wxChar*)label, imageIndex);
 }
 	
 EWXWEXPORT(int, wxListCtrl_InsertColumnFromInfo)(void* _obj, int col, void* info)
@@ -471,7 +466,7 @@ EWXWEXPORT(int, wxListCtrl_InsertColumnFromInfo)(void* _obj, int col, void* info
 	
 EWXWEXPORT(int, wxListCtrl_InsertColumn)(void* _obj, int col, void* heading, int format, int width)
 {
-	return (int)((wxListCtrl*)_obj)->InsertColumn((long)col, (char*) heading, format, width);
+	return (int)((wxListCtrl*)_obj)->InsertColumn((long)col, (wxChar*) heading, format, width);
 }
 	
 EWXWEXPORT(int, wxListCtrl_ScrollList)(void* _obj, int dx, int dy)

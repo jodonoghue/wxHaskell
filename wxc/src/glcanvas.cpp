@@ -31,7 +31,7 @@ EWXWEXPORT(wxGLCanvas*,wxGLCanvas_Create)(wxWindow* parent, int windowID,
 {
 #ifdef wxUSE_GLCANVAS 
   return new wxGLCanvas(parent,windowID,wxPoint(x,y),wxSize(w,h),style,
-    (title ? *title : wxString("GLCanvas")), attributes, 
+    (title ? *title : wxString(wxT("GLCanvas"))), attributes, 
     (palette ? *palette : wxNullPalette));
 #else
   return NULL;
@@ -45,7 +45,7 @@ EWXWEXPORT(wxGLCanvas*,wxGLCanvas_CreateShared)(wxWindow* parent, wxGLCanvas* sh
 {
 #ifdef wxUSE_GLCANVAS 
   return new wxGLCanvas(parent,sharedCanvas,windowID,wxPoint(x,y),wxSize(w,h),style,
-    (title ? *title : wxString("GLCanvas")), attributes, 
+    (title ? *title : wxString(wxT("GLCanvas"))), attributes, 
     (palette ? *palette : wxNullPalette));
 #else
   return NULL;
@@ -65,7 +65,7 @@ EWXWEXPORT(void,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)
 #ifdef wxUSE_GLCANVAS 
   wxString name = wxTheColourDatabase->FindName( *colour );
   if (name.IsEmpty()) 
-    self->SetColour(wxString("WHITE"));
+    self->SetColour(wxString(wxT("WHITE")));
   else
     self->SetColour(name);
 #endif

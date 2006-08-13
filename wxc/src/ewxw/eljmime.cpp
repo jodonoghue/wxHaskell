@@ -59,7 +59,7 @@ EWXWEXPORT(int, wxFileType_GetMimeType) (void* _obj, void* _buf)
 	wxString result;
 	
 	if (((wxFileType*)_obj)->GetMimeType(&result) && _buf)
-		memcpy (_buf, result.c_str(), result.Length());
+		copyStrToBuf(_buf, result);
 	
 	return result.Length();
 }
@@ -100,7 +100,7 @@ EWXWEXPORT(int, wxFileType_GetDescription) (void* _obj, void* _buf)
 	wxString result;
 	
 	if (((wxFileType*)_obj)->GetDescription(&result) && _buf)
-		memcpy (_buf, result.c_str(), result.Length());
+		copyStrToBuf(_buf, result);
 	
 	return result.Length();
 }
@@ -110,7 +110,7 @@ EWXWEXPORT(int, wxFileType_GetOpenCommand) (void* _obj, void* _buf, void* _param
 	wxString result;
 	
 	if (((wxFileType*)_obj)->GetOpenCommand(&result, *((wxFileType::MessageParameters*)_params)) && _buf)
-		memcpy (_buf, result.c_str(), result.Length());
+		copyStrToBuf(_buf, result);
 
 	return result.Length();
 }
@@ -120,7 +120,7 @@ EWXWEXPORT(int, wxFileType_GetPrintCommand) (void* _obj, void* _buf, void* _para
 	wxString result;
 	
 	if (((wxFileType*)_obj)->GetPrintCommand(&result, *((wxFileType::MessageParameters*)_params)) && _buf)
-		memcpy (_buf, result.c_str(), result.Length());
+		copyStrToBuf(_buf, result);
 
 	return result.Length();
 }
@@ -129,10 +129,7 @@ EWXWEXPORT(int, wxFileType_ExpandCommand) (void* _obj, void* _cmd, void* _params
 {
 	wxString result = ((wxFileType*)_obj)->ExpandCommand((const char*)_cmd, *((wxFileType::MessageParameters*)_params));
 	
-	if (_buf)
-		memcpy (_buf, result.c_str(), result.Length());
-
-	return result.Length();
+	return copyStrToBuf(_buf, result);
 }
 	
 EWXWEXPORT(void, wxFileType_Delete) (void* _obj)

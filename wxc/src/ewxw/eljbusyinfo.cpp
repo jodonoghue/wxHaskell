@@ -6,7 +6,7 @@ extern "C"
 
 EWXWEXPORT(void*, wxBusyInfo_Create) (void* _txt)
 {
-	return (void*) new wxBusyInfo ((char*)_txt);
+	return (void*) new wxBusyInfo ((wxChar*)_txt);
 }
 
 EWXWEXPORT(void, wxBusyInfo_Delete) (void* _obj)

@@ -8,9 +8,9 @@ EWXWEXPORT(void*, wxWizard_Create) (void* _prt, int _id, void* _txt, void* _bmp,
 	wxBitmap bmp = wxNullBitmap;
 	if (_bmp) bmp = *((wxBitmap*)_bmp);
 #if wxVERSION_NUMBER >= 2400
-	return (void*) new wxWizard ((wxWindow*)_prt, _id, (char*)_txt, bmp, wxPoint(_lft, _top));
+	return (void*) new wxWizard ((wxWindow*)_prt, _id, (wxChar*)_txt, bmp, wxPoint(_lft, _top));
 #else
-	return (void*) wxWizard::Create ((wxWindow*)_prt, _id, (char*)_txt, bmp, wxPoint(_lft, _top), wxSize(_wdt, _hgt));
+	return (void*) wxWizard::Create ((wxWindow*)_prt, _id, (wxChar*)_txt, bmp, wxPoint(_lft, _top), wxSize(_wdt, _hgt));
 #endif
 }
 

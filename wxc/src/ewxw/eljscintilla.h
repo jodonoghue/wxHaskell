@@ -41,7 +41,7 @@ public:
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize, long style = 0,
             const wxValidator& validator = wxDefaultValidator,
-            const wxString& name = "wxScintilla")
+            const wxString& name = wxT("wxScintilla"))
     {
         Create(parent, id, pos, size, style, validator, name);
     }
@@ -50,7 +50,7 @@ public:
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize, long style = 0,
             const wxValidator& validator = wxDefaultValidator,
-            const wxString& name = "wxScintilla");
+            const wxString& name = wxT("wxScintilla"));
 
     static wxSize GetDefaultSize();
 

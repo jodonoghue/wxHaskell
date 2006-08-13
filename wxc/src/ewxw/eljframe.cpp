@@ -3,7 +3,7 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxFrame_Create) (void* _prt, int _id, char* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
+EWXWEXPORT(void*, wxFrame_Create) (void* _prt, int _id, wxChar* _txt, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
 	return (void*) new wxFrame ((wxWindow*)_prt, _id, _txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl);
 }
@@ -78,7 +78,7 @@ EWXWEXPORT(void, wxFrame_SetStatusBar)(void* _obj, void* statBar)
 	((wxFrame*)_obj)->SetStatusBar((wxStatusBar*) statBar);
 }
 	
-EWXWEXPORT(void, wxFrame_SetStatusText)(void* _obj, char* _txt, int _number)
+EWXWEXPORT(void, wxFrame_SetStatusText)(void* _obj, wxChar* _txt, int _number)
 {
 	((wxFrame*)_obj)->SetStatusText(_txt, _number);
 }
