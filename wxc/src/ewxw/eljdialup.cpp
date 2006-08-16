@@ -1,6 +1,10 @@
 #include "wrapper.h"
 #include "wx/dialup.h"
 
+#if defined (wxUSE_UNICODE) && (wxUSE_UNICODE==0)
+# undef wxUSE_UNICODE
+#endif
+
 extern "C"
 {
 
