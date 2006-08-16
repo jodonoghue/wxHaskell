@@ -92,7 +92,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , CInt, toCInt, fromCInt, withIntResult
             -- *** CChar
             , CChar, toCChar, fromCChar, withCharResult
-            , CWchar, toCWchar,
+            , CWchar, toCWchar
             -- *** CBool
             , CBool, toCBool, fromCBool, withBoolResult
             -- ** Pointers
