@@ -26,7 +26,10 @@ typedef void* HENV;
 # define wxDb            void
 # define wxDbConnectInf  void
 #endif
-
+ 
+#if defined(wxUSE_UNICODE) && (wxUSE_UNICODE==0)
+# undef wxUSE_UNICODE
+#endif
 
 /* used for easy marshalling in Haskell */
 enum StandardSqlType {
@@ -180,7 +183,7 @@ EWXWEXPORT(wxDb*,wxDb_GetConnection)( wxDbConnectInf* connectInf, bool fwdCursor
 #endif
 }
 
-EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, char* dsn, int dsnLen, char* description, int descLen, int direction)
+EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, wxChar* dsn, int dsnLen, char* description, int descLen, int direction)
 {
   if (dsn && dsnLen > 0)   *dsn = '\0';
   if (description && descLen > 0) *description = '\0';
@@ -805,7 +808,7 @@ EWXWEXPORT(int,wxDb_TablePrivileges)(wxDb* db, wxString* tableName, wxString* pr
   if (schema!=NULL && schema->IsEmpty()) {
     schema=NULL;
   }
-  return db->TablePrivileges(*tableName,*privileges,(userName==NULL ? "" : userName->c_str()),(schema ? schema->c_str() : NULL),*path);
+  return db->TablePrivileges(*tableName,*privileges,(userName==NULL ? wxT("") : userName->c_str()),(schema ? schema->c_str() : NULL),*path);
 #else
   return false;
 #endif
@@ -1150,7 +1153,12 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
 
     /* get the column information */
     retcode = SQLDescribeCol(hstmt, column+1,
-                            (UCHAR*) colInf[column].colName, DB_MAX_COLUMN_NAME_LEN+1, &colNameLen,
+#ifndef wxUSE_UNICODE
+                            (SQLCHAR*) colInf[column].colName,
+#else
+                            (SQLWCHAR*) colInf[column].colName,
+#endif
+                            DB_MAX_COLUMN_NAME_LEN+1, &colNameLen,
                             &colInf[column].sqlDataType,
                             &colSize,
                             &colInf[column].decimalDigits, 
