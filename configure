@@ -4,6 +4,7 @@
 #  Configure script for wxHaskell
 #
 #  Copyright (c) 2003, 2004 Daan Leijen.
+#  Copyright (c) 2006 Jeremy O'Donoghue (jeremy.odonoghue@gmail.com)
 #
 #  See license.txt for details.
 #------------------------------------------------------------------------
@@ -11,7 +12,7 @@
 #--------------------------------------------------------------------
 # Versioning
 #--------------------------------------------------------------------
-version="0.9.4"
+version="0.10.1"
 release="0"
 
 #--------------------------------------------------------------------
@@ -151,7 +152,7 @@ preprocess_args ()
 	lib=""
 	dll=".dll"
 	wxtoolkit="msw"
-	wxversion="2.4.2";;  # guess?
+	wxversion="2.6.3";;  # guess?
      *)
         arguments="$arguments $1";;    # save argument
     esac
@@ -372,7 +373,7 @@ process_args ()
 	  lib=""
 	  dll=".dll"
 	  wxtoolkit="msw"
-	  wxversion="2.4.2";;  # guess?
+	  wxversion="2.6.3";;  # guess?
       -wxc-libname=*|--wxc-libname=*)
 	  if test "$withmsc" = "yes"; then
 	    wxclibname="$arg"
