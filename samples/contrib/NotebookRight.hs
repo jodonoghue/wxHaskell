@@ -22,7 +22,7 @@ gui
        p       <- panel f []
        
        -- use text control as logger
-       textlog <- textCtrl p WrapLine [enabled := False]
+       textlog <- textCtrl p [wrap := WrapLine, enabled := False]
        textCtrlMakeLogActiveTarget textlog
        logMessage "logging enabled"              
        
@@ -33,7 +33,7 @@ gui
        -- button page
        nb   <- notebookRight p []
        p1   <- panel  nb []
-       ok   <- bitmapButton p1 [image := "../bitmaps/wxwin16.png",
+       ok   <- bitmapButton p1 [picture := "../bitmaps/wxwin16.png",
                                 text := "Ok", on command := logMessage "bitmap button pressed", 
                                 tooltip := "tooltip",
                                 on clickRight := (\pt -> menuPopup file pt p)]

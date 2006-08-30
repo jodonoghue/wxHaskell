@@ -23,10 +23,10 @@ gui
        bm  <- bitmapCreateFromImage im (-1)
        f   <- frame [text := "Paint demo", fullRepaintOnResize := False]
        sw  <- scrolledWindow f [on paintRaw := onpaint bm
-                               ,virtualSize := rgbSize, scrollRate := size 10 10
+                               ,virtualSize := rgbSize, scrollRate := sz 10 10
                                ,fullRepaintOnResize := False ]
        set f [layout     := fill $ widget sw
-             ,clientSize := size 200 200
+             ,clientSize := sz 200 200
              ,on closing := do bitmapDelete bm
                                imageDelete im
                                propagateEvent
