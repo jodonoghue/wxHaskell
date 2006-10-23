@@ -121,6 +121,11 @@ module Graphics.UI.WXCore.Events
         -- Idle events
         , appRegisterIdle
 
+        -- * Calenders
+        , EventCalendar(..)
+        , calendarCtrlOnCalEvent 
+        , calendarCtrlGetOnCalEvent
+
         -- * Types
         -- ** Streams
         , StreamStatus(..), streamStatusFromInt
@@ -2035,6 +2040,55 @@ appUnregisterIdle ival
     remove ival []       = [] -- very wrong!
     remove ival (i:is)   | ival == i  = is
                          | otherwise  = i : remove ival is
+
+
+{-----------------------------------------------------------------------------------------
+  Calender events
+-----------------------------------------------------------------------------------------}
+data EventCalendar
+    = CalendarDayChanged (DateTime ())
+    | CalendarDoubleClicked (DateTime ())
+    | CalendarMonthChanged (DateTime ())
+    | CalendarSelectionChanged (DateTime ())
+    | CalendarWeekdayClicked Int
+    | CalendarYearChanged (DateTime ())
+    | CalendarUnknown
+ 
+fromCalendarEvent :: CalendarEvent a -> IO EventCalendar
+fromCalendarEvent calEvent
+    = do tp <- eventGetEventType calEvent
+         case lookup tp calEvents of
+           Just f  -> f calEvent
+           Nothing -> return CalendarUnknown
+ 
+calEvents :: [(Int, CalendarEvent a -> IO EventCalendar)]
+calEvents
+    = [(wxEVT_CALENDAR_DAY_CHANGED    ,withDate CalendarDayChanged)
+      ,(wxEVT_CALENDAR_DOUBLECLICKED  ,withDate CalendarDoubleClicked)
+      ,(wxEVT_CALENDAR_MONTH_CHANGED  ,withDate CalendarMonthChanged)
+      ,(wxEVT_CALENDAR_SEL_CHANGED    ,withDate CalendarSelectionChanged)
+      ,(wxEVT_CALENDAR_WEEKDAY_CLICKED,withWeekday CalendarWeekdayClicked)
+      ,(wxEVT_CALENDAR_YEAR_CHANGED   ,withDate CalendarYearChanged)]
+    where withDate event calEvent
+              = do date <- dateTimeCreate
+                   withObjectPtr date $ calendarEventGetDate calEvent
+                   return (event date)
+          withWeekday event calEvent
+              = fmap event $ calendarEventGetWeekDay calEvent
+ 
+-- | Set a calendar event handler.
+calendarCtrlOnCalEvent :: CalendarCtrl a -> (EventCalendar -> IO ()) -> IO ()
+calendarCtrlOnCalEvent calCtrl eventHandler
+  = windowOnEvent calCtrl (map fst calEvents) eventHandler calHandler
+  where
+    calHandler event
+      = do eventCalendar <- fromCalendarEvent (objectCast event)
+           eventHandler eventCalendar
+ 
+-- | Get the current calendar event handler of a window.
+calendarCtrlGetOnCalEvent :: CalendarCtrl a -> IO (EventCalendar -> IO ())
+calendarCtrlGetOnCalEvent calCtrl
+  = unsafeWindowGetHandlerState calCtrl wxEVT_CALENDAR_SEL_CHANGED (\event -> skipCurrentEvent)
 
 
 ------------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------
 {-| Module      :  Events
     Copyright   :  (c) Daan Leijen 2003
+                   (c) Shelarcy (shelarcy@gmail.com) 2006
     License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
@@ -53,6 +54,13 @@
 
     > set w [on closing := do{ ...; propagateEvent }]
 -}
+
+{-
+    Modification History:
+    When    Who                          What
+    300806  jeremy.odonoghue@gmail.com   Add support for calendar event
+                                         (on behalf of shelarcy@gmail.com)
+-}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Events
             ( -- * Event
@@ -94,6 +102,10 @@ module Graphics.UI.WX.Events
             , EventMouse (..)
             , showMouse
             , mousePos, mouseModifiers
+
+            -- ** Calender event
+            , EventCalendar(..)
+            , calendarEvent
 
             -- ** Keyboard events
             , EventKey (..), Key(..)
@@ -311,6 +323,13 @@ keyboardFilter1 name filter
          then new (keyKey keyboardEvent)
          else prev keyboardEvent
 
+
+{--------------------------------------------------------------------
+   Calender event filters
+--------------------------------------------------------------------}
+calendarEvent :: Event (CalendarCtrl a) (EventCalendar -> IO ())
+calendarEvent
+  = newEvent "calendarEvent" calendarCtrlGetOnCalEvent calendarCtrlOnCalEvent
 
 
 {--------------------------------------------------------------------
