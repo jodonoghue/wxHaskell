@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------
 {-| Module      :  Controls
     Copyright   :  (c) Daan Leijen 2003
+                   (c) Shelarcy (shelarcy@gmail.com) 2006
     License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
@@ -9,6 +10,13 @@
     Portability :  portable
 
    Defines common GUI controls.
+-}
+
+{-
+    Modification History:
+    When    Who                          What
+    300806  jeremy.odonoghue@gmail.com   Set list item mask (wxLIST_MASK_TEXT)
+                                         (on behalf of shelarcy@gmail.com)
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Controls
@@ -875,6 +883,7 @@ instance Items (ListCtrl a) [String] where
                   (\li -> do count <- listCtrlGetColumnCount l
                              mapM (\column -> do listItemSetColumn li (column-1)
                                                  listItemSetId li i
+                                                 listItemSetMask li wxLIST_MASK_TEXT
                                                  listCtrlGetItem l li
                                                  listItemGetText li) [1..count])
 
