@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------
 {-| Module      :  Menu
     Copyright   :  (c) Daan Leijen 2003
+                   (c) Shelarcy (shelarcy@gmail.com) 2006
     License     :  wxWindows
 
     Maintainer  :  daan@cs.uu.nl
@@ -23,6 +24,12 @@
    >    set frame [menuBar          := [file] 
    >              ,on (menu mclose) := ...] 
 
+-}
+{-
+    Modification History:
+    When    Who                          What
+    300806  jeremy.odonoghue@gmail.com   Add support for toolbar divider
+                                         (on behalf of shelarcy@gmail.com)
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Menu
@@ -389,7 +396,7 @@ toolBarEx :: Frame a -> Bool -> Bool -> [Prop (ToolBar ())] -> IO (ToolBar ())
 toolBarEx parent showText showDivider props
   = do let style = ( wxTB_DOCKABLE .+. wxTB_FLAT
                    .+. (if showText then wxTB_TEXT else 0)
-                   .+. (if showDivider then 0 else 0x200) -- wxTB_NODIVIDER                   
+                   .+. (if showDivider then 0 else wxTB_NODIVIDER)
                    )
        t <- toolBarCreate parent idAny rectNull style
        frameSetToolBar parent t
