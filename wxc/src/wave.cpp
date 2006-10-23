@@ -1,5 +1,9 @@
 #include "wrapper.h"
+#if (wxVERSION_NUMBER >= 2500)
+#include "wx/sound.h"
+#else /* (wxVERSION_NUMBER >= 2500) */
 #include "wx/wave.h"
+#endif /* (wxVERSION_NUMBER >= 2500) */
 
 /* testing */
 // #define wxUSE_WAVE 0
@@ -13,13 +17,61 @@
 # undef wxUSE_WAVE
 #endif
 
+#if defined(wxUSE_SOUND) && (wxUSE_SOUND==0)
+# undef wxUSE_SOUND
+#endif
+
 #ifndef wxUSE_WAVE
 # define wxWave      void
 #endif
 
-
+#ifndef wxUSE_SOUND
+# define wxSound      void
+#endif
 
 extern "C" {
+
+#if (wxVERSION_NUMBER >= 2500)
+/*-----------------------------------------------------------------------------
+  Sound
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxSound*,wxWave_Create)( wxString* fileName, bool isResource )  
+{
+#ifdef wxUSE_SOUND 
+  return new wxSound(*fileName,isResource);
+#else
+  return NULL;
+#endif
+}
+
+EWXWEXPORT(void,wxWave_Delete)(wxSound* self)  
+{
+#ifdef wxUSE_SOUND 
+  if (self) delete self;
+#endif
+}
+
+EWXWEXPORT(bool,wxWave_IsOk)(wxSound* self)  
+{
+#ifdef wxUSE_SOUND 
+  return self->IsOk();
+#else
+  return false;
+#endif
+}
+
+#if (WXWIN_COMPATIBILITY_2_4==1)
+EWXWEXPORT(bool,wxWave_Play)(wxSound* self, bool async, bool looped )  
+{
+#ifdef wxUSE_SOUND 
+  return ((wxSoundBase *) self)->Play(async,looped);
+#else
+  return false;
+#endif
+}
+#endif
+
+#else /* (wxVERSION_NUMBER >= 2500) */
 
 /*-----------------------------------------------------------------------------
   Wave
@@ -58,6 +110,7 @@ EWXWEXPORT(bool,wxWave_Play)(wxWave* self, bool async, bool looped )
 #endif
 }
 
+#endif /* (wxVERSION_NUMBER >= 2500) */
 
 }
 

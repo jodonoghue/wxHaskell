@@ -1035,19 +1035,27 @@ EWXWEXPORT(int,wxDbColInf_GetSqlDataType)( wxDbColInf* self )
 EWXWEXPORT(int,wxDbColInf_GetColumnSize)( wxDbColInf* self )
 {
 #ifdef wxUSE_ODBC
+#if (wxVERSION_NUMBER <= 2500)
   return self->columnSize;
-#else
+#else /* wxVERSION_NUMBER */
+  return self->columnLength;
+#endif /* wxVERSION_NUMBER */
+#else /* wxUSE_ODBC */
   return (-1);
-#endif
+#endif /* wxUSE_ODBC */
 }
 
 EWXWEXPORT(int,wxDbColInf_GetBufferLength)( wxDbColInf* self )
 {
 #ifdef wxUSE_ODBC
+#if (wxVERSION_NUMBER <= 2500)
   return self->bufferLength;
-#else
+#else /* wxVERSION_NUMBER */
+  return self->bufferSize;
+#endif /* wxVERSION_NUMBER */
+#else /* wxUSE_ODBC */
   return (-1);
-#endif
+#endif /* wxUSE_ODBC */
 }
 
 EWXWEXPORT(int,wxDbColInf_GetDecimalDigits)( wxDbColInf* self )
@@ -1163,7 +1171,11 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
                             &colSize,
                             &colInf[column].decimalDigits, 
                             &colInf[column].nullable );
+#if (wxVERSION_NUMBER <= 2500)
     colInf[column].columnSize   = colSize;
+#else /* (wxVERSION_NUMBER <= 2500) */
+    colInf[column].columnLength = colSize;
+#endif /* (wxVERSION_NUMBER <= 2500) */
     
     /* check for errors */
     if (retcode != SQL_SUCCESS) {
