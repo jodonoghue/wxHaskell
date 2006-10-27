@@ -8,7 +8,7 @@ RPM-SOURCE-DIR=$(HOME)/rpm/SOURCES
 endif
 
 # main target
-all:	wx
+all:	wxcore
 
 #--------------------------------------------------------------------------
 # Help
@@ -268,9 +268,13 @@ realclean: wxcore-realclean
 #--------------------------------------------------------------------------
 # Install (unfortunately with extra clauses for the mac)
 #--------------------------------------------------------------------------
-install:	install-files wxcore-register wx-register
+install:	wxcore-install-files wxcore-register
+	@echo ------------------------------------------
+	@echo Done with wxcore...
+	@echo
+	@echo Now please run make wx and make wx-install
+	@echo ------------------------------------------
 
-install-files:  wx-install-files
 ifeq ($(TOOLKIT),mac)
 	@$(call install-files,config,$(BINDIR),config/macosx-app)
 endif
@@ -585,10 +589,12 @@ WX-DOCS		=$(WX-HS)
 WX-BINS		=$(WX-HIS) $(WX-LIBS)
 WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)-$(VERSION) -package $(WXCORE)-$(VERSION)
 
-WX-HSDIRS	=-i$(WX-SRCDIR) $(WXCORE-HSDIRS) 
+WX-HSDIRS	=-i$(WX-SRCDIR)
 
 # build main library
-wx: wxcore wxcore-install-files wxcore-register wxcore-clean wx-dirs $(WX-LIBS)
+wx: wx-dirs $(WX-LIBS)
+
+wx-install: wx-install-files wx-register
 
 wx-dirs:
 	@$(call ensure-dirs-of-files,$(WX-OBJS))
@@ -608,7 +614,7 @@ wx-bindist:
 wx-register:
 	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
 
-wx-install-files: wx wxcore-install-files
+wx-install-files: wx
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
 	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
@@ -629,7 +635,7 @@ $(WX-LIB): $(WX-OBJS)
 
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(WX-HCFLAGS) -i$(WXCORE-IMPORTSDIR),$(WX-IMPORTSDIR),$(WX-HSDIRS))
+	@$(call compile-hs,$@,$<,$(WX-HCFLAGS),$(WX-IMPORTSDIR),$(WX-HSDIRS))
 
 # automatically include all dependency information.
 -include $(WX-DEPS)
