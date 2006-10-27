@@ -25,6 +25,7 @@ help:
 	@echo " install-files   install, but do not register with the Haskell compiler"
 	@echo ""
 	@echo "distribution:"
+	@echo " before-dist     uninstall wxcore files, and make wxcore again"
 	@echo " dist            make a source, documentation, and binary distribution"
 	@echo " srcdist         make a source distribution (as a .zip file)"
 	@echo " docdist         make a documentation and samples zip file"
@@ -311,6 +312,8 @@ BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
 
+before-dist: wxcore-unregister wxcore-uninstall-files wxcore
+
 # full distribution
 dist: dist-dirs all srcdist bindist docdist
 
@@ -332,7 +335,7 @@ srcdist-clean:
 	-@$(call safe-remove-file,$(DIST-SRC))
 
 # generic binary distribution as a zip
-bindist: all bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
+bindist: bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore.pkg config/wx.pkg)
 ifeq ($(TOOLKIT),msw)
 ifeq ($(GHCOLD),no)
@@ -471,7 +474,7 @@ WXCORE-NONGEN-HS=$(filter-out $(WXCORE-GEN-HS),$(WXCORE-HS))
 
 WXCORE-BINS	=$(WXCORE-HIS) $(WXCORE-LIBS)
 WXCORE-DOCS	=$(filter-out $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/IntMap.hs,$(WXCORE-HS))
-WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)
+WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 
 
 # build main library
@@ -580,12 +583,12 @@ WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
 WX-DOCS		=$(WX-HS)
 WX-BINS		=$(WX-HIS) $(WX-LIBS)
-WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)
+WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)-$(VERSION) -package $(WXCORE)-$(VERSION)
 
 WX-HSDIRS	=-i$(WX-SRCDIR) $(WXCORE-HSDIRS) 
 
 # build main library
-wx: wxcore wx-dirs $(WX-LIBS)
+wx: wxcore wxcore-install-files wxcore-register wxcore-clean wx-dirs $(WX-LIBS)
 
 wx-dirs:
 	@$(call ensure-dirs-of-files,$(WX-OBJS))
@@ -598,7 +601,7 @@ wx-dist: $(WX-HS)
 	@$(call cp-srcdist, $^)
 
 # bindist
-wx-bindist: wx
+wx-bindist: 
 	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
 
 # install

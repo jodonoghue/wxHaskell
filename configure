@@ -856,7 +856,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: base,lang,haskell98,concurrent
+depends: base,haskell98
 extra-ld-opts:$extraldopts
 EOF
 cp -f config/wxcore-partial.pkg config/wxcore.pkg
