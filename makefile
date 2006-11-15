@@ -592,7 +592,7 @@ WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)-$(VERSION) -package $(WXCORE)
 WX-HSDIRS	=-i$(WX-SRCDIR)
 
 # build main library
-wx: wx-dirs $(WX-LIBS)
+wx: wxcore-clean wx-dirs $(WX-LIBS)
 
 wx-install: wx-install-files wx-register
 
