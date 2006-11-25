@@ -15,7 +15,7 @@ EWXWEXPORT(void, wxToolBar_Delete) (void* _obj)
 
 EWXWEXPORT(int, wxToolBar_AddControl) (void* _obj, void* ctrl)
 {
-	return (int)((wxToolBar*)_obj)->AddControl ((wxControl*)ctrl);
+	return ((wxToolBar*)_obj)->AddControl ((wxControl*)ctrl) != NULL;
 }
 
 EWXWEXPORT(void, wxToolBar_AddSeparator) (void* _obj)

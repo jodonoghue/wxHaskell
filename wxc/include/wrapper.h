@@ -4,6 +4,9 @@
 /* MSC: disable warning about int-to-bool conversion (just affects performance) */
 #pragma warning(disable: 4800)
 
+/* just to ensure that intptr_t exists */
+#include <inttypes.h>
+
 #include "ewxw_def.h"
 #include "wx/wx.h"
 #include "wx/tabctrl.h"

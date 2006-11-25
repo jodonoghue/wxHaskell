@@ -296,7 +296,7 @@ EWXWEXPORT(void, wxTreeCtrl_GetSelection)(void* _obj, void* _item)
 	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetSelection();
 }
 	
-EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, int* selections)
+EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, intptr_t* selections)
 {
 	int result = 0;
 	wxArrayTreeItemIds sel;
@@ -309,9 +309,9 @@ EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, int* selections)
 			*(((wxTreeItemId**)selections)[i]) = sel[i];
             */
 	    #if wxCHECK_VERSION(2,5,0)
-            selections[i] = (int)(((wxTreeItemId*)sel[i])->m_pItem);
+            selections[i] = (intptr_t)(((wxTreeItemId*)sel[i])->m_pItem);
             #else
-	    selections[i] = (int)(sel[i].m_pItem);
+	    selections[i] = (intptr_t)(sel[i].m_pItem);
 	    #endif
 	  }
 	}

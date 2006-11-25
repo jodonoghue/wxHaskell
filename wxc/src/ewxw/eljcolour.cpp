@@ -101,7 +101,7 @@ EWXWEXPORT(void, wxColour_SetByName)(void* _obj, void* _name)
 
 EWXWEXPORT(int, wxColour_ValidName)(void* _name)
 {
-	return (int) wxTheColourDatabase->FindColour ((wxChar*)_name);
+  return (wxTheColourDatabase->FindColour ((wxChar*)_name)) != NULL;
 }
 
 }

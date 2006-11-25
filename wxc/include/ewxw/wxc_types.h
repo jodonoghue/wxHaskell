@@ -99,7 +99,7 @@
 
 /* arrays */
 #define TArrayLen               int
-#define TArrayIntOut            int*
+#define TArrayIntOut            intptr_t*
 #define TArrayStringOut         TString*
 #define TArrayObjectOut(tp)     TClass(tp)*
 

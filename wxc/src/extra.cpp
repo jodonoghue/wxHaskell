@@ -192,7 +192,7 @@ public:
   wxInputSink( wxInputStream* input, wxEvtHandler* evtHandler, int bufferLen );
   ~wxInputSink();
 
-  int  GetId();
+  intptr_t GetId();
   void Start();
 };
 
@@ -219,9 +219,9 @@ void wxInputSink::Start()
   }
 }
 
-int wxInputSink::GetId()
+intptr_t wxInputSink::GetId()
 {
-  return (int)m_input;
+  return (intptr_t)m_input;
 }
 
 wxThread::ExitCode wxInputSink::Entry()
