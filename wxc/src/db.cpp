@@ -183,7 +183,7 @@ EWXWEXPORT(wxDb*,wxDb_GetConnection)( wxDbConnectInf* connectInf, bool fwdCursor
 #endif
 }
 
-EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, wxChar* dsn, int dsnLen, char* description, int descLen, int direction)
+EWXWEXPORT(int,wxDb_GetDataSource)( void* henv, wxChar* dsn, int dsnLen, wxChar* description, int descLen, int direction)
 {
   if (dsn && dsnLen > 0)   *dsn = '\0';
   if (description && descLen > 0) *description = '\0';
