@@ -5,7 +5,9 @@
 #pragma warning(disable: 4800)
 
 /* just to ensure that intptr_t exists */
+#ifndef  _MSC_VER
 #include <inttypes.h>
+#endif
 
 #include "ewxw_def.h"
 #include "wx/wx.h"
