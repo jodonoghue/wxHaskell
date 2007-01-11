@@ -62,6 +62,11 @@ module Graphics.UI.WXCore.Events
         , evtHandlerOnInput
         , evtHandlerOnInputSink
 
+        -- ** Raw STC export
+        , EventSTC(..)
+        , stcOnSTCEvent
+        , stcGetOnSTCEvent
+
         -- ** Print events
         , EventPrint(..)
         , printOutOnPrint
@@ -203,7 +208,7 @@ module Graphics.UI.WXCore.Events
         , unsafeWindowGetHandlerState
         ) where
 
-import List( intersperse )
+import List( intersperse, findIndex )
 import System.Environment( getProgName, getArgs )
 import Foreign.StablePtr
 import Foreign.Ptr
@@ -211,6 +216,7 @@ import Foreign.C.String
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 
+import Data.Char ( chr ) -- used in stc
 import Control.Concurrent.MVar
 import System.IO.Unsafe( unsafePerformIO )
 
@@ -374,7 +380,190 @@ spinCtrlGetOnCommand :: SpinCtrl a -> IO (IO ())
 spinCtrlGetOnCommand spinCtrl
   = unsafeWindowGetHandlerState spinCtrl wxEVT_COMMAND_SPINCTRL_UPDATED (skipCurrentEvent)
 
+{-----------------------------------------------------------------------------------------
+  wxStyledTextCtrl's event
+-----------------------------------------------------------------------------------------}
+-- kolmodin 20050304:
+-- Drag and drop is not implemented in wxHaskell yet,
+-- events related to this is appear as STCUnknown instead.
+-- STCUnknown events are ignored and not passed along to the user.
 
+-- | Scintilla events. * Means extra information is available (excluding position,
+--   key and modifiers) but not yet implemented. ! means it's done
+data EventSTC
+    = STCChange             -- ^ ! wxEVT_STC_CHANGE.
+    | STCStyleNeeded        -- ^ ! wxEVT_STC_STYLENEEDED.
+    | STCCharAdded Char Int -- ^ ? wxEVT_STC_CHARADDED. The position seems to be broken
+    | STCSavePointReached   -- ^ ! wxEVT_STC_SAVEPOINTREACHED.
+    | STCSavePointLeft      -- ^ ! wxEVT_STC_SAVEPOINTLEFT.
+    | STCROModifyAttempt    -- ^ ! wxEVT_STC_ROMODIFYATTEMPT.
+    | STCKey                -- ^ * wxEVT_STC_KEY.
+			    -- kolmodin 20050304:
+			    -- is this event ever raised? not under linux.
+			    -- according to davve, not under windows either
+    | STCDoubleClick        -- ^ ! wxEVT_STC_DOUBLECLICK.
+    | STCUpdateUI           -- ^ ! wxEVT_STC_UPDATEUI.
+    | STCModified Int Int (Maybe String) Int Int Int Int Int          -- ^ ? wxEVT_STC_MODIFIED.
+    | STCMacroRecord Int Int Int  -- ^ ! wxEVT_STC_MACRORECORD iMessage wParam lParam
+    | STCMarginClick Bool Bool Bool Int Int -- ^ ? wxEVT_STC_MARGINCLICK.
+					    -- kolmodin 20050304:
+					    -- Add something nicer for alt, shift and ctrl?
+					    -- Perhaps a new datatype or a tuple.
+    | STCNeedShown Int Int  -- ^ ! wxEVT_STC_NEEDSHOWN length position.
+    | STCPainted            -- ^ ! wxEVT_STC_PAINTED. 
+    | STCUserListSelection Int String -- ^ ! wxEVT_STC_USERLISTSELECTION listType text
+    | STCUriDropped String  -- ^ ! wxEVT_STC_URIDROPPED
+    | STCDwellStart Point -- ^ ! wxEVT_STC_DWELLSTART
+    | STCDwellEnd Point   -- ^ ! wxEVT_STC_DWELLEND
+--  | STCStartDrag          -- ^ ** wxEVT_STC_START_DRAG.
+--  | STCDragOver           -- ^ ** wxEVT_STC_DRAG_OVER
+--  | STCDoDrop             -- ^ ** wxEVT_STC_DO_DROP
+    | STCZoom               -- ^ ! wxEVT_STC_ZOOM
+    | STCHotspotClick       -- ^ ! wxEVT_STC_HOTSPOT_CLICK
+    | STCHotspotDClick      -- ^ ! wxEVT_STC_HOTSPOT_DCLICK
+    | STCCalltipClick       -- ^ ! wxEVT_STC_CALLTIP_CLICK
+    | STCAutocompSelection  -- ^ ! wxEVT_STC_AUTOCOMP_SELECTION
+    |	STCUnknown            -- ^ Unknown event. Should never occur.
+
+instance Show EventSTC where
+    show STCChange = "(stc event: change)"
+    show STCStyleNeeded = "(stc event: style needed)"
+    show (STCCharAdded c p) = "(stc event: char added: " ++ show c ++ " at position " ++ show p ++ ")"
+    show STCSavePointReached = "(stc event: save point reached)"
+    show STCSavePointLeft = "(stc event: save point left)"
+    show STCROModifyAttempt = "(stc event: read only modify attempt)"
+    show STCKey = "(stc event: key)"
+    show STCDoubleClick = "(stc event: double click)"
+    show STCUpdateUI = "(stc event: update ui)"
+    show (STCModified p mt t len ladd line fln flp) = "(stc event: modified: position " ++ show p ++ ", modtype " ++ show mt ++ ", text " ++ show t ++ ", length " ++ show len ++ ", lines added " ++ show ladd ++ ", line " ++ show line ++ ", fln " ++ show fln ++ ", flp " ++ show flp ++ ")"
+    show (STCMacroRecord m wp lp) = "(stc event: macro record, message " ++ show m ++ ", wParam " ++ show wp ++ ", lParam " ++ show lp ++ ")"
+    show (STCMarginClick alt shift ctrl p m) = "(stc event: margin " ++ show m ++ " clicked, pos " ++ show p ++ ", modifiers = [" ++ (if alt then "alt, " else "") ++ (if shift then "shift, " else "") ++ (if ctrl then "control" else "") ++ "])"
+    show (STCNeedShown p len) = "(stc event: need to show lines from " ++ show p ++ ", length " ++ show len ++ ")"
+    show STCPainted = "(stc event: painted)"
+    show (STCUserListSelection lt t) = "(stc event: user list selection, type " ++ show lt ++ ", text " ++ show t ++ ")"
+    show (STCUriDropped t) = "(stc event: uri dropped: " ++ t ++ ")"
+    show (STCDwellStart p) = "(stc event: dwell start, (x,y) " ++ show p ++ ")"
+    show (STCDwellEnd p) = "(stc event: dwell end, (x,y) " ++ show p ++ ")"
+--    show STCStartDrag = "(stc event: start drag)"
+--    show STCDragOver = "(stc event: drag over)"
+--    show STCDoDrop = "(stc event: do drop)"
+    show STCZoom = "(stc event: zoom)"
+    show STCHotspotClick = "(stc event: hotspot click)"
+    show STCHotspotDClick = "(stc event: hotspot double click)"
+    show STCCalltipClick = "(stc event: calltip clicked)"
+    show STCAutocompSelection = "(stc event: autocomp selectioned)"
+    show STCUnknown = "(stc event: unknown)"
+
+fromSTCEvent :: StyledTextEvent a -> IO EventSTC
+fromSTCEvent event
+  = do et <- eventGetEventType event
+       case lookup et stcEvents of
+         Just action -> action event
+	 Nothing -> return STCUnknown
+
+stcEvents :: [(EventId, StyledTextEvent a -> IO EventSTC)]
+stcEvents = [ (wxEVT_STC_CHANGE,            \_ -> return STCChange)
+	    , (wxEVT_STC_STYLENEEDED,       \_ -> return STCStyleNeeded)
+	    , (wxEVT_STC_CHARADDED,         charAdded)
+	    , (wxEVT_STC_SAVEPOINTREACHED,  \_ -> return STCSavePointReached)
+	    , (wxEVT_STC_SAVEPOINTLEFT,     \_ -> return STCSavePointLeft)
+	    , (wxEVT_STC_ROMODIFYATTEMPT,   \_ -> return STCROModifyAttempt)
+	    , (wxEVT_STC_KEY,               \_ -> return STCKey)
+	    , (wxEVT_STC_DOUBLECLICK,       \_ -> return STCDoubleClick)
+	    , (wxEVT_STC_UPDATEUI,          \_ -> return STCUpdateUI)
+	    , (wxEVT_STC_MODIFIED,          modified)
+	    , (wxEVT_STC_MACRORECORD,       macroRecord)
+	    , (wxEVT_STC_MARGINCLICK,       marginClick)
+	    , (wxEVT_STC_NEEDSHOWN,         needShown)
+	    , (wxEVT_STC_PAINTED,           \_ -> return STCPainted)
+	    , (wxEVT_STC_USERLISTSELECTION, userListSelection)
+	    , (wxEVT_STC_URIDROPPED,        uriDropped)
+	    , (wxEVT_STC_DWELLSTART,        dwellStart)
+	    , (wxEVT_STC_DWELLEND,          dwellEnd)
+	    , (wxEVT_STC_START_DRAG,        \_ -> return STCUnknown) --STCStartDrag)
+	    , (wxEVT_STC_DRAG_OVER,         \_ -> return STCUnknown) --STCDragOver)
+	    , (wxEVT_STC_DO_DROP,           \_ -> return STCUnknown) --STCDoDrop)
+	    , (wxEVT_STC_ZOOM,              \_ -> return STCZoom)
+	    , (wxEVT_STC_HOTSPOT_CLICK,     \_ -> return STCHotspotClick)
+	    , (wxEVT_STC_CALLTIP_CLICK,     \_ -> return STCCalltipClick)
+        -- TODO: STCAutocompSelection event is not tested yet.
+	    , (wxEVT_STC_AUTOCOMP_SELECTION,    \_ -> return STCAutocompSelection)
+	    ]
+  where
+    charAdded evt = do
+      c <- styledTextEventGetKey evt
+      let c' | c < 0 = chr $ c + 256
+             | otherwise = chr c
+      p <- styledTextEventGetPosition evt
+      return $ STCCharAdded c' p
+    modified evt = do
+      p <- styledTextEventGetPosition evt
+      mt <- styledTextEventGetModificationType evt
+      t <- styledTextEventGetText evt
+      len <- styledTextEventGetLength evt
+      ladd <- styledTextEventGetLinesAdded evt
+      line <- styledTextEventGetLine evt
+      fln <- styledTextEventGetFoldLevelNow evt
+      flp <- styledTextEventGetFoldLevelPrev evt 
+      -- TODO: t should only be returned under some modificationtype conditions
+      -- or should we always return it?
+      return $ STCModified p mt (Just t) len ladd line fln flp
+    macroRecord evt = do
+      m <- styledTextEventGetMessage evt
+      wp <- styledTextEventGetWParam evt
+      lp <- styledTextEventGetLParam evt
+      return $ STCMacroRecord m wp lp
+    marginClick evt = do
+      alt <- styledTextEventGetAlt evt
+      shift <- styledTextEventGetShift evt
+      ctrl <- styledTextEventGetControl evt
+      p <- styledTextEventGetPosition evt
+      m <- styledTextEventGetMargin evt
+      return $ STCMarginClick alt shift ctrl p m
+    needShown evt = do
+      p <- styledTextEventGetPosition evt
+      len <- styledTextEventGetLength evt
+      return $ STCNeedShown p len
+    {-
+    -- expEVT_STC_POSCHANGED is removed in wxWidgets-2.6.x.
+    posChanged evt = do
+      p <- styledTextEventGetPosition evt
+      return $ STCPosChanged p
+    -}
+    userListSelection evt = do
+      lt <- styledTextEventGetListType evt
+      text <- styledTextEventGetText evt
+      return $ STCUserListSelection lt text
+    uriDropped evt = do
+      t <- styledTextEventGetText evt
+      return $ STCUriDropped t
+    dwellStart evt = do
+      x <- styledTextEventGetX evt
+      y <- styledTextEventGetY evt
+      return $ STCDwellStart (point x y)
+    dwellEnd evt = do
+      x <- styledTextEventGetX evt
+      y <- styledTextEventGetY evt
+      return $ STCDwellEnd (point x y)
+
+stcOnSTCEvent :: StyledTextCtrl a -> (EventSTC -> IO ()) -> IO ()
+stcOnSTCEvent stc handler
+  = do windowOnEvent stc stcEventsAll handler eventHandler
+  where
+    eventHandler event
+      = do eventSTC <- fromSTCEvent (objectCast event)
+           if isSTCUnknown eventSTC
+              then return () -- what else?
+              else handler eventSTC
+    isSTCUnknown :: EventSTC -> Bool
+    isSTCUnknown STCUnknown = True
+    isSTCUnknown _ = False
+    -- most of the events can probably be ignored
+    stcEventsAll = map fst stcEvents
+
+stcGetOnSTCEvent :: StyledTextCtrl a -> IO (EventSTC -> IO ())
+stcGetOnSTCEvent window
+  = unsafeWindowGetHandlerState window (head $ map fst stcEvents) (\ev -> skipCurrentEvent)
 
 {-----------------------------------------------------------------------------------------
   Printing

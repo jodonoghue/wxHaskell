@@ -135,6 +135,7 @@ WXD-SOURCES = \
 	CompileClassInfo \
 	CompileClasses \
 	CompileDefs \
+	CompileSTC \
 	Main
 
 
@@ -145,7 +146,7 @@ WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
 	treectrl image apppath db glcanvas wave managed	\
-	printout previewframe textstream
+	printout previewframe textstream stc
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
@@ -170,7 +171,8 @@ WXC-SOURCES = \
 	$(WXC-CORE) $(patsubst %,ewxw/elj%,$(WXC-EWXW))
 
 WXC-SPECS-EIFFEL = \
-	wxc/eiffel/wxc_defs.e  wxc/eiffel/ewxw/wx_defs.e
+	wxc/eiffel/wxc_defs.e  wxc/eiffel/ewxw/wx_defs.e \
+	wxc/eiffel/stc.e
 
 WXC-SPECS-HEADER = \
 	wxc/include/wxc.h \
@@ -482,7 +484,7 @@ WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 
 
 # build main library
-wxcore: wxc wxd wxcore-dirs $(WXCORE-LIBS)
+wxcore: wxd wxstc wxc wxcore-dirs $(WXCORE-LIBS)
 
 wxcore-dirs:
 	@$(call ensure-dirs-of-files,$(WXCORE-OBJS))
@@ -660,7 +662,7 @@ WXC-LIB		=$(WXC-OUTDIR)/$(LIB)$(WXC-LIBNAME)-$(BIN-VERSION)$(DLL)
 WXC-OBJS	=$(call make-objs, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-DEPS	=$(call make-deps, $(WXC-OUTDIR), $(WXC-SOURCES))
 WXC-LIBS	=$(WXWIN-LIBS)
-WXC-CXXFLAGS	=$(WXWIN-CXXFLAGS) -fPIC -I$(WXC-INCDIR)
+WXC-CXXFLAGS	=$(WXWIN-CXXFLAGS) $(WXC-STC) -fPIC -I$(WXC-INCDIR)
 
 
 wxc: wxc-dirs $(WXC-LIB)
@@ -734,6 +736,19 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 -include $(WXC-DEPS)
 
 
+#--------------------------------------------------------------------------
+# wxSTC: the C wrapper of wxSTC
+#--------------------------------------------------------------------------
+
+WXSTC-WRAPPER = \
+	$(WXC-SRCDIR)/stc_gen.cpp \
+	$(WXC-INCDIR)/stc_gen.h
+
+wxstc: $(WXSTC-WRAPPER)
+
+$(WXSTC-WRAPPER): wxd
+	$(WXD-EXE) -s wxSTC-D3/stc.h --wxc $(WXC) -o $(WXC)
+#	$(WXD-EXE) -s ../wxWidgets-$(WXWIN-VERSION)/contrib/include/wx/stc/stc.h --wxc $(WXC) -o $(WXC)
 
 #--------------------------------------------------------------------------
 # Documentation

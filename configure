@@ -56,6 +56,10 @@ wxversion=""
 extraldopts=""
 withopengl="no"
 
+# stc
+withstc="no"
+wxcstc=""
+
 #--------------------------------------------------------------------
 # Function "findprogram": find a program in the path
 #--------------------------------------------------------------------
@@ -300,6 +304,7 @@ process_args ()
 	  echo "wxwidgets options:"
 	  echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
 	  echo " --with-opengl          enable openGL support [$withopengl]"
+	  echo " --with-stc             enable stc support [$withstc]"
 	  echo " --wx-config=<program>  wxWidgets configure script [$wxconfig]"
 	  echo ""
 	  echo "platform options:"
@@ -355,6 +360,8 @@ process_args ()
 	  wxtoolkit="$arg";;
       -with-opengl|--with-opengl)
 	  withopengl="yes";;
+      -with-stc|--with-stc)
+	  withstc="yes";;
       -wx-config=*|--wx-config=*)
 	  echo "warning:"
 	  echo " Ignoring --wx-config option; this option must be the first option."
@@ -461,6 +468,17 @@ if test "$withmsc" != "yes"; then
    wxwinlibs="`$wxconfig --libs --gl-libs | tr '\n' ' '`"
   else
    wxwinlibs="`$wxconfig --libs`"
+  fi
+
+  # add wxSTC
+  if test "$withstc" = "yes"; then
+    if test "$withopengl" = "yes"; then
+      wxwinlibs="`$wxconfig --libs std stc --gl-libs | tr '\n' ' '`"
+      # wxwinlibs="$wxwinlibs -L wxSTC-D3/lib -lwx_gtk2_stc_d3-2.4"
+    else
+     wxwinlibs="`$wxconfig --libs std stc`"
+    fi
+    wxcstc="-DwxUSE_STC=1"
   fi
 
   # version
@@ -780,6 +798,9 @@ run-compress=$runcompress
 WITHMSC=$withmsc
 WXC-LIBNAME=$wxclibname
 
+# STC
+WXC-STC=$wxcstc
+
 # WxWidgets
 WXWIN-VERSION=$wxversion
 WXWIN-LIBS=$wxwinlibs
@@ -1046,6 +1067,7 @@ echo " library:     wxhaskell-$version  (release $release)"
 echo " compiler:    $hcbasename-$hcversion"
 echo " wxwidgets:   $wxtoolkit-$wxversion"
 echo " with openGL: $withopengl"
+echo " with stc:    $withstc"
 echo " library dir: $libdir"
 
 if test "$wxrezfile"; then

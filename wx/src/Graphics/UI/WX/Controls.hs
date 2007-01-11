@@ -61,6 +61,8 @@ module Graphics.UI.WX.Controls
       , SplitterWindow, splitterWindow
       -- ** ImageList
       , ImageList, imageList, imageListFromFiles
+      -- ** StyledTextCtrl
+      , StyledTextCtrl, stcEvent, styledTextCtrl, styledTextCtrlEx
     ) where
 
 import Graphics.UI.WXCore hiding (Event)
@@ -1003,3 +1005,24 @@ imageListFromFiles size files
   = do images <- imageListCreate size True (length files)
        imageListAddIconsFromFiles images size files
        return images
+
+{--------------------------------------------------------------------------------
+  wxStyledTextCtrl
+--------------------------------------------------------------------------------}
+
+stcEvent :: Event (StyledTextCtrl ()) (EventSTC -> IO ())
+stcEvent
+  = newEvent "stcEvent" stcGetOnSTCEvent stcOnSTCEvent
+
+
+styledTextCtrl :: Window a -> [Prop (StyledTextCtrl ())] -> IO (StyledTextCtrl ())
+styledTextCtrl parent props
+  = styledTextCtrlEx parent defaultStyle props
+
+styledTextCtrlEx :: Window a -> Style -> [Prop (StyledTextCtrl ())] -> IO (StyledTextCtrl ())
+styledTextCtrlEx parent style props
+  = feed2 props style $
+    initialContainer $ \id rect -> \props flags ->
+    do s <- styledTextCtrlCreate parent id "" rect style
+       set s props
+       return s

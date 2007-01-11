@@ -26,6 +26,7 @@
 #include "previewframe.h"
 #include "printout.h"
 #include "textstream.h"
+#include "stc.h"
 
 /*-----------------------------------------------------------------------------
   Extra exports

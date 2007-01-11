@@ -28,6 +28,7 @@ import CompileHeader    ( compileHeader )
 import CompileDefs      ( compileDefs )
 import CompileClassTypes( compileClassTypes )
 import CompileClassInfo ( compileClassInfo )
+import CompileSTC       ( compileSTC )
 
 import Classes( getWxcDir, setWxcDir )
 
@@ -54,6 +55,8 @@ main
 
          ModeCHeader outputDir inputFiles verbose
           -> compileHeader verbose (outputDir ++ "wxc_glue.h") inputFiles
+         ModeSTC outputDir inputFiles verbose
+          -> compileSTC verbose outputDir inputFiles
        -- putStrLn "done."
 
 moduleClassesShortName= "Classes"
@@ -94,6 +97,10 @@ getDefaultHeaderFiles
               -- , wxcdir ++ "/ewxw/eiffel/wxc_glue.h"
               ]
 
+getDefaultSTCHeaderFile :: IO [FilePath]
+getDefaultSTCHeaderFile
+  = do wxcdir <- getWxcDir
+       return [wxcdir ++ "/wxSTC-D3/stc.h"]
 
 getDefaultOutputDirWxc
   = do wxcdir <- getWxcDir
@@ -107,7 +114,7 @@ data Flag
 
 
 data Target
-  = TDefs | TClasses | TClassTypes | THeader | TClassInfo
+  = TDefs | TClasses | TClassTypes | THeader | TClassInfo | TSTC
 
 data Mode
   = ModeHelp
@@ -116,6 +123,7 @@ data Mode
   | ModeDefs      { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
   | ModeClassInfo { outputDir :: FilePath, verbose :: Bool }
   | ModeCHeader { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
+  | ModeSTC { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
 
 
 isHelp Help         = True
@@ -137,6 +145,7 @@ options =
  , Option ['t'] ["classtypes"]   (NoArg (Target TClassTypes)) "generate class type definitions from .h files"
  , Option ['i'] ["classinfo"]   (NoArg (Target TClassInfo)) "generate class info definitions"
  , Option ['h'] ["header"]      (NoArg (Target THeader))  "generate typed C header file -- development use only"
+ , Option ['s'] ["stc"]         (NoArg (Target TSTC)) "generate wxSTC wrapper from .h file"
  , Option ['v'] ["verbose"]     (NoArg Verbose)           "verbose: show ignored definitions"
  , Option ['o'] ["output"]      (ReqArg Output "DIR")     "optional output directory"
  , Option ['w'] ["wxc"]         (ReqArg WxcDir "DIR")     "optional 'wxc' directory (=../wxc)"
@@ -175,6 +184,12 @@ compileOpts
                                            defdir     <- getDefaultOutputDirWxc
                                            outputDir  <- getOutputDir flags defdir
                                            return (ModeCHeader outputDir inputFiles (any isVerbose flags))
+                   [Target TSTC]
+                                     -> do defaultSTCHeaderFile <- getDefaultSTCHeaderFile
+                                           inputFiles <- getInputFiles ".h" defaultSTCHeaderFile files
+                                           defdir     <- getDefaultOutputDirWxc
+                                           outputDir  <- getOutputDir flags defdir
+                                           return (ModeSTC outputDir inputFiles (any isVerbose flags))
                    other -> invokeError ["invalid, or multiple, targets specification.\n"]
         (_,_,errs)
            -> invokeError errs
