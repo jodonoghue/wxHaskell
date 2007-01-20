@@ -594,7 +594,9 @@ WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)-$(VERSION) -package $(WXCORE)
 WX-HSDIRS	=-i$(WX-SRCDIR)
 
 # build main library
-wx: wxcore-clean wx-dirs $(WX-LIBS)
+wx: wxcore-clean wx-main
+
+wx-main: wx-dirs $(WX-LIBS)
 
 wx-install: wx-install-files wx-register
 
@@ -616,7 +618,7 @@ wx-bindist:
 wx-register:
 	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
 
-wx-install-files: wx
+wx-install-files: wx-main
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
 	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
