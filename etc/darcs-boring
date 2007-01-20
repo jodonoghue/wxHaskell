@@ -1,5 +1,9 @@
 # Boring file regexps:
-\.hi$
+^out($|/)
+\.app($|/)
+^config($|/)
+# end wxhaskell-specific additions
+.hi$
 \.o$
 \.o\.cmd$
 # *.ko files aren't boring by default because they might
