@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell</title>
+<style type="text/css">
+.menu-applications { font-weight: bold }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+<div class="text">
+<h2>Application screenshots</h2>
+<p>At the moment, only small to medium sized programs have been written in wxHaskell and
+this page shows some of them. If you know about an interesting wxHaskell
+application, write us and it may be presented here too :-)</p>
+</div>
+
+<div class="text">
+<p id="netedit"><strong>Dazzle</strong>.
+Dazzle is a Bayesian belief network editor that is developed
+by the <a href="http://www.cs.uu.nl">Decision Support System</a> group of Utrecht University.
+Dazzle uses the <a href="http://www.sis.pitt.edu/~genie">Smile</a> C++ library, developed by
+the <a href="http://www.sis.pitt.edu/~dsl">Decision Systems Laboratory</a> of Pittsburgh University, to leverage
+standard Bayesian belief network algorithms. The interface is highly specialized, featuring custom
+controls for representing multi-dimensional statistical nodes.
+</p>
+<p><center>
+<a href="images/dazzle.jpg"><img src="images/dazzle-small.jpg" alt="Dazzle on Windows XP"
+  style="margin: 10pt" width="500" height="361"></a>
+<br>WindowsXP (Click on image to enlarge)
+</center></p>
+</div>
+
+<div class="text" id="icfpcontest">
+<p><strong>ICFP Programming Contest 2003 &amp; 2004 &ndash; the technology behind the winners.</strong>
+[<a class="quicklink" href="http://www.cs.uu.nl/~eelco/icfppc2003">www-2003</a>
+,<a class="quicklink" href="http://urchin.earth.li/icfpcontest/2004/Introduction">www-2004</a>].
+wxHaskell 0.7 was used in the <a href="http://www.cis.upenn.edu/proj/plclub/contest">ICFP 2004 programming contest</a>
+by team <a href="http://urchin.earth.li/icfpcontest/2004/Introduction">Dunkosmiloolump</a> to create an "ant"
+simulator &ndash; and they won the contest! An early version of wxHaskell has been used in the <a href="http://www.dtek.chalmers.se/groups/icfpcontest">ICFP 2003 contest</a>
+by <a href="http://www.cs.uu.nl/~eelco/icfppc2003">Team Dom</a>
+to create a graphical editor for solving the tracks. The entry is interesting as they created the interface in
+a single day, and also used C code fragments to directly program the wxWidgets repaint handler.</p>
+<p><center>
+<table border="0">
+<tr><td><a href="http://www.cs.uu.nl/~eelco/icfppc2003/editor.png">
+            <img src="images/icfp2003-gtk.png" alt="ICFP 2003 graphical track editor"
+                        style="margin: 10pt" width="260" height="230"></a></td>
+    <td><a href="images/icfp2004.png">
+            <img src="images/icfp2004-small.jpg" alt="ICFP 2004 ant simulator"
+                        style="margin: 10pt" width="260" height="200"></a></td>
+<tr><td>Track editor (click on image to enlarge)</td>
+    <td>Ant simulator (click on image to enlarge)</td></tr></table>
+</center></p>
+</div>
+
+<div class="text" id="hsreversi">
+<p><strong>hsReversi</strong> [<a class="quicklink" href="http://dsc.upe.br/~ltds/reversi">www-page</a>].
+Lucas Torreão, Emanoel Barreiros, Hilda Borborema, and Keldjan Alves have written a reversi game with wxHaskell. It is possible to play versus CPU or versus another human player. The window appearance can be changed at any time in game, using the "skins" feature. It is available in portugese only.
+</p>
+<p><center>
+<a href="images/reversi5.jpg"><img src="images/reversi5-small.jpg" alt="hsReversi - click to enlarge."
+                        style="margin: 10pt" width="162" height="200"></a>
+<br>WindowsXP (Click on image to enlarge)
+</center></p>
+</div>
+
+<div class="text">
+<p><strong>GeBoP</strong> [<a class="quicklink" href="http://www.students.cs.uu.nl/people/mloffler/gebop/eng.html" >www-page</a>].
+Maarten L&ouml;ffler has written GeBoP, the General Board games Player. This application uses a generic game
+engine to host 8 different games that can be played against the computer. A tree control is used to visualize
+the state of the game engine, and an MDI interface is used to display several games simultaneously. Source is
+available on the GeBoP website.
+<p><center>
+<a href="images/gebob-win2.png"><img src="images/gebob-win-small2.jpg" alt="GeBob games - click to enlarge."
+                        style="margin: 10pt" width="500" height="348"></a>
+<br>WindowsXP (Click on image to enlarge)
+</center></p>
+</div>
+
+<div class="text">
+<p><strong>Proxima</strong>
+<span class="quicklinks">[<a href="http://www.cs.uu.nl/research/projects/proxima">www-page</a>]</span>.
+The Proxima generic structure editor is written by <a href="http://www.cs.uu.nl/~martijn">Martijn Schrage</a>.
+Proxima is part of an ongoing research project to combine both structured editing operations with free editing
+(and if you look closely at the screenshot you can see that the variables in scope, the types, and even values
+are automatically computed).</p>
+<p><center>
+<table border="0">
+<tr valign="top"><td><a href="images/proxima-mac.png"><img src="images/proxima-mac-small.jpg" alt="Proxima on MacOS X"
+                        style="margin: 10pt" width="198" height="255"></a></td>
+    <td><a href="images/proxima-win32.png"><img src="images/proxima-win-small.jpg" alt="Proxima on Windows XP"
+                        style="margin: 10pt" width="249" height="255"></a></td>
+<tr><td>MacOS X (click on image to enlarge)</td><td>Windows XP (click on image to enlarge)</td></tr></table>
+</center></p>
+</div>
+
+<div class="text" id="fforms">
+<p><a href="images/fforms.gif"><img align="right" src="images/fforms.gif" alt="A functional form" style="margin: 10pt" width="106" height="163"></a>
+<strong>Functional Forms</strong> [<a class="quicklink" href="http://www.cs.ru.nl/~sandr/FunctionalForms">www-page</a>].
+Sander Evers has made a library for wxHaskell to concisely create forms: dialogs that display and
+edit a set of values. All edit actions are automatically checked and converted to an appropiate Haskell form.
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+
+<div class="text" id="hcpn">
+<p><strong>HCPN</strong> [<a class="quicklink" href="http://www.cs.kent.ac.uk/people/staff/cr3/HCPN">www-page</a>].
+Claus Reinke has made an experimental graphical editor for
+<a href="http://www.cs.kent.ac.uk/people/staff/cr3/HCPN">Haskell Coloured Petri Nets</a> (HCPN).</p>
+<p><center>
+<a href="images/hcpn.jpg"><img src="images/hcpn-small.jpg" alt="HCPN editor"
+                        style="margin: 10pt" width="500" height="251"></a>
+<br>WindowsXP (Click on image to enlarge)
+</center></p>
+</div>
+
+<div class="text" id="hpview">
+<p><strong>HPView</strong> [<a class="quicklink" href="http://dready.org/projects/HPView" >www-page</a>].
+Wei Tan has made a graphical heap profile viewer for GHC with wxHaskell, called <a href="http://dready.org/projects/HPView">HPView</a>. It is intended as an interactive alternative to the hp2ps utility (included in GHC), which allows zooming and filtering of graph columns.</p>
+<p><center>
+<a href="images/hpview.gif"><img src="images/hpview-small.gif" alt="HPView - click to enlarge."
+                        style="margin: 10pt" width="500" height="311"></a>
+<br>WindowsXP (Click on image to enlarge)
+</center></p>
+</div>
+
+
+<div class="text">
+<p id="linformaticien"><strong>Haskell on the cover of a magazine!</strong> wxHaskell was featured in a two-page article in the october 2003 version of <a href="http://www.linformaticien.fr">L&#39;informaticien</a>, a popular French PC magazine. The article has been written by Fr&eacute;d&eacute;ric Mazu&eacute;. Here are some screenshots:</p>
+<center>
+<p>
+<a href="http://www.linformaticien.fr/sommaire/num009/somm6873.htm"><img src="images/p68.gif" alt="Page 1" width=221 height=300></a>
+<a href="http://www.linformaticien.fr/sommaire/num009/somm6873.htm"><img src="images/p69.gif" alt="Page 2" width=221 height=300></a>
+</p>
+<p>
+<a href="http://www.linformaticien.fr/sommaire/num009/somm6873.htm"><img src="images/couvn9.png" alt="Cover" width=380 height=508></a></p>
+</center>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Jun  5 2005".
+</div>
+</div>
+</body>
+
+</html>

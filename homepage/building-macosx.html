@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+<style type="text/css">
+.menu-building-macosx { font-weight: bold }
+</style>
+
+<title>wxHaskell - Building - MacOS X</title>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+
+<div class="text">
+
+<h2>Using wxHaskell on MacOS X platforms</h2>
+<p>Even though graphical applications on MacOS X look great, it is a still
+a developers nightmare to get them working :-). Furthermore, the MacOS X port of wxWidgets
+is the least mature and still has some quirks. This page describes how to circumvent some of the pitfalls.</p>
+
+<ul>
+<li><p>Haskell applications need the <code>readline</code> library which is not installed by
+default on the MacOS X. <a href="http://www.cs.uu.nl/people/arthurb">Arthur Baars</a> provided
+a simple <a href="download/Readline4.3.dmg">installer for the readline library</a>.</p>
+
+<li>
+<p>Graphical applications generated with GHC do not work if executed directly &ndash; they need to be
+upgraded into MacOS X <em>applications</em>. The <code>macosx-app</code> script does this for you. It
+is provided with binary releases and resides in the <code>bin</code> directory of
+a source release. Creating a program now consists of the following steps:</p>
+<pre>
+> cd samples/wx
+> ghc -package wx -o helloworld HelloWorld.hs
+> /usr/local/wxhaskell/bin/macosx-app -v helloworld
+> open helloworld
+</pre>
+</li>
+
+<li>
+<p>Due to complicated MacOS X restrictions, graphical wxHaskell applications do not work directly
+when used from GHCi. Fortunately, Wolfgang Thaller has kindly provided an ingenious
+<a href="download/EnableGUI.hs">Haskell
+module</a> that solves this problem. Just import the (compiled) module <a href="download/EnableGUI.hs"><code>EnableGUI</code></a>
+in your program and issue the following command to run <code>main</code> from your GHCi prompt:</p>
+<pre>
+&gt; enableGUI &gt;&gt; main
+</pre>
+</li>
+
+<li><p>The dynamic link libraries used by wxHaskell can not always be found. If your
+application seems to start (the icon bounces) but terminates mysteriously, you need
+to set the dynamic link library search path to the wxHaskell library directory. For example:</p>
+<pre>
+> setenv DYLD_LIBRARY_PATH /usr/local/wxhaskell/lib
+</pre>
+</li>
+</ul>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+
+</div>
+</body>
+</html>

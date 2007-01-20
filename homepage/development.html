@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell - Development</title>
+<style type="text/css">
+.menu-development { font-weight: bold }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+<div class="text">
+<h2>Development</h2>
+<p>wxHaskell is an open-source project, and you are invited to help developing wxHaskell! (see the
+<a href="contribute.html">contribute</a> page for more information.) Currently
+the development team consists of:</p>
+<dl>
+<dt>Daan Leijen</dt>
+<dd>The main developer and designer of wxHaskell</dd>
+</dl>
+
+<p>Furthermore, the following people have contributed to the wxHaskell project:</p>
+<dl>
+<dt>Wolfgang Thaller</dt>
+<dd>Contributed a nifty MacOS X module that enables the use of GHCi on MacOS X.</dd>
+<dt>Martijn Schrage</dt>
+<dd>Helped to design the library interface and tested the library by using wxHaskell
+as a backend to Proxima &ndash; a sophisticated generic structure editor.</dd>
+<dt>Arjan van IJzendoorn</dt>
+<dd>Developer of <a href="applications.html#netedit">NetEdit</a> and provides a lot
+feedback for improving the library.</dd>
+<dt>Maarten Loffler, Sean Seefried, and Luc Taesch</dt>
+<dd>Contributed samples to the library. Maarten also helped creating a proper windows98
+installer.</dd>
+<dt>Andres L&ouml;h</dt>
+<dd>Testing on Gentoo Linux with GTK (and has written the graphical editor
+used by team DOM in the ICFP contest).</dd>
+<dt>Arthur Baars</dt>
+<dd>Testing on MacOS X, and creating MacOS X installers.</dd>
+<dt>Wijnand Suijlen</dt>
+<dd>Has written the Helium interpreter in wxHaskell and initiated the design of the
+layout combinators.</dd>
+<dt>Eelco Dolstra and Armijn Hemel</dt>
+<dd>Kindly provided their linux computers and unix wisdom :-) to test wxHaskell on
+Linux/GTK systems. Special thanks goes to Armijn Hemel for maintaining a Red Hat Linux
+and MacOS X system for testing in the student laboratories.</dd>
+<dt>Jens Petersen</dt>
+<dd>Created the initial rpm specification files and released a few rpm distributions of wxHaskell</dd>
+</dl>
+</div>
+
+<div class="text">
+<h2>Overview</h2>
+<p><span class="lib">wxHaskell</span> is a project hosted on <a href="http://sourceforge.net/projects/wxhaskell">sourceforge</a>. The sources are
+available on the sourceforge <a href="http://sourceforge.net/cvs/?group_id=73133">cvs repository</a>.
+Currently, <span class="lib">wxHaskell</span> hosts four subprojects.
+</p>
+<ul>
+<li><span class="lib">wx</span> [<a class="quicklink" href="doc">documentation</a>]. The main middle-level library. This library is written in Haskell and only depends on the <span class="lib">wxcore</span> package. It uses overloading and attributes to expose a nice functional
+interface to the <span class="lib">wxcore</span> library. However, it does <em>not</em> try to create a new model
+for programming GUI interfaces: everything is still in the <code>IO</code> monad and state is handled through mutable
+variables.</li>
+<li><span class="lib">wxcore</span> [<a class="quicklink" href="doc">documentation</a>]. The Haskell binding to the core wxWidgets library. This is just like programming the wxWidgets library directly, you can see some
+  <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wxcore/">examples</a>
+  in the cvs. All the method definitions and marshaling code is generated automatically -- about 500 classes with 2500 methods and 1000 constant definitions.
+<span class="lib">wxcore</span> uses the following two sub-projects:
+<ul>
+<li><span class="lib">wxc</span>. A C project that puts a C wrapper around the C++ interface to wxWidgets. This makes it
+much easier to access the wxWidgets library from Haskell. The C wrapper consists of the C sources of the Eiffel <a href="http://elj.sourceforge.net/projects/gui/ewxw/">ewxw library</a> for wxWidgets. We also added a few files to make the project suitable for Haskell, but we made no changes to the original Eiffel sources. This way, we are able to automatically update the sources from their cvs server. A big thank-you to the people that worked on the Eiffel library!
+<li><span class="lib">wxdirect</span>. A Haskell program that reads the C header files of the Eiffel wxWidgets C library and automatically generates Haskell marshaling code and class definitions.
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+
+</div>
+</body>
+</html>

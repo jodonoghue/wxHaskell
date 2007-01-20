@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell - Contribute to the project!</title>
+<style type="text/css">
+.menu-contribute { font-weight: bold }
+.linklist dt { font-weight: bold }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+<div class="text">
+<h2>Contribute to wxHaskell!</h2>
+<p>"<em>Do not ask yourself what wxHaskell can do for you, but what you can do for wxHaskell</em>" :-)</p>
+<p>However, it is hard to find out which features are particularly interesting, the
+hardness of certain tasks, and whether you are duplicating work done by others.
+This page tries to remedy this situation by giving a list of good starting points for
+contributing to wxHaskell.
+</p>
+<p>If you feel like doing one of these items, please notify the maintainer of wxHaskell, or
+send an e-mail to the <a href="http://sourceforge.net/mail/?group_id=73133">wxHaskell mailing list</a>, so that no effort is accidently duplicated.
+</p>
+</div class="text">
+<div class="text">
+<p></p>
+<dl class="linklist">
+<dt>Create wxHaskell samples or screenshots</dt>
+<dd>If you have a good sample or screenshot, send it to the
+wxHaskell maintainer for inclusion into the samples or the webpage with screenshots.</dd>
+<dt>Add new widget abstractions to the WX library</dt>
+<dd>This task only requires a good understanding of Haskell (and a certain taste
+for elegant design :-). Examples for which abstractions can be created
+are <code>wxStopWatch</code> or MDI windows. You only need to add code to
+the WX library and the <code>WX.Controls</code> library can serve as a
+typical example of useful abstractions.</dd>
+<dt>Portable resources</dt>
+<dd>A pure Haskell task, but requires a lot of careful design work
+and probably access to a Windows, MacOS X, and Linux system.
+As a first step, it would be great if there is some method of loading images,
+like bitmaps and icons, in a platform independent way. This could be done
+for example by requiring different formats for the same image for different
+platforms (an <code>ico</code> on windows, a mac icon on MacOS X), together
+with some generic function that searches for the most appropiate image. Another
+facet of this task could be the use of resource bundles, or ways to internationalize
+the application.
+</dd>
+<dt>Add support for the scintilla styled text control</dt>
+<dd>This task requires good knowledge of Haskell, C, and the compilation process.
+The styled text control of wxWidgets wraps the generic scintilla editor
+&ndash; an awesome editor component with great functionality. wxEiffel already has
+some wrappers for the styled text control but some fiddling with linking
+the right libraries is needed, together with an adaption of wxDirect to
+remove the /ignore/ clauses for the scintilla classes.</dd>
+<dt>Create a good tree control / list control abstraction</dt>
+<dd>At the moment, trees and list controls are cumbersome to deal with.
+It would be nice if better abstractions could be devised that work well
+in practice. Furthermore, the haskell data in the tree control can
+maybe be typed by including the value types into the phantom type
+variable of the tree control. Requires a good feeling for elegant
+and practical design with Haskell, together with some GUI experience.</dd>
+</dl>
+</div>
+
+<div class="text">
+<p>There are more desirable features that are planned for upcoming releases. However
+most of these are somewhat harder to do as they require more knowledge about the
+entire wxHaskell project. However, if you feel that you really need one of these
+items, feel free to try!
+<ul>
+<li>Drag and drop.</li>
+<li>Clipboard, copy and past.</li>
+<li>Grid control support.</li>
+<li>Better internet support.</li>
+<li>...</li>
+</ul>
+</p>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+
+</div>
+</body>
+</html>

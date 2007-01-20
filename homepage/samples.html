@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell</title>
+<style type="text/css">
+.menu-samples { font-weight: bold }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+<div class="text">
+<h2>Screenshots</h2>
+<p>Here are some screen shots of examples that are included in the wxHaskell library.
+The screenshots are taken on various Linux, Windows, and Mac OS X systems. When the screens look differently it is normally due to differences in the native look-and-feel of a platform. Many differences are intentional &ndash; one
+can normally specify the exact appearance if needed.</p>
+</div>
+
+<div class="text">
+<p><strong>Hello world</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>,
+<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wxcore" >source wxcore</a>]. Let&#39;s start with the infamous "Hello World" application.
+Note how the status bar reflects the menu option. (Note: The "File" menu disappears on the Mac as both menu items are
+moved to the standard Mac application menu.)
+</p>
+<p><center>
+<img src="images/helloworld-win.png" alt="Hello world on Windows 2000"
+  style="margin: 10pt" width="188" height="164">
+<img src="images/helloworld-gtk.png" alt="Hello world on GTK (KDE/Linux)"
+  style="margin: 10pt" width="275" height="168">
+<img src="images/helloworld-macosx2.png" alt="Hello world on MacOS X (Panther)"
+  style="margin: 10pt" width="256" height="185">
+<img src="images/helloworld-rh-gtk.png" alt="Hello world on Red Hat Linux (Fedora)"
+  style="margin: 10pt" width="246" height="149">
+</center></p>
+</div>
+
+<div class="text">
+<p><strong>Image viewer</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>,
+<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wxcore" >source wxcore</a>]. This example uses a standard file open dialog to open image files in various
+formats (jpg, gif, png, bmp etc.) and displays them. The windows example shows an image of a notorious Norwegian Haskell hacker skiing on mount Hood. Note the custom application icon.</p>
+<p><center>
+<table border="0">
+<tr valign="top"><td><img src="images/imageviewer-win.jpg" alt="That Barton Fink feeling"
+                        style="margin: 10pt" width="287" height="316"></td>
+<!--
+<td><img src="images/imageviewer-gtk.gif" alt="Image viewer on GTK (KDE/linux)"
+                        style="margin: 10pt" width="289" height="311"></td>
+-->
+<td><img src="images/imageviewer-mac.jpg" alt="Image viewer on MacOS X"
+                        style="margin: 10pt" width="424" height="350"></td>
+</tr>
+<tr><td>Windows XP</td>
+<!--
+<td>GTK (KDE/Linux)</td>-->
+<td>MacOS X</td></tr></table>
+</center></p>
+<p>And an extended imageviewer with a toolbar and statusbar:
+<center>
+<table border="0">
+<tr valign="top">
+<td><img src="images/imageviewer-tb-win.jpg" alt="Image viewer on Windows XP"
+                        style="margin: 10pt" width="278" height="295"></td>
+<td><img src="images/imageviewer-tb-gtk.png" alt="Image viewer on Red hat linux with GTK"
+                        style="margin: 10pt" width="312" height="315"></td>
+</tr>
+<tr><td>Windows XP</td>
+<td>Red Hat Linux with GTK</td></tr></table>
+</center>
+</p>
+</div>
+
+
+<div class="text">
+<p><strong>Time flows</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>]. An old Fran demo! This sample shows how to use the idle event handler to implement a
+resource aware and responsive GUI that still performs heavy animation. A nice sample to practice on: extend it
+yourself with menus, status bars, and options dialogs.</p>
+
+<p><center>
+<table border="0">
+<tr valign="top"><td><img src="images/timeflows-win.png" alt="Time flows like a river on windows XP"
+  style="margin: 10pt" width="207" height="142"></td>
+<td><img src="images/timeflows-asia-gtk.png" alt="Extended time flows like a river on Linux/GTK"
+  style="margin: 10pt" width="230" height="189"></td>
+</tr>
+<tr><td>Basic sample on Windows XP</td><td>Extended sample on Red Hat Linux with GTK</td></tr></table>
+<br>
+<img src="images/timeflows-macosx.png" alt="Extended time flows like a river on MacOS X"
+  style="margin: 10pt" width="337" height="267">
+<p>Extended sample on MacOS X</p>
+</center></p>
+</div>
+
+
+<div class="text">
+<p><strong>Controls</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>]. A sample that shows different standard controls, like buttons, listboxes, sliders, radio buttons, etc.
+</p>
+<p><center>
+<table border="0">
+<tr>
+<td><img src="images/controls-gtk.png" alt="Controls sample on Red Hat Linux (Fedora)"
+  style="margin: 10pt" width="329" height="290"></td>
+<td><img src="images/controls-win.png" alt="Controls sample on Windows XP (Classic)"
+  style="margin: 10pt" width="290" height="267"></td>
+</tr>
+<tr><td>Red Hat Linux (Fedora)</td><td>Windows XP (Classic look)</td></tr>
+</table><br>
+<img src="images/controls-macosx.png" alt="Controls sample on MacOS X (jaguar)"
+  style="margin: 10pt" width="442" height="325">
+<br>
+MacOS X (Jaguar)
+<br>
+<img src="images/controls-macosx2.png" alt="Controls sample on MacOS X (panther)"
+  style="margin: 10pt" width="425" height="368">
+<br>
+MacOS X (Panther)
+</center></p>
+</div>
+
+
+
+<div class="text">
+<p><strong>FileBrowse</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>]. A (very) simple file browser that demonstrates the use of tree controls, list controls and splitter windows.
+</p>
+<p><center>
+<img src="images/filebrowse-win.png" alt="File browser on windows XP"
+  style="margin: 10pt" width="488" height="287">
+<br>
+<!--
+<img src="images/filebrowse-macosx.png" alt="File browser on MacOS X (Jaguar)"
+  style="margin: 10pt" width="569" height="300">
+<br>
+-->
+<img src="images/filebrowse-macosx2.png" alt="File browser on MacOS X (Panther)"
+  style="margin: 10pt" width="530" height="326">
+<br>
+<img src="images/filebrowse-gtk.png" alt="File browser on Red hat linux with GTK"
+  style="margin: 10pt" width="506" height="300">
+</center></p>
+</div>
+
+<div class="text" id="grid">
+<p><strong>Grid</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>]. Simple demo of the wxGrid control and wxGrid events.
+</p>
+<p><center>
+<img src="images/grid-win.png" alt="Grid demo on windows XP"
+  style="margin: 10pt" width="249" height="238">
+<img src="images/grid-gtk.png" alt="Grid demo on Linux (Fedora) with GTK"
+  style="margin: 10pt" width="280" height="247">
+<img src="images/grid-macosx.png" alt="Grid demo on MacOS X (Panther)"
+  style="margin: 10pt" width="317" height="294">
+</center></p>
+</div>
+
+<div class="text">
+<p id="opengl"><strong>OpenGL</strong> [<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/contrib" >source contrib</a>].
+Sean Seefried and <a href="http://page.freett.com/shelarcy">Shelarcy</a> have provided
+these screenshots that demonstrate the wxHaskell <a href="doc/Graphics.UI.WXCore.OpenGL.html">OpenGL
+canvas</a> using the <a href="http://www.haskell.org/HOpenGL">HOpenGL</a> binding
+by Sven Panne.
+</p>
+<p><center>
+<img src="images/opengl-bezier-win.png" alt="OpenGL Bezier Curve on Windows"
+  style="margin: 10pt" width="327" height="225">
+<br>
+OpenGL Bezier Curve on Windows.<br>
+<a href="images/opengl-mac.png"><img src="images/opengl-small-mac.jpg" alt="OpenGL Canvas on MacOS X"
+  style="margin: 10pt" width="350" height="278"></a>
+<br>
+OpenGL Cone on MacOSX (Click image to enlarge)
+</p>
+</div>
+
+<!--
+<div class="text">
+<p><strong>Bouncing balls</strong>
+[<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wx" >source wx</a>,
+<a class="quicklink" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/wxhaskell/wxhaskell/samples/wxcore" >source wxcore</a>]. This example uses timer- and mouse events to bounce red balls in a window canvas. Note that the window is not resizeable: the maximize box is greyed out and there is no resize border.</p>
+<p><center>
+<table border="0">
+<tr><td><img src="images/bouncingballs-win.png" alt="Bouncing balls on windows 2000"
+                        style="margin: 10pt" width="206" height="225"></td>
+<td><img src="images/bouncingballs-gtk.png" alt="Bouncing balls on GTK (KDE/linux)"
+                        style="margin: 10pt" width="263" height="225"></td></tr>
+<tr><td>Windows</td><td>GTK (KDE/Linux)</td></tr></table>
+</center></p>
+</div>
+-->
+
+<!--
+<div class="text">
+<p><strong>Tha-Simulator</strong>
+A simple electron simulator written by Wijnand Suijlen using an MDI interface on GTK2 :-)</p>
+<p><center>
+<table border="0">
+<tr><td><a href="images/simulator-gtk.png"><img src="images/simulator-gtk.png" alt="Tha-Simulator on GTK2"
+                        style="margin: 10pt" width="250" height="219"></a></td>
+<tr><td id="linformaticien">Redhat 8 with GTK2 (click on image to enlarge)</td></tr></table>
+</center>
+</p>
+</div>
+-->
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Jul 27 2004".
+</div>
+</div>
+</body>
+
+</html>

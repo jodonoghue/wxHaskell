@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell</title>
+<style type="text/css">
+.menu-documentation-faq { font-weight: bold }
+
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+<div class="text">
+<h2>Frequently Asked Questions</h2>
+<h3>Technical</h3>
+<dl>
+<dt>What is the difference between the <span class="lib">wx</span> and <span class="lib">wxcore</span> libraries?</dt>
+<dd>The <span class="lib">wxcore</span> library provides the core interface to the wxWidgets API (in
+<a href="doc/Graphics.UI.WXCore.WxcClasses.html">WxcClasses</a>). Furthermore, it provides some useful abstractions
+for the Haskell programmer. However, the library just uses functional abstraction: no overloading, new monads, or other
+fanciness. The <span class="lib">wx</span> library is build on top of the <span class="lib">wxcore</span>
+library and uses more advanced abstraction mechanisms, like overloading, to provide useful features like
+properties and <a href="doc/Graphics.UI.WX.Attributes.html">attributes</a>.</dd>
+
+
+<dt>Does wxHaskell support multiple threads?</dt>
+<dd>Not currently. GHC 6.0 does not support process threads by default, and Haskell
+concurrency does not work correctly (yet) with a GUI event loop. However, as the
+wxWidgets manual says, multiple threads are not always a good solution. For example,
+doing a long computation in a separate thread in order to show a progress bar, is
+normally better solved by calling <code>wxcApp(Safe)Yield</code> periodically,
+or by doing the computation in an idle event handler.
+wxHaskell does have support for event driven, asynchronous input streams; see the <code>Process</code> sample
+for more details. Note that one should use the wxHaskell provided mutable variables (<code>Var</code>)
+to be assured for thread safeness in the future.</dd>
+</dl>
+
+<h3>Design</h3>
+<dl>
+<dt>Why haven&#39;t you created a purely functional interface (Fudgets, Fran, ..)</dt>
+<dd>Since the design of high-level GUI libraries (like
+<a href="http://haskell.cs.yale.edu/yale/papers/haskellworkshop01/">Fruit</a> or
+<a href="http://www.cs.chalmers.se/ComputingScience/Research/Functional/Fudgets/">Fudgets</a>) is still
+much of a research issue, we opted for creating a "medium level" interface: an interface that does
+create useful functional abstractions but does not provide a new programming model (i.e. everything
+is in the <code>IO</code> monad and uses simple mutable variables to communicate state across
+different event handlers). Hopefully, this makes it easy for others to create new functional programming
+models on top of the basic interface. However, in our experience, the current model is already quite
+adequate and certainly much friendlier than the equivalent C++ code &ndash; having computations as first-class
+values makes Haskell the ultimate imperative language :-)
+</dd>
+
+<dt>Why wxWidgets?</dt>
+<dd>
+Well, there are many good reasons for using wxWidgets:
+<ul>
+<li>wxWidgets is free software but you can still write commercial applications with it.</li>
+<li>It is a thin wrapper around native UI elements giving native look-and-feel.</li>
+<li>It is a comprehensive library that is portable across many GUI platforms.</li>
+<li>There even exists a wxUniversal port that just uses a screen
+buffer (and giving up on native look-and-feel!) that can be used on embedded devices.</li>
+<li>The development community is very active (ranked among the top 25 of most active projects on sourceforge).</li>
+<li>The library is mature (in development since 1992).</li>
+<li>The library not only provides GUI abstractions but also an API for databases, sockets, editors, etc.</li>
+<li>We could generate a Haskell marshalling layer automatically from the wxEiffel binding.</li>
+<li>There exist many more language bindings, with wxPython as the most widely known (and used?).</li>
+</ul>
+
+<p>But of course, there are also some downsides:</p>
+
+<ul>
+<li>wxWidgets is free software :-). In itself not bad but it also means that we are
+dependent on the time and effort of volunteers. For example, the MacOS X port lags somewhat
+behind and the documentation of the Qt toolkit is in general better
+(although the wxWidgets documentation is pretty good too).</li>
+<li>It is a huge library. Not a problem in itself but it can be somewhat intimidating.</li>
+<li>The wxEiffel binding is only partially type checked and manually written; it is
+better when the marshalling code can be generated from the real wxWidgets type signatures
+(but alas, this involves writing either a C++ parser or writing bindings with SWIG).
+We might someday start to use the wx.NET wrapper as it seems better structured for use
+with an automatic marshalling program.
+</li>
+</ul>
+</dd>
+<dt>Why don&#39;t you use Qt (or FLTK, or ..) ?</dt>
+<dd>Of course there exist some other good GUI libraries and maybe they would be good
+choices too (here is a nice <a href="http://freshmeat.net/articles/view/928">overview</a>).
+However, many libraries have important drawbacks. For example, we do not use
+the Qt toolkit since one has to pay for an expensive license to create commercial or
+Windows applications; The programming model of Swing is inconvenient to use
+from Haskell, etc.
+
+<p>More links:
+<a href="http://www.fifthplanet.net/cgi-bin/wiki.pl?Comparisons">Comparison</a> of the FOX toolkit
+against different GUI toolkits, including wxWidgets.
+Comprehensive <a href="http://www.geocities.com/SiliconValley/Vista/7184/guitool.html">overview</a>
+of probably all GUI toolkits in existance.
+</p>
+</dd>
+</dl>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+</div>
+</body>
+
+</html>

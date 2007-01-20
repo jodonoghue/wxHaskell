@@ -1,0 +1,337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>wxHaskell</title>
+<style type="text/css">
+.menu-index { font-weight: bold }
+.news .important { background-color: #E0E0E0 }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+<div class="text">
+<p style="text-align: center"><a href="http://wxhaskell.sourceforge.net"><img width="174" height="36" src="images/wxhaskell-black-small.png" alt="wxHaskell logo" style="border: none"></a></p>
+<p></p>
+<p>wxHaskell is a portable and native GUI library for <a href="http://www.haskell.org">Haskell</a>. The goal of the project
+is to provide an industrial strength GUI library for Haskell, but without the burden of developing
+(and maintaining) one ourselves. </p>
+
+<p>wxHaskell is therefore built on top of <a href="http://www.wxwidgets.org">wxWidgets</a> &ndash; a comprehensive C++ library that is portable across all major GUI platforms; including GTK, Windows, X11, and MacOS X. Furthermore, it is a mature library (in development since 1992) that supports a wide range of widgets with the native look-and-feel, and it has a very active community (ranked among the top 25 most active projects on sourceforge).</p>
+</div>
+
+<div class="text">
+<h2>Status</h2>
+<p>Since the core interface is generated
+automatically from the <a href="http://elj.sourceforge.net/projects/gui/ewxw/">wxEiffel</a> binding, about 90% of the wxWidgets functionality is already supported, excluding more "exotic" widgets like dockable windows. Most work is currently directed into writing a Haskellized version of the wxWidgets API. The library currently supports Windows, GTK (Linux) and MacOS X.
+</p>
+</div>
+
+<div class="text">
+<h2>News</h2>
+<dl class="news">
+<dt>June 4, 2005</dt>
+<dd>Lucas Torreão, Emanoel Barreiros, Hilda Borborema, and Keldjan Alves have written a reversi game with wxHaskell. See the <a href="applications.html#hsreversi">screenshots</a>.
+</dd>
+<dt>May 8, 2005</dt>
+<dd>A bug-fix update of version 0.9.4 is <a href="download.html">released</a>. This update enables wxHaskell with the GHCi 6.4 interpreter on Windows platforms.
+</dd>
+<dt>May 7 2004</dt>
+<dd><span class="important">wxWidgets news:</span> The wxWidgets library (as well as wxPython and wxPerl) is being bundled as part of recently released Mac OS X Tiger operating system. Furthermore, there are three interesting new wxWidgets products: <a href="http://www.bitwiseim.com">Bitwise IM</a> is a cross-platform encrypted instant messenger application. Kynosoft recently released <a href="http://www.kynosoft.com">magic splitter</a>, a file splitter and checksum utility. Finally, Lit Window Productions released <a href="http://www.litwindow.com/wxvisualsetup?gad=CMm3n5oBEgiR62OOVECZRBjO6qv_AyDVnoEI">wxVisualSetup 2.6</a> which integrates wxWidgets into the Microsoft Visual Studio .NET IDE.
+</dd>
+<dt>May 3, 2005</dt>
+<dd class="important">Version 0.9.4 is <a href="download.html">released</a>. It comes with installers for
+Fedora (Linux), Windows, and MacOSX. This is mostly an update to support the latest <a href="http://www.haskell.org/ghc">GHC 6.4</a>.
+</dd>
+<dt>Feb 25, 2005</dt>
+<dd class="important">Version 0.9 is <a href="download.html">released</a>. It comes with installers for
+Fedora (Linux), Windows, and MacOSX. There is now support for printing and configuration files. Furthermore, there is much improved process support. Read the <a href="http://sourceforge.net/project/shownotes.php?release_id=308263">release notes</a> for a detailed account of all changes.
+</dd>
+<dt>Nov 5 2004</dt>
+<dd>Sander Evers has released <a href="http://www.cs.ru.nl/~sandr/FunctionalForms">Functional Forms</a>: a library for wxHaskell to easily create dialogs to display and edit corresponding Haskell values. See the <a href="applications.html#fforms">screenshot</a>.
+</dd>
+<dt>Sep 23 2004</dt>
+<dd><b>The technology behind the winners:</b>
+Team <a href="http://urchin.earth.li/icfpcontest/2004/Introduction">Dunkosmiloolump</a> has used
+wxHaskell for their submission to the <a href="http://www.cis.upenn.edu/proj/plclub/contest">Seventh annual ICFP programming contest</a> &ndash; and they won the contest! See the <a href="applications.html#icfpcontest">screenshot</a>.
+</dd>
+<dt>Jul 27 2004</dt>
+<dd class="important">Version 0.8 is <a href="download.html">released</a>. It comes with installers for
+Fedora (Linux), Windows, and MacOSX. There have been many bug fixes and many internal changes: managed resources are supported and all object references are checked. The wxGrid control is added and many other controls have a simplified interface. This version contains changes that are not backwards compatible but most are very small. Read the <a href="https://sourceforge.net/project/shownotes.php?release_id=256177">release notes</a> for a detailed account of all changes.
+</dd>
+<dt>Jul 26 2004</dt>
+<dd>Many internal changes: support for managed resources like bitmaps and full NULL pointer
+checking on object pointers. Also added enhanced grid control support with wxGrid events (<a href="samples.html#grid">screenshot</a>).
+</dd>
+<dt>Jul 24 2004</dt>
+<dd><span class="important">wxWidgets news:</span> Elementec Software has released a very good backup program written in wxWidgets, <a href="http://www.elementec.com/backupcompress_english.htm">Backup&amp;Compress</a>. It works great on Windows systems.
+</dd>
+<dt>Jul 22 2004</dt>
+<dd>Wei Tan has made a graphical heap profile viewer for GHC with wxHaskell, called <a href="http://dready.org/projects/HPView">HPView</a>. See the <a href="applications.html#hpview">screenshots</a>.
+</dd>
+<dt>Jun 8 2004</dt>
+<dd>Team <a href="http://urchin.earth.li/icfpcontest/2004/Introduction">Dunkosmiloolump</a> has used
+wxHaskell for their submission to the <a href="http://www.cis.upenn.edu/proj/plclub/contest">Seventh annual ICFP programming contest</a>. See the <a href="applications.html#icfpcontest">screenshot</a>.
+</dd>
+<dt>Jun 4 2004</dt>
+<dd>We are working towards version 0.8. This will support the new wxWidgets 2.5.2, and have many
+improvements, like variable objects, NULL pointer checking and managed resources like bitmaps.
+</dd>
+<dt>May 10 2004</dt>
+<dd>Support for radio menu items and file types in file save dialogs.
+</dd>
+<dt>Apr 2 2004</dt>
+<dd class="important">Version 0.7 is <a href="download.html">released</a>. It comes with installers for
+Fedora (Linux), Windows, and MacOSX. There have been some bug fixes, and more attributes are added to
+influence style settings of windows. The build system has also improved, especially for Linux systems.
+</dd>
+<dt>Apr 2 2004</dt>
+<dd>Eric Y. Kow has created a <a href="http://www.haskell.org/hawiki/WxHaskell">Wiki site</a> for wxHaskell!
+You are invited to add useful tips, screenshots, or example programs.
+</dd>
+<dt>Apr 2 2004</dt>
+<dd>Sean Seefried has provided a <a href="samples.html#opengl">screenshot</a> that
+demonstrates the wxHaskell <a href="doc/Graphics.UI.WXCore.OpenGL.html">OpenGL
+canvas</a> using the <a href="http://www.haskell.org/HOpenGL">HOpenGL</a> binding
+by Sven Panne.
+</dd>
+<dt>Mar 24 2004</dt>
+<dd>Updated screenshots and added screenshots of wxHaskell <a href="applications.html">applications</a>.
+wxHaskell also builds properly now with wxWidgets 2.5.1 and can link statically with the wxWidgets libraries.
+Menu bugs on MacOS X have been fixed.
+</dd>
+<dt>Feb 29 2004</dt>
+<dd>The windows installer of wxHaskell 0.6 has been <a href="download.html">updated</a> to better support
+windows98 and windows95 platforms.
+</dd>
+<dt>Feb 23 2004</dt>
+<dd class="important">Version 0.6 is <a href="download.html">released</a>. This version fixes many outstanding
+bugs, has basic support for MDI applications, and compiles with the latest CVS snapshots of wxWidgets.
+</dd>
+<dt>Feb 20 2004</dt>
+<dd><span class="important">wxWidgets news:</span> wxWindows changes its name into wxWidgets! Microsoft has requested this change and,
+in exchange, provides modest financial support for further development of wxWidgets
+(<a href="http://www.wxwidgets.org/name.htm">read more</a>).
+</dd>
+<dt>Feb 20 2004</dt>
+<dd>wxHaskell is compiled with the latests CVS snapshot of wxWidgets on MacOS X 10.3 (Panther) with GHC 6.2.
+The snapshot still contains menu bugs on the Mac though. Also added a convenient installer for the
+<a href="building-macosx.html">readline library</a> to make the build process on the Mac relatively painless.
+</dd>
+<dt>Feb 20 2004</dt>
+<dd>Finally! the resize bugs have been found and fixed. Furthermore, support for MDI windows is added. We are
+working towards a 0.6 release in the next week.
+</dd>
+<dt>Feb 19 2004</dt>
+<dd>A patch to the windows installer of version 0.5 is released (named ...-0.5-1).
+</dd>
+<dt>Feb 14 2004</dt>
+<dd class="important">Version 0.5 is <a href="download.html">released</a>. This is basically a patch-level
+release for GHC 6.2. Also added support for html window events. Unfortunately, there are still some resize bugs.
+</dd>
+<dt>Dec 22 2003</dt>
+<dd><span class="important">wxWidgets news:</span> wxWidgets on <a href="http://abx.art.pl/wx/symbian">mobile phones</a>! (using the Borland C++ builder Nokia edition on series 60 phones with the <a href="http://www.symbian.com/index.html">Symbian OS</a>).
+</dd>
+<dt>Dec 19 2003</dt>
+<dd><span class="important">wxWidgets news:</span> wxWidgets get its own <a href="http://www.wxwidgets.org/sf/index.htm">software foundation</a> to promote and protect wxWidgets&#39; interest. The foundation is chaired by Mitch Kapor, now leading the <a href="http://www.osafoundation.org">Open Source Applications Foundation (OSAF)</a> (which is using wxWidgets for their Chandler product).
+</dd>
+<dt>Dec 18 2003</dt>
+<dd><span class="important">wxWidgets news:</span> The new <a href="http://www.borland.com/cbuilderx">Borland Builder-X</a> development environment for C++ will ship with wxWidgets as its windowing toolkit. Read the official <a href="http://www.wxwidgets.org/borland01.htm">wxWidgets statement</a>, and take a look at a <a href="http://www.koansoftware.com/wxwindows/builder-compiling.gif">screenshot</a> from the pre-evaluation version.
+</dd>
+<dt>Nov 7 2003</dt>
+<dd class="important">Version 0.4 is <a href="download.html">released</a>. Most important addition is extensive ODBC database support (not yet on MacOS X) and improved installation on windows. Resize issues have been fixed.
+</dd>
+<dt>Oct 30 2003</dt>
+<dd>Extensive support for portable ODBC <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.Db.html">database access</a> has been added.
+Includes functionality to retrieve full meta information about databases and result sets.
+At the moment only tested on Windows with MS SQL Server and MS Access, and unsupported on MacOS X.</dd>
+<dt>Oct 25 2003</dt>
+<dd>Support for the <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.OpenGL.html">openGL canvas</a> has been added, and we are looking for volunteers
+to test it with <a href="http://haskell.org/HOpenGL">HOpenGL</a>. At the moment unsupported on MacOS X.</dd>
+<dt>Oct 9 2003</dt>
+<dd class="important"><a href="screenshots.html#linformaticien"><img
+     src="images/couvn9-small.png" alt="Cover of the magazine" width=95 height=127
+     style="float: right; margin-left: 4pt"></a>Haskell on the cover of magazine! wxHaskell is featured in the october 2003 edition of <a href="http://www.linformaticien.fr">L&#39;informaticien</a> &ndash; a popular French PC magazine. The article has been written by Fr&eacute;d&eacute;ric Mazu&eacute;. I have added
+some <a href="screenshots.html#linformaticien">screenshots</a > of the relevant pages.
+</dd>
+<dt>Oct 1 2003</dt>
+<dd class="important">Version 0.3 is released. This is a patch-level release against the new wxWidgets 2.4.2
+library. Behaviour is especially improved on MacOS X. Also contains new functionality to manipulate pixel buffers
+directly.
+</dd>
+<dt>Sep 26 2003</dt>
+<dd>Jens petersen kindly provided a <a href="download.html">rpm</a> for Red Hat Linux.
+</dd>
+<dt>Sep 16 2003</dt>
+<dd class="important">Version 0.2 is released! The new release has (improved) support for tree controls, list
+controls, toolbars, splitter windows, sliders, gauges, and bitmap
+buttons. <a href="screenshots.html">Screenshots</a> of these widgets on different platforms have been
+added to the website. Furthermore, there are numerous small bug fixes,
+especially for wxGTK.
+</dd>
+<dt>Sep 15 2003</dt>
+<dd>Fixed numerous small bugs after extensive testing on GTK and MacOS X. Issues on GTK: tree control has the wrong size (looks bulky), unable to run <code>main</code> twice from <code>ghci</code>.
+</dd>
+<dt>Sep 11 2003</dt>
+<dd>Improved support for toolbars, sliders, and gauge controls.
+</dd>
+<dt>Sep 10 2003</dt>
+<dd>Improved support for tree controls, list controls, image lists, and splitter windows (i.e. <em>sash bars</em>). See the <a href="screenshots.html">screenshots</a>.
+</dd>
+<dt>
+<dt>Aug 22 2003</dt>
+<dd><span class="important">wxWidgets news:</span> AOL has released <a href="http://www.aolepk.com/communicator/index.html">AOL Communicator</a>, built with a modified version of wxWidgets. An article about AOL Communicator can be found on <a href="http://finance.lycos.com/home/news/story.asp?story=35138649">Quote.com</a>.
+</dd>
+<dt>Aug 21 2003</dt>
+<dd>wxHaskell has been build with GHC version 6.0.1. (GHC versions 6.0, 5.04.3, and interim 5.05 were
+already supported).
+</dd>
+<dt>Aug 19 2003</dt>
+<dd>Sweeping changes: renamed the library <code>WXH</code> to the more appropiate
+name <code>WXCore</code>. Also fixed type signatures in the marshalling of tree controls, list controls, toolbars and splitter windows.
+</dd>
+<dt>Aug 18 2003</dt>
+<dd><a href="http://www.cs.uu.nl/~arthurb">Arthur Baars</a> has provided a proper
+<a href="download.html">installer</a> for MacOS X now.
+</dd>
+<dt>July 22 2003</dt>
+<dd>There is a binary release for MacOS X now. Furthermore, the source release (version 0.1) has been
+updated with a small bug fix in the configure script that caused build problems on Linux systems.
+</dd>
+<dt>July 21 2003</dt>
+<dd class="important">We are proud to announce the first public release of wxHaskell 0.1! There is even a binary distribution
+for Windows.
+</dd>
+<dt>July 18 2003</dt>
+<dd>Added two more screenshots: Proxima (by Martijn Schrage) and Tha-Simulator (by Wijnand Suijlen).
+</dd>
+<dt>July 14 2003</dt>
+<dd>Close to the first release, we have updated the build system: all projects are now
+build with a single makefile and configure script, and distributions are automatically generated.
+The new development tree is in the <code>wxhaskell</code> directory: the other directories are
+now considered obsolete (<code>wxc</code>, <code>wxdirect</code>, <code>wxh</code>, and <code>wx</code>).
+</dd>
+<dt>July 9 2003</dt>
+<dd><span class="lib">wxHaskell</span> now runs properly on MacOS X!. It still contains some small
+redraw problems with resizeable dialogs but all the samples work ok.
+</dd>
+<dt>July 9 2003</dt>
+<dd>The <span class="lib">wxc</span> library compiles now with Microsoft Visual C++ on windows platforms. The
+resulting dynamic link library is just 600kb (while the gnu compiled libraries are 2mb).
+</dd>
+<dt>July 3 2003</dt>
+<dd>The <span class="lib">wx</span> library is available through sourceforge now.
+</dd>
+<dt>July 2 2003</dt>
+<dd>A major revision of the wxHaskell library has been committed &ndash; all the <em>this</em> pointers
+are now passed as the first argument instead of the last.
+</dd>
+<dt>July 1 2003</dt>
+<dd class="important">wxHaskell has been used in the <a href="http://www.dtek.chalmers.se/groups/icfpcontest">ICFP contest</a>
+by <a href="http://www.cs.uu.nl/~eelco/icfppc2003">Team Dom</a>
+to create a graphical editor for solving the tracks. There is a nice
+<a href="http://www.cs.uu.nl/~eelco/icfppc2003/editor.png">screenshot</a> of the editor running on GTK/Linux.
+</dd>
+<dt>June 4 2003</dt>
+<dd>Arthur Baars has kindly provided his Linux machine and his time!, to build <span class="lib">wxHaskell</span> successfully on MacOSX (see the <a href="screenshots.html">screenshots</a>). Unfortunately, drawing device contexts
+do not work at this moment.
+</dd>
+<dt>June 3 2003</dt>
+<dd>We started working on make files for mingw32 (win32), unix, and MacOSX. Alpha release scheduled for the first week of July.
+</dd>
+<dt>Apr 22 2003</dt>
+<dd>Andres L&ouml;h has kindly provided his Linux machine (and his time :-), to build <span class="lib">wxHaskell</span> successfully with GTK. <a href="screenshots.html">Screenshots</a> have been added. We have some small problems with mouse motion events on GTK though (May 20 2003 update: the problems are gone with the
+latest (cvs) GHC version).
+</dd>
+<dt>Feb 18 2003</dt>
+<dd>Preliminary <a href="documentation.html">documentation</a> on the <span class="lib">wx</span> library added.
+</dd>
+<dt>Feb 1 2003</dt>
+<dd>Put the <span class="lib">wxHaskell</span> project on sourceforge.
+</dd>
+</dl>
+</div>
+
+<div class="text">
+<p style="text-align: center">
+  <a href="http://sourceforge.net/projects/wxhaskell"><img
+     src="http://sourceforge.net/sflogo.php?group_id=73133&amp;type=1"
+     width="88" height="31" style="border-style: none"
+     alt="SourceForge.net Logo"></a>
+  <a href="http://validator.w3.org/check?uri=http://wxhaskell.sourceforge.net"><img
+     src="http://www.w3.org/Icons/valid-html40"
+     alt="Valid HTML 4.0!" height="31" width="88"
+     style="border-style:none"></a>
+  <a href="http://jigsaw.w3.org/css-validator/validator?uri=http://wxhaskell.sourceforge.net" ><img
+     height="31" width="88" style="border-style: none"
+     src="http://jigsaw.w3.org/css-validator/images/vcss.gif" alt="Valid CSS!"
+     ></a>
+<!--
+  <a href="http://v1.nedstatbasic.net/stats?ACFouAd/hOTiEpDR+b31vFi6uBpA"><img
+      src="http://m1.nedstatbasic.net/n?id=ACFouAd/hOTiEpDR+b31vFi6uBpA"
+      style="border: none" width="18" height="18"
+      alt="nedstat counter"></a>
+-->
+
+<script language="JavaScript" type="text/javascript" src="http://m1.nedstatbasic.net/basic.js">
+</script>
+<script language="JavaScript" type="text/javascript" >
+  nedstatbasic("ACFouAd/hOTiEpDR+b31vFi6uBpA", 0);
+</script>
+<noscript>
+<a target="_blank" href="http://www.nedstatbasic.net/stats?ACFouAd/hOTiEpDR+b31vFi6uBpA"><img
+src="http://m1.nedstatbasic.net/n?id=ACFouAd/hOTiEpDR+b31vFi6uBpA"
+border="0" width="18" height="18"
+alt="Nedstat counter"></a><br>
+<a target="_blank" href="http://www.nedstatbasic.net/">Nedstat counter</a>
+</noscript>
+
+</p>
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Jun  5 2005".
+</div>
+</div>
+</body>
+
+</html>

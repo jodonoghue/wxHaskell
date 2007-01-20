@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+<style type="text/css">
+.menu-building-msc { font-weight: bold }
+</style>
+
+<title>wxHaskell - Building - Visual C++</title>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+
+<div class="text">
+<h2>Building wxWidgets and <span class="lib">wxc</span> with Microsoft Visual C++</h2>
+
+<p>The advantage of using Visual C++ is that the resulting libraries are smaller and faster
+than the gnu compiled ones. Furthermore, the debug version provides for automatic detection
+of memory leaks in the wxWidgets libraries and you get a warning when forgetting to deallocate
+wxWidgets objects. The drawback is that the configure scripts are not used and you will need
+to set some options manually.</p>
+
+<p>We use the wxWidgets provided workspace directly:</p>
+<ul>
+<li><b>wxWidgets 2.4</b>: Open the <code>$wxwin/src/wxWidgets.dsw</code> workspace.
+Select menu "<code>Build/Set active configuration</code>" and select "<code>wxWidgets - win32 release</code>" to build the (static) library. After compilation, you can also select "<code>wxWidgets - win32 debug</code>" to build
+the debug version.</li>
+<li><b>wxWidgets 2.5</b>: Open the <code>$wxwin/build/msw/wx.dsw</code> workspace. Select
+menu "<code>Build/Batch build</code>" and select all configurations by using the mouse and the <code>shift</code> key,
+when you click a marker, all configurations are deselected. Next you manually select the "Release" and "Debug" versions of all projects and press "Build". Afterwards, press "Save All" to save all your mouse clicking work :-)</li>
+</ul>
+
+<p>After building wxWidgets, you need to run <code>configure</code> for the wxHaskell library.</p>
+<pre>
+&gt; cd $wxhaskell
+&gt; ./configure --with-msc
+</pre>
+
+<p>If you want to use the debug version of the library, use the <code>--wxc-libname</code> option too.</p>
+<pre>
+&gt; ./configure --with-msc --wxc-libname=wxcd
+</pre>
+
+<p>After configuration, first go the <code>$wxhaskell/wxc</code> directory. Here, you need to adapt the <code>wxc-<em>version</em>.dsp</code> project to reference the correct wxWidgets directory. Open the <code>.dsp</code> file in an editor and replace all occurrences of "<code>..\..\wxWindows-2.4.2</code>" (or "<code>..\..\wxWindows-2.5.1</code>") or by the installed wxWidgets directory, i.e. <code>$wxwin</code>.
+</p>
+
+<p>After adapting the project file, you can open the workspace <code>wxc/wxc-<em>version</em>.dsw</code>
+and build the release and debug versions of the C wrapper library.</p>
+
+<p>And finally! &ndash; you can run <code>make</code> in the <code>$wxhaskell</code> directory to build the
+Haskell libraries.</p>
+<pre>
+&gt; cd $wxhaskell
+&gt; make
+&gt; make install
+</pre>
+
+</div>
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+
+</div>
+</body>
+</html>

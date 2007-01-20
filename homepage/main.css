@@ -1,0 +1,66 @@
+/* adjust padding of body to predictable values */
+/* stale blue: rgb(126,165,193) 
+   light gray: rgb(208,208,208)
+*/
+body		{ background-color: rgb(126,165,193) ; margin: 0pt; padding: 0pt; }
+#body		{ margin: 0pt; padding: 2% 0pt 0pt 0pt  }
+
+/* menu items (added sans-serif, 8pt for better viewing on the safari browser) */
+.menu, .status, .side, .quicklink, .quicklinks
+			{ font-family: sans-serif
+			; font-size: 8pt
+			; font: menu
+			}
+
+/* a side box */
+.side, .menu
+			{ margin: 0pt 1em 1em 1%	
+			; padding: 2pt 
+			; float: left
+			; clear: left
+			; width: 2.25cm
+			}
+
+/* centered text  */
+.text, .status
+			{ margin: 0pt 10% 1% 13% 
+			; padding: 0pt 2% 0pt 2% 
+			}
+
+
+/* boxes */
+.text, .status, .side, .menu
+			{ border-style: solid; border-width: 1px
+            ; background-color: white
+			}
+
+img			{ border-style: solid; border-width: 1px }
+
+/* needed to make opera behave the same as IE */
+.text p     { margin-bottom: 1em }
+
+/* menu items (netscape needs padding set to 0pt) */
+.menu ul	{ margin: 0pt; padding: 0pt }
+.menu ul ul	{ margin-left: 1em; padding: 0pt }
+.menu li	{ margin: 0pt; list-style: none }
+.menu li li	{ margin: 0pt; list-style: none }
+
+.menu a, .status a  
+			{ text-decoration: none }
+
+/* tweaks */
+li li 		{ list-style: disc }
+
+h1, h2		{ text-align: center
+			; margin-top: 1ex 
+			/*
+			; font-family: verdana, sans-serif 
+			; font-weight: normal
+			*/
+			}
+
+.lib        { font-variant: small-caps; color: navy  }
+code		{ color: navy }
+	
+dt			{ font-weight: bold }
+dd			{ margin-bottom: 1ex }

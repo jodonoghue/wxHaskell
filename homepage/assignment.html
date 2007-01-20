@@ -1,0 +1,196 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Turtle graphics</title>
+
+<style>
+pre, code		{ font-weight: bold }
+.body         { padding: 0cm 1cm 1cm 1cm; margin: 1cm; border-style: solid; border-width: 1pt }
+</style>
+</head>
+
+<body>
+<div class="body">
+<h1>AFP assignment: turtle graphics.</h1>
+<p>You are going to implement an <i>embedded domain specific language</i> to
+describe <i>turtle graphics</i>. The goal of this assignment is to give you a
+feel for the design issues involved with an embedded language and experience
+with first-class IO values and graphical user interfaces.</p>
+<p>The idea is that there is a turtle that carries a pencil that can draw on a
+canvas. The turtle is knows just two primitive commands:</p>
+<pre>right d
+forward n</pre>
+<p>That is, it can go <code>forward</code> for <code>n</code> units, or it can
+turn <code>right</code> over <code>d</code> degrees. For example, we can draw a
+square using the following commands: </p>
+
+<pre>forward 50
+right 90
+forward 50
+right 90
+forward 50
+right 90
+forward 50</pre>
+
+<p>You can find more examples and information at the following webpage: <a href="http://el.www.media.mit.edu/groups/logo-foundation/logo/turtle.html">http://el.www.media.mit.edu/groups/logo-foundation/logo/turtle.html</a>
+
+ </p>
+
+<h2>Prerequisites </h2>
+<p>It is encouraged to do this assignment with the <b>wxHaskell 0.2</b> library
+at <a href="http://wxhaskell.sourceforge.net">http://wxhaskell.sourceforge.net</a>.
+Unfortunately, this means that you need ghc 6.01 and administrator rights.&nbsp;
+This implies that only people with access to a computer that they own, can do
+this assignment with <b>wxHaskell</b>. I can probably provide a few people (up
+to 4) with a dedicated computer in the ST-lab in the CGN building.&nbsp;
+
+ </p>
+
+<p>If you really need to work on a standard lab machine, you can also do the
+assignment using the <b>SOE</b> graphics library for Hugs: <a href="http://cvs.haskell.org/Hugs/pages/downloading.htm">http://cvs.haskell.org/Hugs/pages/downloading.htm</a>.
+See their documentation about how to open windows and do drawing.&nbsp;
+
+ </p>
+
+<h2>Assignments </h2>
+<h3>Assignment 1</h3>
+<p>Implement the turtle language as an embedded language in Haskell. The
+language is embedded in Haskell as a single module that exports abstract data
+types and associated operations. You should consider carefully what operations
+you want to expose to the user so that programming with turtles becomes
+convenient. For example, you could start with an interface like this:</p>
+<pre>data Drawing  </pre>
+<pre>forward :: Double -&gt; Drawing
+right   :: Double -&gt; Drawing
+...</pre>
+<p>Of course, this is just an example and you can define another kind of
+interface, as long as it has the same basic functionality. In both cases, you
+need to be able to defend why you have chosen for a particular approach. Other
+turtle commands you should implement are <code>penup</code> and <code>pendown</code>,
+to either hide or show the trail of the turtle, <code>color</code> that changes
+the color of the pen, and <font face="d"><code>stop</code></font> to end a
+program.</p>
+<p>Other commands are somewhat easier to add: <code>backward</code>, <code>left</code>,
+and <code>repeat</code>. Why are these easier to add?</p>
+<p>You should also provide an <code>execute</code> function that takes a turtle
+program and runs it. Think about how general your function should be: should it
+open its own window and take of everything itself, or should it be parameterised
+by a window or drawing functions? Explain why you have chosen a particular
+approach. Think also about a coordinate system: do you use pixels as units? what
+happens on a resize of the window?&nbsp; Note that your turtle should start in
+the center, going upwards.</p>
+<p>You implementation doesn't have to show a turtle: it just has to show how the
+final result looks like. Check your implementation by implementing the spiral
+example from the <a href="http://el.www.media.mit.edu/groups/logo-foundation/logo/turtle.html">http://el.www.media.mit.edu/groups/logo-foundation/logo/turtle.html</a>
+
+ webpage.</p>
+<pre><img border="1" src="images/turtle-spiral.gif" align="right" hspace="10" vspace="10" width="120" height="120">to spiral :size :angle 
+  if :size &gt; 100 [stop] 
+  forward :size 
+  right :angle 
+  spiral :size + 2 :angle 
+end</pre>
+<p>Of course, you would implement your examples in a separate module than the <code>Turtle</code>
+module.</p>
+<h3>Assignment 1a (optional)</h3>
+<p>Instead of drawing the result of a turtle drawing, show how the drawing is
+drawn. You don't have to show a turtle itself, just showing the effect of the
+turtle moving around is good enough. You could use a <code>timer</code> together
+with a mutable variable and <code>repaint</code> to animate the drawing. Look at
+the wxHaskell <i>bouncing balls</i> example for an illustration of their usage.
+If you use SOE graphics, you can probably use <code>sleep</code> (or <code>Win32.sleep</code>)
+to achieve the same effect.</p>
+<p>Once this works, you can also try to implement the <code>forever</code>
+operator.</p>
+<h3>Assignment 2</h3>
+<p>Implement parallel composition to your interface. One possible interface
+could be:</p>
+<pre>(&lt;|&gt;) :: Drawing -&gt; Drawing -&gt; Drawing</pre>
+<p>When you execute the drawing <code>p &lt;|&gt; q</code> there will be two
+turtles, one drawing p, the other drawing q in parallel. </p>
+
+<p>Think about what happens after a parallel composition finishes? Is the
+operator commutative? and associative? Why would these laws be important to a
+programmer? </p>
+
+<h3>Assignment 3 </h3>
+
+Several other extensions to the simple turtle language can be made. Implement at
+least one extension from this list:<p><b>1.</b> You could add a <b>save</b> construct to the language.
+<pre><b>  save :: Program -&gt; Program
+</b></pre>
+The meaning of the program <b>save p</b> is to recall the current position of
+the turtle and to continue with the program as if nothing happened. But as soon
+as we are done, we return to the saved state and execute the program <b>p</b>
+from that point. When you have several <b>save</b> statements in your program,
+all of them should be saved and later executed, but you may decide yourself in
+what order.
+<p><b>2.</b> You could add a <b>pause</b> construct to your language. In this
+case, you will add a button with the text &quot;Continue&quot; to the graphical
+interface. This button is normally inactive, but when the turtle program
+executes the <b>pause</b> command, it halts, and the &quot;Continue&quot; button
+becomes active. When the user clicks on the &quot;Continue&quot; button, the
+program continues and the continue button becomes inactive again.
+<p><b>3.</b> Similar to <b>2</b>., but instead of an explicit pause, you have a
+combinator called <b>stepping</b>.
+<pre><b>  stepping :: Program -&gt; Program
+</b></pre>
+The meaning of the program <b>stepping p</b> is: execute <b>p</b> as normal, but
+the user is required to click the &quot;Continue&quot; button at every step
+during the execution of <b>p</b>.
+<p><b>4.</b> Add the commands <b>showturtle</b> and <b>hideturtle</b> to your
+language, which toggle between having a turtle picture shown when drawing the
+pictures or not. A variant of this allows different turtle bitmaps and maybe
+even a background image. One can then describe simple animations. Also see the
+section &quot;Up and Away&quot; from the above mentioned turtle web page.
+<p><b>5.</b> Add a way to your language of finding out information about for
+example, where the turtle currently is, or if the user clicks or drags the mouse. It
+should of course be possible to then use this information in your turtle
+programs.
+<p><b>6.</b> Invent your own extension to the turtle language. By extension I
+mean something that cannot be implemented in terms of the existing language
+constructs. </p>
+<h3>Assignment 4 </h3>
+
+<p>Create a cool picture that uses some or all the extensions that you have
+made. To keep up a long standing tradition, the team with the best demo,
+subjectively chosen by me :-), wins a bag of M&amp;M's. </p>
+
+<h3>Assignment 5 </h3>
+
+<p>Answer and motivate the following questions:</p>
+<ol>
+  <li>Compare the usability of your embedding against a custom-made
+    implementation of a turtle language with dedicated syntax and interpreters.
+    How easy is it to write programs in your embedded language compared to a
+    dedicated language? What are the advantages and disadvantages of an
+    embedding?</li>
+  <li>Compare the ease of implementation of your embedding against a custom-made
+    implementation. How easy was it to implement the language and extensions in
+    your embedded language compared to a dedicated language? What are the
+    advantages/disadvantages of an embedding?</li>
+  <li>In what way have you used the following programming language features:
+    higher-order functions, laziness, and polymorphism?</li>
+</ol>
+<h2>Submission</h2>
+<p>You should send your submission before <b>Sunday, 28 September, 23:59h</b> to
+<a href="mailto:daan@cs.uu.nl">daan@cs.uu.nl</a> with the subject <b>afp&nbsp;submission</b>. In the body, you should&nbsp; put the names of your team and
+the student numbers. You should attach the following (zipped/tarred) files:</p>
+<ol>
+  <li>A module <code>Turtle.hs</code> that contains your embedding of the turtle
+    language.</li>
+  <li>A module <code>Main.hs</code> that contains your examples. If I run <code>main</code>,
+    I should see the coolest example you have made.</li>
+  <li>A text file named <code>report</code> that contains the answers to the
+    questions and comments and motivations about your implementation.</li>
+</ol>
+Your code will also be judged on elegance!
+<p>Success!
+</div>
+</body>
+
+</html>

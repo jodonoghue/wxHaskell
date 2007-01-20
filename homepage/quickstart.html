@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+
+<title>A quick start with wxHaskell</title>
+<style type="text/css">
+.menu-documentation-quickstart { font-weight: bold }
+pre { color: navy; padding-left: 2ex }
+.comment { color: green }
+</style>
+</head>
+
+<body>
+<div id="body">
+
+<div class="menu">
+  <ul>
+  <li><a class="menu-index" href="index.html">home</a></li>
+  <li><a class="menu-screenshots" href="screenshots.html">screenshots</a>
+      <ul>
+      <li><a class="menu-samples" href="samples.html">samples</a></li>
+      <li><a class="menu-applications" href="applications.html">applications</a></li>
+      </ul>
+  </li>
+  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+          <ul>
+          <li><a class="menu-documentation-license" href="license.html">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-download" href="download.html">download</a></li>
+  </ul>
+</div>
+<div class="menu">
+  <ul>
+  <li><a class="menu-building" href="building.html">building</a>
+          <ul>
+          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
+          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
+          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          </ul>
+  </li>
+  <li><a class="menu-development" href="development.html">development</a></li>
+  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+<!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
+  </ul>
+</div>
+
+
+<div class="text">
+<h2>A quick start with wxHaskell</h2>
+
+<p>This document is written to get you started quickly with writing wxHaskell applications.
+Further documentation can be found on the <a href="documentation.html">documentation page</a>.
+</p>
+
+<p><em>Note from the author: I have written this page to be in close correspondence with the
+<a href="http://www.cs.chalmers.se/Cs/Grundutb/Kurser/afp/yahu.html">yahu</a> getting started page &ndash;
+first of all to make my job easier by reusing
+<a href="http://www.cs.chalmers.se/~koen">Koen Claessen&#39;s</a> excellent example, but also since
+it makes an interesting comparison: we reuse many concepts of yahu, most notably properties
+and attributes, but as yahu is based on Tcl/TK, the applications are also
+typed and structured in a fundamentally different way.</em></p>
+
+<p>Daan Leijen</p>
+</div>
+
+<div class="text">
+<h2>Hello world in wxHaskell</h2>
+<p>Start your favorite editor and write the following program (that will show a frame with
+a single button that closes the frame when pressed).</p>
+<img src="images/quick1-win.png" width=112 height=50 alt="Hello world on Windows XP" align=right>
+<pre>
+module Main where
+import Graphics.UI.WX
+
+main :: IO ()
+main
+  = start hello
+
+hello :: IO ()
+hello
+  = do f&nbsp;&nbsp;&nbsp; &lt;- frame&nbsp;&nbsp;&nbsp; [text := "Hello!"]
+       quit &lt;- button f [text := "Quit", on command := close f]
+       set f [layout := widget quit]
+</pre>
+<img src="images/quick1-gtk.png" width=145 height=49 alt="Hello world on Red Hat Linux" align=right>
+
+<p>Now start GHCi and run the program:</p>
+<pre>
+&gt; ghci -package wx Hello.hs
+<em>[snip]</em>
+Loading package wx ... linking ... done.
+Compiling Main ( Hello.hs, interpreted )
+Ok, modules loaded: Main.
+*Main&gt; main
+</pre>
+
+<p>Note: On MacOS X, you can only use the interpreter with special scripts,
+as you need to build MacOS X <em>applications</em>.
+Normally, the following commands will do the job:</p>
+<img src="images/quick1-mac.png" width=132 height=48 alt="Hello world sample" align=right>
+<pre>
+&gt; ghc -package wx -o hello Hello.hs
+&gt; /usr/local/wxhaskell/bin/macosx-app -v hello
+&gt; ./hello
+</pre>
+
+<p>You can read the MacOS X
+<a href="building-macosx.html">notes</a> for more information on using wxHaskell on MacOS X,
+and how to use it from an interpreter prompt.</p>
+
+<h3>Types</h3>
+<p>A typical wxHaskell program imports the <code>Graphics.UI.WX</code> library. If you need to access
+specific wxWidgets functionality, you would also import the lower level <code>Graphics.UI.WXCore</code> library.
+The <code>main</code> function uses <code>start</code> to start our GUI. The function <code>start</code>
+initializes the GUI framework with the provided argument and starts the window event loop until the application
+quits or when all top-level windows are closed. The GUI itself is described with the following functions:
+</p>
+<pre>
+frame&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Prop&nbsp;(Frame&nbsp;())]&nbsp;->&nbsp;IO&nbsp;(Frame&nbsp;())
+button&nbsp;::&nbsp;Window&nbsp;a&nbsp;->&nbsp;[Prop&nbsp;(Button&nbsp;())]&nbsp;->&nbsp;IO&nbsp;(Button&nbsp;())
+
+text&nbsp;&nbsp;&nbsp;::&nbsp;Attr&nbsp;(Window&nbsp;a)&nbsp;String
+layout&nbsp;::&nbsp;Attr&nbsp;(Frame&nbsp;a)&nbsp;&nbsp;Layout
+
+(:=)&nbsp;&nbsp;&nbsp;::&nbsp;Attr&nbsp;w&nbsp;a&nbsp;->&nbsp;a&nbsp;->&nbsp;Prop&nbsp;w
+set&nbsp;&nbsp;&nbsp;&nbsp;::&nbsp;w&nbsp;->&nbsp;[Prop&nbsp;w]&nbsp;->&nbsp;IO&nbsp;()
+
+command::&nbsp;Event&nbsp;(Control&nbsp;a)&nbsp;(IO&nbsp;())
+on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::&nbsp;Event&nbsp;w&nbsp;a&nbsp;->&nbsp;Attr&nbsp;w&nbsp;a
+
+widget&nbsp;::&nbsp;Window&nbsp;a&nbsp;->&nbsp;Layout
+</pre>
+
+<p>Actually, some of these functions have (even) more general types &ndash; you can use the <code>:t</code>
+command in GHCi to see them.</p>
+<p>The types <code>Frame ()</code> and <code>Button ()</code> denote graphical objects. These objects can
+have <em>properties</em>. When an object is created we can supply an initial list of properties but we
+can also set them later using <code>set</code>. The type of properties for frames are
+<code>Prop (Frame ())</code> and for buttons <code>Prop (Button ())</code>.</p>
+
+<p>Properties are created by combining <em>attributes</em> with values. Examples of attributes are
+<code>text</code> and <code>layout</code>. An attribute of type <code>Attr w a</code> applies to objects
+of type <code>w</code> and values of type <code>a</code>. Values can be assigned to attributes using the
+<code>(:=)</code> operator. You can find out more about attributes in the haddock documentation
+for the modules <a class="docref" href="doc/Graphics.UI.WX.Attributes.html">WX.Attributes</a> and
+<a class="docref" href="doc/Graphics.UI.WX.Classes.html">WX.Classes</a>.</p>
+
+<p>Somewhat special attributes are <em>events</em>. An event of type <code>Event w a</code> can be
+transformed into an attribute <code>Attr w a</code> using <code>on</code>. The value of an event
+attribute is normally an <code>IO</code> action that is executed when the event happens.
+Find out more about events in the haddock documentation for
+<a href="doc/Graphics.UI.WX.Events.html">WX.Events</a> and the lower level
+<a href="doc/Graphics.UI.WXCore.Events.html">WXCore.Events</a></p>
+
+<p>Since wxHaskell is based on an object-oriented framework, we also encode inheritance. The extra
+type parameter of objects encodes the inheritance relationship. When the parameter of an object is
+unit <code>()</code>, it denotes an object of that exact class. When the parameter is a type variable
+<code>a</code>, it denotes any object that is instance of that class. For example, both the <code>frame</code>
+and <code>button</code> functions return precisely a frame or button and use a <code>()</code> type parameter.
+However, the <code>text</code> attribute applies to any kind of window, including frames and buttons, and
+has a <code>Window a</code> as its argument. We can now use the <code>text</code> attribute for example
+for both frames and buttons. In wxHaskell, this works since a <code>Frame&nbsp;()</code> is actually a type synonym for
+<code>Window&nbsp;(CFrame&nbsp;())</code> and can thus be passed where a <code>Window a</code> is expected.
+The same hold for a <code>Button ()</code> that is a synonym for <code>Control&nbsp;(CButton&nbsp;())</code>
+that is again a synonym for <code>Window&nbsp;(CControl&nbsp;(CButton&nbsp;()))</code>.</p>
+
+<h3>Layout</h3>
+
+<p>The layout of a window is specified through the <code>layout</code> attribute. The layout of the
+current program is rather terse and we will spice it up by letting the button float in the center
+when the window is resized. This is also a good opportunity to add a small margin around the button.</p>
+<img src="images/quick2-win.png" width=112 height=70 alt="Hello world sample" align=right>
+<pre>
+set f [layout := margin 10 (floatCentre (widget quit))]
+</pre>
+
+<p>We can also add a text label above the button that is also centered. The argument of <code>column</code>
+specifies the amount of space between the items.</p>
+<img src="images/quick3-win.png" width=112 height=88 alt="Hello world sample" align=right>
+<pre>
+set f [layout := margin 10 (column 5 [floatCentre (label "Hello")
+                                     ,floatCentre (widget quit)
+                                     ] )]
+</pre>
+
+<p>You can find out more about layout in the documentation for the
+<a href="doc/Graphics.UI.WXCore.Layout.html">WXCore.Layout</a> module.</p>
+</div>
+
+<div class="text">
+<h2>Bouncing balls</h2>
+
+<p>It is time for a more fun program that our Hello sample. We will write a program that lets us
+bounce balls on the screen!</p>
+<p align=center>
+<img src="images/bouncingballs-win.png" alt="Bouncing balls on Windows 2000"
+                        style="margin: 10pt" width="206" height="225">
+<img src="images/bouncingballs-gtk.png" alt="Bouncing balls on Gentoo Linux with GTK and KDE"
+                        style="margin: 10pt" width="263" height="255">
+<img src="images/bouncingballs-mac.png" alt="Bouncing balls on MacOS X (Panther)"
+                        style="margin: 10pt" width="300" height="322">
+<img src="images/bouncingballs-rh-gtk.png" alt="Bouncing balls on Red Hat Linux (Fedora)"
+                        style="margin: 10pt" width="310" height="327">
+</p>
+
+<p>Note that the bouncing balls window is not resizeable, with the maximize box greyed out on windows.
+First we look at the main function in our program &ndash; <code>ballsFrame</code>:</p>
+<pre>
+module Main where
+import Graphics.UI.WX
+
+<span class="comment">-- constants: radius of the ball, and the maximal x and y coordinates</span>
+radius, maxX, maxY :: Int
+maxY = 300
+maxX = 300
+radius = 10
+
+<span class="comment">-- the max. height is at most max. y minus the radius of a ball.</span>
+maxH :: Int
+maxH = maxY - radius
+
+<span class="comment">--the main function</span>
+main = start ballsFrame
+
+ballsFrame
+  = do <span class="comment">-- a list of balls, where each ball is represented</span>
+       <span class="comment">-- by a list of all future positions.</span>
+       vballs &lt;- varCreate []
+
+       <span class="comment">-- create a non-user-resizable top-level (orphan) frame.</span>
+       f &lt;- frameFixed [text := "Bouncing balls"]
+
+       <span class="comment">-- create a panel to draw in.</span>
+       p &lt;- panel f [on paint := paintBalls vballs]
+
+       <span class="comment">-- create a timer that updates the ball positions</span>
+       t &lt;- timer f [interval := 20, on command := nextBalls vballs p]
+
+       <span class="comment">-- react on user input</span>
+       set p [on click&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := dropBall vballs p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- drop ball</span>
+             ,on clickRight&nbsp;&nbsp;&nbsp; := (\pt -> ballsFrame)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- new window</span>
+             ,on (charKey 'p') := set t [enable&nbsp;&nbsp; :~ not]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- pause</span>
+             ,on (charKey '-') := set t [interval :~ \i -> i*2]&nbsp; <span class="comment">-- increase interval</span>
+             ,on (charKey '+') := set t [interval :~ \i -> max 1 (i `div` 2)]
+             ]
+
+       <span class="comment">-- put the panel in the frame, with a minimal size</span>
+       set f [layout := minsize (sz maxX maxY) $ widget p]
+   where
+     ...
+</pre>
+
+<p>Unlike more functional GUI libraries, wxHaskell does not provide a model for state management and uses
+simple mutable variables to communicate state across different event handlers. (Note: this is a concious
+design decision &ndash; as functional GUI interfaces are still very much a research area, we
+want to provide a full fledged GUI library using simple IO first, than try to build good
+functional interfaces on top of that). The state of the bouncing balls demo is a list of balls. Each ball
+is represented as a list of all its future heights. At the start of the program the list is empty
+(<code>varCreate []</code>).</p>
+
+<p>Next, we use <code>fixedFrame</code> to create a non-resizeable window frame. A panel is created to
+paint the balls on and its <code>paint</code> handler paints the current balls in the panel. (Note:
+a panel has nothing to do with a Java panel: it is a widget that is normally used to place controls in
+as it manages control navigation keys like tab).</p>
+
+<p>To animate the balls, we install a timer that advances all the balls on each timer tick and
+causes the panel to repaint the balls. We also install event handlers that react on the user: a mouse
+click causes a new ball to drop, a right click opens another frame (!), a <code>p</code>-key pauses the
+balls, and <code>+/-</code> increase/decrease the speed of the balls. Note how the operator
+<code>(:~)</code> applies a function to an attribute value instead of assigning one. Thus, the
+expression <code>(set t [enable :~ not])</code> flips the enabled state of the timer.</p>
+
+<p>Finally, we specify the layout of the frame, using <code>minsize</code> to specifiy the minimal size
+of the panel and thus the size of the frame as it is not resizeable.</p>
+
+<h3>Painting</h3>
+
+<p>Let us look at the paint event handler of the panel:</p>
+<pre>
+    <span class="comment">-- paint the balls</span>
+    paintBalls :: Var [[Point]] -&gt; DC a -&gt; Rect -&gt; IO ()
+    paintBalls vballs dc viewArea
+      = do balls &lt;- varGet vballs
+           set dc [brushColor := red, brushKind := BrushSolid]
+           mapM_ (drawBall dc) [p | (p:ps) &lt;- balls]
+
+    drawBall dc pt
+      = circle dc pt radius []
+</pre>
+
+<p>A paint event handler gets two arguments: a device context (<code>DC</code>) to draw on and a
+rectangle that specifies the coordinates of the viewing area.
+We have supplied the first argument ourselves when setting the event handler, namely the mutable
+variable that holds the list of all balls.</p>
+
+<p>As said, a single ball is represented as a list of all its future positions. When painting the current
+balls, we simple extract the head positions of all balls and draw them using <code>drawBall</code>. Drawing
+combinators like <code>circle</code> draw using the current <em>pen</em>, <em>brush</em>, and <em>font</em>
+of the device context. By default, a brush is transparent so we set it to a solid red brush before drawing
+the circles. Note that this is an optimization, we could have achieved the same effect by setting it for
+each circle individually: <code>circle dc pt radius [brushKind := BrushSolid, brushColor := red]</code>.
+You can read more about drawing in the documentation of the
+<a href="doc/Graphics.UI.WX.Draw.html">WX.Draw</a> module.
+</p>
+
+<h3>Bouncing</h3>
+
+<p>The timer event handler uses <code>nextBall</code> to advance all the balls to their next postion.</p>
+<pre>
+    <span class="comment">-- advance all the balls to their next position</span>
+    nextBalls :: Var [[Point]] -&gt; Panel () -&gt; IO ()
+    nextBalls vballs p
+      = do varUpdate vballs (filter (not.null) . map (drop 1))
+           repaint p
+</pre>
+
+<p>Updating the positions simply consist of dropping all initial positions and filtering out all empty
+lists. The function <code>repaint</code> is used to invoke the paint event handler of the panel.</p>
+
+<p>When a users clicks on the panel, a new ball is created in <code>dropBall</code>.</p>
+<pre>
+    <span class="comment">-- drop a new ball, gets mouse position as last argument</span>
+    dropBall :: Var [[Point]] -&gt; Panel () -&gt; Point -&gt; IO ()
+    dropBall vballs p pt
+      = do varUpdate vballs (bouncing pt:)
+           repaint p
+
+    <span class="comment">-- calculate all future positions</span>
+    bouncing (Point x y)
+      = map (\h -&gt; Point x (maxH-h)) (bounce (maxH-y) 0)
+
+    <span class="comment">-- calculate all future heights</span>
+    bounce h v
+      | h &lt;= 0 &amp;&amp; v == 0 = replicate 20 0 <span class="comment">-- keep still for 20 frames</span>
+      | h &lt;= 0 &amp;&amp; v&nbsp; &lt; 0 = bounce 0 ((-v)-2)
+      | otherwise&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = h : bounce (h+v) (v-1)
+</pre>
+
+<p>We prepend a new list of ball positions to the existing list using the <code>varUpdate</code> function
+and we repaint the panel. The new list of positions is calculated with the <code>bouncing</code> function
+that takes the position of the mouse pointer as its argument. This function uses the <code>bounce</code>
+function to calculate all future heights given an initial height and speed. Each time the ball touches
+the ground, it loses 2 units of speed.</p>
+
+<p>Hopefully this sample inspires you to write more interesting GUI&#39;s. Don&#39;t forget to look
+at the samples provided with the wxHaskell documentation.</p>
+</div>
+
+
+
+<div class="status">
+<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+</div>
+
+</div>
+</body>
+</html>
