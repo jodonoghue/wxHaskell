@@ -76,7 +76,7 @@ EWXWEXPORT(void, wxDC_DrawPolygon)(void* _obj, int n, void* x, void* y, int xoff
 	wxPoint* lst = (wxPoint*)malloc (n * sizeof(wxPoint));
 	
 	for (int i = 0; i < n; i++)
-		lst[i] = wxPoint(((int*)x)[i], ((int*)y)[i]);
+		lst[i] = wxPoint(((intptr_t*)x)[i], ((intptr_t*)y)[i]);
 	
 	((wxDC*)_obj)->DrawPolygon(n, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
 	
