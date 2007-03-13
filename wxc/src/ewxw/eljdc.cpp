@@ -64,7 +64,7 @@ EWXWEXPORT(void, wxDC_DrawLines)(void* _obj, int n, void* x, void* y, int xoffse
 	wxPoint* lst = (wxPoint*)malloc (n * sizeof(wxPoint));
 	
 	for (int i = 0; i < n; i++)
-		lst[i] = wxPoint(((int*)x)[i], ((int*)y)[i]);
+		lst[i] = wxPoint((int)((intptr_t*)x)[i], (int)((intptr_t*)y)[i]);
 	
 	((wxDC*)_obj)->DrawLines(n, lst, (wxCoord)xoffset, (wxCoord)yoffset);
 	
