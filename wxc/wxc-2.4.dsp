@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxWindows-2.4.2\lib\msw" /I "include" /I "src\ewxw" /I "..\..\wxWindows-2.4.2\contrib\include" /I "..\..\wxWindows-2.4.2\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxWindows-2.4.2\lib\mswu" /I "include" /I "src\ewxw" /I "..\..\wxWindows-2.4.2\contrib\include" /I "..\..\wxWindows-2.4.2\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmsw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\out\wxc\wxc-msw2.4.2-0.10.1.dll" /libpath:"..\out\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmswu.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\out\wxc\wxc-msw2.4.2-0.10.1.dll" /libpath:"..\out\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxc-msw2.4.2-0.10.1.lib	move libwxc-msw2.4.2-0.10.1.a ..\out\wxc	move wxc-msw2.4.2-0.10.1.def ..\out\wxc	echo Done.
@@ -73,7 +73,7 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wx
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxWindows-2.4.2\lib\mswd" /I "..\..\wxWindows-2.4.2\contrib\include" /I "include" /I "src\ewxw" /I "..\..\wxWindows-2.4.2\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxWindows-2.4.2\lib\mswud" /I "..\..\wxWindows-2.4.2\contrib\include" /I "include" /I "src\ewxw" /I "..\..\wxWindows-2.4.2\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd-msw2.4.2-0.10.1.dll" /pdbtype:sept  /libpath:"..\out\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswud.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\out\wxc\wxcd-msw2.4.2-0.10.1.dll" /pdbtype:sept  /libpath:"..\out\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\out\wxc\wxcd-msw2.4.2-0.10.1.lib	move libwxcd-msw2.4.2-0.10.1.a ..\out\wxc	move wxcd-msw2.4.2-0.10.1.def ..\out\wxc	echo Done.
