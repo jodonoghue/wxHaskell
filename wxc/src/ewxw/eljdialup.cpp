@@ -1,10 +1,6 @@
 #include "wrapper.h"
 #include "wx/dialup.h"
 
-#if defined (wxUSE_UNICODE) && (wxUSE_UNICODE==0)
-# undef wxUSE_UNICODE
-#endif
-
 extern "C"
 {
 
@@ -31,11 +27,7 @@ EWXWEXPORT(int,wxDialUpManager_GetISPNames)(void* _obj, void* _lst)
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-#ifdef wxUSE_UNICODE
-			((wxChar**)_lst)[i] = wcsdup(arr.Item(i).c_str());
-#else
-			((wxChar**)_lst)[i] = strdup(arr.Item(i).c_str());
-#endif
+			((wxChar**)_lst)[i] = wxStrdup(arr.Item(i).c_str());
 	}
 
 	return arr.GetCount();

@@ -75,15 +75,12 @@ EWXWEXPORT(void, wxTextValidator_SetIncludeList)(void* _obj, void* list, int cou
 	
 EWXWEXPORT(int, wxTextValidator_GetIncludeList)(void* _obj, void* _ref)
 {
-/*
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetIncludeList().GetCount(); i++)
-			((const wxChar**)_ref)[i] = strdup(((wxTextValidator*)_obj)->GetIncludeList().Item(i)->GetData());
+			((const wxChar**)_ref)[i] = wxStrdup(((wxTextValidator*)_obj)->GetIncludeList().Item(i)->GetData());
 	}
 	return ((wxTextValidator*)_obj)->GetIncludeList().GetCount();
-*/
-        return 0;
 }
 	
 EWXWEXPORT(void, wxTextValidator_SetExcludeList)(void* _obj, void* list, int count)
@@ -98,15 +95,12 @@ EWXWEXPORT(void, wxTextValidator_SetExcludeList)(void* _obj, void* list, int cou
 	
 EWXWEXPORT(int, wxTextValidator_GetExcludeList)(void* _obj, void* _ref)
 {
-/*
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetExcludeList().GetCount(); i++)
 			((const wxChar**)_ref)[i] = ((wxTextValidator*)_obj)->GetExcludeList().Item(i)->GetData();
 	}
 	return ((wxTextValidator*)_obj)->GetExcludeList().GetCount();
-*/
-	return 0;
 }
 	
 EWXWEXPORT(void, wxTextValidator_OnChar)(void* _obj, void* event)

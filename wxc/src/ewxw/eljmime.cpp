@@ -37,7 +37,7 @@ EWXWEXPORT(int, wxMimeTypesManager_EnumAllFileTypes) (void* _obj, void* _lst)
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((const char**)_lst)[i] = strdup (arr.Item(i).c_str());
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
 	}
 	
 	return result;
@@ -71,7 +71,7 @@ EWXWEXPORT(int, wxFileType_GetMimeTypes) (void* _obj, void* _lst)
 	if (((wxFileType*)_obj)->GetMimeTypes(arr) && _lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((const char**)_lst)[i] = strdup (arr.Item(i).c_str());
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
 	}
 	
 	return arr.GetCount();
@@ -84,7 +84,7 @@ EWXWEXPORT(int, wxFileType_GetExtensions) (void* _obj, void* _lst)
 	if (((wxFileType*)_obj)->GetExtensions(arr) && _lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((const char**)_lst)[i] = strdup (arr.Item(i).c_str());
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
 	}
 	
 	return arr.GetCount();
@@ -157,7 +157,7 @@ class ELJMessageParameters : public wxFileType::MessageParameters
 		{
 			void* res = EiffelFunc(EiffelObject, (void*)name.c_str());
 			if (res)
-				return (const char*)res;
+				return (const wxChar*)res;
 			else
 				return wxFileType::MessageParameters::GetParamValue(name);
 		}
@@ -168,7 +168,7 @@ class ELJMessageParameters : public wxFileType::MessageParameters
 
 EWXWEXPORT(void*, wxMessageParameters_Create) (void* _file, void* _type, void* _object, void* _func)
 {
-	return (void*)new ELJMessageParameters((const char*)_file, (const char*)_type, _object, _func);
+	return (void*)new ELJMessageParameters((const wxChar*)_file, (const wxChar*)_type, _object, _func);
 }
 
 EWXWEXPORT(void, wxMessageParameters_Delete) (void* _obj)

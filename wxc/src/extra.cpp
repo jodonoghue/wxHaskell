@@ -1212,26 +1212,26 @@ EWXWEXPORT(int, wxVersionNumber)()
   return wxVERSION_NUMBER;
 }
 
-EWXWEXPORT(int, wxIsDefined)( char* s )
+EWXWEXPORT(int, wxIsDefined)( wxChar* s )
 {
   int i;
   if (s==NULL) return 0;
   /* check define */
   for( i=0; defineDefs[i] != NULL; i++ ) {
-    if (strcmp(s,defineDefs[i]) == 0) return 1;
+    if (wxStrcmp(s,defineDefs[i]) == 0) return 1;
   }
   /* check wxUSE_XXX */
-  if (strncmp(s,"wxUSE_",6) == 0) {
+  if (wxStrncmp(s,"wxUSE_",6) == 0) {
     const char* t = s+6;
     for( i=0; useDefs[i] != NULL; i++ ) {
-      if (strcmp(t,useDefs[i]) == 0) return 1;
+      if (wxStrcmp(t,useDefs[i]) == 0) return 1;
     }
   }
   /* check wxHAS_XXX */
-  if (strncmp(s,"wxHAS_",6) == 0) {
+  if (wxStrncmp(s,"wxHAS_",6) == 0) {
     const char* t = s+6;
     for( i=0; hasDefs[i] != NULL; i++ ) {
-      if (strcmp(t,hasDefs[i]) == 0) return 1;
+      if (wxStrcmp(t,hasDefs[i]) == 0) return 1;
     }
   }
   return 0;
