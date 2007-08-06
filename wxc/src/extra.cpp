@@ -478,724 +478,733 @@ void wxGridCellTextEnterEditor::Create(wxWindow* parent,
 /*-----------------------------------------------------------------------------
   pre processor definitions
 -----------------------------------------------------------------------------*/
-static const char* defineDefs[] = {
+static const wxChar* defineDefs[] = {
 #ifdef __WINDOWS__
-  "__WINDOWS__",
+  wxT("__WINDOWS__"),
 #endif // any Windows, yom may also use
 #ifdef __WIN16__
-  "__WIN16__",
+  wxT("__WIN16__"),
 #endif // Win16 API
 #ifdef __WIN32__
-  "__WIN32__",
+  wxT("__WIN32__"),
 #endif // Win32 API
 #ifdef __WIN95__
-  "__WIN95__",
+  wxT("__WIN95__"),
 #endif // Windows 95 or NT 4.0 and above system (not NT 3.5x)
 #ifdef __WXGTK__
-  "__WXGTK__",
+  wxT("__WXGTK__"),
 #endif // GTK
 #ifdef __WXGTK12__
-  "__WXGTK12__",
+  wxT("__WXGTK12__"),
 #endif // GTK 1.2 or higher
 #ifdef __WXGTK20__
-  "__WXGTK20__",
+  wxT("__WXGTK20__"),
 #endif // GTK 2.0 or higher
 #ifdef __WXMOTIF__
-  "__WXMOTIF__",
+  wxT("__WXMOTIF__"),
 #endif // Motif
 #ifdef __WXMAC__
-  "__WXMAC__",
+  wxT("__WXMAC__"),
 #endif // MacOS
 #ifdef __WXMGL__
-  "__WXMGL__",
+  wxT("__WXMGL__"),
 #endif // SciTech Soft MGL
 #ifdef __WXUNIVERSAL__
-  "__WXUNIVERSAL__",
+  wxT("__WXUNIVERSAL__"),
 #endif //will be also defined)
 #ifdef __WXMSW__
-  "__WXMSW__",
+  wxT("__WXMSW__"),
 #endif // Any Windows
 #ifdef __WXOS2__
-  "__WXOS2__",
+  wxT("__WXOS2__"),
 #endif // OS/2 native Presentation Manager
 #ifdef __WXPM__
-  "__WXPM__",
+  wxT("__WXPM__"),
 #endif // OS/2 native Presentation Manager
 #ifdef __WXSTUBS__
-  "__WXSTUBS__",
+  wxT("__WXSTUBS__"),
 #endif // Stubbed version ('template' wxWin implementation)
 #ifdef __WXXT__
-  "__WXXT__",
+  wxT("__WXXT__"),
 #endif // Xt; mutually exclusive with WX_MOTIF, not implemented in wxWindows 2.x
 // wxX11
 #ifdef __WXX11__
-  "__WXX11__",
+  wxT("__WXX11__"),
 #endif
 #ifdef __WXUNIVERSAL__
-  "__WXUNIVERSAL__",
+  wxT("__WXUNIVERSAL__"),
 #endif //will be also defined)
 #ifdef __WXWINE__
-  "__WXWINE__",
+  wxT("__WXWINE__"),
 #endif // WINE (i.e. Win32 on Unix)
 #ifdef __WXUNIVERSAL__
-  "__WXUNIVERSAL__",
+  wxT("__WXUNIVERSAL__"),
 #endif // wxUniversal port, always defined in addition to one of the symbols above so this should be tested first.
 #ifdef __X__
-  "__X__",
+  wxT("__X__"),
 #endif // any X11-based GUI toolkit except GTK+
 
 // any Mac OS version
 #ifdef __APPLE__
-  "__APPLE__",
+  wxT("__APPLE__"),
 #endif
 // AIX
 #ifdef __AIX__
-  "__AIX__",
+  wxT("__AIX__"),
 #endif
 // Any BSD
 #ifdef __BSD__
-  "__BSD__",
+  wxT("__BSD__"),
 #endif
 // Cygwin: Unix on Win32
 #ifdef __CYGWIN__
-  "__CYGWIN__",
+  wxT("__CYGWIN__"),
 #endif
 // Mac OS X
 #ifdef __DARWIN__
-  "__DARWIN__",
+  wxT("__DARWIN__"),
 #endif
 #ifdef ____DATA_GENERAL____
-  "__DATA_GENERAL__",
+  wxT("__DATA_GENERAL__"),
 #endif
 // DOS (used with wxMGL only)
 #ifdef __DOS_GENERAL__
-  "__DOS_GENERAL__",
+  wxT("__DOS_GENERAL__"),
 #endif
 // FreeBSD
 #ifdef __FREEBSD__
-  "__FREEBSD__",
+  wxT("__FREEBSD__"),
 #endif
 // HP-UX (Unix)
 #ifdef ____HPUX____
-  "__HPUX__",
+  wxT("__HPUX__"),
 #endif
 // Linux
 #ifdef __LINUX__
-  "__LINUX__",
+  wxT("__LINUX__"),
 #endif
 // OSF/1
 #ifdef __OSF__
-  "__OSF__",
+  wxT("__OSF__"),
 #endif
 // IRIX
 #ifdef __SGI__
-  "__SGI__",
+  wxT("__SGI__"),
 #endif
 // Solaris
 #ifdef __SOLARIS__
-  "__SOLARIS__",
+  wxT("__SOLARIS__"),
 #endif
 // Any Sun
 #ifdef __SUN__
-  "__SUN__",
+  wxT("__SUN__"),
 #endif
 // Sun OS
 #ifdef __SUNOS__
-  "__SUNOS__",
+  wxT("__SUNOS__"),
 #endif
 // SystemV R4
 #ifdef __SVR4__
-  "__SVR4__",
+  wxT("__SVR4__"),
 #endif
 // SystemV generic
 #ifdef __SYSV__
-  "__SYSV__",
+  wxT("__SYSV__"),
 #endif
 // Ultrix
 #ifdef __ULTRIX__
-  "__ULTRIX__",
+  wxT("__ULTRIX__"),
 #endif
 // any Unix
 #ifdef __UNIX__
-  "__UNIX__",
+  wxT("__UNIX__"),
 #endif
 // Unix, BeOS or VMS
 #ifdef __UNIX_LIKE__
-  "__UNIX_LIKE__",
+  wxT("__UNIX_LIKE__"),
 #endif
 // VMS
 #ifdef __VMS__
-  "__VMS__",
+  wxT("__VMS__"),
 #endif
 // any Windows
 #ifdef __WINDOWS__
-  "__WINDOWS__",
+  wxT("__WINDOWS__"),
 #endif
 
 // DEC Alpha architecture
 #ifdef __ALPHA__
-  "__ALPHA__",
+  wxT("__ALPHA__"),
 #endif
 // Intel i386 or compatible
 #ifdef __INTEL__
-  "__INTEL__",
+  wxT("__INTEL__"),
 #endif
 // Motorola Power PC
 #ifdef __POWERPC__
-  "__POWERPC__",
+  wxT("__POWERPC__"),
 #endif
 
 // Borland C++
 #ifdef __BORLANDC__
-  "__BORLANDC__",
+  wxT("__BORLANDC__"),
 #endif
 // DJGPP
 #ifdef __DJGPP__
-  "__DJGPP__",
+  wxT("__DJGPP__"),
 #endif
 // Gnu C++ on any platform
 #ifdef __GNUG__
-  "__GNUG__",
+  wxT("__GNUG__"),
 #endif
 // GnuWin32 compiler
 #ifdef __GNUWIN32__
-  "__GNUWIN32__",
+  wxT("__GNUWIN32__"),
 #endif
 // CodeWarrior MetroWerks compiler
 #ifdef __MWERKS__
-  "__MWERKS__",
+  wxT("__MWERKS__"),
 #endif
 // Sun CC
 #ifdef __SUNCC__
-  "__SUNCC__",
+  wxT("__SUNCC__"),
 #endif
 // Symantec C++
 #ifdef __SYMANTECC__
-  "__SYMANTECC__",
+  wxT("__SYMANTECC__"),
 #endif
 // IBM Visual Age (OS/2)
 #ifdef __VISAGECPP__
-  "__VISAGECPP__",
+  wxT("__VISAGECPP__"),
 #endif
 // Microsoft Visual C++
 #ifdef __VISUALC__
-  "__VISUALC__",
+  wxT("__VISUALC__"),
 #endif
 // AIX compiler
 #ifdef __XLC__
-  "__XLC__",
+  wxT("__XLC__"),
 #endif
 // Watcom C++
 #ifdef __WATCOMC__
-  "__WATCOMC__",
+  wxT("__WATCOMC__"),
 #endif
   NULL
 };
 
-static const char* useDefs[] = {
+static const wxChar* useDefs[] = {
 #ifdef wxUSE_UNIX
-  "UNIX",
+  wxT("UNIX"),
 #endif
 #ifdef wxUSE_NANOX
-  "NANOX",
+  wxT("NANOX"),
 #endif
 #ifdef wxUSE_NATIVE_STATUSBAR
-  "NATIVE_STATUSBAR",
+  wxT("NATIVE_STATUSBAR"),
 #endif
 #ifdef wxUSE_OWNER_DRAWN
-  "OWNER_DRAWN",
+  wxT("OWNER_DRAWN"),
 #endif
 #ifdef wxUSE_OWNER_DRAWN
-  "OWNER_DRAWN",
+  wxT("OWNER_DRAWN"),
 #endif
 #ifdef wxUSE_RICHEDIT
-  "RICHEDIT",
+  wxT("RICHEDIT"),
 #endif
 #ifdef wxUSE_RICHEDIT
-  "RICHEDIT",
+  wxT("RICHEDIT"),
 #endif
 #ifdef wxUSE_REGEX
-  "REGEX",
+  wxT("REGEX"),
 #endif
 #ifdef wxUSE_ZLIB
-  "ZLIB",
+  wxT("ZLIB"),
 #endif
 #ifdef wxUSE_LIBPNG
-  "LIBPNG",
+  wxT("LIBPNG"),
 #endif
 #ifdef wxUSE_LIBJPEG
-  "LIBJPEG",
+  wxT("LIBJPEG"),
 #endif
 #ifdef wxUSE_LIBTIFF
-  "LIBTIFF",
+  wxT("LIBTIFF"),
 #endif
 #ifdef wxUSE_ODBC
-  "ODBC",
+  wxT("ODBC"),
 #endif
 #ifdef wxUSE_FREETYPE
-  "FREETYPE",
+  wxT("FREETYPE"),
 #endif
 #ifdef wxUSE_THREADS
-  "THREADS",
+  wxT("THREADS"),
 #endif
 #ifdef wxUSE_OPENGL
-  "OPENGL",
+  wxT("OPENGL"),
 #endif
 #ifdef wxUSE_GLCANVAS
-  "GLCANVAS",
+  wxT("GLCANVAS"),
 #endif
 #ifdef wxUSE_GUI
-  "GUI",
+  wxT("GUI"),
 #endif
 #ifdef wxUSE_NOGUI
-  "NOGUI",
+  wxT("NOGUI"),
 #endif
 #ifdef wxUSE_ON_FATAL_EXCEPTION
-  "ON_FATAL_EXCEPTION",
+  wxT("ON_FATAL_EXCEPTION"),
 #endif
 #ifdef wxUSE_SNGLINST_CHECKER
-  "SNGLINST_CHECKER",
+  wxT("SNGLINST_CHECKER"),
 #endif
 #ifdef wxUSE_CONSTRAINTS
-  "CONSTRAINTS",
+  wxT("CONSTRAINTS"),
 #endif
 #ifdef wxUSE_VALIDATORS
-  "VALIDATORS",
+  wxT("VALIDATORS"),
 #endif
 #ifdef wxUSE_CONTROLS
-  "CONTROLS",
+  wxT("CONTROLS"),
 #endif
 #ifdef wxUSE_POPUPWIN
-  "POPUPWIN",
+  wxT("POPUPWIN"),
 #endif
 #ifdef wxUSE_TIPWINDOW
-  "TIPWINDOW",
+  wxT("TIPWINDOW"),
 #endif
 #ifdef wxUSE_ACCEL
-  "ACCEL",
+  wxT("ACCEL"),
 #endif
 #ifdef wxUSE_CALENDARCTRL
-  "CALENDARCTRL",
+  wxT("CALENDARCTRL"),
 #endif
 #ifdef wxUSE_FILEDLG
-  "FILEDLG",
+  wxT("FILEDLG"),
 #endif
 #ifdef wxUSE_FINDREPLDLG
-  "FINDREPLDLG",
+  wxT("FINDREPLDLG"),
 #endif
 #ifdef wxUSE_FONTDLG
-  "FONTDLG",
+  wxT("FONTDLG"),
 #endif
 #ifdef wxUSE_MIMETYPE
-  "MIMETYPE",
+  wxT("MIMETYPE"),
 #endif
 #ifdef wxUSE_SYSTEM_OPTIONS
-  "SYSTEM_OPTIONS",
+  wxT("SYSTEM_OPTIONS"),
 #endif
 #ifdef wxUSE_MSGDLG
-  "MSGDLG",
+  wxT("MSGDLG"),
 #endif
 #ifdef wxUSE_NUMBERDLG
-  "NUMBERDLG",
+  wxT("NUMBERDLG"),
 #endif
 #ifdef wxUSE_TEXTDLG
-  "TEXTDLG",
+  wxT("TEXTDLG"),
 #endif
 #ifdef wxUSE_STARTUP_TIPS
-  "STARTUP_TIPS",
+  wxT("STARTUP_TIPS"),
 #endif
 #ifdef wxUSE_PROGRESSDLG
-  "PROGRESSDLG",
+  wxT("PROGRESSDLG"),
 #endif
 #ifdef wxUSE_CHOICEDLG
-  "CHOICEDLG",
+  wxT("CHOICEDLG"),
 #endif
 #ifdef wxUSE_COLOURDLG
-  "COLOURDLG",
+  wxT("COLOURDLG"),
 #endif
 #ifdef wxUSE_DIRDLG
-  "DIRDLG",
+  wxT("DIRDLG"),
 #endif
 #ifdef wxUSE_DRAGIMAGE
-  "DRAGIMAGE",
+  wxT("DRAGIMAGE"),
 #endif
 #ifdef wxUSE_PROPSHEET
-  "PROPSHEET",
+  wxT("PROPSHEET"),
 #endif
 #ifdef wxUSE_WIZARDDLG
-  "WIZARDDLG",
+  wxT("WIZARDDLG"),
 #endif
 #ifdef wxUSE_SPLASH
-  "SPLASH",
+  wxT("SPLASH"),
 #endif
 #ifdef wxUSE_JOYSTICK
-  "JOYSTICK",
+  wxT("JOYSTICK"),
 #endif
 #ifdef wxUSE_BUTTON
-  "BUTTON",
+  wxT("BUTTON"),
 #endif
 #ifdef wxUSE_CARET
-  "CARET",
+  wxT("CARET"),
 #endif
 #ifdef wxUSE_BMPBUTTON
-  "BMPBUTTON",
+  wxT("BMPBUTTON"),
 #endif
 #ifdef wxUSE_CHECKBOX
-  "CHECKBOX",
+  wxT("CHECKBOX"),
 #endif
 #ifdef wxUSE_CHECKLISTBOX
-  "CHECKLISTBOX",
+  wxT("CHECKLISTBOX"),
 #endif
 #ifdef wxUSE_COMBOBOX
-  "COMBOBOX",
+  wxT("COMBOBOX"),
 #endif
 #ifdef wxUSE_CHOICE
-  "CHOICE",
+  wxT("CHOICE"),
 #endif
 #ifdef wxUSE_GAUGE
-  "GAUGE",
+  wxT("GAUGE"),
 #endif
 #ifdef wxUSE_GRID
-  "GRID",
+  wxT("GRID"),
 #endif
 #ifdef wxUSE_NEW_GRID
-  "NEW_GRID",
+  wxT("NEW_GRID"),
 #endif
 #ifdef wxUSE_IMAGLIST
-  "IMAGLIST",
+  wxT("IMAGLIST"),
 #endif
 #ifdef wxUSE_LISTBOX
-  "LISTBOX",
+  wxT("LISTBOX"),
 #endif
 #ifdef wxUSE_LISTCTRL
-  "LISTCTRL",
+  wxT("LISTCTRL"),
 #endif
 #ifdef wxUSE_MENUS
-  "MENUS",
+  wxT("MENUS"),
 #endif
 #ifdef wxUSE_NOTEBOOK
-  "NOTEBOOK",
+  wxT("NOTEBOOK"),
 #endif
 #ifdef wxUSE_RADIOBOX
-  "RADIOBOX",
+  wxT("RADIOBOX"),
 #endif
 #ifdef wxUSE_RADIOBTN
-  "RADIOBTN",
+  wxT("RADIOBTN"),
 #endif
 #ifdef wxUSE_SASH
-  "SASH",
+  wxT("SASH"),
 #endif
 #ifdef wxUSE_SCROLLBAR
-  "SCROLLBAR",
+  wxT("SCROLLBAR"),
 #endif
 #ifdef wxUSE_SLIDER
-  "SLIDER",
+  wxT("SLIDER"),
 #endif
 #ifdef wxUSE_SPINBTN
-  "SPINBTN",
+  wxT("SPINBTN"),
 #endif
 #ifdef wxUSE_SPINCTRL
-  "SPINCTRL",
+  wxT("SPINCTRL"),
 #endif
 #ifdef wxUSE_SPLITTER
-  "SPLITTER",
+  wxT("SPLITTER"),
 #endif
 #ifdef wxUSE_STATBMP
-  "STATBMP",
+  wxT("STATBMP"),
 #endif
 #ifdef wxUSE_STATBOX
-  "STATBOX",
+  wxT("STATBOX"),
 #endif
 #ifdef wxUSE_STATLINE
-  "STATLINE",
+  wxT("STATLINE"),
 #endif
 #ifdef wxUSE_STATTEXT
-  "STATTEXT",
+  wxT("STATTEXT"),
 #endif
 #ifdef wxUSE_STATUSBAR
-  "STATUSBAR",
+  wxT("STATUSBAR"),
 #endif
 #ifdef wxUSE_TOGGLEBTN
-  "TOGGLEBTN",
+  wxT("TOGGLEBTN"),
 #endif
 #ifdef wxUSE_TAB_DIALOG
-  "TAB_DIALOG",
+  wxT("TAB_DIALOG"),
 #endif
 #ifdef wxUSE_TABDIALOG
-  "TABDIALOG",
+  wxT("TABDIALOG"),
 #endif
 #ifdef wxUSE_TEXTCTRL
-  "TEXTCTRL",
+  wxT("TEXTCTRL"),
 #endif
 #ifdef wxUSE_TOOLBAR
-  "TOOLBAR",
+  wxT("TOOLBAR"),
 #endif
 #ifdef wxUSE_TOOLBAR_NATIVE
-  "TOOLBAR_NATIVE",
+  wxT("TOOLBAR_NATIVE"),
 #endif
 #ifdef wxUSE_TOOLBAR_SIMPLE
-  "TOOLBAR_SIMPLE",
+  wxT("TOOLBAR_SIMPLE"),
 #endif
 #ifdef wxUSE_BUTTONBAR
-  "BUTTONBAR",
+  wxT("BUTTONBAR"),
 #endif
 #ifdef wxUSE_TREELAYOUT
-  "TREELAYOUT",
+  wxT("TREELAYOUT"),
 #endif
 #ifdef wxUSE_TREECTRL
-  "TREECTRL",
+  wxT("TREECTRL"),
 #endif
 #ifdef wxUSE_LONGLONG
-  "LONGLONG",
+  wxT("LONGLONG"),
 #endif
 #ifdef wxUSE_GEOMETRY
-  "GEOMETRY",
+  wxT("GEOMETRY"),
 #endif
 #ifdef wxUSE_CMDLINE_PARSER
-  "CMDLINE_PARSER",
+  wxT("CMDLINE_PARSER"),
 #endif
 #ifdef wxUSE_DATETIME
-  "DATETIME",
+  wxT("DATETIME"),
 #endif
 #ifdef wxUSE_FILE
-  "FILE",
+  wxT("FILE"),
 #endif
 #ifdef wxUSE_FFILE
-  "FFILE",
+  wxT("FFILE"),
 #endif
 #ifdef wxUSE_FSVOLUME
-  "FSVOLUME",
+  wxT("FSVOLUME"),
 #endif
 #ifdef wxUSE_TEXTBUFFER
-  "TEXTBUFFER",
+  wxT("TEXTBUFFER"),
 #endif
 #ifdef wxUSE_TEXTFILE
-  "TEXTFILE",
+  wxT("TEXTFILE"),
 #endif
 #ifdef wxUSE_LOG
-  "LOG",
+  wxT("LOG"),
 #endif
 #ifdef wxUSE_LOGWINDOW
-  "LOGWINDOW",
+  wxT("LOGWINDOW"),
 #endif
 #ifdef wxUSE_LOGGUI
-  "LOGGUI",
+  wxT("LOGGUI"),
 #endif
 #ifdef wxUSE_LOG_DIALOG
-  "LOG_DIALOG",
+  wxT("LOG_DIALOG"),
 #endif
 #ifdef wxUSE_STOPWATCH
-  "STOPWATCH",
+  wxT("STOPWATCH"),
 #endif
 #ifdef wxUSE_TIMEDATE
-  "TIMEDATE",
+  wxT("TIMEDATE"),
 #endif
 #ifdef wxUSE_WAVE
-  "WAVE",
+  wxT("WAVE"),
+#endif
+#ifdef wxUSE_SOUND
+  wxT("SOUND"),
 #endif
 #ifdef wxUSE_CONFIG
-  "CONFIG",
+  wxT("CONFIG"),
 #endif
 #ifdef wxUSE_FONTMAP
-  "FONTMAP",
+  wxT("FONTMAP"),
 #endif
 #ifdef wxUSE_INTL
-  "INTL",
+  wxT("INTL"),
 #endif
 #ifdef wxUSE_PROTOCOL
-  "PROTOCOL",
+  wxT("PROTOCOL"),
 #endif
 #ifdef wxUSE_PROTOCOL_FILE
-  "PROTOCOL_FILE",
+  wxT("PROTOCOL_FILE"),
 #endif
 #ifdef wxUSE_PROTOCOL_FTP
-  "PROTOCOL_FTP",
+  wxT("PROTOCOL_FTP"),
 #endif
 #ifdef wxUSE_PROTOCOL_HTTP
-  "PROTOCOL_HTTP",
+  wxT("PROTOCOL_HTTP"),
 #endif
 #ifdef wxUSE_STREAMS
-  "STREAMS",
+  wxT("STREAMS"),
 #endif
 #ifdef wxUSE_SOCKETS
-  "SOCKETS",
+  wxT("SOCKETS"),
 #endif
 #ifdef wxUSE_DIALUP_MANAGER
-  "DIALUP_MANAGER",
+  wxT("DIALUP_MANAGER"),
 #endif
 #ifdef wxUSE_STD_IOSTREAM
-  "STD_IOSTREAM",
+  wxT("STD_IOSTREAM"),
 #endif
 #ifdef wxUSE_DYNLIB_CLASS
-  "DYNLIB_CLASS",
+  wxT("DYNLIB_CLASS"),
 #endif
 #ifdef wxUSE_DYNAMIC_LOADER
-  "DYNAMIC_LOADER",
+  wxT("DYNAMIC_LOADER"),
 #endif
 #ifdef wxUSE_TIMER
-  "TIMER",
+  wxT("TIMER"),
 #endif
 #ifdef wxUSE_AFM_FOR_POSTSCRIPT
-  "AFM_FOR_POSTSCRIPT",
+  wxT("AFM_FOR_POSTSCRIPT"),
 #endif
 #ifdef wxUSE_NORMALIZED_PS_FONTS
-  "NORMALIZED_PS_FONTS",
+  wxT("NORMALIZED_PS_FONTS"),
 #endif
 #ifdef wxUSE_POSTSCRIPT
-  "POSTSCRIPT",
+  wxT("POSTSCRIPT"),
 #endif
 #ifdef wxUSE_WCHAR_T
-  "WCHAR_T",
+  wxT("WCHAR_T"),
 #endif
 #ifdef wxUSE_UNICODE
-  "UNICODE",
+  wxT("UNICODE"),
 #endif
 #ifdef wxUSE_UNICODE_MSLU
-  "UNICODE_MSLU",
+  wxT("UNICODE_MSLU"),
 #endif
 #ifdef wxUSE_URL
-  "URL",
+  wxT("URL"),
 #endif
 #ifdef wxUSE_WCSRTOMBS
-  "WCSRTOMBS",
+  wxT("WCSRTOMBS"),
 #endif
 #ifdef wxUSE_EXPERIMENTAL_
-  "EXPERIMENTAL_PRINTF",
+  wxT("EXPERIMENTAL_PRINTF"),
 #endif
 #ifdef wxUSE_IPC
-  "IPC",
+  wxT("IPC"),
 #endif
 #ifdef wxUSE_X_RESOURCES
-  "X_RESOURCES",
+  wxT("X_RESOURCES"),
 #endif
 #ifdef wxUSE_CLIPBOARD
-  "CLIPBOARD",
+  wxT("CLIPBOARD"),
 #endif
 #ifdef wxUSE_DATAOBJ
-  "DATAOBJ",
+  wxT("DATAOBJ"),
 #endif
 #ifdef wxUSE_TOOLTIPS
-  "TOOLTIPS",
+  wxT("TOOLTIPS"),
 #endif
 #ifdef wxUSE_DRAG_AND_DROP
-  "DRAG_AND_DROP",
+  wxT("DRAG_AND_DROP"),
 #endif
 #ifdef wxUSE_OLE
-  "OLE",
+  wxT("OLE"),
 #endif
 #ifdef wxUSE_SPLINES
-  "SPLINES",
+  wxT("SPLINES"),
 #endif
 #ifdef wxUSE_MDI_ARCHITECTURE
-  "MDI_ARCHITECTURE",
+  wxT("MDI_ARCHITECTURE"),
 #endif
 #ifdef wxUSE_DOC_VIEW_ARCHITECTURE
-  "DOC_VIEW_ARCHITECTURE",
+  wxT("DOC_VIEW_ARCHITECTURE"),
 #endif
 #ifdef wxUSE_PRINTING_ARCHITECTURE
-  "PRINTING_ARCHITECTURE",
+  wxT("PRINTING_ARCHITECTURE"),
 #endif
 #ifdef wxUSE_PROLOGIO
-  "PROLOGIO",
+  wxT("PROLOGIO"),
 #endif
 #ifdef wxUSE_RESOURCES
-  "RESOURCES",
+  wxT("RESOURCES"),
 #endif
 #ifdef wxUSE_WX_RESOURCES
-  "WX_RESOURCES",
+  wxT("WX_RESOURCES"),
 #endif
 #ifdef wxUSE_HELP
-  "HELP",
+  wxT("HELP"),
 #endif
 #ifdef wxUSE_WXHTML_HELP
-  "WXHTML_HELP",
+  wxT("WXHTML_HELP"),
 #endif
 #ifdef wxUSE_MS_HTML_HELP
-  "MS_HTML_HELP",
+  wxT("MS_HTML_HELP"),
 #endif
 #ifdef wxUSE_IOSTREAMH
-  "IOSTREAMH",
+  wxT("IOSTREAMH"),
 #endif
 #ifdef wxUSE_APPLE_IEEE
-  "APPLE_IEEE",
+  wxT("APPLE_IEEE"),
 #endif
 #ifdef wxUSE_MEMORY_TRACING
-  "MEMORY_TRACING",
+  wxT("MEMORY_TRACING"),
 #endif
 #ifdef wxUSE_DEBUG_NEW_ALWAYS
-  "DEBUG_NEW_ALWAYS",
+  wxT("DEBUG_NEW_ALWAYS"),
 #endif
 #ifdef wxUSE_DEBUG_CONTEXT
-  "DEBUG_CONTEXT",
+  wxT("DEBUG_CONTEXT"),
 #endif
 #ifdef wxUSE_GLOBAL_MEMORY_OPERATORS
-  "GLOBAL_MEMORY_OPERATORS",
+  wxT("GLOBAL_MEMORY_OPERATORS"),
 #endif
 #ifdef wxUSE_SPLINES
-  "SPLINES",
+  wxT("SPLINES"),
 #endif
 #ifdef wxUSE_DYNAMIC_CLASSES
-  "DYNAMIC_CLASSES",
+  wxT("DYNAMIC_CLASSES"),
 #endif
 #ifdef wxUSE_METAFILE
-  "METAFILE",
+  wxT("METAFILE"),
 #endif
 #ifdef wxUSE_ENH_METAFILE
-  "ENH_METAFILE",
+  wxT("ENH_METAFILE"),
 #endif
 #ifdef wxUSE_MINIFRAME
-  "MINIFRAME",
+  wxT("MINIFRAME"),
 #endif
 #ifdef wxUSE_HTML
-  "HTML",
+  wxT("HTML"),
 #endif
 #ifdef wxUSE_FILESYSTEM
-  "FILESYSTEM",
+  wxT("FILESYSTEM"),
 #endif
 #ifdef wxUSE_FS_INET
-  "FS_INET",
+  wxT("FS_INET"),
 #endif
 #ifdef wxUSE_FS_ZIP
-  "FS_ZIP",
+  wxT("FS_ZIP"),
 #endif
 #ifdef wxUSE_BUSYINFO
-  "BUSYINFO",
+  wxT("BUSYINFO"),
 #endif
 #ifdef wxUSE_ZIPSTREAM
-  "ZIPSTREAM",
+  wxT("ZIPSTREAM"),
 #endif
 #ifdef wxUSE_PALETTE
-  "PALETTE",
+  wxT("PALETTE"),
 #endif
 #ifdef wxUSE_IMAGE
-  "IMAGE",
+  wxT("IMAGE"),
 #endif
 #ifdef wxUSE_GIF
-  "GIF",
+  wxT("GIF"),
 #endif
 #ifdef wxUSE_PCX
-  "PCX",
+  wxT("PCX"),
 #endif
 #ifdef wxUSE_IFF
-  "IFF",
+  wxT("IFF"),
 #endif
 #ifdef wxUSE_PNM
-  "PNM",
+  wxT("PNM"),
 #endif
 #ifdef wxUSE_XPM
-  "XPM",
+  wxT("XPM"),
 #endif
 #ifdef wxUSE_ICO_CUR
-  "ICO_CUR",
+  wxT("ICO_CUR"),
+#endif
+
+// detect using optional libraries in the contrib hierarchy.
+#ifdef wxUSE_STC
+  wxT("STC"),
 #endif
   NULL
 };
 
 
-static const char* hasDefs[] = {
+static const wxChar* hasDefs[] = {
 #ifdef wxHAS_RADIO_MENU_ITEMS
-  "RADIO_MENU_ITEMS",
+  wxT("RADIO_MENU_ITEMS"),
 #endif
+  NULL
 };
 
 /*-----------------------------------------------------------------------------
@@ -1221,15 +1230,15 @@ EWXWEXPORT(int, wxIsDefined)( wxChar* s )
     if (wxStrcmp(s,defineDefs[i]) == 0) return 1;
   }
   /* check wxUSE_XXX */
-  if (wxStrncmp(s,"wxUSE_",6) == 0) {
-    const char* t = s+6;
+  if (wxStrncmp(s,wxT("wxUSE_"),6) == 0) {
+    const wxChar* t = s+6;
     for( i=0; useDefs[i] != NULL; i++ ) {
       if (wxStrcmp(t,useDefs[i]) == 0) return 1;
     }
   }
   /* check wxHAS_XXX */
-  if (wxStrncmp(s,"wxHAS_",6) == 0) {
-    const char* t = s+6;
+  if (wxStrncmp(s,wxT("wxHAS_"),6) == 0) {
+    const wxChar* t = s+6;
     for( i=0; hasDefs[i] != NULL; i++ ) {
       if (wxStrcmp(t,hasDefs[i]) == 0) return 1;
     }
