@@ -23,6 +23,7 @@
 #include "glcanvas.h"
 #include "wave.h"
 #include "managed.h"
+#include "mediactrl.h"
 #include "previewframe.h"
 #include "printout.h"
 #include "textstream.h"

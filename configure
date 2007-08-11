@@ -473,7 +473,7 @@ if test "$withmsc" != "yes"; then
   # add wxSTC
   if test "$withstc" = "yes"; then
     if test "$withopengl" = "yes"; then
-      wxwinlibs="`$wxconfig --libs std stc --gl-libs | tr '\n' ' '`"
+      wxwinlibs="`$wxconfig --libs std media stc --gl-libs | tr '\n' ' '`"
       # wxwinlibs="$wxwinlibs -L wxSTC-D3/lib -lwx_gtk2_stc_d3-2.4"
     else
      wxwinlibs="`$wxconfig --libs std stc`"

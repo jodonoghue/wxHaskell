@@ -61,6 +61,8 @@ module Graphics.UI.WX.Controls
       , SplitterWindow, splitterWindow
       -- ** ImageList
       , ImageList, imageList, imageListFromFiles
+      -- ** MediaCtrl
+      , MediaCtrlBackend(..), MediaCtrl, mediaCtrl, mediaCtrlWithBackend, mediaCtrlEx
       -- ** StyledTextCtrl
       , StyledTextCtrl, stcEvent, styledTextCtrl, styledTextCtrlEx
     ) where
@@ -72,6 +74,7 @@ import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Events
 import Graphics.UI.WX.Layout
+import Graphics.UI.WX.Media (Media(..))
 import Graphics.UI.WX.Window
 
 import Data.Dynamic  -- for "alignment"
@@ -1005,6 +1008,79 @@ imageListFromFiles size files
   = do images <- imageListCreate size True (length files)
        imageListAddIconsFromFiles images size files
        return images
+
+{--------------------------------------------------------------------------------
+  MediaCtrl
+--------------------------------------------------------------------------------}
+
+-- | Optional back-end for your MediaCtrl.
+--   If you want to know more about back-end, you must see wxWidgets' Document.
+--   <http://www.wxwidgets.org/manuals/stable/wx_wxmediactrl.html#choosingbackendwxmediactrl>
+data MediaCtrlBackend =
+      DirectShow            -- ^ Use ActiveMovie\/DirectShow. Default back-end on Windows.
+    | MediaControlInterface -- ^ Use Media Command Interface. Windows Only.
+    | WindowsMediaPlayer10  -- ^ Use Windows Media Player 10. Windows Only. Require to use wxWidgets 2.8.x.
+    | QuickTime             -- ^ Use QuickTime. Mac Only. 
+    | GStreamer             -- ^ Use GStreamer. Unix Only. Require GStreamer and GStreamer Support.
+    | DefaultBackend        -- ^ Use default back-end on your platform.
+   deriving (Eq,Show)
+
+fromMediaCtrlBackend :: MediaCtrlBackend -> String
+fromMediaCtrlBackend back
+  = case back of
+      DirectShow            -> wxMEDIABACKEND_DIRECTSHOW
+      MediaControlInterface -> wxMEDIABACKEND_MCI
+      WindowsMediaPlayer10  -> wxMEDIABACKEND_WMP10
+      QuickTime             -> wxMEDIABACKEND_QUICKTIME
+      GStreamer             -> wxMEDIABACKEND_GSTREAMER
+      DefaultBackend        -> ""
+
+-- FIXME: Change wxDirect to Support STRING type in Eiffel file (*.e)
+-- instead of write definition directory here.
+wxMEDIABACKEND_DIRECTSHOW = "wxAMMediaBackend"
+wxMEDIABACKEND_MCI = "wxMCIMediaBackend"
+wxMEDIABACKEND_WMP10 = "wxWMP10MediaBackend"
+wxMEDIABACKEND_QUICKTIME = "wxQTMediaBackend"
+wxMEDIABACKEND_GSTREAMER = "wxGStreamerMediaBackend"
+
+mediaCtrl :: Window a -> [Prop (MediaCtrl ())] -> IO (MediaCtrl ())
+mediaCtrl parent props
+  = mediaCtrlEx parent defaultStyle DefaultBackend props
+
+-- | Create MediaCtrl with choosing back-end. This is useful to select back-end on
+-- Windows. But if you don't want to cause any effect to other platforms, you must
+-- use wxToolkit or #ifdef macro to choose correct function for platforms.
+-- For example,
+--
+-- > import Graphics.UI.WXCore.Defines
+-- > ...
+-- >   m <- case wxToolkit of
+-- >          WxMSW -> mediaCtrlWithBackend f MediaControlInterface []
+-- >          _     -> mediaCtrl f []
+--
+-- or
+--
+-- > #ifdef mingw32_HOST_OS || mingw32_TARGET_OS
+-- >   m <-  mediaCtrlWithBackend f MediaControlInterface []
+-- > #else
+-- >   m <-  mediaCtrl f []
+-- > #endif
+--
+mediaCtrlWithBackend :: Window a -> MediaCtrlBackend -> [Prop (MediaCtrl ())] -> IO (MediaCtrl ())
+mediaCtrlWithBackend parent back props
+  = mediaCtrlEx parent defaultStyle back props
+
+mediaCtrlEx :: Window a -> Style -> MediaCtrlBackend -> [Prop (MediaCtrl ())] -> IO (MediaCtrl ())
+mediaCtrlEx parent style back props
+  = feed2 props style $
+    initialContainer $ \id rect -> \props flags ->
+    do s <- mediaCtrlCreate parent id "" rect style (fromMediaCtrlBackend back) ""
+       set s props
+       return s
+
+instance Media (MediaCtrl a) where
+  play media = unitIO (mediaCtrlPlay media)
+  stop media = unitIO (mediaCtrlStop media)
 
 {--------------------------------------------------------------------------------
   wxStyledTextCtrl

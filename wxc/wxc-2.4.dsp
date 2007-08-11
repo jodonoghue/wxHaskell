@@ -116,6 +116,10 @@ SOURCE=.\include\managed.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\mediactrl.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\previewframe.h
 # End Source File
 # Begin Source File
@@ -193,6 +197,10 @@ SOURCE=.\src\image.cpp
 # Begin Source File
 
 SOURCE=.\src\managed.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\mediactrl.cpp
 # End Source File
 # Begin Source File
 

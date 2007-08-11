@@ -2,18 +2,22 @@
 --------------------------------------------------------------------------------
 {-| Module      :  Media
     Copyright   :  (c) Daan Leijen 2003
+    Copyright   :  (c) shelarcy 2007
     License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
+    Maintainer  :  shelarcy@gmail.com
     Stability   :  provisional
     Portability :  portable
 
-    Images, Sounds, and action!
+    Images, Media, Sounds, and action!
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Media
-            ( -- * Sound
-              sound, play, playLoop, playWait
+            ( -- * Media
+              Media(..)
+            
+              -- * Sound
+            , Sound, sound, playLoop, playWait
               -- * Images
             , image, imageCreateFromFile, imageCreateFromPixels, imageGetPixels
             , imageCreateFromPixelArray, imageGetPixelArray
@@ -66,6 +70,18 @@ instance Sized (Image a) where
   size  = newAttr "size" imageGetSize imageRescale
 
 {--------------------------------------------------------------------
+  Media
+--------------------------------------------------------------------}
+-- | Abstract layer between 'MediaCtrl' and 'Sound'. This class intends to
+-- avoid breaking backward-compatibility.
+class Media w where
+  -- | If use this method with 'Sound', play a sound fragment asynchronously.
+  -- If use this method with 'MediaCtrl', play media that is loaded by
+  -- 'mediaCtrlLoad'.
+  play  :: w -> IO ()
+  stop  :: w -> IO ()
+
+{--------------------------------------------------------------------
   Sounds
 --------------------------------------------------------------------}
 -- | Return a managed sound object. The file path points to 
@@ -74,10 +90,13 @@ sound :: FilePath -> Wave ()
 sound fname 
   = unsafePerformIO $ waveCreate fname False
 
--- | Play a sound fragment asynchronously.
-play :: Wave a -> IO ()
-play wave
-  = unitIO (wavePlay wave True False)
+-- | Define Sound type synonym for people who are familiar with
+-- wxWidgets 2.6.x or higher name.
+type Sound a = Wave a
+
+instance Media (Sound a) where
+  play sound = unitIO (wavePlay sound True False)
+  stop = undefined
 
 -- | Play a sound fragment repeatedly (and asynchronously).
 playLoop :: Wave a -> IO ()
