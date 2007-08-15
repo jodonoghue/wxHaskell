@@ -86,13 +86,14 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/Types \
 	Graphics/UI/WXCore/Defines \
 	Graphics/UI/WXCore/Draw \
+	Graphics/UI/WXCore/Image \
+	Graphics/UI/WXCore/DragAndDrop \
 	Graphics/UI/WXCore/Events \
 	Graphics/UI/WXCore/Frame \
 	Graphics/UI/WXCore/Layout \
 	Graphics/UI/WXCore/Process \
 	Graphics/UI/WXCore/Print \
 	Graphics/UI/WXCore/Dialogs \
-	Graphics/UI/WXCore/Image \
 	Graphics/UI/WXCore/Controls \
 	Graphics/UI/WXCore/Db \
 	Graphics/UI/WXCore/OpenGL \
@@ -119,6 +120,7 @@ WXCORE-GEN-SOURCES = \
 	
 # all sources that generate stub files (ie. containing: foreign import "wrapper")
 WXCORE-STUBS = \
+	Graphics/UI/WXCore/DragAndDrop \
 	Graphics/UI/WXCore/Events
 
 #--------------------------------------------------------------------------
@@ -145,7 +147,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db glcanvas wave managed	\
+	treectrl image apppath db dragimage glcanvas wave managed	\
 	mediactrl printout previewframe textstream stc
 
 WXC-EWXW= \

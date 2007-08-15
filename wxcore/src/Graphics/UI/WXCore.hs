@@ -30,6 +30,7 @@ module Graphics.UI.WXCore
         , module Graphics.UI.WXCore.Process
         , module Graphics.UI.WXCore.Print
         , module Graphics.UI.WXCore.Draw
+        , module Graphics.UI.WXCore.DragAndDrop
         , module Graphics.UI.WXCore.Events
         , module Graphics.UI.WXCore.Frame
         , module Graphics.UI.WXCore.Dialogs
@@ -60,6 +61,7 @@ import Graphics.UI.WXCore.Process
 import Graphics.UI.WXCore.Print
 import Graphics.UI.WXCore.Events hiding ( StreamStatus(..) )
 import Graphics.UI.WXCore.Draw
+import Graphics.UI.WXCore.DragAndDrop
 import Graphics.UI.WXCore.Frame
 import Graphics.UI.WXCore.Dialogs
 import Graphics.UI.WXCore.Controls

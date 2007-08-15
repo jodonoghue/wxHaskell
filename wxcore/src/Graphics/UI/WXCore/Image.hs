@@ -18,6 +18,9 @@ module Graphics.UI.WXCore.Image
     , withIconFromFile
     , iconCreateFromFile
     , iconGetSize
+    -- ** Cursors
+    , withCursorFromFile
+    , cursorCreateFromFile
     -- ** Bitmaps
     , withBitmapFromFile
     , bitmapCreateFromFile
@@ -120,6 +123,22 @@ iconGetSize icon
   = do w <- iconGetWidth icon
        h <- iconGetHeight icon
        return (sz w h)
+
+{-----------------------------------------------------------------------------------------
+  Cursors
+-----------------------------------------------------------------------------------------}
+-- | Load an cursor (see 'cursorCreateFromFile') and automatically delete it
+-- after use.
+withCursorFromFile :: FilePath -> (Cursor () -> IO a) -> IO a
+withCursorFromFile fname f
+  = bracket (cursorCreateFromFile fname)
+            (cursorDelete)
+            f
+
+-- | Load an cursor from an icon file (ico,xbm,xpm,gif).
+-- For a reason, this function is incomatible with 'iconCreateFromFile'.
+cursorCreateFromFile :: String -> IO (Cursor ())
+cursorCreateFromFile fname = imageCreateFromFile fname >>= cursorCreateFromImage
 
 {-----------------------------------------------------------------------------------------
   Bitmaps

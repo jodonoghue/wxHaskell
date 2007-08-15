@@ -175,7 +175,23 @@ EWXWEXPORT(void, TextDataObject_Delete)(void* _obj)
 	delete (wxTextDataObject*)_obj;
 }
 
-EWXWEXPORT(void*, FileDataObject_Create)(void* _lst, int _cnt)
+EWXWEXPORT(size_t, TextDataObject_GetTextLength)(void* _obj)
+{
+	return ((wxTextDataObject*)_obj)->GetTextLength();
+}
+
+EWXWEXPORT(int, TextDataObject_GetText)(void* _obj, void* _buf)
+{
+	wxString result =((wxTextDataObject*)_obj)->GetText();
+	return copyStrToBuf(_buf, result);
+}
+
+EWXWEXPORT(void, TextDataObject_SetText)(void* _obj, const wxString* strText)
+{
+	((wxTextDataObject*)_obj)->SetText(*strText);
+}
+
+EWXWEXPORT(void*, FileDataObject_Create)(int _cnt, void* _lst )
 {
 	wxFileDataObject* result = new wxFileDataObject();
 	if (_cnt)
@@ -234,12 +250,12 @@ EWXWEXPORT(void, BitmapDataObject_GetBitmap)(void* _obj, void* _bmp)
 }
 
 
-EWXWEXPORT(void*, DropSource_Create)(void* data, void* win, void* copy, void* move, void* none)
+EWXWEXPORT(void*, DropSource_Create)(wxDataObject* data, void* win, void* copy, void* move, void* none)
 {
 #if (wxCHECK_VERSION(2,5,0) && defined(__WXMAC__)) || defined(__WIN32__)
-	return (void*) new wxDropSource(*((wxDataObject*)data), (wxWindow*)win, *((wxCursor*)copy), *((wxCursor*)move), *((wxCursor*)none));
+	return (void*) new wxDropSource(*data, (wxWindow*)win, *((wxCursor*)copy), *((wxCursor*)move), *((wxCursor*)none));
 #else
-	return (void*) new wxDropSource(*((wxDataObject*)data), (wxWindow*)win, *((wxIcon*)copy), *((wxIcon*)move), *((wxIcon*)none));
+	return (void*) new wxDropSource(*data, (wxWindow*)win, *((wxIcon*)copy), *((wxIcon*)move), *((wxIcon*)none));
 #endif
 }
 

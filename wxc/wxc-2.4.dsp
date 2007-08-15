@@ -104,6 +104,10 @@ SOURCE=.\include\db.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\dragimage.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ewxw_def.h
 # End Source File
 # Begin Source File
@@ -169,6 +173,10 @@ SOURCE=.\src\apppath.cpp
 # Begin Source File
 
 SOURCE=.\src\db.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\dragimage.cpp
 # End Source File
 # Begin Source File
 

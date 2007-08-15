@@ -20,6 +20,7 @@ module Graphics.UI.WXCore.Controls
     , treeCtrlGetSelections2
       -- * Wrappers
     , listBoxGetSelectionList
+    , execClipBoardData
     ) where
 
 import Graphics.UI.WXCore.WxcTypes
@@ -114,4 +115,11 @@ textCtrlMakeLogActiveTarget :: TextCtrl a -> IO ()
 textCtrlMakeLogActiveTarget textCtrl
   = do log <- logTextCtrlCreate textCtrl
        logDeleteAndSetActiveTarget log
-       
+
+
+-- | Use a 'clipboardSetData' or 'clipboardGetData' in this function. But don't
+-- use long computation in this function. Because this function encloses the
+-- computation with 'clipboardOpen' and 'clipboardClose', and wxHaskell uses
+-- Global clipboard on your environment. So, long computation causes problem.
+execClipBoardData :: Clipboard a -> (Clipboard a -> IO b) -> IO b
+execClipBoardData cl event = bracket_ (clipboardOpen cl) (clipboardClose cl) (event cl)

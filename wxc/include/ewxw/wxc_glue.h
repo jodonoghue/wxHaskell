@@ -1069,16 +1069,16 @@ TClassDef(wxClientDataContainer)
 
 /* wxClipboard */
 TClassDefExtend(wxClipboard,wxObject)
-int        wxClipboard_AddData( TSelf(wxClipboard) _obj, void* data );
+int        wxClipboard_AddData( TSelf(wxClipboard) _obj, TClass(wxDataObject) data );
 void       wxClipboard_Clear( TSelf(wxClipboard) _obj );
 void       wxClipboard_Close( TSelf(wxClipboard) _obj );
 TClass(wxClipboard) wxClipboard_Create(  );
 int        wxClipboard_Flush( TSelf(wxClipboard) _obj );
-int        wxClipboard_GetData( TSelf(wxClipboard) _obj, void* data );
+int        wxClipboard_GetData( TSelf(wxClipboard) _obj, TClass(wxDataObject) data );
 TBool      wxClipboard_IsOpened( TSelf(wxClipboard) _obj );
-TBool      wxClipboard_IsSupported( TSelf(wxClipboard) _obj, void* format );
+TBool      wxClipboard_IsSupported( TSelf(wxClipboard) _obj, TClass(wxDataFormat) format );
 int        wxClipboard_Open( TSelf(wxClipboard) _obj );
-int        wxClipboard_SetData( TSelf(wxClipboard) _obj, void* data );
+int        wxClipboard_SetData( TSelf(wxClipboard) _obj, TClass(wxDataObject) data );
 void       wxClipboard_UsePrimarySelection( TSelf(wxClipboard) _obj, int primary );
 
 /* wxCloseEvent */
@@ -1291,6 +1291,8 @@ TClassDef(wxCriticalSectionLocker)
 /* wxCursor */
 TClassDefExtend(wxCursor,wxBitmap)
 TClass(wxCursor)  Cursor_CreateFromStock( int _id );
+TClass(wxCursor)  Cursor_CreateFromImage( TClass(wxImage) image );
+TClass(wxCursor)  Cursor_CreateLoad( TStringVoid name, long type, TSize(width,height) );
 
 /* wxCustomDataObject */
 TClassDefExtend(wxCustomDataObject,wxDataObjectSimple)
@@ -1644,7 +1646,7 @@ TClassDefExtend(wxDropFilesEvent,wxEvent)
 
 /* wxDropSource */
 TClassDef(wxDropSource)
-TClass(wxDropSource) DropSource_Create( void* data, TClass(wxWindow) win, void* copy, void* move, void* none );
+TClass(wxDropSource) DropSource_Create( TClass(wxDataObject) data, TClass(wxWindow) win, void* copy, void* move, void* none );
 void       DropSource_Delete( TSelf(wxDropSource) _obj );
 int        DropSource_DoDragDrop( TSelf(wxDropSource) _obj, int _move );
 
@@ -1779,9 +1781,9 @@ TClassDefExtend(wxFTP,wxProtocol)
 /* wxFileDataObject */
 TClassDefExtend(wxFileDataObject,wxDataObjectSimple)
 void       FileDataObject_AddFile( TSelf(wxFileDataObject) _obj, TStringVoid _fle );
-TClass(wxFileDataObject) FileDataObject_Create( TClass(wxList) _lst, int _cnt );
+TClass(wxFileDataObject) FileDataObject_Create( TArrayString(_cnt, _lst) );
 void       FileDataObject_Delete( TSelf(wxFileDataObject) _obj );
-int        FileDataObject_GetFilenames( TSelf(wxFileDataObject) _obj, TClass(wxList) _lst );
+TArrayLen        FileDataObject_GetFilenames( TSelf(wxFileDataObject) _obj, TArrayStringOutVoid _lst );
 
 /* wxFileDialog */
 TClassDefExtend(wxFileDialog,wxDialog)
@@ -4274,6 +4276,9 @@ long       wxTextCtrl_XYToPosition( TSelf(wxTextCtrl) _obj, TPointLong(x,y) );
 TClassDefExtend(wxTextDataObject,wxDataObjectSimple)
 TClass(TextDataObject) TextDataObject_Create( TStringVoid _txt );
 void       TextDataObject_Delete( TSelf(TextDataObject) _obj );
+size_t TextDataObject_GetTextLength( TSelf(TextDataObject) _obj );
+TStringLen       TextDataObject_GetText( TSelf(TextDataObject) _obj, TStringOutVoid _buf );
+void       TextDataObject_SetText( TSelf(TextDataObject) _obj, TString text );
 
 /* wxTextDropTarget */
 TClassDefExtend(wxTextDropTarget,wxDropTarget)

@@ -20,6 +20,7 @@
   Modular extra exports
 -----------------------------------------------------------------------------*/
 #include "db.h"
+#include "dragimage.h"
 #include "glcanvas.h"
 #include "wave.h"
 #include "managed.h"

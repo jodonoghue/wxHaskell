@@ -28,24 +28,24 @@ EWXWEXPORT(int, wxClipboard_IsOpened)(void* _obj)
 	return (int)((wxClipboard*)_obj)->IsOpened();
 }
 
-EWXWEXPORT(int, wxClipboard_SetData)(void* _obj, void* data)
+EWXWEXPORT(int, wxClipboard_SetData)(void* _obj, wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->SetData((wxDataObject*)data);
+	return (int)((wxClipboard*)_obj)->SetData(data);
 }
 
-EWXWEXPORT(int, wxClipboard_AddData)(void* _obj, void* data)
+EWXWEXPORT(int, wxClipboard_AddData)(void* _obj, wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->AddData((wxDataObject*)data);
+	return (int)((wxClipboard*)_obj)->AddData(data);
 }
 
-EWXWEXPORT(int, wxClipboard_IsSupported)(void* _obj, void* format)
+EWXWEXPORT(int, wxClipboard_IsSupported)(void* _obj, wxDataFormat* format)
 {
-	return (int)((wxClipboard*)_obj)->IsSupported(*((wxDataFormat*)format));
+	return (int)((wxClipboard*)_obj)->IsSupported(*format);
 }
 
-EWXWEXPORT(int, wxClipboard_GetData)(void* _obj, void* data)
+EWXWEXPORT(int, wxClipboard_GetData)(void* _obj, wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->GetData(*((wxDataObject*)data));
+	return (int)((wxClipboard*)_obj)->GetData(*data);
 }
 
 EWXWEXPORT(void, wxClipboard_Clear)(void* _obj)
