@@ -19,7 +19,7 @@ module HaskellNames( haskellDeclName
 
 import qualified Set
 import Char( toLower, toUpper, isLower, isUpper )
-import Time( getClockTime )
+import Data.Time( getCurrentTime )
 import List( isPrefixOf )
 
 {-----------------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ isBuiltin name
  Haddock prologue
 -----------------------------------------------------------------------------------------}
 getPrologue moduleName content contains inputFiles
-  = do time <- getClockTime
+  = do time <- getCurrentTime
        return (prologue time)
   where
     prologue time

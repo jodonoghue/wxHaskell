@@ -14,7 +14,7 @@ module CompileClassTypes( compileClassTypes ) where
 
 import qualified Map
 
-import Time( getClockTime)
+import Data.Time( getCurrentTime)
 import Types
 import HaskellNames
 import Classes( isClassName, haskellClassDefs )
@@ -25,7 +25,7 @@ import DeriveTypes( ClassName )
 -----------------------------------------------------------------------------------------}
 compileClassTypes :: Bool -> String -> String -> FilePath -> [FilePath] -> IO ()
 compileClassTypes showIgnore moduleRoot moduleName outputFile inputFiles
-  = do time    <- getClockTime
+  = do time    <- getCurrentTime
        let (exportsClass,classDecls) = haskellClassDefs
            exportsClassClasses       = exportDefs exportsClass 
 

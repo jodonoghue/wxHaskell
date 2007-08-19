@@ -431,11 +431,11 @@ wxd-dist: $(WXD-HS)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
-	$(HC) $(HCFLAGS) $(PKG-PARSEC) -o $@ $^
+	$(HC) $(HCFLAGS) $(PKG-PARSEC) $(PKG-TIME) -o $@ $^
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) $(PKG-TIME),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)

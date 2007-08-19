@@ -16,7 +16,7 @@ import qualified Set
 import qualified Map
 import qualified MultiSet
 
-import Time( getClockTime)
+import Data.Time( getCurrentTime)
 import Char( toUpper, isUpper )
 import List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
@@ -32,7 +32,7 @@ import DeriveTypes( deriveTypesAll, classifyName, Name(..), Method(..), ClassNam
 compileHeader :: Bool -> FilePath -> [FilePath] -> IO ()
 compileHeader showIgnore outputFile inputFiles
   = do declss  <- mapM parseC inputFiles
-       time    <- getClockTime
+       time    <- getCurrentTime
        let decls        = deriveTypesAll showIgnore (sortBy cmpDecl (concat declss))
 
            typeDecls    = cTypeDecls decls

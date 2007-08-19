@@ -616,6 +616,13 @@ case $? in
   *) pkgparsec="";;
 esac
 
+# Test if we can include the time package explicitly
+$hcpkg -s time > /dev/null 2> /dev/null
+case $? in
+  0) pkgtime="-package time";;
+  *) pkgtime="";;
+esac
+
 #--------------------------------------------------------------------
 # Haddock
 #--------------------------------------------------------------------
@@ -781,6 +788,7 @@ GHCOLD=$ghcold
 
 # Packages
 PKG-PARSEC=$pkgparsec
+PKG-TIME=$pkgtime
 
 # C compiler
 CXX=$cxx

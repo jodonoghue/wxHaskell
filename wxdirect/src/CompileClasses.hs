@@ -17,7 +17,7 @@ import qualified Set
 import qualified Map
 import qualified MultiSet
 
-import Time( getClockTime)
+import Data.Time( getCurrentTime )
 import Char( toUpper, isUpper, toLower ) --toLower, toUpper, isSpace, isLower, isUpper )
 import List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
@@ -33,7 +33,7 @@ import DeriveTypes( deriveTypes, classifyName, Name(..), Method(..), ClassName, 
 compileClasses :: Bool -> String -> String -> String -> FilePath -> [FilePath] -> IO ()
 compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile inputFiles
   = do declss  <- mapM parseC inputFiles
-       time    <- getClockTime
+       time    <- getCurrentTime
        let splitter        = 'M'
            (decls1,decls2) = let isLower decl = (haskellDeclName (declName decl) < [toLower splitter])
                              in span isLower (deriveTypes showIgnore (sortBy cmpDecl (concat declss)))
