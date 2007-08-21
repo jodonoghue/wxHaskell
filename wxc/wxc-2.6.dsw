@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "wxc"=".\wxcu-2.6.4.dsp" - Package Owner=<4>
+Project: "wxc"=".\wxc-2.6.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
