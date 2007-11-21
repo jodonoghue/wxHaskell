@@ -58,15 +58,19 @@ of memory leaks in the wxWidgets libraries and you get a warning when forgetting
 wxWidgets objects. The drawback is that the configure scripts are not used and you will need
 to set some options manually.</p>
 
+<p>If you want to use Visual C++ Express Edition, <a href="http://msdn2.microsoft.com/express/aa700755.aspx">you must install Microsoft Platform SDK</a> before building wxWidgets or wxHaskell.</p>
+
 <p>We use the wxWidgets provided workspace directly:</p>
 <ul>
 <li><b>wxWidgets 2.4</b>: Open the <code>$wxwin/src/wxWidgets.dsw</code> workspace.
-Select menu "<code>Build/Set active configuration</code>" and select "<code>wxWidgets - win32 release</code>" to build the (static) library. After compilation, you can also select "<code>wxWidgets - win32 debug</code>" to build
+Select menu "<code>Build/Set active configuration</code>" and select "<code>wxWidgets - win32 release unicode</code>" to build the (static) library. After compilation, you can also select "<code>wxWidgets - win32 debug unicode</code>" to build
 the debug version.</li>
-<li><b>wxWidgets 2.5</b>: Open the <code>$wxwin/build/msw/wx.dsw</code> workspace. Select
+<li><b>wxWidgets 2.6</b>: Open the <code>$wxwin/build/msw/wx.dsw</code> workspace. Select
 menu "<code>Build/Batch build</code>" and select all configurations by using the mouse and the <code>shift</code> key,
-when you click a marker, all configurations are deselected. Next you manually select the "Release" and "Debug" versions of all projects and press "Build". Afterwards, press "Save All" to save all your mouse clicking work :-)</li>
+when you click a marker, all configurations are deselected. Next you manually select the "Unicode Release" and "Unicode Debug" versions of all projects and press "Build". Afterwards, press "Save All" to save all your mouse clicking work :-)</li>
 </ul>
+
+<p>If you want to use  <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.Db.html">database access</a> and <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.OpenGL.html">openGL canvas</a>, you must edit <code>$wxwin/include/msw/setup.h</code>'s <code>#define wxUSE_* </code>(* is target feature name) from 0 to 1. </p>
 
 <p>After building wxWidgets, you need to run <code>configure</code> for the wxHaskell library.</p>
 <pre>
@@ -79,11 +83,22 @@ when you click a marker, all configurations are deselected. Next you manually se
 &gt; ./configure --with-msc --wxc-libname=wxcd
 </pre>
 
-<p>After configuration, first go the <code>$wxhaskell/wxc</code> directory. Here, you need to adapt the <code>wxc-<em>version</em>.dsp</code> project to reference the correct wxWidgets directory. Open the <code>.dsp</code> file in an editor and replace all occurrences of "<code>..\..\wxWindows-2.4.2</code>" (or "<code>..\..\wxWindows-2.5.1</code>") or by the installed wxWidgets directory, i.e. <code>$wxwin</code>.
+<p>After configuration, first run <code>make</code> command to generate stc_gen.* files.</p>
+<pre>
+&gt; make
+</pre>
+
+<p>Make will stop by following error.</p>
+<pre>
+> make: *** No rule to make target `out/wxc/wxc-msw2.6.4-0.10.1.dll', needed by `wxc'.  Stop.
+</pre>
+
+<p>Then go <code>$wxhaskell/wxc</code> directory. Here, you need to adapt the <code>wxc-<em>version</em>.dsp</code> project to reference the correct wxWidgets directory. Open the <code>.dsp</code> file in an editor and replace all occurrences of "<code>..\..\wxWindows-2.4.2</code>" (or "<code>..\..\wxWindows-2.6.4</code>") or by the installed wxWidgets directory, i.e. <code>$wxwin</code>.
 </p>
 
 <p>After adapting the project file, you can open the workspace <code>wxc/wxc-<em>version</em>.dsw</code>
-and build the release and debug versions of the C wrapper library.</p>
+and build the release and debug versions of the C wrapper library (if you use wxWidgets 2.6.4, you must choose
+"Unicode Release" or "Unicode Debug" instead of choosing just "Release" or "Debug").</p>
 
 <p>And finally! &ndash; you can run <code>make</code> in the <code>$wxhaskell</code> directory to build the
 Haskell libraries.</p>
@@ -91,12 +106,14 @@ Haskell libraries.</p>
 &gt; cd $wxhaskell
 &gt; make
 &gt; make install
+&gt; make wx
+&gt; make wx-install
 </pre>
 
 </div>
 
 <div class="status">
-<a style="float: right" href="#body">top</a>last update: "Apr  1 2004".
+<a style="float: right" href="#body">top</a>last update: "Aug  18 2007".
 </div>
 
 </div>

@@ -61,7 +61,7 @@ been specialized for three main platforms:</p>
 <li><b>unix-gtk</b>. General unix systems with GTK.</li>
 <li><b>macosx</b>. Mac OS X.</li>
 <li><b>windows</b>. General windows systems (i.e. win95 to winXP). We support both building with
-        the Microsoft Visual C++ compiler version 6 and 7 (<b>windows-msc</b>) and building with the
+        the Microsoft Visual C++ compiler version 6, 7 and 8 (<b>windows-msc</b>) and building with the
         gnu mingw32 C compiler (<b>windows-mingw</b>).</li>
 </ul>
 
@@ -78,7 +78,7 @@ been specialized for three main platforms:</p>
 <div class="text">
 <h2>Prerequisites</h2>
 
-<p>Ensure you have a recent <a href="http://www.haskell.org/ghc">GHC</a> compiler &ndash; version 6.4 is recommended (but any version &gt;= 5.04.3 will work). In principle, any Haskell98 compiler that supports the standard FFI libraries will also work.</p>
+<p>Ensure you have a recent <a href="http://www.haskell.org/ghc">GHC</a> compiler &ndash; version 6.8.1 is recommended (but any version &gt;= 5.04.3 will work). In principle, any Haskell98 compiler that supports the standard FFI libraries will also work.</p>
 
 <ul class="notes">
 <li><b>windows</b>: you need the cygwin environment together
@@ -95,15 +95,15 @@ Developer Tools. These tools are shipped with Panther and are installed by invok
 </ul>
 
 
-<p>Next, you should install the latest stable version (currently 2.6.0) of <a href="http://www.wxwidgets.org">wxWidgets</a>
-for your platform. We assume in this guide that the variable <code>$wxwin</code> points to your
-wxWidgets installation directory, for example: <code>~/dev/wxGTK-2.6.0</code>.</p>
+<p>Next, you should install the previous stable version (2.6.4) of <a href="http://www.wxwidgets.org">wxWidgets</a>
+for your platform. (wxHaskell doesn't support latest stable version (currently 2.8.4) now.) We assume in this guide that the variable <code>$wxwin</code> points to your
+wxWidgets installation directory, for example: <code>~/dev/wxGTK-2.6.4</code>.</p>
 
 <ul class="notes">
 <li><b>windows</b>: ghci only works with wxWidgets 2.4.2. Since this wxWidgets version is very stable, it is recommended on windows platforms.
 </li>
 
-<li><b>macosx</b>: MacOS X works best with wxWidgets 2.5.4. The latest stable release (currently wxMAC-2.6.0) does not display menus properly.
+<li><b>macosx</b>: MacOS X works best with wxWidgets 2.5.4. The previous stable release (wxMAC-2.6.4) does not display menus properly.
 </li>
 </ul>
 
@@ -114,22 +114,21 @@ following descriptions, we assume that the variable <code>$wxhaskell</code> poin
 installation directory, for example: <code>~/dev/wxhaskell</code>.
 </p>
 
-<p>If you do not have a source release of wxHaskell, you need to check it out from the <a href="http://sourceforge.net/cvs/?group_id=73133">cvs repository</a>. CVS creates a
+<p>(Note: GHC 6.6.x or higher can't build old source releases. So you must get source from darcs by below command.)</p>
+
+<p>If you do not have a source release of wxHaskell, you need to check it out from the <a href="http://darcs.haskell.org/wxhaskell/">darcs repository</a>. Darcs creates a
 <code>wxhaskell</code> directory for you; we assume in the following example that
 your <code>$wxhaskell</code> directory will be <code>~/dev/wxhaskell</code>.</p>
 <pre>
 &gt; cd ~/dev
-&gt; cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/wxhaskell login
-&gt; cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/wxhaskell co -P wxhaskell
+&gt; darcs get --partial --set-scripts-executable http://darcs.haskell.org/wxhaskell/
 </pre>
-
-<p>You can check out a specific release version using the <code>-r</code> flag:</p>
+<!--
+<p>You can check out a specific release version using the <code>--tag</code> flag:</p>
 <pre>
-&gt; cvs -z3 -d:&lt;as above&gt; co -P -r wxhaskell-0-4 wxhaskell
+&gt; darcs get --tag "" http://darcs.haskell.org/wxhaskell/
 </pre>
-
-<p>You might need to try a few times as sourceforge has a limit on the
-number of people that can log in anonymously.</p>
+-->
 </div>
 
 <div class="text">
@@ -144,7 +143,10 @@ wxWidgets directory, and run <code>configure</code> and <code>make</code> from t
 <pre>&gt; cd $wxwin
 &gt; mkdir mybuild
 &gt; cd mybuild
-&gt; ../configure --disable-shared
+&gt; ../configure --enable-unicode --disable-shared
+&gt; make
+&gt; make install
+&gt; cd contrib/src
 &gt; make
 &gt; make install
 </pre>
@@ -152,19 +154,24 @@ wxWidgets directory, and run <code>configure</code> and <code>make</code> from t
 Notes:
 <ul class="notes">
 <li>Add the following flags to <code>configure</code>, to enable certain advanced features of wxHaskell:
-<ul><li><code>--disable-shared</code> to build a static library (recommended for wxHaskell version &gt;= 0.7).</li>
+<ul><li><code>--enable-unicode</code> to build a unicode library (recommended for latest darcs repository version).</li>
+    <li><code>--disable-shared</code> to build a static library (recommended for wxHaskell version &gt;= 0.7).</li>
     <li><code>--with-odbc</code> to enable <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.Db.html">database access</a>.</li>
     <li><code>--with-opengl</code> to enable the <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.OpenGL.html">openGL canvas</a>.</li>
     <li><code>--enable-sound</code> to enable playback of wave audio files. (<code>--enable-wave</code> on
-    wxWidgets 2.4.x)</li>
+    wxWidgets 2.4.x. And this option is diffrent with below option. You can play sound without no-control by this feature.
+    But ... if you use below media control, it requires to make Control on your Window.)</li>
+    <li><code>--enable-mediactrl</code> to enable the media control. (recommended for wxWidgets version >= 2.6.x)</li>
 </ul>
 </li>
 <li>Do not forget to run <code>make install</code>; this installs a utility called
 <code>wx-config</code> that is used by the other projects.</li>
-<li><b>unix-gtk</b>: if you want to use the GTK-<b>2</b> toolkit, you need to configure without
-unicode support since wxHaskell can not (yet) handle unicode. Try for example:
+<li>Do not forget to install 'contib' hierarchy libraries. Now latest darcs' source depends on
+'contib' hierarchy libraries.</li>
+<li><b>unix-gtk</b>: if you want to use the GTK-<b>2</b> toolkit, you need to configure with
+unicode support since current wxHaskell can handle only unicode library. Try for example:
 <pre>
-../configure --with-gtk --enable-gtk2 --disable-unicode
+../configure --with-gtk --enable-gtk2 --enable-unicode
 </pre></li>
 <li><b>macosx</b>: you might need to run <code>rehash</code> after <code>make install</code>
 in order to add the <code>wx-config</code> utility to the search path cache.</li>
@@ -177,7 +184,7 @@ copy it manually to the install directory (for example <code>/usr/local/include/
 
 <p>Now try out a few samples of wxWidgets to see if it all works correctly:</p>
 <pre>
-&gt; cd samples/controls
+&gt; cd ../../samples/controls
 &gt; make
 &gt; ./controls
 </pre>
@@ -189,6 +196,7 @@ in the <code>mybuild</code> directory.</p>
 <pre>
 &gt; wx-config --version
 </pre>
+
 </div>
 
 <div class="text">
@@ -208,6 +216,8 @@ if everything is set up correctly. If the settings do not make sense, it might b
 utility is not found &ndash; maybe you have forgotten to run <code>make install</code> on wxWindows?</li>
 <li>You should pass the <code>--with-opengl</code> option to <code>configure</code> if you specified this
 flag when configuring wxWidgets (or you will get link errors).</li>
+<li>You should pass the <code>--with-stc</code> option to <code>configure</code> if you also installed contrib's stc library after building
+wxWidgets (or you will get link errors).</li>
 <li>By default, the library is installed in the wxWidgets install directory. You can specify another directory with the
 <code>prefix</code> option of configure: <code>./configure --prefix=/usr/local</code>. Any directory that is on your library search path will do.</li>
 <li><b>windows-msc</b>. Read the <a href="building-msc.html">notes</a> on building wxHaskell with Visual C++.</li>
@@ -218,6 +228,8 @@ flag when configuring wxWidgets (or you will get link errors).</li>
 <pre>
 &gt; make
 &gt; make install
+&gt; make wx
+&gt; make wx-install
 </pre>
 
 Notes:
@@ -273,7 +285,7 @@ Mac OS X <a href="building-macosx.html">notes</a> from more information.</li>
 </div>
 
 <div class="status">
-<a style="float: right" href="#body">top</a>last update: "May  8 2005".
+<a style="float: right" href="#body">top</a>last update: "Aug  18 2007".
 </div>
 
 </div>
