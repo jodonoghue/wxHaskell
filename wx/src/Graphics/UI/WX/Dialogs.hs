@@ -69,7 +69,7 @@ dialogEx parent style props
 -- is returned as the result of the dialog. The result is 'Nothing' when the dialog
 -- is dismissed via the system menu.
 --
--- > d   <- dialog [text := "Demo"]
+-- > d   <- dialog w [text := "Demo"]
 -- > ok  <- button d [text := "Ok"]
 -- > ...
 -- > result <- showModal d (\stop -> set ok [on command := stop (Just 42)])
