@@ -87,8 +87,8 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/Defines \
 	Graphics/UI/WXCore/Draw \
 	Graphics/UI/WXCore/Image \
-	Graphics/UI/WXCore/DragAndDrop \
 	Graphics/UI/WXCore/Events \
+	Graphics/UI/WXCore/DragAndDrop \
 	Graphics/UI/WXCore/Frame \
 	Graphics/UI/WXCore/Layout \
 	Graphics/UI/WXCore/Process \
@@ -120,7 +120,6 @@ WXCORE-GEN-SOURCES = \
 	
 # all sources that generate stub files (ie. containing: foreign import "wrapper")
 WXCORE-STUBS = \
-	Graphics/UI/WXCore/DragAndDrop \
 	Graphics/UI/WXCore/Events
 
 #--------------------------------------------------------------------------
