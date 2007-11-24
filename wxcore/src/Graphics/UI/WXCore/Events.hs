@@ -164,9 +164,9 @@ module Graphics.UI.WXCore.Events
         , DragMode (..)
         , dragAndDrop
         
-        -- ** Special handler for Drop File event
+        -- *** Special handler for Drop File event
         , fileDropTarget
-        -- ** Special handler for Drop Text event 
+        -- *** Special handler for Drop Text event 
         , textDropTarget
 
         -- ** Scroll events
@@ -402,11 +402,6 @@ spinCtrlGetOnCommand spinCtrl
 {-----------------------------------------------------------------------------------------
   wxStyledTextCtrl's event
 -----------------------------------------------------------------------------------------}
--- kolmodin 20050304:
--- Drag and drop is not implemented in wxHaskell yet,
--- events related to this is appear as STCUnknown instead.
--- STCUnknown events are ignored and not passed along to the user.
-
 -- | Scintilla events. * Means extra information is available (excluding position,
 --   key and modifiers) but not yet implemented. ! means it's done
 data EventSTC
@@ -434,15 +429,15 @@ data EventSTC
     | STCUriDropped String  -- ^ ! wxEVT_STC_URIDROPPED
     | STCDwellStart Point -- ^ ! wxEVT_STC_DWELLSTART
     | STCDwellEnd Point   -- ^ ! wxEVT_STC_DWELLEND
---  | STCStartDrag          -- ^ ** wxEVT_STC_START_DRAG.
---  | STCDragOver           -- ^ ** wxEVT_STC_DRAG_OVER
---  | STCDoDrop             -- ^ ** wxEVT_STC_DO_DROP
+    | STCStartDrag Int Int String            -- ^ ! wxEVT_STC_START_DRAG.
+    | STCDragOver Point DragResult            -- ^ ! wxEVT_STC_DRAG_OVER
+    | STCDoDrop String DragResult            -- ^ ! wxEVT_STC_DO_DROP
     | STCZoom               -- ^ ! wxEVT_STC_ZOOM
     | STCHotspotClick       -- ^ ! wxEVT_STC_HOTSPOT_CLICK
     | STCHotspotDClick      -- ^ ! wxEVT_STC_HOTSPOT_DCLICK
     | STCCalltipClick       -- ^ ! wxEVT_STC_CALLTIP_CLICK
     | STCAutocompSelection  -- ^ ! wxEVT_STC_AUTOCOMP_SELECTION
-    |	STCUnknown            -- ^ Unknown event. Should never occur.
+    | STCUnknown            -- ^ Unknown event. Should never occur.
 
 instance Show EventSTC where
     show STCChange = "(stc event: change)"
@@ -463,9 +458,9 @@ instance Show EventSTC where
     show (STCUriDropped t) = "(stc event: uri dropped: " ++ t ++ ")"
     show (STCDwellStart p) = "(stc event: dwell start, (x,y) " ++ show p ++ ")"
     show (STCDwellEnd p) = "(stc event: dwell end, (x,y) " ++ show p ++ ")"
---    show STCStartDrag = "(stc event: start drag)"
---    show STCDragOver = "(stc event: drag over)"
---    show STCDoDrop = "(stc event: do drop)"
+    show (STCStartDrag lin car str) = "(stc event: start drag, line " ++ show lin ++ ", caret " ++ show car ++ ", text " ++ show str ++ ")"
+    show (STCDragOver p res) = "(stc event: drag over, (x,y) " ++ show p ++ ", dragResult " ++ show res ++ ")"
+    show (STCDoDrop str res) = "(stc event: do drop, text " ++ show str ++ ", dragResult " ++ show res ++ ")"
     show STCZoom = "(stc event: zoom)"
     show STCHotspotClick = "(stc event: hotspot click)"
     show STCHotspotDClick = "(stc event: hotspot double click)"
@@ -499,13 +494,13 @@ stcEvents = [ (wxEVT_STC_CHANGE,            \_ -> return STCChange)
 	    , (wxEVT_STC_URIDROPPED,        uriDropped)
 	    , (wxEVT_STC_DWELLSTART,        dwellStart)
 	    , (wxEVT_STC_DWELLEND,          dwellEnd)
-	    , (wxEVT_STC_START_DRAG,        \_ -> return STCUnknown) --STCStartDrag)
-	    , (wxEVT_STC_DRAG_OVER,         \_ -> return STCUnknown) --STCDragOver)
-	    , (wxEVT_STC_DO_DROP,           \_ -> return STCUnknown) --STCDoDrop)
+	    , (wxEVT_STC_START_DRAG,        startDrag)
+	    , (wxEVT_STC_DRAG_OVER,         dragOver)
+	    , (wxEVT_STC_DO_DROP,           doDrop)
 	    , (wxEVT_STC_ZOOM,              \_ -> return STCZoom)
 	    , (wxEVT_STC_HOTSPOT_CLICK,     \_ -> return STCHotspotClick)
 	    , (wxEVT_STC_CALLTIP_CLICK,     \_ -> return STCCalltipClick)
-        -- TODO: STCAutocompSelection event is not tested yet.
+	    -- TODO: STCAutocompSelection event is not tested yet.
 	    , (wxEVT_STC_AUTOCOMP_SELECTION,    \_ -> return STCAutocompSelection)
 	    ]
   where
@@ -564,6 +559,20 @@ stcEvents = [ (wxEVT_STC_CHANGE,            \_ -> return STCChange)
       x <- styledTextEventGetX evt
       y <- styledTextEventGetY evt
       return $ STCDwellEnd (point x y)
+    startDrag evt = do
+      lin <- styledTextEventGetLine evt
+      car <- styledTextEventGetPosition evt
+      str <- styledTextEventGetDragText evt
+      return $ STCStartDrag lin car str
+    dragOver evt = do
+      x <- styledTextEventGetX evt
+      y <- styledTextEventGetY evt
+      res <- styledTextEventGetDragResult evt
+      return $ STCDragOver (point x y) $ toDragResult res
+    doDrop evt = do
+      str <- styledTextEventGetDragText evt
+      res <- styledTextEventGetDragResult evt
+      return $ STCDoDrop str $ toDragResult res
 
 stcOnSTCEvent :: StyledTextCtrl a -> (EventSTC -> IO ()) -> IO ()
 stcOnSTCEvent stc handler

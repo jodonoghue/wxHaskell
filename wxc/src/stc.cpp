@@ -301,10 +301,30 @@ EWXWEXPORT(int, wxStyledTextEvent_GetY) (void* _obj)
 #endif
 }
 
+EWXWEXPORT(void*, wxStyledTextEvent_GetDragText) (void* _obj)
+{
+#ifdef wxUSE_STC
+    wxString s = ((wxStyledTextEvent*) _obj)->GetDragText();
+    wxString* ss = new wxString(s);
+    return ss;
+#else
+  return false;
+#endif
+}
+
 EWXWEXPORT(bool, wxStyledTextEvent_GetDragAllowMove) (void* _obj)
 {
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetDragAllowMove();
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(int, wxStyledTextEvent_GetDragResult) (void* _obj)
+{
+#ifdef wxUSE_STC
+  return ((wxStyledTextEvent*) _obj)->GetDragResult();
 #else
   return false;
 #endif
@@ -494,7 +514,6 @@ EWXWEXPORT(void, wxStyledTextEvent_SetDragAllowMove) (void* _obj, int val)
 #endif
 }
 
-/* we have no wxDragResult
 EWXWEXPORT(void, wxStyledTextEvent_SetDragResult) (void* _obj, void* val)
 {
 #ifdef wxUSE_STC
@@ -503,7 +522,6 @@ EWXWEXPORT(void, wxStyledTextEvent_SetDragResult) (void* _obj, void* val)
   return false;
 #endif
 }
-*/
 
 /*************************************/
 /* wxStyledTextEvent events          */

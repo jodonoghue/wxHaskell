@@ -42,8 +42,9 @@ int wxStyledTextEvent_GetLParam( TSelf(wxStyledTextEvent) _obj);
 int wxStyledTextEvent_GetListType( TSelf(wxStyledTextEvent) _obj);
 int wxStyledTextEvent_GetX( TSelf(wxStyledTextEvent) _obj);
 int wxStyledTextEvent_GetY( TSelf(wxStyledTextEvent) _obj);
-
+TClass(wxString) wxStyledTextEvent_GetDragText( TSelf(wxStyledTextEvent) _obj );
 TBool wxStyledTextEvent_GetDragAllowMove( TSelf(wxStyledTextEvent) _obj );
+int wxStyledTextEvent_GetDragResult( TSelf(wxStyledTextEvent) _obj );
 TBool wxStyledTextEvent_GetShift( TSelf(wxStyledTextEvent) _obj );
 TBool wxStyledTextEvent_GetControl( TSelf(wxStyledTextEvent) _obj );
 TBool wxStyledTextEvent_GetAlt( TSelf(wxStyledTextEvent) _obj );
@@ -72,8 +73,8 @@ void wxStyledTextEvent_SetX( TSelf(wxStyledTextEvent) _obj, int val);
 void wxStyledTextEvent_SetY( TSelf(wxStyledTextEvent) _obj, int val);
 void wxStyledTextEvent_SetDragText( TSelf(wxStyledTextEvent) _obj, TClass(wxString) val);
 void wxStyledTextEvent_SetDragAllowMove( TSelf(wxStyledTextEvent) _obj, TBool val);
-/* we have no wxDragResult */
 /* void wxStyledTextEvent_SetDragResult( TSelf(wxStyledTextEvent) _obj, TClass(wxDragResult) val); */
+void wxStyledTextEvent_SetDragResult( TSelf(wxStyledTextEvent) _obj, int val);
 
 /* The wxStyledTextEvent's events */
 int expEVT_STC_CHANGE();
