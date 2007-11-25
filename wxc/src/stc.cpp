@@ -514,12 +514,10 @@ EWXWEXPORT(void, wxStyledTextEvent_SetDragAllowMove) (void* _obj, int val)
 #endif
 }
 
-EWXWEXPORT(void, wxStyledTextEvent_SetDragResult) (void* _obj, void* val)
+EWXWEXPORT(void, wxStyledTextEvent_SetDragResult) (void* _obj, int val)
 {
 #ifdef wxUSE_STC
   ((wxStyledTextEvent*) _obj)->SetDragResult(*(wxDragResult*)val);
-#else
-  return false;
 #endif
 }
 
