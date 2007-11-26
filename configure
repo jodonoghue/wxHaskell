@@ -56,6 +56,9 @@ wxversion=""
 extraldopts=""
 withopengl="no"
 
+# check architecture, for mac os x
+architecture=""
+
 # stc
 withstc="no"
 wxcstc=""
@@ -229,6 +232,7 @@ if findprogram "$wxconfig"; then
   else if test "$wxtoolkit" = "mac"; then
     dll=".dylib"
     lib="lib"
+    architecture=`uname -p`
     # use a standard prefix on MacOS X for the installer
     prefix="/usr/local/wxhaskell"
   fi
@@ -819,6 +823,7 @@ WXWIN-REZFILE=$wxrezfile
 EXE=$exe
 DLL=$dll
 LIB=$lib
+ARCHITECTURE=$architecture
 
 # Documentation
 HDOCFOUND=$hdocfound
