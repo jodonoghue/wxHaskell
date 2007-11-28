@@ -226,6 +226,13 @@ int        expEVT_SHOW(  );
 int        expEVT_SIZE(  );
 int        expEVT_SOCKET(  );
 int        expEVT_SYS_COLOUR_CHANGED(  );
+int        expEVT_TASKBAR_MOVE(  );
+int        expEVT_TASKBAR_LEFT_DOWN(  );
+int        expEVT_TASKBAR_LEFT_UP(  );
+int        expEVT_TASKBAR_RIGHT_DOWN(  );
+int        expEVT_TASKBAR_RIGHT_UP(  );
+int        expEVT_TASKBAR_LEFT_DCLICK(  );
+int        expEVT_TASKBAR_RIGHT_DCLICK(  );
 int        expEVT_TIMER(  );
 int        expEVT_UPDATE_UI(  );
 int        expEVT_USER_FIRST(  );
@@ -4226,6 +4233,14 @@ TClassDefExtend(wxTablesInUse,wxObject)
 
 /* wxTaskBarIcon */
 TClassDefExtend(wxTaskBarIcon,wxEvtHandler)
+TClass(wxTaskBarIcon) wxTaskBarIcon_Create();
+void       wxTaskBarIcon_Delete( TSelf(wxTaskBarIcon) _obj );
+/* TClass(wxMenu)  wxTaskBarIcon_CreatePopupMenu( TSelf(wxTaskBarIcon) _obj ); */
+TBool      wxTaskBarIcon_IsIconInstalled( TSelf(wxTaskBarIcon) _obj );
+TBool      wxTaskBarIcon_IsOk( TSelf(wxTaskBarIcon) _obj );
+TBool      wxTaskBarIcon_PopupMenu( TSelf(wxTaskBarIcon) _obj, TClass(wxMenu) menu );
+TBool      wxTaskBarIcon_RemoveIcon( TSelf(wxTaskBarIcon) _obj );
+TBool      wxTaskBarIcon_SetIcon( TSelf(wxTaskBarIcon) _obj, TClass(wxIcon) icon, TString text );
 
 /* wxTempFile */
 TClassDef(wxTempFile)

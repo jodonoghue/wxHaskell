@@ -147,7 +147,7 @@ WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
 	treectrl image apppath db dragimage glcanvas wave managed	\
-	mediactrl printout previewframe textstream stc
+	mediactrl printout previewframe taskbaricon textstream stc
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \

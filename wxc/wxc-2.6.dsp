@@ -226,6 +226,10 @@ SOURCE=.\src\stc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\taskbaricon.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\textstream.cpp
 # End Source File
 # Begin Source File

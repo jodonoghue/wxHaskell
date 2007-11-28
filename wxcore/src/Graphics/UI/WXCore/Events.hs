@@ -61,6 +61,7 @@ module Graphics.UI.WXCore.Events
         , evtHandlerOnEndProcess
         , evtHandlerOnInput
         , evtHandlerOnInputSink
+        , evtHandlerOnTaskBarIconEvent
 
         -- ** Raw STC export
         , EventSTC(..)
@@ -113,6 +114,7 @@ module Graphics.UI.WXCore.Events
         , evtHandlerGetOnMenuCommand
         , evtHandlerGetOnEndProcess
         , evtHandlerGetOnInputSink
+        , evtHandlerGetOnTaskBarIconEvent
 
         -- ** Printing
         , printOutGetOnPrint
@@ -185,6 +187,9 @@ module Graphics.UI.WXCore.Events
         -- ** Html window events
         , EventHtml(..)
         
+        -- * TaskBar icon events
+        , EventTaskBarIcon(..)
+
         -- * Current event
         , propagateEvent
         , skipCurrentEvent
@@ -236,6 +241,7 @@ import Foreign.Marshal.Array
 import Foreign.Marshal.Utils
 
 import Data.Char ( chr ) -- used in stc
+import Data.Maybe ( fromMaybe )
 import Control.Concurrent.MVar
 import System.IO.Unsafe( unsafePerformIO )
 
@@ -2319,6 +2325,63 @@ listCtrlOnListEvent listCtrl eventHandler
 listCtrlGetOnListEvent :: ListCtrl a -> IO (EventList -> IO ())
 listCtrlGetOnListEvent listCtrl
   = unsafeWindowGetHandlerState listCtrl wxEVT_COMMAND_LIST_ITEM_ACTIVATED (\event -> skipCurrentEvent)
+
+
+------------------------------------------------------------------------------------------
+-- TaskBarIcon Events
+------------------------------------------------------------------------------------------
+data EventTaskBarIcon = TaskBarIconMove
+                      | TaskBarIconLeftDown
+                      | TaskBarIconLeftUp
+                      | TaskBarIconRightDown
+                      | TaskBarIconRightUp
+                      | TaskBarIconLeftDClick
+                      | TaskBarIconRightDClick
+                      | TaskBarIconUnknown
+                      deriving (Show, Eq)
+
+fromTaskBarIconEvent :: Event a -> IO EventTaskBarIcon
+fromTaskBarIconEvent event
+  = do tp     <- eventGetEventType event
+       case lookup tp taskBarIconEvents of
+         Just evt  -> return evt
+         Nothing   -> return TaskBarIconUnknown
+
+taskBarIconEvents :: [(Int,EventTaskBarIcon)]
+taskBarIconEvents
+  = [(wxEVT_TASKBAR_MOVE,         TaskBarIconMove)
+    ,(wxEVT_TASKBAR_LEFT_DOWN,    TaskBarIconLeftDown)
+    ,(wxEVT_TASKBAR_LEFT_UP,      TaskBarIconLeftUp)
+    ,(wxEVT_TASKBAR_RIGHT_DOWN,   TaskBarIconRightDown)
+    ,(wxEVT_TASKBAR_RIGHT_UP,     TaskBarIconRightUp)
+    ,(wxEVT_TASKBAR_LEFT_DCLICK,  TaskBarIconLeftDClick)
+    ,(wxEVT_TASKBAR_RIGHT_DCLICK, TaskBarIconRightDClick)
+    ]
+
+-- | Set a taskbar icon event handler.
+evtHandlerOnTaskBarIconEvent :: TaskBarIcon a -> (EventTaskBarIcon -> IO ()) -> IO ()
+evtHandlerOnTaskBarIconEvent taskbar eventHandler
+  = evtHandlerOnEvent taskbar idAny idAny (map fst taskBarIconEvents) eventHandler
+       -- finalize taskBarIcon's resource on Windows.
+       (\_ -> if wxToolkit == WxMSW
+              then (taskBarIconRemoveIcon taskbar
+                   -- But taskBarIconDelete doesn't work well in this part. I don't know why.
+                   -- >> taskBarIconDelete taskbar
+                   >> return ())
+              else (return ()))
+       scrollHandler
+  where
+    scrollHandler event
+      = do eventTaskBar <- fromTaskBarIconEvent event
+           eventHandler eventTaskBar
+
+-- | Get the current event handler for a taskbar icon.
+evtHandlerGetOnTaskBarIconEvent :: EvtHandler a -> Id -> EventTaskBarIcon -> IO (IO ())
+evtHandlerGetOnTaskBarIconEvent window id evt
+  = unsafeGetHandlerState window id
+      (fromMaybe wxEVT_TASKBAR_MOVE
+          $ lookup evt $ uncurry (flip zip) . unzip $ taskBarIconEvents)
+      skipCurrentEvent
 
 
 
