@@ -35,7 +35,7 @@ extern "C" {
 /*-----------------------------------------------------------------------------
   Sound
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxSound*,wxWave_Create)( wxString* fileName, bool isResource )  
+EWXWEXPORT(wxSound*,wxSound_Create)( wxString* fileName, bool isResource )  
 {
 #ifdef wxUSE_SOUND 
   return new wxSound(*fileName,isResource);
@@ -44,14 +44,14 @@ EWXWEXPORT(wxSound*,wxWave_Create)( wxString* fileName, bool isResource )
 #endif
 }
 
-EWXWEXPORT(void,wxWave_Delete)(wxSound* self)  
+EWXWEXPORT(void,wxSound_Delete)(wxSound* self)  
 {
 #ifdef wxUSE_SOUND 
   if (self) delete self;
 #endif
 }
 
-EWXWEXPORT(bool,wxWave_IsOk)(wxSound* self)  
+EWXWEXPORT(bool,wxSound_IsOk)(wxSound* self)  
 {
 #ifdef wxUSE_SOUND 
   return self->IsOk();
@@ -60,23 +60,30 @@ EWXWEXPORT(bool,wxWave_IsOk)(wxSound* self)
 #endif
 }
 
-#if (WXWIN_COMPATIBILITY_2_4==1)
-EWXWEXPORT(bool,wxWave_Play)(wxSound* self, bool async, bool looped )  
+EWXWEXPORT(bool,wxSound_Play)(wxSound* self, unsigned flag )  
 {
 #ifdef wxUSE_SOUND 
+  return ((wxSoundBase *) self)->Play(flag);
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(bool,wxSound_PlayCompatible)(wxSound* self, bool async, bool looped )  
+{
+#if (WXWIN_COMPATIBILITY_2_4==1) && defined(wxUSE_SOUND)
   return ((wxSoundBase *) self)->Play(async,looped);
 #else
   return false;
 #endif
 }
-#endif
 
 #else /* (wxVERSION_NUMBER >= 2500) */
 
 /*-----------------------------------------------------------------------------
   Wave
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxWave*,wxWave_Create)( wxString* fileName, bool isResource )  
+EWXWEXPORT(wxWave*,wxSound_Create)( wxString* fileName, bool isResource )  
 {
 #ifdef wxUSE_WAVE 
   return new wxWave(*fileName,isResource);
@@ -85,14 +92,14 @@ EWXWEXPORT(wxWave*,wxWave_Create)( wxString* fileName, bool isResource )
 #endif
 }
 
-EWXWEXPORT(void,wxWave_Delete)(wxWave* self)  
+EWXWEXPORT(void,wxSound_Delete)(wxWave* self)  
 {
 #ifdef wxUSE_WAVE 
   if (self) delete self;
 #endif
 }
 
-EWXWEXPORT(bool,wxWave_IsOk)(wxWave* self)  
+EWXWEXPORT(bool,wxSound_IsOk)(wxWave* self)  
 {
 #ifdef wxUSE_WAVE 
   return self->IsOk();
@@ -101,7 +108,7 @@ EWXWEXPORT(bool,wxWave_IsOk)(wxWave* self)
 #endif
 }
 
-EWXWEXPORT(bool,wxWave_Play)(wxWave* self, bool async, bool looped )  
+EWXWEXPORT(bool,wxSound_PlayCompatible)(wxWave* self, bool async, bool looped )  
 {
 #ifdef wxUSE_WAVE 
   return self->Play(async,looped);

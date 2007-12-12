@@ -3,6 +3,8 @@
 
 /* MSC: disable warning about int-to-bool conversion (just affects performance) */
 #pragma warning(disable: 4800)
+/* MSC: disable warning about using different code page (just affects performance) */
+#pragma warning(disable: 4819)
 
 /* just to ensure that intptr_t exists */
 #ifndef  _MSC_VER
@@ -11,6 +13,7 @@
 
 #include "ewxw_def.h"
 #include "wx/wx.h"
+#include "wx/apptrait.h"
 #include "wx/tabctrl.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"

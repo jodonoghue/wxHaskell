@@ -49,7 +49,6 @@ int        expEVT_COMMAND_LIST_COL_CLICK(  );
 int        expEVT_COMMAND_LIST_DELETE_ALL_ITEMS(  );
 int        expEVT_COMMAND_LIST_DELETE_ITEM(  );
 int        expEVT_COMMAND_LIST_END_LABEL_EDIT(  );
-int        expEVT_COMMAND_LIST_GET_INFO(  );
 int        expEVT_COMMAND_LIST_INSERT_ITEM(  );
 int        expEVT_COMMAND_LIST_ITEM_ACTIVATED(  );
 int        expEVT_COMMAND_LIST_ITEM_DESELECTED(  );
@@ -58,7 +57,6 @@ int        expEVT_COMMAND_LIST_ITEM_RIGHT_CLICK(  );
 int        expEVT_COMMAND_LIST_ITEM_SELECTED(  );
 int        expEVT_COMMAND_LIST_ITEM_FOCUSED(  );
 int        expEVT_COMMAND_LIST_KEY_DOWN(  );
-int        expEVT_COMMAND_LIST_SET_INFO(  );
 int        expEVT_COMMAND_MENU_SELECTED(  );
 int        expEVT_COMMAND_NOTEBOOK_PAGE_CHANGED(  );
 int        expEVT_COMMAND_NOTEBOOK_PAGE_CHANGING(  );
@@ -198,6 +196,10 @@ int        expEVT_PLOT_ZOOM_IN(  );
 int        expEVT_PLOT_ZOOM_OUT(  );
 int        expEVT_POPUP_MENU_INIT(  );
 int        expEVT_POWER(  );
+int        expEVT_POWER_SUSPENDING(  );
+int        expEVT_POWER_SUSPENDED(  );
+int        expEVT_POWER_SUSPEND_CANCEL(  );
+int        expEVT_POWER_RESUME(  );
 int        expEVT_QUERY_END_SESSION(  );
 int        expEVT_QUERY_NEW_PALETTE(  );
 int        expEVT_RIGHT_DCLICK(  );
@@ -259,7 +261,7 @@ void       wxMutexGui_Leave(  );
 /* ELJApp */
 TClassDefExtend(ELJApp,wxApp)
 void       ELJApp_Bell(  );
-void*      ELJApp_CreateLogTarget(  );
+TClass(ELJLog) ELJApp_CreateLogTarget(  );
 void       ELJApp_Dispatch(  );
 void       ELJApp_DisplaySize( TSizeOutVoid(_w,_h) );
 void       ELJApp_EnableTooltips( TBool _enable );
@@ -1351,7 +1353,6 @@ int        wxDC_GetLogicalFunction( TSelf(wxDC) _obj );
 void       wxDC_GetLogicalOrigin( TSelf(wxDC) _obj, TPointOutVoid(_x,_y) );
 void       wxDC_GetLogicalScale( TSelf(wxDC) _obj, TPointOutVoid(_x,_y) );
 int        wxDC_GetMapMode( TSelf(wxDC) _obj );
-int        wxDC_GetOptimization( TSelf(wxDC) _obj );
 void       wxDC_GetPPI( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetPen( TSelf(wxDC) _obj, TClassRef(wxPen) _ref );
 TBoolInt   wxDC_GetPixel( TSelf(wxDC) _obj, TPoint(x,y), TClass(wxColour) col );
@@ -1383,7 +1384,6 @@ void       wxDC_SetLogicalFunction( TSelf(wxDC) _obj, int function );
 void       wxDC_SetLogicalOrigin( TSelf(wxDC) _obj, TPoint(x,y) );
 void       wxDC_SetLogicalScale( TSelf(wxDC) _obj, double x, double y );
 void       wxDC_SetMapMode( TSelf(wxDC) _obj, int mode );
-void       wxDC_SetOptimization( TSelf(wxDC) _obj, int opt );
 void       wxDC_SetPalette( TSelf(wxDC) _obj, TClass(wxPalette) palette );
 void       wxDC_SetPen( TSelf(wxDC) _obj, TClass(wxPen) pen );
 void       wxDC_SetTextBackground( TSelf(wxDC) _obj, TClass(wxColour) colour );
@@ -1474,7 +1474,6 @@ int        wxDateTime_GetSecond( TSelf(wxDateTime) _obj, int tz );
 time_t     wxDateTime_GetTicks( TSelf(wxDateTime) _obj );
 int        wxDateTime_GetTimeNow(  );
 void       wxDateTime_GetValue( TSelf(wxDateTime) _obj, void* hi_long, void* lo_long );
-void       wxDateTime_GetWeek( TSelf(wxDateTime) _obj, int numWeek, int weekday, TClassRef(wxDateTime) _ref );
 void       wxDateTime_GetWeekDay( TSelf(wxDateTime) _obj, int weekday, int n, int month, int year, TClassRef(wxDateTime) _ref );
 void       wxDateTime_GetWeekDayInSameWeek( TSelf(wxDateTime) _obj, int weekday, TClassRef(wxDateTime) _ref );
 TStringLen wxDateTime_GetWeekDayName( int weekday, int flags, TStringOutVoid _buf );
@@ -1520,7 +1519,6 @@ void       wxDateTime_SetToLastMonthDay( TSelf(wxDateTime) _obj, int month, int 
 int        wxDateTime_SetToLastWeekDay( TSelf(wxDateTime) _obj, int weekday, int month, int year );
 void       wxDateTime_SetToNextWeekDay( TSelf(wxDateTime) _obj, int weekday );
 void       wxDateTime_SetToPrevWeekDay( TSelf(wxDateTime) _obj, int weekday );
-int        wxDateTime_SetToTheWeek( TSelf(wxDateTime) _obj, int numWeek, int weekday );
 int        wxDateTime_SetToWeekDay( TSelf(wxDateTime) _obj, int weekday, int n, int month, int year );
 void       wxDateTime_SetToWeekDayInSameWeek( TSelf(wxDateTime) _obj, int weekday );
 void       wxDateTime_SetYear( TSelf(wxDateTime) _obj, int year );
@@ -1825,7 +1823,6 @@ int        wxFileHistory_GetCount( TSelf(wxFileHistory) _obj );
 TStringLen wxFileHistory_GetHistoryFile( TSelf(wxFileHistory) _obj, int i, TStringOutVoid _buf );
 int        wxFileHistory_GetMaxFiles( TSelf(wxFileHistory) _obj );
 TArrayLen  wxFileHistory_GetMenus( TSelf(wxFileHistory) _obj, TArrayObjectOutVoid(wxMenu) _ref );
-int        wxFileHistory_GetNoHistoryFiles( TSelf(wxFileHistory) _obj );
 void       wxFileHistory_Load( TSelf(wxFileHistory) _obj, TClass(wxConfigBase) config );
 void       wxFileHistory_RemoveFileFromHistory( TSelf(wxFileHistory) _obj, int i );
 void       wxFileHistory_RemoveMenu( TSelf(wxFileHistory) _obj, TClass(wxMenu) menu );
@@ -2833,7 +2830,7 @@ int        wxListCtrl_GetItemCount( TSelf(wxListCtrl) _obj );
 int        wxListCtrl_GetItemData( TSelf(wxListCtrl) _obj, int item );
 TBoolInt   wxListCtrl_GetItemPosition( TSelf(wxListCtrl) _obj, int item, int*x, int* y );
 int        wxListCtrl_GetItemRect( TSelf(wxListCtrl) _obj, int item, int code, TRectOutVoid(x,y,w,h) );
-int        wxListCtrl_GetItemSpacing( TSelf(wxListCtrl) _obj, TBool isSmall );
+void       wxListCtrl_GetItemSpacing( TSelf(wxListCtrl) _obj, TBool isSmall, TSizeOutVoid(w,h) );
 int        wxListCtrl_GetItemState( TSelf(wxListCtrl) _obj, int item, int stateMask );
 TStringLen wxListCtrl_GetItemText( TSelf(wxListCtrl) _obj, int item, TStringOutVoid buf );
 int        wxListCtrl_GetNextItem( TSelf(wxListCtrl) _obj, int item, int geometry, int state );
@@ -3578,6 +3575,11 @@ void       wxPrintData_SetPrinterTranslateY( TSelf(wxPrintData) _obj, int y );
 void       wxPrintData_SetPrinterTranslation( TSelf(wxPrintData) _obj, TPoint(x,y) );
 void       wxPrintData_SetQuality( TSelf(wxPrintData) _obj, int quality );
 
+/* wxPostScriptPrintNativeData */
+TClassDefExtend(wxPostScriptPrintNativeData,wxObject)
+TClass(wxPostScriptPrintNativeData) wxPostScriptPrintNativeData_Create(  );
+void       wxPostScriptPrintNativeData_Delete( TSelf(wxPostScriptPrintNativeData) _obj );
+
 /* wxPrintDialog */
 TClassDefExtend(wxPrintDialog,wxDialog)
 TClass(wxPrintDialog) wxPrintDialog_Create( TClass(wxWindow) parent, TClass(wxPrintDialogData) data );
@@ -3609,7 +3611,6 @@ int        wxPrintDialogData_GetNoCopies( TSelf(wxPrintDialogData) _obj );
 void       wxPrintDialogData_GetPrintData( TSelf(wxPrintDialogData) _obj, TClassRef(wxPrintData) _ref );
 TBoolInt   wxPrintDialogData_GetPrintToFile( TSelf(wxPrintDialogData) _obj );
 TBoolInt   wxPrintDialogData_GetSelection( TSelf(wxPrintDialogData) _obj );
-TBoolInt   wxPrintDialogData_GetSetupDialog( TSelf(wxPrintDialogData) _obj );
 int        wxPrintDialogData_GetToPage( TSelf(wxPrintDialogData) _obj );
 void       wxPrintDialogData_SetAllPages( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 void       wxPrintDialogData_SetCollate( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
@@ -3620,7 +3621,6 @@ void       wxPrintDialogData_SetNoCopies( TSelf(wxPrintDialogData) _obj, int v )
 void       wxPrintDialogData_SetPrintData( TSelf(wxPrintDialogData) _obj, TClass(wxPrintData) printData );
 void       wxPrintDialogData_SetPrintToFile( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 void       wxPrintDialogData_SetSelection( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
-void       wxPrintDialogData_SetSetupDialog( TSelf(wxPrintDialogData) _obj, TBoolInt flag );
 void       wxPrintDialogData_SetToPage( TSelf(wxPrintDialogData) _obj, int v );
 
 /* wxPrintPreview */
@@ -4313,8 +4313,8 @@ TClassDef(wxTextOutputStream)
 /* wxTextValidator */
 TClassDefExtend(wxTextValidator,wxValidator)
 TClass(wxTextValidator) wxTextValidator_Create( int style, void* val );
-int        wxTextValidator_GetExcludeList( TSelf(wxTextValidator) _obj, void* _ref );
-int        wxTextValidator_GetIncludeList( TSelf(wxTextValidator) _obj, void* _ref );
+TArrayLen  wxTextValidator_GetExcludeList( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
+TArrayLen  wxTextValidator_GetIncludeList( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
 int        wxTextValidator_GetStyle( TSelf(wxTextValidator) _obj );
 void       wxTextValidator_OnChar( TSelf(wxTextValidator) _obj, TClass(wxEvent) event );
 void       wxTextValidator_SetExcludeList( TSelf(wxTextValidator) _obj, TClass(wxList) list, int count );
@@ -4565,8 +4565,8 @@ TClassDefExtend(wxVariantData,wxObject)
 /* wxView */
 TClassDefExtend(wxView,wxEvtHandler)
 
-/* wxWave */
-TClassDefExtend(wxWave,wxEvtHandler)
+/* wxSound */
+TClassDefExtend(wxSound,wxEvtHandler)
 
 /* wxWindow */
 TClassDefExtend(wxWindow,wxEvtHandler)

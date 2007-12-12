@@ -405,16 +405,6 @@ EWXWEXPORT(void, wxDC_SetLogicalFunction)(void* _obj, int function)
 	((wxDC*)_obj)->SetLogicalFunction(function);
 }
 	
-EWXWEXPORT(void, wxDC_SetOptimization)(void* _obj, int opt)
-{
-	((wxDC*)_obj)->SetOptimization(opt != 0);
-}
-	
-EWXWEXPORT(int, wxDC_GetOptimization)(void* _obj)
-{
-	return (int)((wxDC*)_obj)->GetOptimization();
-}
-	
 EWXWEXPORT(void, wxDC_CalcBoundingBox)(void* _obj, int x, int y)
 {
 	((wxDC*)_obj)->CalcBoundingBox((wxCoord)x, (wxCoord)y);

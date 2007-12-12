@@ -3,6 +3,11 @@
 -----------------------------------------------------------------------------*/
 TClassDef(wxManagedPtr)
 
+#if defined (__WXMAC__) && defined (EXPORT)
+#undef EXPORT
+#define EXPORT extern "C"
+#endif
+
 void* wxManagedPtr_GetPtr( TSelf(wxManagedPtr) self );
 void  wxManagedPtr_NoFinalize( TSelf(wxManagedPtr) self );
 void  wxManagedPtr_Finalize( TSelf(wxManagedPtr) self );

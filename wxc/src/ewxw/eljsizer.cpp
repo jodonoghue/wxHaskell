@@ -81,7 +81,11 @@ EWXWEXPORT(void, wxSizerItem_SetInitSize)(void* _obj, int x, int y)
 	
 EWXWEXPORT(void, wxSizerItem_SetOption)(void* _obj, int option)
 {
+#if (wxVERSION_NUMBER <= 2600)
 	((wxSizerItem*)_obj)->SetOption(option);
+#else
+	((wxSizerItem*)_obj)->SetProportion(option);
+#endif
 }
 	
 EWXWEXPORT(void, wxSizerItem_SetFlag)(void* _obj, int flag)
@@ -116,7 +120,11 @@ EWXWEXPORT(void, wxSizerItem_SetSizer)(void* _obj, void* sizer)
 	
 EWXWEXPORT(int, wxSizerItem_GetOption)(void* _obj)
 {
+#if (wxVERSION_NUMBER < 2600)
 	return ((wxSizerItem*)_obj)->GetOption();
+#else
+	return ((wxSizerItem*)_obj)->GetProportion();
+#endif
 }
 	
 EWXWEXPORT(int, wxSizerItem_GetFlag)(void* _obj)
@@ -188,7 +196,11 @@ EWXWEXPORT(void, wxSizer_Prepend)(void* _obj, int width, int height, int option,
 	
 EWXWEXPORT(int, wxSizer_RemoveWindow)(void* _obj, void* window)
 {
+#if (wxVERSION_NUMBER < 2600)
 	return (int)((wxSizer*)_obj)->Remove((wxWindow*) window);
+#else
+	return (int)((wxSizer*)_obj)->Detach((wxWindow*) window);
+#endif
 }
 	
 EWXWEXPORT(int, wxSizer_RemoveSizer)(void* _obj, void* sizer)
@@ -274,13 +286,21 @@ EWXWEXPORT(int, wxSizer_GetChildren)(void* _obj, void* _res, int _cnt)
 	if (_res && (unsigned int)_cnt == ((wxSizer*)_obj)->GetChildren().GetCount())
 	{
 		int i = 0;
+#if (wxVERSION_NUMBER < 2600)
 		wxNode* node = NULL;
 		wxList list = ((wxSizer*)_obj)->GetChildren();
 	
 		
 		while ((node = list.Item(i++)))
 			((void**)_res)[i] = (void*)node->GetData();
-
+#else
+		wxSizerItemList::compatibility_iterator node = ((wxSizer*)_obj)->GetChildren().GetFirst();
+		while (node)
+		{
+			((void**)_res)[i] = node->GetData();
+			++i;
+		}
+#endif
 		return i;
 	}
 	else
@@ -432,24 +452,36 @@ EWXWEXPORT(void*, wxStaticBoxSizer_GetStaticBox)(void* _obj)
 	
 EWXWEXPORT(void*, wxNotebookSizer_Create)(void* nb)
 {
+#if (wxVERSION_NUMBER < 2600)
 	return (void*) new wxNotebookSizer((wxNotebook*)nb);
+#else
+	return NULL;
+#endif
 }
 	
 EWXWEXPORT(void, wxNotebookSizer_RecalcSizes)(void* _obj)
 {
+#if (wxVERSION_NUMBER < 2600)
 	((wxNotebookSizer*)_obj)->RecalcSizes();
+#endif
 }
 	
 EWXWEXPORT(void, wxNotebookSizer_CalcMin)(void* _obj, void* _w, void* _h)
 {
+#if (wxVERSION_NUMBER < 2600)
 	wxSize res = ((wxNotebookSizer*)_obj)->CalcMin();
 	(*(int*)_w) = res.GetWidth();
 	(*(int*)_h) = res.GetHeight();
+#endif
 }
 	
 EWXWEXPORT(void*, wxNotebookSizer_GetNotebook)(void* _obj)
 {
+#if (wxVERSION_NUMBER < 2600)
 	return (void*)((wxNotebookSizer*)_obj)->GetNotebook();
+#else
+	return NULL;
+#endif
 }
 	
 }

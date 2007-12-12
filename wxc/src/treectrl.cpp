@@ -64,9 +64,23 @@ EWXWEXPORT(wxTreeItemId*, wxTreeItemId_Clone) (wxTreeItemId* _obj)
     return clone;
 }
 
+// FIXME: wxHaskell uses this function in Graphics.UI.WXCore.WxcTypes.withTreeItemIdPtr
+// to make wxTreeItemId.
+//
+// But wxWidgets' document says: wxTreemItemIds are not meant to be constructed
+// explicitly by the user; they are returned by the wxTreeCtrl functions instead.
+//
+// http://www.wxwindows.org/manuals/2.8/wx_wxtreeitemid.html#wxtreeitemid
+//
+// So we must remove this function and replace treeItemId implementation in the
+// funture.
 EWXWEXPORT(wxTreeItemId*, wxTreeItemId_CreateFromValue) (int value)
 {
+#if wxVERSION_NUMBER < 2800
     return new wxTreeItemId( value );
+#else
+    return new wxTreeItemId( reinterpret_cast<void*>(value) );
+#endif
 }
 
 EWXWEXPORT(int, wxTreeItemId_GetValue) (wxTreeItemId* _obj)
@@ -308,7 +322,7 @@ EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, intptr_t* selections)
             /*
 			*(((wxTreeItemId**)selections)[i]) = sel[i];
             */
-	    #if wxCHECK_VERSION(2,5,0)
+	    #if wxCHECK_VERSION(2,5,0) && !wxCHECK_VERSION(2,8,0)
             selections[i] = (intptr_t)(((wxTreeItemId*)sel[i])->m_pItem);
             #else
 	    selections[i] = (intptr_t)(sel[i].m_pItem);
@@ -329,12 +343,20 @@ EWXWEXPORT(void, wxTreeCtrl_GetParent)(void* _obj, void* item, void* _item)
 	
 EWXWEXPORT(void, wxTreeCtrl_GetFirstChild)(void* _obj, void* item, void* cookie, void* _item)
 {
+#if wxVERSION_NUMBER < 2600
 	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetFirstChild(*((wxTreeItemId*)item), *((long*)cookie));
+#else
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetFirstChild(*((wxTreeItemId*)item), cookie);
+#endif
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_GetNextChild)(void* _obj, void* item, void* cookie, void* _item)
 {
+#if wxVERSION_NUMBER < 2600
 	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextChild(*((wxTreeItemId*)item), *((long*)cookie));
+#else
+	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextChild(*((wxTreeItemId*)item), cookie);
+#endif
 }
 	
 EWXWEXPORT(void, wxTreeCtrl_GetLastChild)(void* _obj, void* item, void* _item)

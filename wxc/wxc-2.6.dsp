@@ -126,7 +126,7 @@ SOURCE=.\include\mediactrl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\wave.h
+SOURCE=.\include\sound.h
 # End Source File
 # Begin Source File
 
@@ -238,7 +238,7 @@ SOURCE=.\src\treectrl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\wave.cpp
+SOURCE=.\src\sound.cpp
 # End Source File
 # Begin Source File
 

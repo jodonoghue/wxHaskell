@@ -65,12 +65,11 @@ EWXWEXPORT(int,wxFileHistory_GetHistoryFile)(void* _obj, int i, void* _buf)
 	
 EWXWEXPORT(int,wxFileHistory_GetCount)(void* _obj)
 {
-	return ((wxFileHistory*)_obj)->GetCount();
-}
-	
-EWXWEXPORT(int,wxFileHistory_GetNoHistoryFiles)(void* _obj)
-{
+#if (wxVERSION_NUMBER <= 2600)
 	return ((wxFileHistory*)_obj)->GetNoHistoryFiles();
+#else
+	return ((wxFileHistory*)_obj)->GetCount();
+#endif
 }
 	
 EWXWEXPORT(int,wxFileHistory_GetMenus)(void* _obj, void* _ref)

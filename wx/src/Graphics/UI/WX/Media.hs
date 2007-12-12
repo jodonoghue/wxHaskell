@@ -17,7 +17,7 @@ module Graphics.UI.WX.Media
               Media(..)
             
               -- * Sound
-            , Sound, sound, playLoop, playWait
+            , Wave, sound, playLoop, playWait
               -- * Images
             , image, imageCreateFromFile, imageCreateFromPixels, imageGetPixels
             , imageCreateFromPixelArray, imageGetPixelArray
@@ -86,25 +86,33 @@ class Media w where
 --------------------------------------------------------------------}
 -- | Return a managed sound object. The file path points to 
 -- a valid sound file, normally a @.wav@.
-sound :: FilePath -> Wave ()
+sound :: FilePath -> Sound ()
 sound fname 
-  = unsafePerformIO $ waveCreate fname False
+  = unsafePerformIO $ soundCreate fname False
 
--- | Define Sound type synonym for people who are familiar with
--- wxWidgets 2.6.x or higher name.
-type Sound a = Wave a
+{-# DEPRECATED Wave "Use Sound instead" #-}
+-- | Define Wave type synonym for people who are familiar with
+-- wxWidgets 2.4.x or lower name.
+type Wave a = Sound a
 
 instance Media (Sound a) where
-  play sound = unitIO (wavePlay sound True False)
+  play sound =
+    if (div wxVersion 100) == 24
+      then unitIO (soundPlayCompatible sound True False)
+      else unitIO (soundPlay sound wxSOUND_ASYNC)
   stop = undefined
 
 -- | Play a sound fragment repeatedly (and asynchronously).
-playLoop :: Wave a -> IO ()
-playLoop wave
-  = unitIO (wavePlay wave True True)
+playLoop :: Sound a -> IO ()
+playLoop sound
+  = if (div wxVersion 100) == 24
+      then unitIO (soundPlayCompatible sound True True)
+      else unitIO (soundPlay sound $ wxSOUND_ASYNC .+. wxSOUND_LOOP)
 
 -- | Play a sound fragment synchronously (i.e. wait till completion).
-playWait :: Wave a -> IO ()
-playWait wave
-  = unitIO (wavePlay wave False False)
+playWait :: Sound a -> IO ()
+playWait sound
+  = if (div wxVersion 100) == 24
+      then unitIO (soundPlayCompatible sound False False)
+      else unitIO (soundPlay sound wxSOUND_SYNC)
 

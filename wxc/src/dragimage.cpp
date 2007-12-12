@@ -31,19 +31,19 @@ EWXWEXPORT(wxDragImage*,wxDragListItem)( const wxListCtrl* listCtrl, long id )
   return new wxDragImage(*listCtrl, id);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragImage_Create)( const wxCursor* cursor, int x, int y )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragImage_Create)( const wxCursor* cursor )
 {
-  return new wxGenericDragImage(*cursor, wxPoint(x, y));
+  return new wxGenericDragImage(*cursor);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragIcon)( const wxIcon* icon, int x, int y )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragIcon)( const wxIcon* icon )
 {
-  return new wxGenericDragImage(*icon, wxNullCursor, wxPoint(x, y));
+  return new wxGenericDragImage(*icon, wxNullCursor);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragString)( const wxString* text, int x, int y )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragString)( const wxString* text )
 {
-  return new wxGenericDragImage(*text, wxNullCursor, wxPoint(x, y));
+  return new wxGenericDragImage(*text, wxNullCursor);
 }
 
 EWXWEXPORT(wxGenericDragImage*,wxGenericDragTreeItem)( const wxTreeCtrl* treeCtrl, wxTreeItemId* id )

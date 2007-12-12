@@ -84,7 +84,7 @@ menuBar
            mapM_ (evtHandlerSetAndResetMenuCommands frame) menus
            -- work around menu bug in wxMac 2.5.1
            vis <- windowIsShown frame
-           if (vis && wxToolkit == WxMac && (div wxVersion 100) == 25)
+           if (vis && wxToolkit == WxMac && (div wxVersion 100) >= 25)
             then do windowHide frame
                     windowShow frame
                     return ()

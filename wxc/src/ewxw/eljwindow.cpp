@@ -658,7 +658,11 @@ EWXWEXPORT(int, wxWindow_Reparent)(void* _obj, void* _par)
 
 EWXWEXPORT(void, wxWindow_GetAdjustedBestSize)(void* _obj, void* _w, void* _h)
 {
+#if (wxVERSION_NUMBER < 2800)
 	wxSize sz = ((wxWindow*)_obj)->GetAdjustedBestSize();
+#else
+	wxSize sz = ((wxWindow*)_obj)->GetEffectiveMinSize();
+#endif
         *((int*)_w) = sz.GetWidth();
         *((int*)_h) = sz.GetHeight();
 }

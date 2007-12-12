@@ -320,9 +320,17 @@ EWXWEXPORT(int, wxListCtrl_GetColumnCount)(void* _obj)
 	return ((wxListCtrl*)_obj)->GetColumnCount();
 }
 	
-EWXWEXPORT(int, wxListCtrl_GetItemSpacing)(void* _obj, int isSmall)
+EWXWEXPORT(void, wxListCtrl_GetItemSpacing)(void* _obj, int isSmall, int* h, int* w)
 {
-	return ((wxListCtrl*)_obj)->GetItemSpacing(isSmall != 0);
+#if (wxVERSION_NUMBER <= 2600)
+	int x = ((wxListCtrl*)_obj)->GetItemSpacing(isSmall != 0);
+        *h = x;
+        *w = x;
+#else
+	wxSize res = ((wxListCtrl*)_obj)->GetItemSpacing();
+	*h = res.GetHeight();
+	*w = res.GetWidth();
+#endif
 }
 	
 EWXWEXPORT(int, wxListCtrl_GetSelectedItemCount)(void* _obj)

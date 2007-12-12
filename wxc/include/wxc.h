@@ -22,7 +22,7 @@
 #include "db.h"
 #include "dragimage.h"
 #include "glcanvas.h"
-#include "wave.h"
+#include "sound.h"
 #include "managed.h"
 #include "mediactrl.h"
 #include "previewframe.h"

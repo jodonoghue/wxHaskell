@@ -1383,8 +1383,10 @@
     // Get the colour of the background of the line containing the caret.
     wxColour GetCaretLineBack();
 
+    /* SetCaretLineBack is changed to SetCaretLineBackground.
     // Set the colour of the background of the line containing the caret.
     void SetCaretLineBack(const wxColour& back);
+    */
 
     // Set a style to be changeable or not (read only).
     // Experimental feature, currently buggy.

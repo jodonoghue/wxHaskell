@@ -221,16 +221,6 @@ EWXWEXPORT(void, wxDateTime_GetLastWeekDay)(void* _obj, int weekday, int month, 
 	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetLastWeekDay((wxDateTime::WeekDay)weekday, (wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(int, wxDateTime_SetToTheWeek)(void* _obj, int numWeek, int weekday)
-{
-	return (int)((wxDateTime*)_obj)->SetToTheWeek((wxDateTime::wxDateTime_t)numWeek, (wxDateTime::WeekDay)weekday);
-}
-	
-EWXWEXPORT(void, wxDateTime_GetWeek)(void* _obj, int numWeek, int weekday, void* _ref)
-{
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetWeek((wxDateTime::wxDateTime_t)numWeek, (wxDateTime::WeekDay)weekday);
-}
-	
 EWXWEXPORT(void, wxDateTime_SetToLastMonthDay)(void* _obj, int month, int year)
 {
 	((wxDateTime*)_obj)->SetToLastMonthDay((wxDateTime::Month)month, year);

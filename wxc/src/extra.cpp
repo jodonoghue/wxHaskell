@@ -7,6 +7,11 @@
 #include "wx/fileconf.h"
 #include "wx/spinctrl.h"
 
+#if (wxVERSION_NUMBER >= 2800)
+#include <wx/numdlg.h>
+#include <wx/power.h>
+#endif
+
 /*-----------------------------------------------------------------------------
   new events
 -----------------------------------------------------------------------------*/
@@ -321,7 +326,11 @@ private:
 public:
     wxcHtmlWindow() : wxHtmlWindow() {};   wxcHtmlWindow(wxWindow *, wxWindowID id, const wxPoint&, const wxSize& size, long style, const wxString& );
 
+#if (wxVERSION_NUMBER <= 2800)
    void OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event);
+#else
+   bool OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event);
+#endif
    void OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y);
    void OnLinkClicked(const wxHtmlLinkInfo& link);
    wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type,const wxString& url, wxString *redirect);
@@ -357,10 +366,18 @@ wxcHtmlWindow::wxcHtmlWindow(wxWindow * prt, wxWindowID id, const wxPoint& pt, c
 : wxHtmlWindow( prt, id, pt, size, style, title )
 {}
 
+#if (wxVERSION_NUMBER < 2800)
 void wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event)
+#else
+bool wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event)
+#endif
 {
     wxHtmlLinkInfo* linkPtr;
+#if (wxVERSION_NUMBER < 2800)
     if (cell==NULL) return;
+#else
+    if (cell==NULL) return 0;
+#endif
 
     linkPtr = cell->GetLink(x, y);
     if (linkPtr != NULL)
@@ -378,6 +395,9 @@ void wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const 
       wxcHtmlEvent htmlEvent( wxEVT_HTML_CELL_CLICKED, this->GetId(), &event, cell, NULL, wxPoint(x,y) );
       this->ProcessEvent( htmlEvent );
     }
+#if (wxVERSION_NUMBER >= 2800)
+    return 1;
+#endif
 }
 
 void wxcHtmlWindow::OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y)
@@ -1201,6 +1221,9 @@ static const wxChar* useDefs[] = {
 
 
 static const wxChar* hasDefs[] = {
+#ifdef wxHAS_POWER_EVENTS
+  wxT("POWER_EVENTS"),
+#endif
 #ifdef wxHAS_RADIO_MENU_ITEMS
   wxT("RADIO_MENU_ITEMS"),
 #endif
@@ -1916,7 +1939,7 @@ EWXWEXPORT(int, wxGetTextFromUser)(wxChar* message, wxChar* caption, wxChar* def
 
 EWXWEXPORT(long,wxGetNumberFromUser)( wxChar* message, wxChar* prompt, wxChar* caption, long value, long min, long max, wxWindow* parent, int x, int y )
 {
-  return wxGetNumberFromUser(message, prompt, caption, value, min , max, parent, wxPoint(x,y) );
+  return wxGetNumberFromUser(wxString(message), wxString(prompt), wxString(caption), value, min, max, parent, wxPoint(x, y) );
 }
 
 EWXWEXPORT(void, wxcBell)(void)

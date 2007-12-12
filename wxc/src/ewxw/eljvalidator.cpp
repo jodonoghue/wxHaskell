@@ -65,42 +65,70 @@ EWXWEXPORT(void, wxTextValidator_SetStyle)(void* _obj, int style)
 	
 EWXWEXPORT(void, wxTextValidator_SetIncludeList)(void* _obj, void* list, int count)
 {
+#if (wxVERSION_NUMBER <= 2600)
 	wxStringList str;
 	
 	for (int i = 0; i < count; i++)
 		str.Add(((wxChar**)list)[i]);
 		
 	((wxTextValidator*)_obj)->SetIncludeList(str);
+#else
+	((wxTextValidator*)_obj)->SetIncludes((const wxArrayString&)list);
+#endif
 }
 	
 EWXWEXPORT(int, wxTextValidator_GetIncludeList)(void* _obj, void* _ref)
 {
+#if (wxVERSION_NUMBER <= 2600)
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetIncludeList().GetCount(); i++)
 			((const wxChar**)_ref)[i] = wxStrdup(((wxTextValidator*)_obj)->GetIncludeList().Item(i)->GetData());
 	}
 	return ((wxTextValidator*)_obj)->GetIncludeList().GetCount();
+#else
+	wxArrayString arr = ((wxTextValidator*)_obj)->GetIncludes();
+	if (_ref)
+	{
+		for (unsigned int i = 0; i < arr.GetCount(); i++)
+			((const wxChar**)_ref)[i] = wxStrdup (arr.Item(i).c_str());
+	}
+	return arr.GetCount();
+#endif
 }
 	
 EWXWEXPORT(void, wxTextValidator_SetExcludeList)(void* _obj, void* list, int count)
 {
+#if (wxVERSION_NUMBER <= 2600)
 	wxStringList str;
 	
 	for (int i = 0; i < count; i++)
 		str.Add(((wxChar**)list)[i]);
 		
 	((wxTextValidator*)_obj)->SetExcludeList(str);
+#else
+	((wxTextValidator*)_obj)->SetExcludes((const wxArrayString&)list);
+#endif
 }
 	
 EWXWEXPORT(int, wxTextValidator_GetExcludeList)(void* _obj, void* _ref)
 {
+#if (wxVERSION_NUMBER <= 2600)
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetExcludeList().GetCount(); i++)
 			((const wxChar**)_ref)[i] = ((wxTextValidator*)_obj)->GetExcludeList().Item(i)->GetData();
 	}
 	return ((wxTextValidator*)_obj)->GetExcludeList().GetCount();
+#else
+	wxArrayString arr = ((wxTextValidator*)_obj)->GetExcludes();
+	if (_ref)
+	{
+		for (unsigned int i = 0; i < arr.GetCount(); i++)
+			((const wxChar**)_ref)[i] = wxStrdup (arr.Item(i).c_str());
+	}
+	return arr.GetCount();
+#endif
 }
 	
 EWXWEXPORT(void, wxTextValidator_OnChar)(void* _obj, void* event)

@@ -40,7 +40,29 @@ EWXWEXPORT(void, wxPalette_Assign)(void* _obj, void* palette)
 
 EWXWEXPORT(int, wxPalette_IsEqual)(void* _obj, void* palette)
 {
+#if (wxVERSION_NUMBER <= 2800)
 	return (int)(*((wxPalette*)_obj) == *((wxPalette*)palette));
+#else
+	wxPalette* pal1 = (wxPalette *)_obj;
+	wxPalette* pal2 = (wxPalette *)palette;
+	if (pal1->GetColoursCount() == pal2->GetColoursCount()){
+		bool equal = true;
+		unsigned char red1 = 0;
+		unsigned char red2 = 0;
+		unsigned char green1 = 0;
+		unsigned char green2 = 0;
+		unsigned char blue1 = 0;
+		unsigned char blue2 = 0;
+		for(int x = 0; x<(pal1->GetColoursCount()); x++){
+			pal1->GetRGB(x, &red1, &green1, &blue1);
+			pal2->GetRGB(x, &red2, &green2, &blue2);
+			equal = equal && (red1==red2 && green1==green2 && blue1==blue2); 
+		}
+		return (int)equal;
+	} else {
+		return 0;
+	}
+#endif
 }
 
 }

@@ -32,16 +32,32 @@ EWXWEXPORT(void*, wxStyledTextCtrl_Create) (void* _prt, int _id, wxChar* _txt, i
     return false;
 #endif
   }
-  EWXWEXPORT(void*, wxStyledTextCtrl_GetCaretLineBack) (void* _obj)
+  EWXWEXPORT(void*, wxStyledTextCtrl_GetCaretLineBackground) (void* _obj)
   {
 #ifdef wxUSE_STC
+#if (wxVERSION_NUMBER < 2800)
     wxColour c = ((wxStyledTextCtrl*) _obj)->GetCaretLineBack();
+#else
+    wxColour c = ((wxStyledTextCtrl*) _obj)->GetCaretLineBackground();
+#endif
     wxColour* cc = new wxColour(c);
     return cc;
 #else
     return false;
 #endif
   }
+EWXWEXPORT(void, wxStyledTextCtrl_SetCaretLineBackground)(void* _obj, int back_r, int back_g, int back_b)
+{
+#ifdef wxUSE_STC
+#if (wxVERSION_NUMBER < 2800)
+   ((wxStyledTextCtrl*) _obj)->SetCaretLineBack(wxColour(back_r,back_g,back_b));
+#else
+    /* SetCaretLineBack is changed name to SetCaretLineBackground.
+       So I avoid to use stc_gen.cpp for backward compatibility. */
+   ((wxStyledTextCtrl*) _obj)->SetCaretLineBackground(wxColour(back_r,back_g,back_b));
+#endif
+#endif
+}
   EWXWEXPORT(void*, wxStyledTextCtrl_GetCaretForeground) (void* _obj)
   {
 #ifdef wxUSE_STC

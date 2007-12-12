@@ -379,7 +379,12 @@ EWXWEXPORT(int, ELJApp_GetExitOnFrameDelete)()
 
 EWXWEXPORT(void*, ELJApp_CreateLogTarget)()
 {
+#if wxVERSION_NUMBER <= 2600
         return wxGetApp().CreateLogTarget();
+#else
+        wxAppTraits* appTraits = wxGetApp().GetTraits();
+        return appTraits->CreateLogTarget();
+#endif
 }
 
 /*
@@ -536,7 +541,11 @@ EWXWEXPORT(void, ELJApp_Sleep)(int _scs)
 
 EWXWEXPORT(void, ELJApp_USleep)(int _mscs)
 {
+#if (wxVERSION_NUMBER < 2600)
         wxUsleep(_mscs);
+#else
+        wxMilliSleep(_mscs);
+#endif
 }
 
 EWXWEXPORT(int,ELJApp_IsTerminating)()

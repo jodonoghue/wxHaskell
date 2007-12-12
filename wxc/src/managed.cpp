@@ -207,6 +207,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromIcon)(wxIcon* ptr)
 -----------------------------------------------------------------------------*/
 /* defined as macro to type without casts ... sigh */
 /* use indirection array to let wx properly initialize the object pointers */
+#if (wxVERSION_NUMBER < 2800)
 #define IsStatic(obj,statics) \
   { \
     int i; \
@@ -217,10 +218,23 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromIcon)(wxIcon* ptr)
     }  \
     return false; \
   }
+#else
+#define IsStatic(obj,statics) \
+  { \
+    int i; \
+    if (obj==NULL) return true; \
+    for( i = 0; statics[i] != NULL; i++ ) \
+    { \
+      if (statics[i] == obj) return true; \
+    }  \
+    return false; \
+  }
+#endif
 
 
 static wxBrush* wxNULL_BRUSH = &wxNullBrush;
 
+#if (wxVERSION_NUMBER < 2800)
 static wxBrush** staticsBrush[] =
     {&wxNULL_BRUSH
     ,&wxBLUE_BRUSH
@@ -235,7 +249,22 @@ static wxBrush** staticsBrush[] =
     ,&wxRED_BRUSH
     ,NULL
     };
-  
+#else
+  static const wxBrush* staticsBrush[] =
+    {wxNULL_BRUSH
+    ,wxBLUE_BRUSH
+    ,wxGREEN_BRUSH
+    ,wxWHITE_BRUSH
+    ,wxBLACK_BRUSH
+    ,wxGREY_BRUSH
+    ,wxMEDIUM_GREY_BRUSH
+    ,wxLIGHT_GREY_BRUSH
+    ,wxTRANSPARENT_BRUSH
+    ,wxCYAN_BRUSH
+    ,wxRED_BRUSH
+    ,NULL
+    };
+#endif
 
 EWXWEXPORT(bool,wxBrush_IsStatic)(wxBrush* obj)
 {
@@ -264,6 +293,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromBrush)(wxBrush* ptr)
 -----------------------------------------------------------------------------*/
 static wxColour* wxNULL_COLOUR = &wxNullColour;
 
+#if (wxVERSION_NUMBER < 2800)
 static wxColour** staticsColour[] = 
     {&wxNULL_COLOUR
     ,&wxBLACK
@@ -275,6 +305,19 @@ static wxColour** staticsColour[] =
     ,&wxLIGHT_GREY
     ,NULL
     };
+#else
+static const wxColour* staticsColour[] = 
+    {wxNULL_COLOUR
+    ,wxBLACK
+    ,wxWHITE
+    ,wxRED
+    ,wxBLUE
+    ,wxGREEN
+    ,wxCYAN
+    ,wxLIGHT_GREY
+    ,NULL
+    };
+#endif
 
 EWXWEXPORT(bool,wxColour_IsStatic)(wxColour* obj)
 {
@@ -304,6 +347,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromColour)(wxColour* ptr)
 -----------------------------------------------------------------------------*/
 static wxCursor* wxNULL_CURSOR = &wxNullCursor;
 
+#if (wxVERSION_NUMBER < 2800)
 static wxCursor** staticsCursor[] = 
     {&wxNULL_CURSOR
     ,&wxSTANDARD_CURSOR
@@ -311,6 +355,15 @@ static wxCursor** staticsCursor[] =
     ,&wxCROSS_CURSOR
     ,NULL
     };
+#else
+static const wxCursor* staticsCursor[] = 
+    {wxNULL_CURSOR
+    ,wxSTANDARD_CURSOR
+    ,wxHOURGLASS_CURSOR
+    ,wxCROSS_CURSOR
+    ,NULL
+    };
+#endif
   
 
 EWXWEXPORT(bool,wxCursor_IsStatic)(wxCursor* obj)
@@ -341,6 +394,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromCursor)(wxCursor* ptr)
 -----------------------------------------------------------------------------*/
 static wxFont* wxNULL_FONT  = &wxNullFont;
 
+#if (wxVERSION_NUMBER < 2800)
 static wxFont** staticsFont[] = 
     {&wxNULL_FONT
     ,&wxNORMAL_FONT
@@ -349,6 +403,16 @@ static wxFont** staticsFont[] =
     ,&wxSWISS_FONT
     ,NULL
     };
+#else
+static const wxFont* staticsFont[] = 
+    {wxNULL_FONT
+    ,wxNORMAL_FONT
+    ,wxSMALL_FONT
+    ,wxITALIC_FONT
+    ,wxSWISS_FONT
+    ,NULL
+    };
+#endif
 
 
 EWXWEXPORT(bool,wxFont_IsStatic)(wxFont* obj)
@@ -379,6 +443,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromFont)(wxFont* ptr)
 -----------------------------------------------------------------------------*/
 static wxPen* wxNULL_PEN = &wxNullPen;
 
+#if (wxVERSION_NUMBER < 2800)
 static wxPen** staticsPen[] = 
     {&wxNULL_PEN
     ,&wxRED_PEN
@@ -393,6 +458,22 @@ static wxPen** staticsPen[] =
     ,&wxLIGHT_GREY_PEN
     ,NULL
     };
+#else
+static const wxPen* staticsPen[] = 
+    {wxNULL_PEN
+    ,wxRED_PEN
+    ,wxCYAN_PEN
+    ,wxGREEN_PEN
+    ,wxBLACK_PEN
+    ,wxWHITE_PEN
+    ,wxTRANSPARENT_PEN
+    ,wxBLACK_DASHED_PEN
+    ,wxGREY_PEN
+    ,wxMEDIUM_GREY_PEN
+    ,wxLIGHT_GREY_PEN
+    ,NULL
+    };
+#endif
 
 EWXWEXPORT(bool,wxPen_IsStatic)(wxPen* obj)
 {

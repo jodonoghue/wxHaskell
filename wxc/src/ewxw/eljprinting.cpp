@@ -1,5 +1,13 @@
 #include "wrapper.h"
 
+#if defined(wxUSE_POSTSCRIPT) && (wxUSE_POSTSCRIPT==0)
+# undef wxUSE_POSTSCRIPT
+#endif
+
+#ifdef wxUSE_POSTSCRIPT
+#include "wx/generic/prntdlgg.h"
+#endif
+
 extern "C"
 {
 
@@ -313,6 +321,22 @@ EWXWEXPORT(void, wxPrintData_Delete)(void* _obj)
     delete (wxPrintData*)_obj;
 }
 
+EWXWEXPORT(void*, wxPostScriptPrintNativeData_Create)()
+{
+#ifdef wxUSE_POSTSCRIPT
+	return (void*) new wxPostScriptPrintNativeData();
+#else
+	return NULL;
+#endif
+}
+
+EWXWEXPORT(void, wxPostScriptPrintNativeData_Delete)(void* _obj)
+{
+#ifdef wxUSE_POSTSCRIPT
+    delete (wxPostScriptPrintNativeData*)_obj;
+#endif
+}
+
 EWXWEXPORT(int, wxPrintData_GetNoCopies)(void* _obj)
 {
 	return ((wxPrintData*)_obj)->GetNoCopies();
@@ -409,23 +433,47 @@ EWXWEXPORT(void, wxPrintData_SetQuality)(void* _obj, int quality)
 	
 EWXWEXPORT(int, wxPrintData_GetPrinterCommand)(void* _obj, void* _ref)
 {
+#if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
+#ifdef wxUSE_POSTSCRIPT
+	wxString tmp = ((wxPostScriptPrintNativeData*)_obj)->GetPrinterCommand();
+#else
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterCommand();
+#endif
 	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPrinterOptions)(void* _obj, void* _ref)
 {
+#if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
+#ifdef wxUSE_POSTSCRIPT
+	wxString tmp = ((wxPostScriptPrintNativeData*)_obj)->GetPrinterOptions();
+#else
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterOptions();
+#endif
 	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPreviewCommand)(void* _obj, void* _ref)
 {
+#if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
+#ifdef wxUSE_POSTSCRIPT
+	wxString tmp = ((wxPostScriptPrintNativeData*)_obj)->GetPreviewCommand();
+#else
 	wxString tmp = ((wxPrintData*)_obj)->GetPreviewCommand();
+#endif
 	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetFilename)(void* _obj, void* _ref)
@@ -437,29 +485,61 @@ EWXWEXPORT(int, wxPrintData_GetFilename)(void* _obj, void* _ref)
 	
 EWXWEXPORT(int, wxPrintData_GetFontMetricPath)(void* _obj, void* _ref)
 {
+#if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
+#ifdef wxUSE_POSTSCRIPT
+	wxString tmp = ((wxPostScriptPrintNativeData*)_obj)->GetFontMetricPath();
+#else
 	wxString tmp = ((wxPrintData*)_obj)->GetFontMetricPath();
+#endif
 	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
 	return tmp.Length();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(double, wxPrintData_GetPrinterScaleX)(void* _obj)
 {
+#ifdef wxUSE_POSTSCRIPT
+	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterScaleX();
+#elif wxVERSION_NUMBER < 2600
 	return ((wxPrintData*)_obj)->GetPrinterScaleX();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(double, wxPrintData_GetPrinterScaleY)(void* _obj)
 {
+#ifdef wxUSE_POSTSCRIPT
+	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterScaleY();
+#elif wxVERSION_NUMBER < 2600
 	return ((wxPrintData*)_obj)->GetPrinterScaleY();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPrinterTranslateX)(void* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetPrinterTranslateX();
+#ifdef wxUSE_POSTSCRIPT
+	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterTranslateX();
+#elif wxVERSION_NUMBER < 2600
+	return ((wxPrintData*)_obj)->GetPrinterTranslateX();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPrinterTranslateY)(void* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetPrinterTranslateY();
+#ifdef wxUSE_POSTSCRIPT
+	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterTranslateY();
+#elif wxVERSION_NUMBER < 2600
+	return ((wxPrintData*)_obj)->GetPrinterTranslateY();
+#else
+	return false;
+#endif
 }
 	
 EWXWEXPORT(int, wxPrintData_GetPrintMode)(void* _obj)
@@ -469,17 +549,29 @@ EWXWEXPORT(int, wxPrintData_GetPrintMode)(void* _obj)
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterCommand)(void* _obj, void* command)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterCommand((wxChar*)command);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterCommand((wxChar*)command);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterOptions)(void* _obj, void* options)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterOptions((wxChar*)options);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterOptions((wxChar*)options);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPreviewCommand)(void* _obj, void* command)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPreviewCommand((wxChar*)command);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPreviewCommand((wxChar*)command);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetFilename)(void* _obj, void* filename)
@@ -489,37 +581,65 @@ EWXWEXPORT(void, wxPrintData_SetFilename)(void* _obj, void* filename)
 	
 EWXWEXPORT(void, wxPrintData_SetFontMetricPath)(void* _obj, void* path)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetFontMetricPath((wxChar*)path);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetFontMetricPath((wxChar*)path);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterScaleX)(void* _obj, double x)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaleX(x);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterScaleX(x);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterScaleY)(void* _obj, double y)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaleY(y);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterScaleY(y);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterScaling)(void* _obj, double x, double y)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaling(x, y);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterScaling(x, y);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterTranslateX)(void* _obj, int x)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslateX((int)x);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterTranslateX((int)x);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterTranslateY)(void* _obj, int y)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslateY((int)y);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterTranslateY((long)y);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrinterTranslation)(void* _obj, int x, int y)
 {
+#ifdef wxUSE_POSTSCRIPT
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslation((long)x, (long)y);
+#elif wxVERSION_NUMBER < 2600
 	((wxPrintData*)_obj)->SetPrinterTranslation((long)x, (long)y);
+#endif
 }
 	
 EWXWEXPORT(void, wxPrintData_SetPrintMode)(void* _obj, int printMode)
@@ -591,12 +711,7 @@ EWXWEXPORT(int, wxPrintDialogData_GetPrintToFile)(void* _obj)
 {
 	return (int)((wxPrintDialogData*)_obj)->GetPrintToFile();
 }
-	
-EWXWEXPORT(int, wxPrintDialogData_GetSetupDialog)(void* _obj)
-{
-	return (int)((wxPrintDialogData*)_obj)->GetSetupDialog();
-}
-	
+
 EWXWEXPORT(void, wxPrintDialogData_SetFromPage)(void* _obj, int v)
 {
 	((wxPrintDialogData*)_obj)->SetFromPage(v);
@@ -641,12 +756,7 @@ EWXWEXPORT(void, wxPrintDialogData_SetPrintToFile)(void* _obj, int flag)
 {
 	((wxPrintDialogData*)_obj)->SetPrintToFile(flag != 0);
 }
-	
-EWXWEXPORT(void, wxPrintDialogData_SetSetupDialog)(void* _obj, int flag)
-{
-	((wxPrintDialogData*)_obj)->SetSetupDialog(flag != 0);
-}
-	
+
 EWXWEXPORT(void, wxPrintDialogData_EnablePrintToFile)(void* _obj, int flag)
 {
 	((wxPrintDialogData*)_obj)->EnablePrintToFile(flag != 0);

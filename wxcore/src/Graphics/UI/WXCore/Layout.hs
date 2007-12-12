@@ -174,6 +174,7 @@ import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.WxcClassInfo
 import Graphics.UI.WXCore.Types
 import Graphics.UI.WXCore.Frame
+import Graphics.UI.WXCore.Defines
 
 {-----------------------------------------------------------------------------------------
   Classes
@@ -895,8 +896,11 @@ sizerFromLayout parent layout
     insert container (XNotebook options nbook pages)
       = do pages' <- addImages objectNull pages
            mapM_ addPage pages'
-           nbsizer <- notebookSizerCreate nbook
-           sizerAddSizerWithOptions container nbsizer options
+           if (div wxVersion 100) < 26
+             then do
+                 nbsizer <- notebookSizerCreate nbook
+                 sizerAddSizerWithOptions container nbsizer options
+             else sizerAddWindowWithOptions container nbook options
            return container
       where
         addPage (title,idx,WidgetContainer options win layout)

@@ -10,7 +10,10 @@ TClass(wxStyledTextCtrl) wxStyledTextCtrl_Create( TClass(wxWindow) _prt, int _id
 TClassDef(wxSTCDoc)
 TClassDef(wxMemoryBuffer)
 TClass(wxColour) wxStyledTextCtrl_IndicatorGetForeground( TSelf(wxStyledTextCtrl) _obj, int indic);
-TClass(wxColour) wxStyledTextCtrl_GetCaretLineBack( TSelf(wxStyledTextCtrl) _obj );
+TClass(wxColour) wxStyledTextCtrl_GetCaretLineBackground( TSelf(wxStyledTextCtrl) _obj );
+/* SetCaretLineBack is changed name to SetCaretLineBackground.
+   So I avoid to use stc_gen.h for backward compatibility. */
+void wxStyledTextCtrl_SetCaretLineBackground(TSelf(wxStyledTextCtrl) _obj, TColorRGB(back_r,back_g,back_b));
 TClass(wxColour) wxStyledTextCtrl_GetCaretForeground( TSelf(wxStyledTextCtrl) _obj );
 TClass(wxString) wxStyledTextCtrl_GetLine( TSelf(wxStyledTextCtrl) _obj, int line);
 TClass(wxString) wxStyledTextCtrl_GetText( TSelf(wxStyledTextCtrl) _obj );

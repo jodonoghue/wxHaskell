@@ -15,12 +15,20 @@ EWXWEXPORT(void, wxPanel_InitDialog)(void* _obj)
 	
 EWXWEXPORT(void*, wxPanel_GetDefaultItem)(void* _obj)
 {
+#if (wxVERSION_NUMBER <= 2800)
 	return (void*)((wxPanel*)_obj)->GetDefaultItem();
+#else
+	return (void*)((wxTopLevelWindow*)_obj)->GetDefaultItem();
+#endif
 }
 	
 EWXWEXPORT(void, wxPanel_SetDefaultItem)(void* _obj, void* btn)
 {
+#if (wxVERSION_NUMBER <= 2800)
 	((wxPanel*)_obj)->SetDefaultItem((wxButton*) btn);
+#else
+	((wxTopLevelWindow*)_obj)->SetDefaultItem((wxButton*) btn);
+#endif
 }
 	
 }

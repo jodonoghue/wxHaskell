@@ -1,6 +1,9 @@
 #ifndef __EWXW_DEF_H
 #define __EWXW_DEF_H
 
+#ifdef EXPORT
+#undef EXPORT
+#endif
 #define EXPORT extern "C"
 
 #ifdef __WATCOMC__

@@ -3,6 +3,14 @@
 #include "wx/dialup.h"
 #include "wx/tabctrl.h"
 
+#if (wxVERSION_NUMBER >= 2800)
+#include "wx/power.h"
+#endif
+
+#if defined(wxUSE_TAB_DIALOG) && (wxUSE_TAB_DIALOG==0)
+# undef wxUSE_TAB_DIALOG
+#endif
+
 #ifdef USE_CONTRIB
 #include "wx/plot/plot.h"
 #include "wx/gizmos/dynamicsash.h"
@@ -100,7 +108,7 @@ EWXWEXPORT(void, wxCommandEvent_SetClientData)(void* _obj, void* clientData)
 
 EWXWEXPORT(void*, wxCommandEvent_GetClientData)(void* _obj)
 {
-        return ((wxCommandEvent*)_obj)->m_clientData;
+        return ((wxCommandEvent*)_obj)->GetClientData();
 }
 
 EWXWEXPORT(void, wxCommandEvent_SetClientObject)(void* _obj, void* clientObject)
@@ -146,7 +154,7 @@ EWXWEXPORT(void, wxCommandEvent_SetExtraLong)(void* _obj, long extraLong)
 
 EWXWEXPORT(long, wxCommandEvent_GetExtraLong)(void* _obj)
 {
-        return ((wxCommandEvent*)_obj)->m_extraLong;
+        return ((wxCommandEvent*)_obj)->GetExtraLong();
 }
 
 EWXWEXPORT(void, wxCommandEvent_SetInt)(void* _obj, int i)
@@ -1368,7 +1376,47 @@ EWXWEXPORT(int,expEVT_ACTIVATE_APP)()
 
 EWXWEXPORT(int,expEVT_POWER)()
 {
-        return (int)wxEVT_POWER;
+#if (wxVERSION_NUMBER <= 2800)
+	return (int)wxEVT_POWER;
+#else
+	return 1;
+#endif
+}
+
+EWXWEXPORT(int,expEVT_POWER_SUSPENDING)()
+{
+#ifdef wxHAS_POWER_EVENTS
+        return (int)wxEVT_POWER_SUSPENDING;
+#else
+	return 0;
+#endif
+}
+
+EWXWEXPORT(int,expEVT_POWER_SUSPENDED)()
+{
+#ifdef wxHAS_POWER_EVENTS
+        return (int)wxEVT_POWER_SUSPENDED;
+#else
+	return 0;
+#endif
+}
+
+EWXWEXPORT(int,expEVT_POWER_SUSPEND_CANCEL)()
+{
+#ifdef wxHAS_POWER_EVENTS
+        return (int)wxEVT_POWER_SUSPEND_CANCEL;
+#else
+	return 0;
+#endif
+}
+
+EWXWEXPORT(int,expEVT_POWER_RESUME)()
+{
+#ifdef wxHAS_POWER_EVENTS
+        return (int)wxEVT_POWER_RESUME;
+#else
+	return 0;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_ACTIVATE)()
@@ -1704,16 +1752,6 @@ EWXWEXPORT(int,expEVT_COMMAND_LIST_DELETE_ALL_ITEMS)()
         return (int)wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS;
 }
 
-EWXWEXPORT(int,expEVT_COMMAND_LIST_GET_INFO)()
-{
-        return (int)wxEVT_COMMAND_LIST_GET_INFO;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_SET_INFO)()
-{
-        return (int)wxEVT_COMMAND_LIST_SET_INFO;
-}
-
 EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_SELECTED)()
 {
         return (int)wxEVT_COMMAND_LIST_ITEM_SELECTED;
@@ -1761,7 +1799,7 @@ EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_FOCUSED)()
 
 EWXWEXPORT(int,expEVT_COMMAND_TAB_SEL_CHANGED)()
 {
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#if ((wxVERSION_NUMBER > 2800) && !defined(wxUSE_TAB_DIALOG)) || defined(__WXGTK__) || defined(__WXMAC__)
         return -1;
 #else
         return (int)wxEVT_COMMAND_TAB_SEL_CHANGED;
@@ -1770,7 +1808,7 @@ EWXWEXPORT(int,expEVT_COMMAND_TAB_SEL_CHANGED)()
 
 EWXWEXPORT(int,expEVT_COMMAND_TAB_SEL_CHANGING)()
 {
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#if ((wxVERSION_NUMBER > 2800) && !defined(wxUSE_TAB_DIALOG)) || defined(__WXGTK__) || defined(__WXMAC__)
         return -1;
 #else
         return (int)wxEVT_COMMAND_TAB_SEL_CHANGING;
