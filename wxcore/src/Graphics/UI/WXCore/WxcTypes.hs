@@ -119,6 +119,7 @@ import Data.Dynamic
 import Graphics.UI.WXCore.WxcObject
 import Graphics.UI.WXCore.WxcClassTypes
 
+import System.IO(stderr, hPutStrLn)
 
 {-----------------------------------------------------------------------------------------
     Objects
@@ -613,7 +614,19 @@ toCChar = castCharToCChar
 withCharResult :: (Num a, Integral a) => IO a -> IO Char
 withCharResult io
   = do x <- io
-       return (fromCWchar x)
+       if (x < 0)
+          then do hPutStrLn stderr ("Recieved negative unicode: " ++ (show x))
+                  return '\n'
+          else return (fromCWchar x)
+
+{- The (x < 0) if expression in withCharResult is a workaround for
+"processExecAsyncTimed dies with Prelude.chr bad argument"- bug
+reported here
+http://sourceforge.net/mailarchive/message.php?msg_id=54647.129.16.31.149.1111686341.squirrel%40webmail.chalmers.se
+and here
+http://www.mail-archive.com/wxhaskell-users@lists.sourceforge.net/msg00267.html
+-}
+
 
 fromCChar :: CChar -> Char
 fromCChar = castCCharToChar
