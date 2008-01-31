@@ -485,7 +485,7 @@ WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 
 
 # build main library
-wxcore: wxd wxstc wxc wxcore-dirs $(WXCORE-LIBS)
+wxcore: wxd wxc wxcore-dirs $(WXCORE-LIBS)
 
 wxcore-dirs:
 	@$(call ensure-dirs-of-files,$(WXCORE-OBJS))
@@ -745,18 +745,19 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 -include $(WXC-DEPS)
 
 
+# Currently, wxstc always generates same files. So we comment out this part.
 #--------------------------------------------------------------------------
 # wxSTC: the C wrapper of wxSTC
 #--------------------------------------------------------------------------
-
-WXSTC-WRAPPER = \
-	$(WXC-SRCDIR)/stc_gen.cpp \
-	$(WXC-INCDIR)/stc_gen.h
-
-wxstc: $(WXSTC-WRAPPER)
-
-$(WXSTC-WRAPPER): wxd
-	$(WXD-EXE) -s wxSTC-D3/stc.h --wxc $(WXC) -o $(WXC)
+#
+# WXSTC-WRAPPER = \
+#	$(WXC-SRCDIR)/stc_gen.cpp \
+#	$(WXC-INCDIR)/stc_gen.h
+#
+# wxstc: $(WXSTC-WRAPPER)
+#
+# $(WXSTC-WRAPPER): wxd
+#	$(WXD-EXE) -s wxSTC-D3/stc.h --wxc $(WXC) -o $(WXC)
 #	$(WXD-EXE) -s ../wxWidgets-$(WXWIN-VERSION)/contrib/include/wx/stc/stc.h --wxc $(WXC) -o $(WXC)
 
 #--------------------------------------------------------------------------
