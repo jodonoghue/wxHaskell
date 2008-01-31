@@ -469,9 +469,9 @@ if test "$withmsc" != "yes"; then
   wxwincxxflags="`$wxconfig --cxxflags`"
   
   if test "$withopengl" = "yes"; then
-   wxwinlibs="`$wxconfig --libs --gl-libs | tr '\n' ' '`"
+   wxwinlibs="`$wxconfig --libs std media --gl-libs | tr '\n' ' '`"
   else
-   wxwinlibs="`$wxconfig --libs`"
+   wxwinlibs="`$wxconfig --libs std media`"
   fi
 
   # add wxSTC
@@ -480,7 +480,7 @@ if test "$withmsc" != "yes"; then
       wxwinlibs="`$wxconfig --libs std media stc --gl-libs | tr '\n' ' '`"
       # wxwinlibs="$wxwinlibs -L wxSTC-D3/lib -lwx_gtk2_stc_d3-2.4"
     else
-     wxwinlibs="`$wxconfig --libs std stc`"
+     wxwinlibs="`$wxconfig --libs std media stc`"
     fi
     wxcstc="-DwxUSE_STC=1"
   fi
