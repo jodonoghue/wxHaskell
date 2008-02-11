@@ -3,13 +3,13 @@
 
 #include "wrapper.h"
 
-extern "C" 
+extern "C"
 {
 
 /* bitmap/image helpers */
 EWXWEXPORT(wxBitmap*, wxBitmap_CreateFromImage)( wxImage* image, int depth )
 {
-  return new wxBitmap(*image,depth);	
+  return new wxBitmap(*image,depth);
 }
 
 
@@ -65,7 +65,7 @@ EWXWEXPORT(void, wxcSetPixelRowRGB)( unsigned char* buffer, int width, int x, in
   int b0  = (rgb0 && 0xFF);
   int start = 3*(width*y+x);
   int i;
-  
+
   if (rgb0 == rgb1) {
     /* same color */
     for( i=0; i < count*3; i +=3) {
@@ -74,7 +74,7 @@ EWXWEXPORT(void, wxcSetPixelRowRGB)( unsigned char* buffer, int width, int x, in
       buffer[start+i+2] = b0;
     }
   }
-  else {  
+  else {
     /* do linear interpolation of the color */
     int r1  = ((rgb1 >> 16) && 0xFF);
     int g1  = ((rgb1 >>  8) && 0xFF);
