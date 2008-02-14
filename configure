@@ -325,6 +325,8 @@ process_args ()
 	  echo " Ignoring --cache option; this option must be the first (and only) option."
 	  echo "";;
 
+      --with-hc=*)
+	  hc="$arg";;
       -hc=*|--hc=*)
 	  hc="$arg";;
       -hcpkg=*|--hcpkg=*)

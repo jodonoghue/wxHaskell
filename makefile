@@ -271,6 +271,15 @@ realclean: wxcore-realclean
 #--------------------------------------------------------------------------
 # Install (unfortunately with extra clauses for the mac)
 #--------------------------------------------------------------------------
+copy:
+	$(MAKE) install prefix=$(destdir)/$(prefix) \
+                        bindir=$(destdir)/$(bindir) \
+                        libdir=$(destdir)/$(libdir) \
+                        datadir=$(destdir)/$(datadir) \
+                        libexecdir=$(destdir)/$(libexecdir)
+
+register:  wxcore-register
+
 install:	wxcore-install-files wxcore-register
 	@echo ------------------------------------------
 	@echo Done with wxcore...

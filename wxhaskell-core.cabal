@@ -1,0 +1,42 @@
+Name:           wxcore
+Version:        0.10.1
+License:        wxWindows
+License-file:   license.txt
+Author:         Daan Leijen
+Flag splitBase
+    Description: Choose the new smaller, split-up base package.
+
+Library
+    if flag(splitBase)
+        build-depends: base >= 3
+    else
+        build-depends: base <  3
+Build-Type:     Make
+Description:    wxHaskell core
+Maintainer:     wxhaskell-users@lists.sourceforge.net
+Exposed-Modules:
+  Graphics.UI.WXCore
+  Graphics.UI.WXCore.WxcObject
+  Graphics.UI.WXCore.Draw
+  Graphics.UI.WXCore.WxcClassTypes
+  Graphics.UI.WXCore.DragAndDrop
+  Graphics.UI.WXCore.WxcDefs
+  Graphics.UI.WXCore.Process
+  Graphics.UI.WXCore.Print
+  Graphics.UI.WXCore.WxcClassesMZ
+  Graphics.UI.WXCore.Events
+  Graphics.UI.WXCore.Frame
+  Graphics.UI.WXCore.IntMap
+  Graphics.UI.WXCore.Layout
+  Graphics.UI.WXCore.Controls
+  Graphics.UI.WXCore.Types
+  Graphics.UI.WXCore.WxcClassesAL
+  Graphics.UI.WXCore.Dialogs
+  Graphics.UI.WXCore.Db
+  Graphics.UI.WXCore.WxcTypes
+  Graphics.UI.WXCore.Image
+  Graphics.UI.WXCore.WxcClasses
+  Graphics.UI.WXCore.OpenGL
+  Graphics.UI.WXCore.WxcClassInfo
+  Graphics.UI.WXCore.Defines
+
