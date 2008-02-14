@@ -284,7 +284,11 @@ install:	wxcore-install-files wxcore-register
 	@echo ------------------------------------------
 	@echo Done with wxcore...
 	@echo
-	@echo Now please run make wx and make wx-install
+	@echo Now please
+	@echo  cd wx
+	@echo  runhaskell Setup configure
+	@echo  runhaskell Setup build
+	@echo  runhaskell Setup install
 	@echo ------------------------------------------
 
 ifeq ($(TOOLKIT),mac)
