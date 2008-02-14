@@ -1,6 +1,6 @@
 Name:           wxcore
 Version:        0.10.1
-License:        wxWindows
+License:        LGPL
 License-file:   license.txt
 Author:         Daan Leijen
 Flag splitBase
