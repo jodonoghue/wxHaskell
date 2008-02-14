@@ -1,0 +1,27 @@
+Name:           wx
+Version:        0.10.1
+License:        LGPL
+License-file:   license.txt
+Author:         Daan Leijen
+Build-Depends:  base, haskell98, wxcore >= 0.10.1
+Build-Type:     Simple
+Description:    wxHaskell
+Maintainer:     wxhaskell-users@lists.sourceforge.net
+Hs-Source-Dirs: src
+
+Exposed-Modules:
+  Graphics.UI.WX.Draw
+  Graphics.UI.WX.Media
+  Graphics.UI.WX.Attributes
+  Graphics.UI.WX.Window
+  Graphics.UI.WX.Variable
+  Graphics.UI.WX.Events
+  Graphics.UI.WX.Frame
+  Graphics.UI.WX.Layout
+  Graphics.UI.WX.Controls
+  Graphics.UI.WX.Types
+  Graphics.UI.WX.Dialogs
+  Graphics.UI.WX.Classes
+  Graphics.UI.WX.Timer
+  Graphics.UI.WX.Menu
+  Graphics.UI.WX
