@@ -8,9 +8,9 @@ Flag splitBase
 
 Library
     if flag(splitBase)
-        build-depends: base >= 3
+        build-depends: base >= 3, time, parsec
     else
-        build-depends: base <  3
+        build-depends: base <  3, time, parsec
 Build-Type:     Make
 Description:    wxHaskell core
 Maintainer:     wxhaskell-users@lists.sourceforge.net
