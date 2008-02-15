@@ -26,7 +26,7 @@ help:
 	@echo ""
 	@echo "distribution:"
 	@echo " before-dist     uninstall wxcore files, and make wxcore again"
-	@echo " dist            make a source, documentation, and binary distribution"
+	@echo " fulldist        make a source, documentation, and binary distribution"
 	@echo " srcdist         make a source distribution (as a .zip file)"
 	@echo " docdist         make a documentation and samples zip file"
 	@echo " bindist         binaries, docs, and samples zip (windows distribution)"
@@ -335,7 +335,9 @@ BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
 before-dist: wxcore-unregister wxcore-uninstall-files wxcore
 
 # full distribution
-dist: dist-dirs all srcdist bindist docdist
+dist: srcdist
+
+fulldist: dist-dirs all srcdist bindist docdist
 
 dist-dirs:
 	@$(call ensure-dirs-of-files,$(DISTS))
