@@ -12,12 +12,11 @@ Synopsis:       wxHaskell is a portable and native GUI library for Haskell.
 
 Flag splitBase
     Description: Choose the new smaller, split-up base package.
-
 Library
     if flag(splitBase)
-        build-depends: base >= 3, time, parsec
+        build-depends: base >= 3, parsec, array, directory, old-time
     else
-        build-depends: base <  3, time, parsec
+        build-depends: base <  3, haskell98, parsec
  Exposed-Modules:
   Graphics.UI.WXCore
   Graphics.UI.WXCore.WxcObject
