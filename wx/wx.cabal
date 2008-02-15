@@ -4,9 +4,13 @@ License:        LGPL
 License-file:   license.txt
 Author:         Daan Leijen
 Build-Type:     Simple
+Category:       GUI
+Cabal-Version:  >= 1.2
 Description:    wxHaskell
 Maintainer:     wxhaskell-users@lists.sourceforge.net
-Cabal-Version:  >= 1.2
+Synopsis:       wxHaskell is a portable and native GUI library for Haskell.
+Data-Files:     wx.cabal
+
 Flag splitBase
     Description: Choose the new smaller, split-up base package.
 

@@ -7,6 +7,8 @@ Build-Type:     Make
 Description:    wxHaskell core
 Maintainer:     wxhaskell-users@lists.sourceforge.net
 Cabal-Version:  >= 1.2
+Category:       GUI
+Synopsis:       wxHaskell is a portable and native GUI library for Haskell.
 
 Flag splitBase
     Description: Choose the new smaller, split-up base package.
