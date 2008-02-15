@@ -50,8 +50,8 @@ module Graphics.UI.WX.Menu
     , menuList, menubar, statusbar
     ) where
 
-import Char( toUpper )
-import List( partition, intersperse )
+import Data.Char( toUpper )
+import Data.List( partition, intersperse )
 import System.IO.Unsafe (unsafePerformIO)
 import Foreign.Ptr( nullPtr )
 import Graphics.UI.WXCore hiding (Event)
