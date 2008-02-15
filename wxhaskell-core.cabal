@@ -3,6 +3,11 @@ Version:        0.10.1
 License:        LGPL
 License-file:   license.txt
 Author:         Daan Leijen
+Build-Type:     Make
+Description:    wxHaskell core
+Maintainer:     wxhaskell-users@lists.sourceforge.net
+Cabal-Version:  >= 1.2
+
 Flag splitBase
     Description: Choose the new smaller, split-up base package.
 
@@ -11,10 +16,7 @@ Library
         build-depends: base >= 3, time, parsec
     else
         build-depends: base <  3, time, parsec
-Build-Type:     Make
-Description:    wxHaskell core
-Maintainer:     wxhaskell-users@lists.sourceforge.net
-Exposed-Modules:
+ Exposed-Modules:
   Graphics.UI.WXCore
   Graphics.UI.WXCore.WxcObject
   Graphics.UI.WXCore.Draw

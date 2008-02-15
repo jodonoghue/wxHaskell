@@ -3,13 +3,20 @@ Version:        0.10.1
 License:        LGPL
 License-file:   license.txt
 Author:         Daan Leijen
-Build-Depends:  base, haskell98, wxcore >= 0.10.1
 Build-Type:     Simple
 Description:    wxHaskell
 Maintainer:     wxhaskell-users@lists.sourceforge.net
-Hs-Source-Dirs: src
+Cabal-Version:  >= 1.2
+Flag splitBase
+    Description: Choose the new smaller, split-up base package.
 
-Exposed-Modules:
+Library
+    if flag(splitBase)
+        build-depends: base >= 3, wxcore >= 0.10.1
+    else
+        build-depends: base <  3, wxcore >= 0.10.1
+
+ Exposed-Modules:
   Graphics.UI.WX.Draw
   Graphics.UI.WX.Media
   Graphics.UI.WX.Attributes
@@ -25,3 +32,4 @@ Exposed-Modules:
   Graphics.UI.WX.Timer
   Graphics.UI.WX.Menu
   Graphics.UI.WX
+ Hs-Source-Dirs: src
