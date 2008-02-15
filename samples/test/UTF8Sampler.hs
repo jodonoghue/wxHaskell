@@ -80,10 +80,8 @@ hGetBytes h c = allocaArray c $ \p ->
 readTestFile :: IO String
 readTestFile =
  do h  <- openBinaryFile testFile ReadMode
-    ws <- hGetBytes h testFileSize
+    ws <- hGetBytes h $ hFileSize testFile
     return . fst . decode $ ws
 
 testFile :: FilePath
 testFile = "utf-tests"
-testFileSize :: Int -- FIXME: is there a portable way to do fileSize?
-testFileSize = 1846
