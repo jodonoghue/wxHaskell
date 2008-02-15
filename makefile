@@ -355,6 +355,7 @@ srcdist: srcdist-clean dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 	@$(call cp-srcdist, $(SAMPLE-SOURCES))
 	@echo zipping: $(DIST-SRC)
 	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),$(WXHASKELLVER))
+	@$(call cp-hackagedist, $(WXCORE))
 	@$(call cp-hackagedist, $(WXC))
 	@$(call cp-hackagedist, $(WXD))
 	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
