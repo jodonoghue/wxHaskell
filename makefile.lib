@@ -234,9 +234,11 @@ cp-bindist	=$(call cp-fromto,$(patsubst %/,%,$(1)),$(patsubst %/,%,$(2)),$(3))
 cp-relative	=$(call ensure-dirs-of-files,$(patsubst %,$(1)/%,$(2))) && \
 		 $(foreach file,$(2),$(call cp-echox,$(file),$(1)/$(patsubst %/,%,$(dir $(file)))) && ):
 
+cp-hackagedist	=$(call cp-relative,$(TOPDIR)/$(HACKAGEDIST-SRCDIR),$(1))
 cp-srcdist	=$(call cp-relative,$(TOPDIR)/$(SRCDIST-SRCDIR),$(1))
 cp-docdist	=$(CD) $(1) && $(call cp-relative,$(TOPDIR)/$(DOCDIST-SRCDIR),$(patsubst $(1)/%,%,$(2)))
 
 # zip commands
 zip-add		=echo zipping: $(1); $(ZIP) -y -9 $(TOPDIR)/$(1) $(2)
 zip-add-rec     =echo zipping: $(1); $(ZIP) -r -y -9 $(TOPDIR)/$(1) $(2)
+tgz-add-rec     =echo tarring: $(1); tar czf $(TOPDIR)/$(1) $(2)

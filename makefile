@@ -319,11 +319,13 @@ REL-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(HCBASENAME)$(HCVERSION)-$(VERSION)-$(R
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
+DIST-HACKAGE	=$(DIST-OUTDIR)/wxcore-$(VERSION).tar.gz
 DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(REL-VERSION).zip
 DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
 
 SRCDIST-OUTDIR  =$(DIST-OUTDIR)/srcdist
 SRCDIST-SRCDIR  =$(SRCDIST-OUTDIR)/$(WXHASKELLVER)
+HACKAGEDIST-SRCDIR  =$(SRCDIST-OUTDIR)/wxcore-$(VERSION)
 
 DOCDIST-OUTDIR  =$(DIST-OUTDIR)/docdist
 DOCDIST-SRCDIR  =$(DOCDIST-OUTDIR)/$(WXHASKELLVER)
@@ -352,7 +354,13 @@ srcdist: srcdist-clean dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 	@$(call cp-srcdist, $(WXHASKELL-SOURCES))
 	@$(call cp-srcdist, $(SAMPLE-SOURCES))
 	@echo zipping: $(DIST-SRC)
-	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),*)
+	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),$(WXHASKELLVER))
+	@$(call cp-hackagedist, $(WXC))
+	@$(call cp-hackagedist, $(WXD))
+	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
+	@$(call cp-hackagedist, $(SAMPLE-SOURCES))
+	@echo tarring: $(DIST-HACKAGE)
+	@$(CD) $(SRCDIST-OUTDIR) && $(call tgz-add-rec,$(DIST-HACKAGE),wxcore-$(VERSION))
 
 srcdist-clean:
 	-@$(call full-remove-dir,$(SRCDIST-OUTDIR))
