@@ -772,10 +772,12 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 #--------------------------------------------------------------------------
 # Documentation
 #--------------------------------------------------------------------------
-DOC-OUTDIR  =$(OUTDIR)/doc
-WXCORE-DOCFILE     =$(DOC-OUTDIR)/wxcore.haddock
-WX-DOCFILE     	   =$(DOC-OUTDIR)/wx.haddock
-HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(WXCORE-DOCFILE) --prologue=config/prologue.txt --html $(HDOCBASES)
+DOC-OUTDIR  =$(OUTDIR)/doc/html
+WXCORE-DOC-OUTDIR  =$(DOC-OUTDIR)/wxcore
+WX-DOC-OUTDIR  	   =$(DOC-OUTDIR)/wx
+WXCORE-DOCFILE     =$(WXCORE-DOC-OUTDIR)/wxcore.haddock
+WX-DOCFILE     	   =$(WX-DOC-OUTDIR)/wx.haddock
+HDOCFLAGS   = --prologue=config/prologue.txt --html $(HDOCBASES)
 WXCORE-DOCSOURCES  = $(WXCORE-DOCS)
 WX-DOCSOURCES      = $(WX-DOCS)
 
@@ -783,10 +785,12 @@ WX-DOCSOURCES      = $(WX-DOCS)
 doc: doc-dirs $(WXCORE-DOCFILE) $(WX-DOCFILE)
 
 doc-dirs:
-	@$(call ensure-dir,$(DOC-OUTDIR))
+	@$(call ensure-dir,$(WXCORE-DOC-OUTDIR))
+	@$(call ensure-dir,$(WX-DOC-OUTDIR))
 
 doc-clean:
-	-@$(call full-remove-dir,$(DOC-OUTDIR))
+	-@$(call full-remove-dir,$(WXCORE-DOC-OUTDIR))
+	-@$(call full-remove-dir,$(WX-DOC-OUTDIR))
 
 # copy documentation to the wxhaskell website
 webdoc: doc
@@ -813,10 +817,10 @@ docdist-clean:
 
 # generate documentation with haddock
 $(WXCORE-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES)
-	$(HDOC) $(HDOCFLAGS) $(WXCORE-DOCSOURCES)
+	$(HDOC) --odir $(WXCORE-DOC-OUTDIR) --dump-interface=$(WXCORE-DOCFILE)  $(HDOCFLAGS) $(WXCORE-DOCSOURCES)
 
 $(WX-DOCFILE): config/prologue.txt $(WX-DOCSOURCES)
-	$(HDOC) $(HDOCFLAGS) $(WX-DOCSOURCES)
+	$(HDOC) --odir $(WX-DOC-OUTDIR) --dump-interface=$(WX-DOCFILE) $(HDOCFLAGS) $(WX-DOCSOURCES)
 
 #--------------------------------------------------------------------------
 # Cabal / Hackage stuff
