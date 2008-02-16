@@ -6,9 +6,9 @@ Author:         Daan Leijen
 Build-Type:     Simple
 Category:       GUI
 Cabal-Version:  >= 1.2
-Description:    wxHaskell
+Description:    wxHaskell is a portable and native GUI library for Haskell.  It is built on top of wxWidgets - a comprehensive C++ library that is portable across all major GUI platforms; including GTK, Windows, X11, and MacOS X.  At present, it works with wxWidgets 2.6 (and sadly, not with with wxWidgets 2.8)
 Maintainer:     wxhaskell-users@lists.sourceforge.net
-Synopsis:       wxHaskell is a portable and native GUI library for Haskell.
+Synopsis:       wxHaskell
 Data-Files:     wx.cabal
 
 Flag splitBase
