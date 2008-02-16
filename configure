@@ -86,10 +86,10 @@ findprogram () {
 #--------------------------------------------------------------------
 
 # macosx: wx-config might be not in the path
-if findprogram "$wxconfig"; then :; else
-  if test -x "/usr/local/wxhaskell/bin/wx-config"; then
-    wxconfig="/usr/local/wxhaskell/bin/wx-config"
-  else
+if test -x "/usr/local/wxhaskell/bin/wx-config"; then
+  wxconfig="/usr/local/wxhaskell/bin/wx-config"
+else
+  if findprogram "$wxconfig"; then :; else
     if test -x "/usr/local/bin/wx-config"; then
       wxconfig="/usr/local/bin/wx-config"
     fi
