@@ -850,6 +850,6 @@ copy:
                         libexecdir=$(destdir)/$(libexecdir)
 
 # this is the same as the doc target below (no 's')
-docs: doc-dirs $(WXCORE-DOCFILE)
+docs: wxd-dirs doc-dirs $(WXCORE-DOCFILE)
 
 
