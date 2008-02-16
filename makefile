@@ -273,13 +273,6 @@ realclean: wxcore-realclean
 #--------------------------------------------------------------------------
 # Install (unfortunately with extra clauses for the mac)
 #--------------------------------------------------------------------------
-copy:
-	$(MAKE) install prefix=$(destdir)/$(prefix) \
-                        bindir=$(destdir)/$(bindir) \
-                        libdir=$(destdir)/$(libdir) \
-                        datadir=$(destdir)/$(datadir) \
-                        libexecdir=$(destdir)/$(libexecdir)
-
 register:  wxcore-register
 
 install:	wxcore-install-files wxcore-register
@@ -312,20 +305,21 @@ endif
 #.PHONY: wxc-dist wxd-dist wxcore-dist wx-dist
 #.PHONY: wxc-bindist wxcore-bindist wx-bindist
 WXHASKELLVER    =wxhaskell-$(VERSION)
+WXCOREVER	=wxcore-$(VERSION)
 BIN-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(VERSION)
 REL-VERSION	=$(TOOLKIT)$(WXWIN-VERSION)-$(HCBASENAME)$(HCVERSION)-$(VERSION)-$(RELEASE)
-
 
 DIST-OUTDIR	=$(OUTDIR)
 DIST-DOC	=$(DIST-OUTDIR)/wxhaskell-doc-$(VERSION).zip
 DIST-SRC	=$(DIST-OUTDIR)/wxhaskell-src-$(VERSION).zip
 DIST-HACKAGE	=$(DIST-OUTDIR)/wxcore-$(VERSION).tar.gz
 DIST-BIN	=$(DIST-OUTDIR)/wxhaskell-bin-$(REL-VERSION).zip
-DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN)
+DISTS		=$(DIST-DOC) $(DIST-SRC) $(DIST-BIN) $(DIST-HACKAGE)
 
 SRCDIST-OUTDIR  =$(DIST-OUTDIR)/srcdist
 SRCDIST-SRCDIR  =$(SRCDIST-OUTDIR)/$(WXHASKELLVER)
-HACKAGEDIST-SRCDIR  =$(SRCDIST-OUTDIR)/wxcore-$(VERSION)
+HACKAGEDIST-OUTDIR  =$(DIST-OUTDIR)/hackagedist
+HACKAGEDIST-SRCDIR  =$(HACKAGEDIST-OUTDIR)/$(WXCOREVER)
 
 DOCDIST-OUTDIR  =$(DIST-OUTDIR)/docdist
 DOCDIST-SRCDIR  =$(DOCDIST-OUTDIR)/$(WXHASKELLVER)
@@ -339,8 +333,6 @@ BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
 before-dist: wxcore-unregister wxcore-uninstall-files wxcore
 
 # full distribution
-dist: srcdist
-
 fulldist: dist-dirs all srcdist bindist docdist
 
 dist-dirs:
@@ -355,13 +347,6 @@ srcdist: srcdist-clean dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 	@$(call cp-srcdist, $(SAMPLE-SOURCES))
 	@echo zipping: $(DIST-SRC)
 	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),$(WXHASKELLVER))
-	@$(call cp-hackagedist, $(WXCORE))
-	@$(call cp-hackagedist, $(WXC))
-	@$(call cp-hackagedist, $(WXD))
-	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
-	@$(call cp-hackagedist, $(SAMPLE-SOURCES))
-	@echo tarring: $(DIST-HACKAGE)
-	@$(CD) $(SRCDIST-OUTDIR) && $(call tgz-add-rec,$(DIST-HACKAGE),wxcore-$(VERSION))
 
 srcdist-clean:
 	-@$(call full-remove-dir,$(SRCDIST-OUTDIR))
@@ -427,6 +412,35 @@ macdist: docdist bindist
 	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
 
+#--------------------------------------------------------------------------
+# Cabal / Hackage stuff
+#--------------------------------------------------------------------------
+
+# for hackage
+dist: hackagedist
+
+hackagedist: hackagedist-clean dist-dirs
+	@$(call cp-hackagedist, $(WXC))
+	@$(call cp-hackagedist, $(WXD))
+	@$(call cp-hackagedist, $(WXCORE))
+	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
+	@$(call cp-hackagedist, $(SAMPLE-SOURCES))
+	@echo tarring: $(DIST-HACKAGE)
+	@$(CD) $(HACKAGEDIST-OUTDIR) && $(call tgz-add-rec,$(DIST-HACKAGE),$(WXCOREVER))
+
+hackagedist-clean:
+	-@$(call full-remove-dir,$(HACKAGEDIST-OUTDIR))
+	-@$(call safe-remove-file,$(DIST-HACKAGE))
+
+copy:
+	$(MAKE) install prefix=$(destdir)/$(prefix) \
+                        bindir=$(destdir)/$(bindir) \
+                        libdir=$(destdir)/$(libdir) \
+                        datadir=$(destdir)/$(datadir) \
+                        libexecdir=$(destdir)/$(libexecdir)
+
+# this is the same as the doc target below (no 's')
+docs: doc-dirs $(DOCFILE)
 
 #--------------------------------------------------------------------------
 # wxdirect: generates haskell marshall modules
@@ -793,6 +807,7 @@ DOC-OUTDIR  =$(OUTDIR)/doc
 DOCFILE     =$(DOC-OUTDIR)/wxhaskell.haddock
 HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=config/prologue.txt --html $(HDOCBASES)
 DOCSOURCES  = $(WX-DOCS) $(WXCORE-DOCS)
+
 
 doc: doc-dirs $(DOCFILE)
 
