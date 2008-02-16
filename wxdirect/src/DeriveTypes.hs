@@ -19,8 +19,8 @@ module DeriveTypes ( deriveTypes, deriveTypesAll
 import qualified Set
 import qualified Map
 
-import Char( toLower, toUpper, isSpace, isLower, isUpper )
-import List( isPrefixOf, sort, sortBy, intersperse )
+import Data.Char( toLower, toUpper, isSpace, isLower, isUpper )
+import Data.List( isPrefixOf, sort, sortBy, intersperse )
 
 import Types
 import HaskellNames

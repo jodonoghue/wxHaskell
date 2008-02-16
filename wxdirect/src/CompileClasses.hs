@@ -18,8 +18,8 @@ import qualified Map
 import qualified MultiSet
 
 import Data.Time( getCurrentTime )
-import Char( toUpper, isUpper, toLower ) --toLower, toUpper, isSpace, isLower, isUpper )
-import List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
+import Data.Char( toUpper, isUpper, toLower ) --toLower, toUpper, isSpace, isLower, isUpper )
+import Data.List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
 import Types
 import HaskellNames

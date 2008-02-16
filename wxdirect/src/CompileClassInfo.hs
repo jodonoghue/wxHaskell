@@ -12,8 +12,8 @@
 -----------------------------------------------------------------------------------------
 module CompileClassInfo( compileClassInfo ) where
 
-import Char( toLower )
-import List( sortBy, sort )
+import Data.Char( toLower )
+import Data.List( sortBy, sort )
 
 import Types
 import HaskellNames

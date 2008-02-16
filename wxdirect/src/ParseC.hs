@@ -12,8 +12,8 @@
 -----------------------------------------------------------------------------------------
 module ParseC( parseC, readHeaderFile ) where
 
-import Char( isSpace )
-import List( isPrefixOf )
+import Data.Char( isSpace )
+import Data.List( isPrefixOf )
 import Text.ParserCombinators.Parsec
 import qualified Text.ParserCombinators.Parsec.Token as P
 import Text.ParserCombinators.Parsec.Language

@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module CompileDefs( compileDefs ) where
 
-import List( sortBy, sort )
+import Data.List( sortBy, sort )
 
 import Types
 import HaskellNames

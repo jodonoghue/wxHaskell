@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module ParseEiffel( parseEiffel ) where
 
-import Char( digitToInt )
+import Data.Char( digitToInt )
 import Text.ParserCombinators.Parsec
 import qualified Text.ParserCombinators.Parsec.Token as P
 import Text.ParserCombinators.Parsec.Language

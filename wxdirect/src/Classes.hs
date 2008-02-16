@@ -23,8 +23,8 @@ module Classes( isClassName, isBuiltin, haskellClassDefs
               ) where
 
 import System( getEnv )
-import Char( isUpper )
-import List( sort, sortBy )
+import Data.Char( isUpper )
+import Data.List( sort, sortBy )
 import qualified Set
 import qualified Map
 import HaskellNames( haskellTypeName, isBuiltin )

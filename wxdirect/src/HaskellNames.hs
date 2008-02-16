@@ -18,9 +18,9 @@ module HaskellNames( haskellDeclName
                    ) where
 
 import qualified Set
-import Char( toLower, toUpper, isLower, isUpper )
+import Data.Char( toLower, toUpper, isLower, isUpper )
 import Data.Time( getCurrentTime )
-import List( isPrefixOf )
+import Data.List( isPrefixOf )
 
 {-----------------------------------------------------------------------------------------
 

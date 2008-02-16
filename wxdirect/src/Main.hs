@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------------------------
 module Main where
 
-import List( isPrefixOf )
+import Data.List( isPrefixOf )
 
 import System( getEnv )
 import System.Environment( getArgs )
