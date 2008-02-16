@@ -260,7 +260,7 @@ SAMPLE-SOURCES= \
 .PHONY: help doc webdoc clean realclean
 
 # global variables
-OUTDIR	= out
+OUTDIR	= dist
 
 # clean
 clean:	wxc-clean wxd-clean wxcore-clean wx-clean 
