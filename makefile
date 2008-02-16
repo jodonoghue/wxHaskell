@@ -440,7 +440,7 @@ copy:
                         libexecdir=$(destdir)/$(libexecdir)
 
 # this is the same as the doc target below (no 's')
-docs: doc-dirs $(DOCFILE)
+docs: doc-dirs $(WXCORE-DOCFILE)
 
 #--------------------------------------------------------------------------
 # wxdirect: generates haskell marshall modules
@@ -804,12 +804,14 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 # Documentation
 #--------------------------------------------------------------------------
 DOC-OUTDIR  =$(OUTDIR)/doc
-DOCFILE     =$(DOC-OUTDIR)/wxhaskell.haddock
-HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(DOCFILE) --prologue=config/prologue.txt --html $(HDOCBASES)
-DOCSOURCES  = $(WX-DOCS) $(WXCORE-DOCS)
+WXCORE-DOCFILE     =$(DOC-OUTDIR)/wxcore.haddock
+WX-DOCFILE     	   =$(DOC-OUTDIR)/wx.haddock
+HDOCFLAGS   = --odir $(DOC-OUTDIR) --dump-interface=$(WXCORE-DOCFILE) --prologue=config/prologue.txt --html $(HDOCBASES)
+WXCORE-DOCSOURCES  = $(WXCORE-DOCS)
+WX-DOCSOURCES      = $(WX-DOCS)
 
 
-doc: doc-dirs $(DOCFILE)
+doc: doc-dirs $(WXCORE-DOCFILE) $(WX-DOCFILE)
 
 doc-dirs:
 	@$(call ensure-dir,$(DOC-OUTDIR))
@@ -841,5 +843,8 @@ docdist-clean:
 	
 
 # generate documentation with haddock
-$(DOCFILE): config/prologue.txt $(DOCSOURCES)
-	$(HDOC) $(HDOCFLAGS) $(DOCSOURCES)
+$(WXCORE-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES)
+	$(HDOC) $(HDOCFLAGS) $(WXCORE-DOCSOURCES)
+
+$(WX-DOCFILE): config/prologue.txt $(WX-DOCSOURCES)
+	$(HDOC) $(HDOCFLAGS) $(WX-DOCSOURCES)
