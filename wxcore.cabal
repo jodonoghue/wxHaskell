@@ -42,4 +42,5 @@ Library
   Graphics.UI.WXCore.OpenGL
   Graphics.UI.WXCore.WxcClassInfo
   Graphics.UI.WXCore.Defines
+ Hs-Source-Dirs: wxcore/src
 
