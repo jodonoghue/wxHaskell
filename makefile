@@ -411,37 +411,6 @@ macdist: docdist bindist
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
 	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
-
-#--------------------------------------------------------------------------
-# Cabal / Hackage stuff
-#--------------------------------------------------------------------------
-
-# for hackage
-dist: hackagedist
-
-hackagedist: hackagedist-clean dist-dirs
-	@$(call cp-hackagedist, $(WXC))
-	@$(call cp-hackagedist, $(WXD))
-	@$(call cp-hackagedist, $(WXCORE))
-	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
-	@$(call cp-hackagedist, $(SAMPLE-SOURCES))
-	@echo tarring: $(DIST-HACKAGE)
-	@$(CD) $(HACKAGEDIST-OUTDIR) && $(call tgz-add-rec,$(DIST-HACKAGE),$(WXCOREVER))
-
-hackagedist-clean:
-	-@$(call full-remove-dir,$(HACKAGEDIST-OUTDIR))
-	-@$(call safe-remove-file,$(DIST-HACKAGE))
-
-copy:
-	$(MAKE) install prefix=$(destdir)/$(prefix) \
-                        bindir=$(destdir)/$(bindir) \
-                        libdir=$(destdir)/$(libdir) \
-                        datadir=$(destdir)/$(datadir) \
-                        libexecdir=$(destdir)/$(libexecdir)
-
-# this is the same as the doc target below (no 's')
-docs: doc-dirs $(WXCORE-DOCFILE)
-
 #--------------------------------------------------------------------------
 # wxdirect: generates haskell marshall modules
 #--------------------------------------------------------------------------
@@ -848,3 +817,35 @@ $(WXCORE-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES)
 
 $(WX-DOCFILE): config/prologue.txt $(WX-DOCSOURCES)
 	$(HDOC) $(HDOCFLAGS) $(WX-DOCSOURCES)
+
+#--------------------------------------------------------------------------
+# Cabal / Hackage stuff
+#--------------------------------------------------------------------------
+
+# for hackage
+dist: hackagedist
+
+hackagedist: hackagedist-clean dist-dirs
+	@$(call cp-hackagedist, $(WXC))
+	@$(call cp-hackagedist, $(WXD))
+	@$(call cp-hackagedist, $(WXCORE))
+	@$(call cp-hackagedist, $(WXHASKELL-SOURCES))
+	@$(call cp-hackagedist, $(SAMPLE-SOURCES))
+	@echo tarring: $(DIST-HACKAGE)
+	@$(CD) $(HACKAGEDIST-OUTDIR) && $(call tgz-add-rec,$(DIST-HACKAGE),$(WXCOREVER))
+
+hackagedist-clean:
+	-@$(call full-remove-dir,$(HACKAGEDIST-OUTDIR))
+	-@$(call safe-remove-file,$(DIST-HACKAGE))
+
+copy:
+	$(MAKE) install prefix=$(destdir)/$(prefix) \
+                        bindir=$(destdir)/$(bindir) \
+                        libdir=$(destdir)/$(libdir) \
+                        datadir=$(destdir)/$(datadir) \
+                        libexecdir=$(destdir)/$(libexecdir)
+
+# this is the same as the doc target below (no 's')
+docs: doc-dirs $(WXCORE-DOCFILE)
+
+
