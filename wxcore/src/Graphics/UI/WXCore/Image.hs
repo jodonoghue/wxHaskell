@@ -51,7 +51,7 @@ module Graphics.UI.WXCore.Image
     , pixelBufferGetSize
     ) where
 
-import Char( toLower )
+import Data.Char( toLower )
 import Data.Array
 import Foreign.Marshal.Array
 import Foreign.C.String

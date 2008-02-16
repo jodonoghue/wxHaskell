@@ -34,7 +34,7 @@ module Graphics.UI.WXCore.Dialogs
     , fileDialog
     ) where
 
-import List( intersperse )
+import Data.List( intersperse )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses

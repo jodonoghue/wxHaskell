@@ -175,9 +175,9 @@ import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses
 import Graphics.UI.WXCore.Types
 
-import IO( catch, ioError, isUserError, ioeGetErrorString)
-import List( isPrefixOf )
-import Char( isDigit )
+import System.IO.Error( catch, ioError, isUserError, ioeGetErrorString)
+import Data.List( isPrefixOf )
+import Data.Char( isDigit )
 import Foreign
 import Foreign.Ptr
 import Foreign.C.String

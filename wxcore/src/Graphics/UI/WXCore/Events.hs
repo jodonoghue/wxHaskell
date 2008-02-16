@@ -231,7 +231,7 @@ module Graphics.UI.WXCore.Events
         , unsafeWindowGetHandlerState
         ) where
 
-import List( intersperse, findIndex )
+import Data.List( intersperse, findIndex )
 import System.Environment( getProgName, getArgs )
 import Foreign.StablePtr
 import Foreign.Ptr

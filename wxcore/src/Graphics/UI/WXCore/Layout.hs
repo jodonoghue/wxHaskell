@@ -167,7 +167,7 @@ module Graphics.UI.WXCore.Layout( -- * Types
                              , valignTop, valignCentre, valignCenter, valignBottom
                              ) where
 
-import List( transpose )
+import Data.List( transpose )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses

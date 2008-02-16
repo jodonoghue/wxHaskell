@@ -77,7 +77,7 @@ module Graphics.UI.WXCore.Types(
 
             ) where
 
-import List( (\\) )
+import Data.List( (\\) )
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses( wxcSystemSettingsGetColour )
@@ -88,7 +88,7 @@ import Data.Array
 import Data.Bits
 import Data.IORef
 import qualified Control.Exception as CE
-import qualified Monad as M
+import qualified Control.Monad as M
 
 
 infixl 5 .+.
