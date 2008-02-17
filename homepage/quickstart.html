@@ -245,7 +245,7 @@ ballsFrame
        <span class="comment">-- react on user input</span>
        set p [on click&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := dropBall vballs p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- drop ball</span>
              ,on clickRight&nbsp;&nbsp;&nbsp; := (\pt -> ballsFrame)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- new window</span>
-             ,on (charKey 'p') := set t [enable&nbsp;&nbsp; :~ not]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- pause</span>
+             ,on (charKey 'p') := set t [enabled&nbsp;&nbsp; :~ not]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment">-- pause</span>
              ,on (charKey '-') := set t [interval :~ \i -> i*2]&nbsp; <span class="comment">-- increase interval</span>
              ,on (charKey '+') := set t [interval :~ \i -> max 1 (i `div` 2)]
              ]
@@ -274,7 +274,7 @@ causes the panel to repaint the balls. We also install event handlers that react
 click causes a new ball to drop, a right click opens another frame (!), a <code>p</code>-key pauses the
 balls, and <code>+/-</code> increase/decrease the speed of the balls. Note how the operator
 <code>(:~)</code> applies a function to an attribute value instead of assigning one. Thus, the
-expression <code>(set t [enable :~ not])</code> flips the enabled state of the timer.</p>
+expression <code>(set t [enabled :~ not])</code> flips the enabled state of the timer.</p>
 
 <p>Finally, we specify the layout of the frame, using <code>minsize</code> to specifiy the minimal size
 of the panel and thus the size of the frame as it is not resizeable.</p>
