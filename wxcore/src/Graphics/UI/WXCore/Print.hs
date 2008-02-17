@@ -134,9 +134,15 @@ printableArea pageInfo printInfo
         bottom= ppmmH * (max minY (toDouble mbottom))
         right = ppmmW * (max minX (toDouble mright))
 
+	dw = round (right + left)
+	dh = round (bottom + top)
+	(dw', dh') = if sizeW (printPageSize printInfo) < sizeH (printPageSize printInfo)
+		     then (dw, dh)
+		     else (dh, dw)
+
         -- the actual printable page size
-        printSize = sz (sizeW (printPageSize printInfo) - round (right + left)) 
-                      (sizeH (printPageSize printInfo) - round (bottom + top))
+        printSize = sz (sizeW (printPageSize printInfo) - dw') 
+                      (sizeH (printPageSize printInfo) - dh')
     in ((left,top),printSize) 
 
 -- | Get the zoom factor from the preview 
