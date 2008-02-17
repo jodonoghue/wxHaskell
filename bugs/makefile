@@ -7,6 +7,7 @@ endif
 
 APPS= \
       NonModalDialog\
+      SubMenu\
 
 .PHONY: clean
 
