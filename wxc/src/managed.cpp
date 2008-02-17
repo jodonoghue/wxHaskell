@@ -2,7 +2,7 @@
 
 /* safety */
 class wxManagedPtr;
-#include "ewxw/wxc_types.h"
+#include "wxc_types.h"
 #include "managed.h"
 
 

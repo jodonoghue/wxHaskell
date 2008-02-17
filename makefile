@@ -169,10 +169,10 @@ WXC-EWXW= \
 # treectrl
 
 WXC-SOURCES = \
-	$(WXC-CORE) $(patsubst %,ewxw/elj%,$(WXC-EWXW))
+	$(WXC-CORE) $(patsubst %,elj%,$(WXC-EWXW))
 
 WXC-SPECS-EIFFEL = \
-	wxc/eiffel/wxc_defs.e  wxc/eiffel/ewxw/wx_defs.e \
+	wxc/eiffel/wxc_defs.e  wxc/eiffel/wx_defs.e \
 	wxc/eiffel/stc.e
 
 WXC-SPECS-HEADER = \
@@ -181,16 +181,14 @@ WXC-SPECS-HEADER = \
 	wxc/include/sound.h wxc/include/managed.h \
 	wxc/include/printout.h wxc/include/previewframe.h \
 	wxc/include/textstream.h \
-	wxc/include/ewxw/wxc_glue.h 
+	wxc/include/wxc_glue.h
 
 
 # distributed in a source distribution
-WXC-SRCS1=$(wildcard wxc/src/*.cpp)   
-
-WXC-SRCS2=$(wildcard wxc/src/ewxw/*.cpp) \
-	 $(wildcard wxc/src/ewxw/*.h)\
-	 $(wildcard wxc/include/*.h) $(wildcard wxc/include/ewxw/*.h) \
-	 $(wildcard wxc/eiffel/*.e)  $(wildcard wxc/eiffel/ewxw/*.e) \
+WXC-SRCS=$(wildcard wxc/src/*.cpp) \
+	 $(wildcard wxc/src/*.h)\
+	 $(wildcard wxc/include/*.h)\
+	 $(wildcard wxc/eiffel/*.e)\
 	 wxc/src/wxc.rc \
 	 $(wildcard wxc/wxc*.dsp) $(wildcard wxc/wxc*.dsw)
 
@@ -663,7 +661,6 @@ $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
 # either "wxc" or "wxcd" for a debug version.
 #--------------------------------------------------------------------------
 WXC		=wxc
-WXC-CPATH	=ewxw
 WXC-OUTDIR	=$(OUTDIR)/$(WXC)
 WXC-SRCDIR	=$(WXC)/src
 WXC-INCDIR	=$(WXC)/include
@@ -689,9 +686,8 @@ wxc-compress: wxc
 	@$(call run-compress,$(WXC-LIB))
 
 # source dist
-wxc-dist: $(WXC-SRCS1) $(WXC-SRCS2)
-	@$(call cp-srcdist, $(WXC-SRCS1))
-	@$(call cp-srcdist, $(WXC-SRCS2))
+wxc-dist: $(WXC-SRCS)
+	@$(call cp-srcdist, $(WXC-SRCS))
 
 # binary distribution. A complication is that sometimes wxWindows is in a separate dll
 # and sometimes it is statically linked into wxc.dll (as with microsoft visual c++).
