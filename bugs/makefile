@@ -6,6 +6,7 @@ PREP=#
 endif
 
 APPS= \
+      NonModalDialog\
 
 .PHONY: clean
 
