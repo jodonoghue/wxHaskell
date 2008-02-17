@@ -28,7 +28,7 @@ extern "C"
 EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _argv)
 {
   wxHANDLE wxhInstance = GetModuleHandle(NULL);
-  
+
 
 /* check memory leaks with visual C++ */
 #if (defined(__WXDEBUG__) && defined(_MSC_VER))
@@ -46,10 +46,10 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   APPTerminating = 0;
   wxEntry(wxhInstance, NULL, (_argc > 0 ? _argv[0] : NULL), SW_SHOWNORMAL);
   APPTerminating = 1;
- 
+
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
-  wxPendingEvents = NULL; 
+  wxPendingEvents = NULL;
 #endif
 
 #if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
@@ -63,7 +63,7 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
      && (memDif.lCounts[_NORMAL_BLOCK]>=-2 && memDif.lCounts[_NORMAL_BLOCK] <= 0))
   {
     _RPT0(_CRT_WARN,"\n** memory leak detected (**\n" );
-    _CrtMemDumpStatistics(&memDif);  
+    _CrtMemDumpStatistics(&memDif);
     /* _CrtMemDumpAllObjectsSince(&memStart);  */
     _RPT0(_CRT_WARN,"** memory leak report done **\n\n" );
 
@@ -79,7 +79,7 @@ EWXWEXPORT(void, ELJApp_initialize)(void* _obj, AppInitFunc _func, char* _cmd, v
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
-  wxPendingEvents = NULL; 
+  wxPendingEvents = NULL;
 #endif
 #if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
   wxDbCloseConnections();
@@ -116,7 +116,7 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
-  wxPendingEvents = NULL; 
+  wxPendingEvents = NULL;
 #endif
 #if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
   wxDbCloseConnections();
@@ -130,7 +130,7 @@ EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, v
   APPTerminating = 1;
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
-  wxPendingEvents = NULL; 
+  wxPendingEvents = NULL;
 #endif
 #if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
   wxDbCloseConnections();
