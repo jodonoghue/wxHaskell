@@ -80,7 +80,8 @@ hGetBytes h c = allocaArray c $ \p ->
 readTestFile :: IO String
 readTestFile =
  do h  <- openBinaryFile testFile ReadMode
-    ws <- hGetBytes h $ hFileSize testFile
+    hsize <- hFileSize h
+    ws <- hGetBytes h $ fromIntegral hsize
     return . fst . decode $ ws
 
 testFile :: FilePath
