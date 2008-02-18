@@ -734,13 +734,7 @@ $(basename $(WXC-LIB)).so: $(WXC-OBJS)
 
 # dynamic link library on macOSX: generates single .so file
 $(basename $(WXC-LIB)).dylib: $(WXC-OBJS)
-ifeq ($(ARCHITECTURE),powerpc)
-	$(CXX) -r -keep_private_externs -nostdlib -o $(WXC-OUTDIR)/master.o $^ $(WXC-LIBS) -lSystemStubs -shared-libgcc -lstdc++-static
-	$(CXX) -dynamiclib -install_name $(SHARED-PREFIX)$(notdir $@) -undefined suppress -flat_namespace -o $@ $(WXC-OUTDIR)/master.o $(filter-out %.a,$(WXC-LIBS))
-	$(RM) -f $(WXC-OUTDIR)/master.o
-else
 	$(CXX) -dynamiclib -install_name $(SHARED-PREFIX)$(notdir $@) -undefined suppress -flat_namespace -o $@ $^ $(filter-out %.a,$(WXC-LIBS))
-endif
 	
 # create an object file from source files
 $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
