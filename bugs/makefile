@@ -9,6 +9,7 @@ APPS= \
       BoxedCombinator\
       NonModalDialog\
       SubMenu\
+      TextColor\
 
 .PHONY: clean
 
