@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxMSW-2.8.7\lib\vc_lib\mswu" /I "..\..\wxMSW-2.8.7\contrib\include" /I "include" /I "src\ewxw" /I "..\..\wxMSW-2.8.7\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxMSW-2.8.7\lib\vc_lib\mswu" /I "..\..\wxMSW-2.8.7\contrib\include" /I "include" /I "..\..\wxMSW-2.8.7\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
@@ -74,7 +74,7 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\w
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxMSW-2.8.7\lib\vc_lib\mswud" /I "include" /I "src\ewxw" /I "..\..\wxMSW-2.8.7\include" /I "..\..\wxMSW-2.8.7\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxMSW-2.8.7\lib\vc_lib\mswud" /I "include" /I "..\..\wxMSW-2.8.7\include" /I "..\..\wxMSW-2.8.7\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
@@ -253,359 +253,359 @@ SOURCE=.\src\wrapper.cpp
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljaccelerator.cpp
+SOURCE=.\src\eljaccelerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljartprov.cpp
+SOURCE=.\src\eljartprov.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljbitmap.cpp
+SOURCE=.\src\eljbitmap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljbrush.cpp
+SOURCE=.\src\eljbrush.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljbusyinfo.cpp
+SOURCE=.\src\eljbusyinfo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljbutton.cpp
+SOURCE=.\src\eljbutton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcalendarctrl.cpp
+SOURCE=.\src\eljcalendarctrl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcaret.cpp
+SOURCE=.\src\eljcaret.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcheckbox.cpp
+SOURCE=.\src\eljcheckbox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljchecklistbox.cpp
+SOURCE=.\src\eljchecklistbox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljchoice.cpp
+SOURCE=.\src\eljchoice.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljclipboard.cpp
+SOURCE=.\src\eljclipboard.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcoldata.cpp
+SOURCE=.\src\eljcoldata.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcolour.cpp
+SOURCE=.\src\eljcolour.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcolourdlg.cpp
+SOURCE=.\src\eljcolourdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcombobox.cpp
+SOURCE=.\src\eljcombobox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljconfigbase.cpp
+SOURCE=.\src\eljconfigbase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcontrol.cpp
+SOURCE=.\src\eljcontrol.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljctxhelp.cpp
+SOURCE=.\src\eljctxhelp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljcursor.cpp
+SOURCE=.\src\eljcursor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdataformat.cpp
+SOURCE=.\src\eljdataformat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdatetime.cpp
+SOURCE=.\src\eljdatetime.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdc.cpp
+SOURCE=.\src\eljdc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdialog.cpp
+SOURCE=.\src\eljdialog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdialup.cpp
+SOURCE=.\src\eljdialup.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdirdlg.cpp
+SOURCE=.\src\eljdirdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdnd.cpp
+SOURCE=.\src\eljdnd.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljdrawing.cpp
+SOURCE=.\src\eljdrawing.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfiledialog.cpp
+SOURCE=.\src\eljfiledialog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfilehist.cpp
+SOURCE=.\src\eljfilehist.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfindrepldlg.cpp
+SOURCE=.\src\eljfindrepldlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfont.cpp
+SOURCE=.\src\eljfont.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfontdata.cpp
+SOURCE=.\src\eljfontdata.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljfontdlg.cpp
+SOURCE=.\src\eljfontdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljframe.cpp
+SOURCE=.\src\eljframe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljgauge.cpp
+SOURCE=.\src\eljgauge.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljgrid.cpp
+SOURCE=.\src\eljgrid.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljhelpcontroller.cpp
+SOURCE=.\src\eljhelpcontroller.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljicnbndl.cpp
+SOURCE=.\src\eljicnbndl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljicon.cpp
+SOURCE=.\src\eljicon.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljimage.cpp
+SOURCE=.\src\eljimage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljimagelist.cpp
+SOURCE=.\src\eljimagelist.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljipc.cpp
+SOURCE=.\src\eljipc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljlayoutconstraints.cpp
+SOURCE=.\src\eljlayoutconstraints.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljlistbox.cpp
+SOURCE=.\src\eljlistbox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljlistctrl.cpp
+SOURCE=.\src\eljlistctrl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljlocale.cpp
+SOURCE=.\src\eljlocale.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljlog.cpp
+SOURCE=.\src\eljlog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljmask.cpp
+SOURCE=.\src\eljmask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljmdi.cpp
+SOURCE=.\src\eljmdi.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljmenu.cpp
+SOURCE=.\src\eljmenu.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljmenubar.cpp
+SOURCE=.\src\eljmenubar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljmessagedialog.cpp
+SOURCE=.\src\eljmessagedialog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljminiframe.cpp
+SOURCE=.\src\eljminiframe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljnotebook.cpp
+SOURCE=.\src\eljnotebook.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljpalette.cpp
+SOURCE=.\src\eljpalette.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljpanel.cpp
+SOURCE=.\src\eljpanel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljpen.cpp
+SOURCE=.\src\eljpen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljprintdlg.cpp
+SOURCE=.\src\eljprintdlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljprinting.cpp
+SOURCE=.\src\eljprinting.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljprocess.cpp
+SOURCE=.\src\eljprocess.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljradiobox.cpp
+SOURCE=.\src\eljradiobox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljradiobutton.cpp
+SOURCE=.\src\eljradiobutton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljregion.cpp
+SOURCE=.\src\eljregion.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljregioniter.cpp
+SOURCE=.\src\eljregioniter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljsash.cpp
+SOURCE=.\src\eljsash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljscintilla.cpp
+SOURCE=.\src\eljscintilla.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljscrollbar.cpp
+SOURCE=.\src\eljscrollbar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljscrolledwindow.cpp
+SOURCE=.\src\eljscrolledwindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljsingleinst.cpp
+SOURCE=.\src\eljsingleinst.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljsizer.cpp
+SOURCE=.\src\eljsizer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljslider.cpp
+SOURCE=.\src\eljslider.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljspinctrl.cpp
+SOURCE=.\src\eljspinctrl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljsplitterwindow.cpp
+SOURCE=.\src\eljsplitterwindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljstaticbox.cpp
+SOURCE=.\src\eljstaticbox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljstaticline.cpp
+SOURCE=.\src\eljstaticline.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljstatictext.cpp
+SOURCE=.\src\eljstatictext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljstatusbar.cpp
+SOURCE=.\src\eljstatusbar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljsystemsettings.cpp
+SOURCE=.\src\eljsystemsettings.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljtextctrl.cpp
+SOURCE=.\src\eljtextctrl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljtglbtn.cpp
+SOURCE=.\src\eljtglbtn.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljthread.cpp
+SOURCE=.\src\eljthread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljtimer.cpp
+SOURCE=.\src\eljtimer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljtipwnd.cpp
+SOURCE=.\src\eljtipwnd.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljtoolbar.cpp
+SOURCE=.\src\eljtoolbar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljvalidator.cpp
+SOURCE=.\src\eljvalidator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljwindow.cpp
+SOURCE=.\src\eljwindow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\eljwizard.cpp
+SOURCE=.\src\eljwizard.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ewxw\Scintilla.h
+SOURCE=.\src\Scintilla.h
 # End Source File
 # End Group
 # Begin Group "ewxw headers"
@@ -613,11 +613,11 @@ SOURCE=.\src\ewxw\Scintilla.h
 # PROP Default_Filter "*.h"
 # Begin Source File
 
-SOURCE=.\include\ewxw\wxc_glue.h
+SOURCE=.\include\wxc_glue.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ewxw\wxc_types.h
+SOURCE=.\include\wxc_types.h
 # End Source File
 # End Group
 # End Group
