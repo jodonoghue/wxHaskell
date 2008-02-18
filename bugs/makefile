@@ -7,6 +7,7 @@ endif
 
 APPS= \
       BoxedCombinator\
+      ListControl\
       NonModalDialog\
       SubMenu\
       TextColor\
