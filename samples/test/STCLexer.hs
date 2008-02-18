@@ -30,7 +30,7 @@ main = start $ do
     f <- frame [text := "Scintilla Test", visible := False]
     p <- panel f []
     s <- styledTextCtrl p [ clientSize := sz 500 500]
-    styledTextCtrlLoadFile s "LexerTest.hs"
+    styledTextCtrlLoadFile s "STCLexer.hs"
     styledTextCtrlStyleClearAll s
     styledTextCtrlSetLexer s wxSTC_LEX_HASKELL
     styledTextCtrlSetKeyWords s 0 keywords
