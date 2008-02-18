@@ -9,3 +9,4 @@ void  wxSound_Delete(TSelf(wxSound) self);
 TBool  wxSound_IsOk(TSelf(wxSound) self);
 TBool  wxSound_Play(TSelf(wxSound) self, int flag );
 TBool  wxSound_PlayCompatible(TSelf(wxSound) self, TBool async, TBool looped );
+void  wxSound_Stop(TSelf(wxSound) self);

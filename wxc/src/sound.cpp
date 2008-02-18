@@ -78,6 +78,13 @@ EWXWEXPORT(bool,wxSound_PlayCompatible)(wxSound* self, bool async, bool looped )
 #endif
 }
 
+EWXWEXPORT(void,wxSound_Stop)(wxSound* self)  
+{
+#ifdef wxUSE_SOUND
+  return self->Stop();
+#endif
+}
+
 #else /* (wxVERSION_NUMBER >= 2500) */
 
 /*-----------------------------------------------------------------------------
@@ -120,6 +127,10 @@ EWXWEXPORT(bool,wxSound_PlayCompatible)(wxWave* self, bool async, bool looped )
 #else
   return false;
 #endif
+}
+
+EWXWEXPORT(void,wxSound_Stop)(wxWave* self)  
+{
 }
 
 #endif /* (wxVERSION_NUMBER >= 2500) */

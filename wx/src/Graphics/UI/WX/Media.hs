@@ -100,7 +100,7 @@ instance Media (Sound a) where
     if (div wxVersion 100) == 24
       then unitIO (soundPlayCompatible sound True False)
       else unitIO (soundPlay sound wxSOUND_ASYNC)
-  stop = undefined
+  stop = soundStop
 
 -- | Play a sound fragment repeatedly (and asynchronously).
 playLoop :: Sound a -> IO ()
