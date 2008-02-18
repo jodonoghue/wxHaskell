@@ -13,7 +13,9 @@
 
 #include "ewxw_def.h"
 #include "wx/wx.h"
+#if (wxVERSION_NUMBER >= 2600)
 #include "wx/apptrait.h"
+#endif
 #include "wx/tabctrl.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"

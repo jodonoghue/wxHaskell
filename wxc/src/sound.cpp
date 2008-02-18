@@ -108,6 +108,11 @@ EWXWEXPORT(bool,wxSound_IsOk)(wxWave* self)
 #endif
 }
 
+EWXWEXPORT(bool,wxSound_Play)(wxWave* self, unsigned flag )  
+{
+  return false;
+}
+
 EWXWEXPORT(bool,wxSound_PlayCompatible)(wxWave* self, bool async, bool looped )  
 {
 #ifdef wxUSE_WAVE 
