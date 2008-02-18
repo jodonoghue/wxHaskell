@@ -122,6 +122,7 @@
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Layout( -- * Types
                                Layout, sizerFromLayout
+                             , TabPage
                                -- * Window
                              , windowSetLayout, layoutFromWindow
                              , windowReFit, windowReFitMinimal
