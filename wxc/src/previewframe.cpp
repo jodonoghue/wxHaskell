@@ -1,4 +1,4 @@
-#include "ewxw_def.h"
+#include "wrapper.h"
 #include "wx/wx.h"
 #include "wx/print.h"
 
