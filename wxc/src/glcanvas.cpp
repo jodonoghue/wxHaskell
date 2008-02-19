@@ -13,11 +13,13 @@
 # undef wxUSE_GLCANVAS
 #endif
 
+#if defined(wxcREFUSE_OPENGL)
+# undef wxUSE_GLCANVAS
+#endif
+
 #ifndef wxUSE_GLCANVAS
 # define wxGLCanvas      void
 #endif
-
-
 
 extern "C" {
 

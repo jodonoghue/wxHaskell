@@ -479,6 +479,11 @@ if test "$withmsc" != "yes"; then
   wxlibswanted="std media"
   if test "$withopengl" = "yes"; then
     wxlibswanted="$wxlibswanted gl"
+  else
+    # override wxUSE_GLCANVAS=1 in the wxWidgets setup.h
+    # file so that we can compile without --with-opengl
+    # even if our wxWidgets supports it
+    wxwincxxflags="-DwxcREFUSE_OPENGL $wxwincxxflags"
   fi
   if test "$withstc" = "yes"; then
     wxlibswanted="$wxlibswanted stc"

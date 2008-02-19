@@ -758,6 +758,10 @@ static const wxChar* useDefs[] = {
 #ifdef wxUSE_THREADS
   wxT("THREADS"),
 #endif
+#if defined(wxcREFUSE_OPENGL)
+# undef wxUSE_OPENGL
+# undef wxUSE_GLCANVAS
+#endif
 #ifdef wxUSE_OPENGL
   wxT("OPENGL"),
 #endif
