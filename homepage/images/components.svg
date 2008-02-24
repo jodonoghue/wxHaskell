@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/eykk10/tmp/haskell/wxhaskell/homepage/images"
+   sodipodi:docname="components.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3341">
+      <stop
+         style="stop-color:#5ec0b1;stop-opacity:1;"
+         offset="0"
+         id="stop3343" />
+      <stop
+         style="stop-color:#5ec0b1;stop-opacity:0;"
+         offset="1"
+         id="stop3345" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3223">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3225" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3227" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3223"
+       id="linearGradient3229"
+       x1="96.439453"
+       y1="275.34185"
+       x2="154.03711"
+       y2="275.34185"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3341"
+       id="linearGradient3347"
+       x1="292.07114"
+       y1="379.19992"
+       x2="319.6434"
+       y2="415.62848"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="194.69992"
+     inkscape:cy="883.84033"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="817"
+     inkscape:window-height="751"
+     inkscape:window-x="0"
+     inkscape:window-y="15" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:0.74175822;fill:#efefde;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.05;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3524"
+       width="443.57144"
+       height="397.85715"
+       x="5.7142859"
+       y="88.076462" />
+    <rect
+       y="352.04428"
+       x="84.069077"
+       height="51.35004"
+       width="159.00473"
+       id="rect3287"
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.11786292;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.06549792;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3176"
+       width="112.93394"
+       height="22.14077"
+       x="91.033043"
+       y="56.648956" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="95"
+       y="71.647903"
+       id="text2160"><tspan
+         sodipodi:role="line"
+         x="95"
+         y="71.647903"
+         id="tspan2164">wxWidgets (C++)</tspan></text>
+    <rect
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.03681516;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2202"
+       width="187.16455"
+       height="18.619576"
+       x="52.846294"
+       y="4.4809608" />
+    <a
+       id="a2186"
+       transform="translate(12.142857,-43.571429)">
+      <text
+         id="text2166"
+         y="62.362186"
+         x="43.57143"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+         xml:space="preserve"><tspan
+           y="62.362186"
+           x="43.57143"
+           id="tspan2168"
+           sodipodi:role="line">GTK, Windows, Carbon, etc</tspan></text>
+    </a>
+    <rect
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.07928829;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3178"
+       width="120.48071"
+       height="30.668823"
+       x="22.259651"
+       y="254.52777" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="25.000002"
+       y="266.64789"
+       id="text3231"><tspan
+         sodipodi:role="line"
+         x="25.000002"
+         y="266.64789"
+         id="tspan3235">wxcore (Haskell)</tspan><tspan
+         sodipodi:role="line"
+         x="25.000002"
+         y="281.64789"
+         id="tspan3317">handwritten</tspan></text>
+    <rect
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.10740437;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3245"
+       width="141.87445"
+       height="47.789909"
+       x="168.3485"
+       y="248.11012" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="171.78571"
+       y="260.93359"
+       id="text3247"><tspan
+         sodipodi:role="line"
+         id="tspan3249"
+         x="171.78571"
+         y="260.93359">wxcore (Haskell)</tspan><tspan
+         sodipodi:role="line"
+         x="171.78571"
+         y="275.93359"
+         id="tspan3271">Graphics/UI/Wxc*.hs</tspan><tspan
+         sodipodi:role="line"
+         x="171.78571"
+         y="290.93359"
+         id="tspan3251">auto-generated</tspan></text>
+    <text
+       id="text3259"
+       y="364.50504"
+       x="87.14286"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       xml:space="preserve"><tspan
+         y="364.50504"
+         x="87.14286"
+         id="tspan3261"
+         sodipodi:role="line">wxcore (Haskell)</tspan><tspan
+         id="tspan3265"
+         y="379.50504"
+         x="87.14286"
+         sodipodi:role="line">Graphics/UI/WxCore.hs</tspan><tspan
+         id="tspan3278"
+         y="394.50504"
+         x="87.14286"
+         sodipodi:role="line">handwritten</tspan><tspan
+         id="tspan3263"
+         y="409.50504"
+         x="87.14286"
+         sodipodi:role="line" /></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 189.74376,138.43362 L 189.74376,138.43362"
+       id="path3293"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 144.0143,351.98178 L 92.771067,284.54482"
+       id="path3295"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#rect3287" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 182.00508,351.98178 L 222.12699,295.96253"
+       id="path3309"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#rect3287"
+       inkscape:connection-end="#rect3245" />
+    <rect
+       style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.06927077;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3319"
+       width="91.930138"
+       height="30.678825"
+       x="119.74922"
+       y="444.16562" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="122.14285"
+       y="455.93362"
+       id="text3357"><tspan
+         sodipodi:role="line"
+         id="tspan3359"
+         x="122.14285"
+         y="455.93362">wx (Haskell)</tspan><tspan
+         sodipodi:role="line"
+         x="122.14285"
+         y="470.93362"
+         id="tspan3361">handwritten</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 165.31075,444.10312 L 164.24578,403.45682"
+       id="path3363"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#rect3319"
+       inkscape:connection-end="#rect3287" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 189.74376,138.43362 L 189.74376,138.43362"
+       id="path3367"
+       inkscape:connector-type="polyline" />
+    <g
+       id="g3444"
+       transform="translate(165.71429,39.285714)">
+      <g
+         id="g3462">
+        <rect
+           y="67.094452"
+           x="-92.861923"
+           height="65.535469"
+           width="147.8667"
+           id="rect3365"
+           style="opacity:0.74853803;fill:#cecece;fill-opacity:1;stroke:#000000;stroke-width:0.12894137;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           id="text3369"
+           y="80.933624"
+           x="-91.428574"
+           style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+           xml:space="preserve"><tspan
+             y="80.933624"
+             x="-91.428574"
+             sodipodi:role="line"
+             id="tspan3388">wxc (C++/Eiffel)</tspan><tspan
+             y="95.933624"
+             x="-91.428574"
+             sodipodi:role="line"
+             id="tspan3392"></tspan><tspan
+             y="110.93362"
+             x="-91.428574"
+             sodipodi:role="line"
+             id="tspan3404">handwritten</tspan><tspan
+             y="125.93362"
+             x="-91.428574"
+             sodipodi:role="line"
+             id="tspan3396">exports C</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+           x="-90.714279"
+           y="91.647919"
+           id="text3398"><tspan
+             sodipodi:role="line"
+             id="tspan3400"
+             x="-90.714279"
+             y="91.647919"
+             style="font-size:8px">Eiffel bits are just constants</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 147.27883,56.586456 L 146.61478,23.163036"
+       id="path3472"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#rect3176"
+       inkscape:connection-end="#rect2202" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M 147.38868,78.852226 L 147.11404,106.3157"
+       id="path3474"
+       inkscape:connector-type="polyline"
+       inkscape:connection-end="#g3444"
+       inkscape:connection-start="#rect3176" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M 169.64469,171.98011 L 222.60567,248.04762"
+       id="path3476"
+       inkscape:connector-type="polyline"
+       inkscape:connection-end="#rect3245"
+       inkscape:connection-start="#g3444" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M 130.63873,171.98011 L 90.072259,254.46527"
+       id="path3478"
+       inkscape:connector-type="polyline"
+       inkscape:connection-end="#rect3178"
+       inkscape:connection-start="#g3444" />
+    <rect
+       style="opacity:0.74175822;fill:#98ace2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.05;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3480"
+       width="167.14287"
+       height="53.57143"
+       x="264.85715"
+       y="158.79077" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="267.14285"
+       y="169.50505"
+       id="text3482"><tspan
+         sodipodi:role="line"
+         id="tspan3484"
+         x="267.14285"
+         y="169.50505"
+         style="font-size:10px">wxdirect (Haskell)</tspan><tspan
+         sodipodi:role="line"
+         x="267.14285"
+         y="182.00505"
+         id="tspan3486"
+         style="font-size:10px" /><tspan
+         sodipodi:role="line"
+         x="267.14285"
+         y="194.50505"
+         id="tspan3490"
+         style="font-size:10px">generates wxcore files from</tspan><tspan
+         sodipodi:role="line"
+         x="267.14285"
+         y="207.00505"
+         id="tspan3494"
+         style="font-size:10px">wxc .h and .e (Eiffel)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans Mono"
+       x="237.14287"
+       y="480.21933"
+       id="text3526"><tspan
+         sodipodi:role="line"
+         id="tspan3528"
+         x="237.14287"
+         y="480.21933"
+         style="font-size:8px;font-family:Courier New">darcs get http://darcs.haskell.org/wxhaskell</tspan></text>
+  </g>
+</svg>
