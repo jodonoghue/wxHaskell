@@ -5,7 +5,7 @@ License-file:   license.txt
 Author:         Daan Leijen
 Build-Type:     Make
 Description:    wxHaskell is a portable and native GUI library for Haskell.  It is built on top of wxWidgets - a comprehensive C++ library that is portable across all major GUI platforms; including GTK, Windows, X11, and MacOS X.  At present, it works with wxWidgets 2.6 (and sadly, not with with wxWidgets 2.8)
-Maintainer:     wxhaskell-users@lists.sourceforge.net
+Maintainer:     wxhaskell-devel@lists.sourceforge.net
 Cabal-Version:  >= 1.2
 Category:       GUI
 Synopsis:       wxHaskell core
