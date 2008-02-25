@@ -1,5 +1,5 @@
-{--------------------------------------------------------------------------------
-   Camel game by Maarten Löffler (mloffler@cs.uu.nl) (adapted by Daan Leijen).
+ï»¿{--------------------------------------------------------------------------------
+   Camel game by Maarten LÃ¶fler (mloffler@cs.uu.nl) (adapted by Daan Leijen).
 --------------------------------------------------------------------------------}
 module Main where
 
@@ -148,7 +148,7 @@ eind pan desert board
 
 about :: Window a -> IO ()
 about w
-  = infoDialog w "About Camels" "Camels\n\nby Maarten Löffler\nmloffler@cs.uu.nl\n\nCamels was written using wxHaskell"
+  = infoDialog w "About Camels" "Camels\n\nby Maarten LÃ¶fler\nmloffler@cs.uu.nl\n\nCamels was written using wxHaskell"
 
 chelp :: Window a -> IO ()
 chelp w
