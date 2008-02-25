@@ -253,7 +253,7 @@ SAMPLE-SOURCES= \
 #--------------------------------------------------------------------------
 # The main targets.
 #--------------------------------------------------------------------------
-.SUFFIXES: .hs .hi .o .c .cpp
+.SUFFIXES: .hs .hi .o .p_hi .p_o .c .cpp
 .PHONY: all install uninstall install-files uninstall-files
 .PHONY: help doc webdoc clean realclean
 
@@ -475,16 +475,36 @@ WXCORE-CORE-B-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-B-SOURC
 WXCORE-CORE-C-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-C-SOURCES))
 WXCORE-STUB-OBJS=$(call make-objs, $(WXCORE-IMPORTSDIR), $(patsubst %,%_stub,$(WXCORE-STUBS)))
 
+WXCORE-PROF-OBJ	=$(WXCORE-OUTDIR)/$(WXCORE).p_o
+WXCORE-PROF-LIB	=$(WXCORE-OUTDIR)/lib$(WXCORE).p_a
+WXCORE-CORE-A-PROF-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)0.p_o
+WXCORE-CORE-A-PROF-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)0.p_a
+WXCORE-CORE-B-PROF-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)1.p_o
+WXCORE-CORE-B-PROF-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)1.p_a
+WXCORE-CORE-C-PROF-OBJ =$(WXCORE-OUTDIR)/$(WXCORE)2.p_o
+WXCORE-CORE-C-PROF-LIB =$(WXCORE-OUTDIR)/lib$(WXCORE)2.p_a
+WXCORE-PROF-LIBS	=$(WXCORE-CORE-A-PROF-LIB) $(WXCORE-CORE-A-PROF-OBJ) \
+                 $(WXCORE-CORE-B-PROF-LIB) $(WXCORE-CORE-B-PROF-OBJ) \
+                 $(WXCORE-CORE-C-PROF-LIB) $(WXCORE-CORE-C-PROF-OBJ) \
+		 $(WXCORE-PROF-LIB) $(WXCORE-PROF-OBJ)
+WXCORE-PROF-OBJS	=$(call make-prof-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-SOURCES))
+WXCORE-CORE-A-PROF-OBJS=$(call make-prof-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-A-SOURCES))
+WXCORE-CORE-B-PROF-OBJS=$(call make-prof-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-B-SOURCES))
+WXCORE-CORE-C-PROF-OBJS=$(call make-prof-objs, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-C-SOURCES))
+WXCORE-STUB-PROF-OBJS=$(call make-prof-objs, $(WXCORE-IMPORTSDIR), $(patsubst %,%_stub,$(WXCORE-STUBS)))
+
 WXCORE-CORE-SOURCES=$(WXCORE-CORE-A-SOURCES) $(WXCORE-CORE-B-SOURCES) $(WXCORE-CORE-C-SOURCES)
 WXCORE-CORE-OBJS   =$(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS)
 
 WXCORE-DEPS	=$(call make-deps, $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
 WXCORE-HIS	=$(call make-his,  $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
+WXCORE-PROF-HIS	=$(call make-prof-his,  $(WXCORE-IMPORTSDIR), $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
 WXCORE-HS	=$(call make-hs,   $(WXCORE-SRCDIR),     $(WXCORE-CORE-SOURCES) $(WXCORE-SOURCES))
 WXCORE-GEN-HS   =$(call make-hs,   $(WXCORE-SRCDIR),     $(WXCORE-GEN-SOURCES))
 WXCORE-NONGEN-HS=$(filter-out $(WXCORE-GEN-HS),$(WXCORE-HS))
 
 WXCORE-BINS	=$(WXCORE-HIS) $(WXCORE-LIBS)
+WXCORE-PROF-BINS	=$(WXCORE-PROF-HIS) $(WXCORE-PROF-LIBS)
 WXCORE-DOCS	=$(filter-out $(WXCORE-SRCDIR)/$(WXCORE-HPATH)/IntMap.hs,$(WXCORE-HS))
 WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 
@@ -494,6 +514,11 @@ wxcore: wxd wxc wxcore-dirs $(WXCORE-LIBS)
 
 wxcore-dirs:
 	@$(call ensure-dirs-of-files,$(WXCORE-OBJS))
+
+wxcore-prof: wxd wxc wxcore-prof-dirs $(WXCORE-PROF-LIBS)
+
+wxcore-prof-dirs:
+	@$(call ensure-dirs-of-files,$(WXCORE-PROF-OBJS))
 
 wxcore-clean:
 	-@$(call full-remove-dir,$(WXCORE-OUTDIR))
@@ -572,6 +597,26 @@ $(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS) $(WXCORE-OBJS)
 
 $(WXCORE-STUB-OBJS): $(WXCORE-IMPORTSDIR)/%_stub.o: $(WXCORE-SRCDIR)/%.hs
 	$(HC) -c $(basename $@).c
+
+# profiling version of above targets
+$(WXCORE-PROF-OBJ): $(WXCORE-PROF-OBJS)  $(WXCORE-STUB-PROF-OBJS)
+	  $(call combine-objs,$@,$^)
+$(WXCORE-CORE-A-PROF-OBJ): $(WXCORE-CORE-A-PROF-OBJS)
+	  $(call combine-objs,$@,$^)
+$(WXCORE-CORE-B-PROF-OBJ): $(WXCORE-CORE-B-PROF-OBJS)
+	  $(call combine-objs,$@,$^)
+$(WXCORE-CORE-C-PROF-OBJ): $(WXCORE-CORE-C-PROF-OBJS)
+	  $(call combine-objs,$@,$^)
+$(WXCORE-PROF-LIB): $(WXCORE-PROF-OBJS)  $(WXCORE-STUB-PROF-OBJS)
+	  $(call make-archive,$@,$^)
+$(WXCORE-CORE-A-PROF-LIB): $(WXCORE-CORE-A-PROF-OBJS)
+	  $(call make-archive,$@,$^)
+$(WXCORE-CORE-B-PROF-LIB): $(WXCORE-CORE-B-PROF-OBJS)
+	  $(call make-archive,$@,$^)
+$(WXCORE-CORE-C-PROF-LIB): $(WXCORE-CORE-C-PROF-OBJS)
+	  $(call make-archive,$@,$^)
+$(WXCORE-CORE-A-PROF-OBJS) $(WXCORE-CORE-B-PROF-OBJS) $(WXCORE-CORE-C-PROF-OBJS) $(WXCORE-PROF-OBJS): $(WXCORE-IMPORTSDIR)/%.p_o: $(WXCORE-SRCDIR)/%.hs
+	@$(call compile-prof-hs,$@,$<,$(WXCORE-HCFLAGS) $(HC-PROF-FLAGS) -Iwxc/include,$(WXCORE-IMPORTSDIR),$(WXCORE-HSDIRS) )
 
 # automatically include all dependency information.
 -include $(WXCORE-DEPS)

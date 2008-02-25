@@ -57,8 +57,10 @@ endif
 # usage: $(call make-objs,<object root path>,<file base names>)
 make-hs		=$(patsubst %,$(1)/%.hs,$(2))
 make-objs	=$(patsubst %,$(1)/%.o,$(2))
+make-prof-objs	=$(patsubst %,$(1)/%.p_o,$(2))
 make-deps	=$(patsubst %,$(1)/%.d,$(2))
 make-his	=$(patsubst %,$(1)/%.hi,$(2))
+make-prof-his	=$(patsubst %,$(1)/%.p_hi,$(2))
 
 # usage: $(call run-silent,<command>)
 run-silent	=$(1) 1> /dev/null 2> /dev/null
@@ -128,6 +130,16 @@ make-hs-deps	=$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -optdep-f -optdep$(
 compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
 		 $(call silent-move-stubs,$(1),$(2)) && \
 		 $(call make-hs-deps,$(1),$(2),$(3),$(4),$(5))
+
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
+make-hs-prof-deps	=$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -optdep-f -optdep$(basename $(1)).p_d.in && \
+		 sed -e 's|\.o|\.p_o|g' -e 's|\.hi|\.p_o|g' $(basename $(1)).p_d.in | grep '^$(1)' > $(basename $(1)).p_d
+
+# compile-hs(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
+compile-prof-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
+		 $(call silent-move-stubs,$(1),$(2)) && \
+		 $(call make-hs-prof-deps,$(1),$(2),$(3),$(4),$(5))
+
 
 #--------------------------------------------------------------------------
 # Linking
