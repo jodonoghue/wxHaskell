@@ -374,7 +374,7 @@ process_args ()
       -with-opengl|--with-opengl)
 	  withopengl="yes";;
       -with-mediactrl|--with-mediactrl)
-	  withopengl="yes";;
+	  withmediactrl="yes";;
       -with-stc|--with-stc)
 	  withstc="yes";;
       -wx-config=*|--wx-config=*)
