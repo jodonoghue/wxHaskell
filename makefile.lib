@@ -112,25 +112,6 @@ compile-c	=$(call make-c-obj,$(1),$(2),-MD $(3)) && \
 #--------------------------------------------------------------------------
 
 
-ifeq ($(GHCOLD),yes)
-# pre GHC 6.4
-# silent-move-stubs(<output .o>,<input .c>)
-silent-move-stubs =$(call silent-move-file,$(basename $(2))_stub.h,$(dir $(1))) && \
-		   $(call silent-move-file,$(basename $(2))_stub.c,$(dir $(1)))	
-
-# make-hs-obj(<output .o>,<input .hs>,<compile flags>,<top output directory>)
-make-hs-obj     =$(call run-with-echo,$(HC) -c $(2) -o $(1) -i$(4) -ohi $(basename $(1)).hi -odir $(dir $(1)) $(3))
-
-# make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>)
-make-hs-deps	=$(HC) $(2) $(3) -i$(4) -M -optdep-f -optdep$(basename $(1)).d.in && \
-		 sed -e 's|$(basename $(2))|$(basename $(1))|' -e 's|\.hi|\.o|g' $(basename $(1)).d.in > $(basename $(1)).d && \
-		 $(call silent-remove-file,$(basename $(1)).d.in)
-
-# compile-hs(<output .o>,<input .hs>,<compile flags>,<top output directory>)
-compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
-		 $(call silent-move-stubs,$(1),$(2)) && \
-		 $(call make-hs-deps,$(1),$(2),$(3),$(4))
-else
 # GHC 6.4+ and others
 # make-hs-obj(<output .o>,<input .hs>,<compile flags>,<top output directory>)
 # silent-move-stubs(<output .o>,<input .c>)
@@ -147,9 +128,6 @@ make-hs-deps	=$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -optdep-f -optdep$(
 compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
 		 $(call silent-move-stubs,$(1),$(2)) && \
 		 $(call make-hs-deps,$(1),$(2),$(3),$(4),$(5))
-
-
-endif
 
 #--------------------------------------------------------------------------
 # Linking
@@ -208,11 +186,7 @@ uninstall-files =$(call uninstall-filesx,$(2),$(call relative-fromto,$(patsubst 
 # install packages
 # usage: $(call install-pkg,<install dir>,<package file>)
 # usage: $(call uninstall-pkg,<package name>)
-ifeq ($(GHCOLD),yes)
-install-pkg=env wxhlibdir=$(1) $(HCPKG) -u -i $(2)
-else
 install-pkg=cat $(2) | sed -e "s|\$${wxhlibdir}|$(1)|" | $(HCPKG) update -
-endif
 uninstall-pkg=if $(call run-silent,$(HCPKG) -s $(1)); then echo "unregister package: $(1)" && $(HCPKG) -r $(1); fi
 
 

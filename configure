@@ -814,7 +814,6 @@ HCNAME=$hcname
 HCBASENAME=$hcbasename
 HCFLAGS=
 HCPKG=$hcpkg
-GHCOLD=$ghcold
 
 # Packages
 PKG-PARSEC=$pkgparsec
