@@ -767,7 +767,8 @@ WXCORE-DOC-OUTDIR  =$(DOC-OUTDIR)/wxcore
 WX-DOC-OUTDIR  	   =$(DOC-OUTDIR)/wx
 WXCORE-DOCFILE     =$(WXCORE-DOC-OUTDIR)/wxcore.haddock
 WX-DOCFILE     	   =$(WX-DOC-OUTDIR)/wx.haddock
-HDOCFLAGS   = --prologue=config/prologue.txt --html $(HDOCBASES)
+WXCORE-HDOCFLAGS   = --prologue=config/prologue.txt --html $(HDOCBASES)
+WX-HDOCFLAGS   = $(WXCORE-HDOCFLAGS) -i$(WXCORE-DOC-OUTDIR)/wxcore.haddock
 WXCORE-DOCSOURCES  = $(WXCORE-DOCS)
 WX-DOCSOURCES      = $(WX-DOCS)
 
@@ -807,10 +808,10 @@ docdist-clean:
 
 # generate documentation with haddock
 $(WXCORE-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES)
-	$(HDOC) --odir $(WXCORE-DOC-OUTDIR) --dump-interface=$(WXCORE-DOCFILE)  $(HDOCFLAGS) $(WXCORE-DOCSOURCES)
+	$(HDOC) --odir $(WXCORE-DOC-OUTDIR) --dump-interface=$(WXCORE-DOCFILE)  $(WXCORE-HDOCFLAGS) $(WXCORE-DOCSOURCES)
 
 $(WX-DOCFILE): config/prologue.txt $(WX-DOCSOURCES)
-	$(HDOC) --odir $(WX-DOC-OUTDIR) --dump-interface=$(WX-DOCFILE) $(HDOCFLAGS) $(WX-DOCSOURCES)
+	$(HDOC) --odir $(WX-DOC-OUTDIR) --dump-interface=$(WX-DOCFILE) $(WX-HDOCFLAGS) $(WX-DOCSOURCES)
 
 #--------------------------------------------------------------------------
 # Cabal / Hackage stuff
