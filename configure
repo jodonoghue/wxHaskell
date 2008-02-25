@@ -54,12 +54,13 @@ wxconfig="wx-config"
 wxtoolkit=""
 wxversion=""
 extraldopts=""
-withopengl="no"
 
 # check architecture, for mac os x
 architecture=""
 
-# stc
+# extras
+withopengl="no"
+withmediactrl="no"
 withstc="no"
 wxcstc=""
 
@@ -308,7 +309,8 @@ process_args ()
 	  echo "wxwidgets options:"
 	  echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
 	  echo " --with-opengl          enable openGL support [$withopengl]"
-	  echo " --with-stc             enable stc support [$withstc]"
+	  echo " --with-mediactrl       enable mediactrl support [$withmediactrl]"
+          echo " --with-stc             enable stc support [$withstc]"
 	  echo " --wx-config=<program>  wxWidgets configure script [$wxconfig]"
 	  echo ""
 	  echo "platform options:"
@@ -370,6 +372,8 @@ process_args ()
       -wx-toolkit=*|--wx-toolkit=*)
 	  wxtoolkit="$arg";;
       -with-opengl|--with-opengl)
+	  withopengl="yes";;
+      -with-mediactrl|--with-mediactrl)
 	  withopengl="yes";;
       -with-stc|--with-stc)
 	  withstc="yes";;
@@ -475,8 +479,7 @@ if test "$withmsc" != "yes"; then
   cxx="`$wxconfig --cxx`"
   wxwincxxflags="`$wxconfig --cxxflags`"
 
-  # XXX - should implement a withmediactrl flag
-  wxlibswanted="std media"
+  wxlibswanted="std"
   if test "$withopengl" = "yes"; then
     wxlibswanted="$wxlibswanted gl"
   else
@@ -485,6 +488,11 @@ if test "$withmsc" != "yes"; then
     # even if our wxWidgets supports it
     wxwincxxflags="-DwxcREFUSE_OPENGL $wxwincxxflags"
   fi
+
+  if test "$withmediactrl" = "yes"; then
+    wxlibswanted="$wxlibswanted media"
+  fi
+
   if test "$withstc" = "yes"; then
     wxlibswanted="$wxlibswanted stc"
     wxcstc="-DwxUSE_STC=1"
@@ -1090,8 +1098,10 @@ echo "configuration:"
 echo " library:     wxhaskell-$version  (release $release)"
 echo " compiler:    $hcbasename-$hcversion"
 echo " wxwidgets:   $wxtoolkit-$wxversion"
-echo " with openGL: $withopengl"
-echo " with stc:    $withstc"
+echo " extensions:"
+echo "   openGL:    $withopengl"
+echo "   mediactrl: $withmediactrl"
+echo "   stc:       $withstc"
 echo " library dir: $libdir"
 
 if test "$wxrezfile"; then
