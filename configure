@@ -29,6 +29,7 @@ configflags="$*"
 # haskell
 hc="ghc"
 hcpkg="ghc-pkg"
+hcprof="-prof -auto-all"
 hcpkglocal=""
 hdoc="haddock"
 
@@ -288,6 +289,7 @@ process_args ()
 	  echo " --help                 show this information"
 	  echo " --hc=<program>         the haskell compiler [$hc]"
 	  echo " --hcpkg=<program>      package compiler [$hcpkg]"
+          echo " --hcprof=<flags>       enable profiling (using flags [$hcprof])"
 	  echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
 	  echo " --version=<version>    library version [$version]"
 	  echo " --release=<version>    library release version [$release]"
@@ -331,8 +333,15 @@ process_args ()
 	  hc="$arg";;
       -hc=*|--hc=*)
 	  hc="$arg";;
+      -hcprof|--hcprof)
+	  enableprof="yes";;
+      -hcprof=*|--hcprof=*)
+	  hcprof="$arg"
+	  enableprof="yes";;
       -hcpkg=*|--hcpkg=*)
 	  hcpkg="$arg";;
+      --with-hc=*)
+	  hc="$arg";;
       -package-conf=*|--package-conf=*)
 	  hcpkglocal="$arg";;
       -version=*|--version=*)
@@ -814,7 +823,8 @@ HCNAME=$hcname
 HCBASENAME=$hcbasename
 HCFLAGS=
 HCPKG=$hcpkg
-HC-PROF-FLAGS=-hisuf p_hi -prof -auto-all
+ENABLE-PROF=$enableprof
+HC-PROF-FLAGS=-hisuf p_hi $hcprof
 
 # Packages
 PKG-PARSEC=$pkgparsec

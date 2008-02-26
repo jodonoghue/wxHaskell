@@ -510,7 +510,11 @@ WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 
 
 # build main library
-wxcore: wxd wxc wxcore-dirs $(WXCORE-LIBS)
+ifdef ENABLE-PROF
+wxcore: wxcore-only wxcore-prof
+endif
+
+wxcore-only: wxd wxc wxcore-dirs $(WXCORE-LIBS)
 
 wxcore-dirs:
 	@$(call ensure-dirs-of-files,$(WXCORE-OBJS))
