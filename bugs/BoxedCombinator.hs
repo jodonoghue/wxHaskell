@@ -2,7 +2,11 @@ module Main where
 import Graphics.UI.WX
 
 bugtext = unlines [ "Bug: these button should react when clicked"
-                  , "but the boxed one does not" ]
+                  , "but the boxed one does not"
+                  , ""
+                  , "Buggy   in: MacOS X"
+                  , "Working in: Linux"
+                  ]
 
 main = start $ do
          f <- frame [ text := "program" ]
