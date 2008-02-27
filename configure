@@ -333,15 +333,13 @@ process_args ()
 	  hc="$arg";;
       -hc=*|--hc=*)
 	  hc="$arg";;
+      -hcpkg=*|--hcpkg=*)
+	  hcpkg="$arg";;
       -hcprof|--hcprof)
 	  enableprof="yes";;
       -hcprof=*|--hcprof=*)
 	  hcprof="$arg"
 	  enableprof="yes";;
-      -hcpkg=*|--hcpkg=*)
-	  hcpkg="$arg";;
-      --with-hc=*)
-	  hc="$arg";;
       -package-conf=*|--package-conf=*)
 	  hcpkglocal="$arg";;
       -version=*|--version=*)
