@@ -28,6 +28,7 @@ configflags="$*"
 
 # haskell
 hc="ghc"
+hcflags=""
 hcpkg="ghc-pkg"
 hcprof="-prof -auto-all"
 hcpkglocal=""
@@ -335,6 +336,8 @@ process_args ()
 	  hc="$arg";;
       -hcpkg=*|--hcpkg=*)
 	  hcpkg="$arg";;
+      -hcflags=*|--hcflags=*)
+	  hcflags="$arg";;
       -hcprof|--hcprof)
 	  enableprof="yes";;
       -hcprof=*|--hcprof=*)
@@ -832,7 +835,7 @@ HC=$hc
 HCVERSION=$hcversion
 HCNAME=$hcname
 HCBASENAME=$hcbasename
-HCFLAGS=
+HCFLAGS=$hcflags
 HCPKG=$hcpkg
 ENABLE-PROF=$enableprof
 ENABLE-SPLITOBJS=$enablesplitobjs
