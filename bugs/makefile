@@ -2,7 +2,7 @@ COMPILE=ghc -package wx
 ifeq ($(shell uname),Darwin)
 PREP=macosx-app
 else
-PREP=#
+PREP=echo
 endif
 
 APPS= \
