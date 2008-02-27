@@ -512,6 +512,8 @@ WXCORE-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WXCORE)-$(VERSION)
 # build main library
 ifdef ENABLE-PROF
 wxcore: wxcore-only wxcore-prof
+else
+wxcore: wxcore-only
 endif
 
 wxcore-only: wxd wxc wxcore-dirs $(WXCORE-LIBS)
@@ -537,6 +539,9 @@ wxcore-dist: $(WXCORE-NONGEN-HS)
 # bindist
 wxcore-bindist: wxcore
 	@$(call cp-bindist,$(WXCORE-OUTDIR),$(BINDIST-LIBDIR),$(WXCORE-BINS))
+ifdef ENABLE-PROF
+	@$(call cp-bindist,$(WXCORE-OUTDIR),$(BINDIST-LIBDIR),$(WXCORE-PROF-BINS))
+endif
 
 # install
 wxcore-register: 
@@ -544,6 +549,9 @@ wxcore-register:
 
 wxcore-install-files: wxcore wxc-install-files 
 	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+ifdef ENABLE-PROF
+	@$(call install-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-PROF-BINS))
+endif
 	@$(call install-files,$(dir $(WXCORE-PKG)),$(LIBDIR),$(WXCORE-PKG))
 
 wxcore-unregister: 
@@ -551,6 +559,9 @@ wxcore-unregister:
 
 wxcore-uninstall-files:	
 	-@$(call uninstall-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-BINS))
+ifdef ENABLE-PROF
+	-@$(call uninstall-files,$(WXCORE-OUTDIR),$(LIBDIR),$(WXCORE-PROF-BINS))
+endif
 	-@$(call uninstall-files,$(dir $(WXCORE-PKG)),$(LIBDIR),$(WXCORE-PKG))
 
 # build marshall modules
