@@ -649,18 +649,31 @@ WX-OBJ		=$(WX-OUTDIR)/$(WX).o
 WX-LIB		=$(WX-OUTDIR)/lib$(WX).a
 WX-LIBS		=$(WX-LIB) $(WX-OBJ)
 
+WX-PROF=BJ		=$(WX-OUTDIR)/$(WX).p_o
+WX-PROF-LIB		=$(WX-OUTDIR)/lib$(WX)_p.a
+WX-PROF-LIBS		=$(WX-PROF-LIB) $(WX-PROF-OBJ)
+
 WX-OBJS		=$(call make-objs, $(WX-IMPORTSDIR), $(WX-SOURCES))
+WX-PROF-OBJS		=$(call make-prof-objs, $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-DEPS		=$(call make-deps, $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HIS		=$(call make-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
+WX-PROF-HIS		=$(call make-prof-his,  $(WX-IMPORTSDIR), $(WX-SOURCES))
 WX-HS		=$(call make-hs,   $(WX-SRCDIR),     $(WX-SOURCES))
 WX-DOCS		=$(WX-HS)
 WX-BINS		=$(WX-HIS) $(WX-LIBS)
+WX-PROF-BINS		=$(WX-PROF-HIS) $(WX-PROF-LIBS)
 WX-HCFLAGS	=$(HCFLAGS) -fvia-C -package-name $(WX)-$(VERSION) -package $(WXCORE)-$(VERSION)
 
 WX-HSDIRS	=-i$(WX-SRCDIR)
 
 # build main library
-wx: wxcore-clean wx-main
+ifdef ENABLE-PROF
+wx: wx-main-only wx-prof
+else
+wx: wx-main-only
+endif
+
+wx-main-only: wxcore-clean wx-main
 
 wx-main: wx-dirs $(WX-LIBS)
 
@@ -668,6 +681,11 @@ wx-install: wx-install-files wx-register
 
 wx-dirs:
 	@$(call ensure-dirs-of-files,$(WX-OBJS))
+
+wx-prof: wxd wxc wx-prof-dirs $(WX-PROF-LIBS)
+
+wx-prof-dirs:
+	@$(call ensure-dirs-of-files,$(WX-PROF-OBJS))
 
 wx-clean:
 	-@$(call full-remove-dir,$(WX-OUTDIR))
@@ -679,6 +697,9 @@ wx-dist: $(WX-HS)
 # bindist
 wx-bindist: 
 	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
+ifdef ENABLE-PROF
+	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-PROF-BINS))
+endif
 
 # install
 wx-register:
@@ -686,6 +707,9 @@ wx-register:
 
 wx-install-files: wx-main
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+ifdef ENABLE-PROF
+	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-PROF-BINS))
+endif
 	@$(call install-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
 wx-unregister:
@@ -693,6 +717,9 @@ wx-unregister:
 
 wx-uninstall-files: 
 	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
+ifdef ENABLE-PROF
+	-@$(call uninstall-files,$(WX-OUTDIR),$(LIBDIR),$(WX-PROF-BINS))
+endif
 	-@$(call uninstall-files,$(dir $(WX-PKG)),$(LIBDIR),$(WX-PKG))
 
 # build ghci object files
@@ -706,6 +733,14 @@ $(WX-LIB): $(WX-OBJS)
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
 	@$(call compile-hs,$@,$<,$(WX-HCFLAGS),$(WX-IMPORTSDIR),$(WX-HSDIRS))
+
+# profiling version of above targets
+$(WX-PROF-OBJ): $(WX-PROF-OBJS)
+	$(call combine-objs,$@,$^)
+$(WX-PROF-LIB): $(WX-PROF-OBJS)
+	$(call make-archive,$@,$^)
+$(WX-PROF-OBJS): $(WX-IMPORTSDIR)/%.p_o: $(WX-SRCDIR)/%.hs
+	@$(call compile-prof-hs,$@,$<,$(WX-HCFLAGS) $(HC-PROF-FLAGS),$(WX-IMPORTSDIR),$(WX-HSDIRS))
 
 # automatically include all dependency information.
 -include $(WX-DEPS)
