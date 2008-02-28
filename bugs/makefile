@@ -7,7 +7,6 @@ endif
 
 APPS= \
       BoxedCombinator\
-      ListControl\
       NonModalDialog\
       StartStart\
       SubMenu\
