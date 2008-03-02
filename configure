@@ -20,6 +20,7 @@ release="0"
 #--------------------------------------------------------------------
 
 # install
+enablesplitobjs="no"
 enablestrip="no"
 enableupx="no"
 withmsc="no"
@@ -362,6 +363,8 @@ process_args ()
       -libexecdir=*|--libexecdir=*) ;; # just for cabal
       -shared-prefix=*|--shared-prefix=*)
 	  sharedprefix="$arg";;
+      -enable-split-objs|--enable-split-objs)
+	  enablesplitobjs="yes";;
       -enable-strip|--enable-strip)
 	  enablestrip="yes";;
       -disable-strip|--disable-strip)
@@ -767,6 +770,11 @@ else
  fi
 fi
 
+if test "$enablesplitobjs" = "yes"; then
+  hcflags="$hcflags -split-objs"
+fi
+
+
 #--------------------------------------------------------------------
 # toolkit
 #--------------------------------------------------------------------
@@ -822,6 +830,7 @@ HCBASENAME=$hcbasename
 HCFLAGS=
 HCPKG=$hcpkg
 ENABLE-PROF=$enableprof
+ENABLE-SPLITOBJS=$enablesplitobjs
 HC-PROF-FLAGS=-hisuf p_hi $hcprof
 
 # Packages

@@ -593,7 +593,21 @@ $(WXCORE-CORE-B-OBJ): $(WXCORE-CORE-B-OBJS)
 $(WXCORE-CORE-C-OBJ): $(WXCORE-CORE-C-OBJS)
 	  $(call combine-objs,$@,$^)
 
+ifdef ENABLE-SPLITOBJS
 # build a library
+$(WXCORE-LIB): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$(WXCORE-OBJS))
+	  $(call make-archive,$@,$(WXCORE-STUB-OBJS))
+
+$(WXCORE-CORE-A-LIB): $(WXCORE-CORE-A-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$^)
+
+$(WXCORE-CORE-B-LIB): $(WXCORE-CORE-B-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$^)
+
+$(WXCORE-CORE-C-LIB): $(WXCORE-CORE-C-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$^)
+else
 $(WXCORE-LIB): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)
 	  $(call make-archive,$@,$^)
 
@@ -605,6 +619,7 @@ $(WXCORE-CORE-B-LIB): $(WXCORE-CORE-B-OBJS)
 
 $(WXCORE-CORE-C-LIB): $(WXCORE-CORE-C-OBJS)
 	  $(call make-archive,$@,$^)
+endif
 
 # create an object file from source files.
 $(WXCORE-CORE-A-OBJS) $(WXCORE-CORE-B-OBJS) $(WXCORE-CORE-C-OBJS) $(WXCORE-OBJS): $(WXCORE-IMPORTSDIR)/%.o: $(WXCORE-SRCDIR)/%.hs

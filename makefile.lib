@@ -58,6 +58,7 @@ endif
 make-hs		=$(patsubst %,$(1)/%.hs,$(2))
 make-objs	=$(patsubst %,$(1)/%.o,$(2))
 make-prof-objs	=$(patsubst %,$(1)/%.p_o,$(2))
+make-split-objs	=$(patsubst %,$(1)/%_split/*.o,$(2))
 make-deps	=$(patsubst %,$(1)/%.d,$(2))
 make-his	=$(patsubst %,$(1)/%.hi,$(2))
 make-prof-his	=$(patsubst %,$(1)/%.p_hi,$(2))
@@ -156,6 +157,7 @@ endif
 # create an archive
 # make-archive(<archive>,<input .o files>)
 make-archive	=$(AR) -sr $(1) $(2)
+make-archive-of-splitobjs	=$(foreach obj,$(patsubst %.o,%_split,$(2)),$(AR) -sr $(1) $(obj)/*.o && ) :
 
 # update the archive symbol index
 # make-archive-index(<archive>)
