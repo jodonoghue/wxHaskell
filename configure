@@ -597,6 +597,10 @@ if test "$hcbasename" = "ghc"; then
 	echo ""
 	ghcold="yes";;
     6.0* | 6.1* | 6.2*)
+	echo "WARNING:"
+	echo " You seem to have an older ghc installed, namely $hcversion"
+        echo " Support for GHC version prior to 6.4 has been removed for simplicity."
+        echo " It is strongly advised to upgrade to a newer version."
 	ghcold="yes";;
     6.*) ;;
     7.*) ;;
