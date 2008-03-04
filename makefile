@@ -600,7 +600,8 @@ $(WXCORE-LIB): $(WXCORE-OBJS)  $(WXCORE-STUB-OBJS)
 	  $(call make-archive,$@,$(WXCORE-STUB-OBJS))
 
 $(WXCORE-CORE-A-LIB): $(WXCORE-CORE-A-OBJS)
-	  $(call make-archive-of-splitobjs,$@,$^)
+	  $(call make-archive,$@,$(filter %WxcTypes.o,$^))
+	  $(call make-archive-of-splitobjs,$@,$(filter-out %WxcTypes.o,$^))
 
 $(WXCORE-CORE-B-LIB): $(WXCORE-CORE-B-OBJS)
 	  $(call make-archive-of-splitobjs,$@,$^)
