@@ -501,6 +501,8 @@ if test "$withmsc" != "yes"; then
 
   if test "$withmediactrl" = "yes"; then
     wxlibswanted="$wxlibswanted media"
+  else
+    wxwincxxflags="-DwxcREFUSE_MEDIACTRL $wxwincxxflags"
   fi
 
   if test "$withstc" = "yes"; then

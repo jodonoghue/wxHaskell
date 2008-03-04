@@ -15,6 +15,10 @@
 # undef wxUSE_MEDIACTRL
 #endif
 
+#if defined(wxcREFUSE_MEDIACTRL)
+# undef wxUSE_MEDIACTRL
+#endif
+
 #ifndef wxUSE_MEDIACTRL
 # define wxMediaCtrl      void
 #endif
