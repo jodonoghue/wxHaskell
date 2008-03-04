@@ -20,7 +20,6 @@ release="0"
 #--------------------------------------------------------------------
 
 # install
-enablesplitobjs="no"
 enablestrip="no"
 enableupx="no"
 withmsc="no"
