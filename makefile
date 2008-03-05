@@ -744,7 +744,11 @@ $(WX-OBJ): $(WX-OBJS)
 
 # build a library
 $(WX-LIB): $(WX-OBJS)
+ifdef ENABLE-SPLITOBJS
+	$(call make-archive-of-splitobjs,$@,$^)
+else
 	$(call make-archive,$@,$^)
+endif
 
 # create an object file from source files.
 $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
