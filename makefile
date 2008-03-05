@@ -711,7 +711,7 @@ wx-dist: $(WX-HS)
 	@$(call cp-srcdist, $^)
 
 # bindist
-wx-bindist: 
+wx-bindist: wx
 	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-BINS))
 ifdef ENABLE-PROF
 	@$(call cp-bindist,$(WX-OUTDIR),$(BINDIST-LIBDIR),$(WX-PROF-BINS))
