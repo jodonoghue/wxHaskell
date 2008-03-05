@@ -158,7 +158,7 @@ endif
 # create an archive
 # make-archive(<archive>,<input .o files>)
 make-archive	=$(AR) -sr $(1) $(2)
-make-archive-of-splitobjs	=$(foreach obj,$(patsubst %.o,%_split,$(2)),$(AR) -sr $(1) $(obj)/*.o && ) :
+make-archive-of-splitobjs	=echo $(patsubst %.o,%_split/*.o,$(2)) | xargs -n 25 $(AR) -sr $(1)
 
 # update the archive symbol index
 # make-archive-index(<archive>)
