@@ -247,8 +247,14 @@ SAMPLE-SOURCES= \
 	samples/contrib/PaintDirect.hs \
 	samples/contrib/NotebookRight.hs \
 	samples/contrib/GLCanvas.hs \
-	samples/contrib/GLMultiCanvas.hs 
-
+	samples/contrib/GLMultiCanvas.hs\
+	\
+	bugs/FontFixed.hs\
+	bugs/SubMenu.hs\
+	bugs/StartStart.hs\
+	bugs/NonModalDialog.hs\
+	bugs/BoxedCombinator.hs\
+	bugs/TextColor.hs\
 	
 #--------------------------------------------------------------------------
 # The main targets.
