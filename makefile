@@ -457,7 +457,7 @@ WXCORE		=wxcore
 WXCORE-PKG	=config/$(WXCORE).pkg
 WXCORE-SRCDIR	=$(WXCORE)/src
 WXCORE-HPATH	=Graphics/UI/WXCore
-WXCORE-OUTDIR	=$(OUTDIR)/wx
+WXCORE-OUTDIR	=$(OUTDIR)/wxcore
 WXCORE-IMPORTSDIR=$(WXCORE-OUTDIR)/imports
 
 WXCORE-HSDIRS	=-i$(WXCORE-SRCDIR) -i$(WXD-SRCDIR)
@@ -690,14 +690,12 @@ WX-HSDIRS	=-i$(WX-SRCDIR)
 
 # build main library
 ifdef ENABLE-PROF
-wx: wx-main-only wx-prof
+wx: wx-only wx-prof
 else
-wx: wx-main-only
+wx: wx-only
 endif
 
-wx-main-only: wxcore-clean wx-main
-
-wx-main: wx-dirs $(WX-LIBS)
+wx-only: wx-dirs $(WX-LIBS)
 
 wx-install: wx-install-files wx-register
 
