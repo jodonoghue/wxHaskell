@@ -694,6 +694,8 @@ if test "$hdocfound" = "yes"; then
     # normalize the root since haddock doesn't like unix names
     if test "$cygpathfound"; then
       normdocroot="`cygpath -w $docroot | sed -e 's|\\\\|/|g'`"
+    else
+      normdocroot="$docroot"
     fi
 
     # modern ghc >= 6.2, include all available haddock files
