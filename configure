@@ -691,7 +691,12 @@ if test "$hdocfound" = "yes"; then
       6.0* | 6.1* | 6.2* | 6.3* | 6.4* | 6.5* | 6.6*)
 	docroot="$ghcroot/doc/html/libraries";;
       6.*) 
-	docroot="$ghcroot/share/doc/ghc/libraries";;
+         if test "$cygpathfound"; then
+           docroot="$ghcroot/doc/libraries"
+         else
+           docroot="$ghcroot/share/doc/ghc/libraries"
+         fi
+         ;;
       *)
 	docroot="$ghcroot/doc/libraries";;
     esac
