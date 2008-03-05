@@ -701,7 +701,7 @@ if test "$hdocfound" = "yes"; then
     for file in */*.haddock
     do
       basename="`echo $file | sed -e 's|/.*||'`"
-      hdocbases="$hdocbases -ihttp://haskell.cs.yale.edu/ghc/docs/latest/html/libraries/$basename,$normdocroot/$file"
+      hdocbases="$hdocbases -ihttp://www.haskell.org/ghc/docs/latest/html/libraries/$basename,$normdocroot/$file"
     done
     cd $topdir
   fi
