@@ -143,7 +143,7 @@ wxWidgets directory, and run <code>configure</code> and <code>make</code> from t
 <pre>&gt; cd $wxwin
 &gt; mkdir mybuild
 &gt; cd mybuild
-&gt; ../configure --enable-unicode --disable-shared
+&gt; ../configure --enable-unicode
 &gt; make
 &gt; make install
 &gt; cd contrib/src
@@ -154,8 +154,7 @@ wxWidgets directory, and run <code>configure</code> and <code>make</code> from t
 Notes:
 <ul class="notes">
 <li>Add the following flags to <code>configure</code>, to enable certain advanced features of wxHaskell:
-<ul><li><code>--enable-unicode</code> to build a unicode library (recommended for latest darcs repository version).</li>
-    <li><code>--disable-shared</code> to build a static library (recommended for wxHaskell version &gt;= 0.7).</li>
+<ul><li><code>--enable-unicode</code> to build a unicode library (required for 0.10 and up).</li>
     <li><code>--with-odbc</code> to enable <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.Db.html">database access</a>.</li>
     <li><code>--with-opengl</code> to enable the <a href="http://wxhaskell.sourceforge.net/doc/Graphics.UI.WXCore.OpenGL.html">openGL canvas</a>.</li>
     <li><code>--enable-sound</code> to enable playback of wave audio files. (<code>--enable-wave</code> on
@@ -206,7 +205,7 @@ in the <code>mybuild</code> directory.</p>
 
 <pre>
 &gt; cd $wxhaskell
-&gt; ./configure
+&gt; ./configure --enable-split-objs --hcprof
 </pre>
 
 Notes:
@@ -285,7 +284,7 @@ Mac OS X <a href="building-macosx.html">notes</a> from more information.</li>
 </div>
 
 <div class="status">
-<a style="float: right" href="#body">top</a>last update: "Aug  18 2007".
+<a style="float: right" href="#body">top</a>last update: "5 March 2008".
 </div>
 
 </div>
