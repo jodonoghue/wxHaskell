@@ -696,21 +696,14 @@ if test "$hdocfound" = "yes"; then
       normdocroot="`cygpath -w $docroot | sed -e 's|\\\\|/|g'`"
     fi
 
-    if test -d "$docroot"; then
-      # modern ghc >= 6.2, include all available haddock files
-      cd $docroot
-      for file in */*.haddock
-      do
-	 basename="`echo $file | sed -e 's|/.*||'`"
-	 hdocbases="$hdocbases -ihttp://haskell.cs.yale.edu/ghc/docs/latest/html/libraries/$basename,$normdocroot/$file"
-      done
-      cd $topdir
-    else
-      # older ghc < 6.2, try to include the base.haddock file
-      if test -f "$ghcroot/doc/html/base/base.haddock"; then
-	hdocbases=" -ihttp://haskell.cs.yale.edu/ghc/docs/6.0.1/html/base,$ghcroot/doc/html/base/base.haddock"
-      fi
-    fi
+    # modern ghc >= 6.2, include all available haddock files
+    cd $docroot
+    for file in */*.haddock
+    do
+      basename="`echo $file | sed -e 's|/.*||'`"
+      hdocbases="$hdocbases -ihttp://haskell.cs.yale.edu/ghc/docs/latest/html/libraries/$basename,$normdocroot/$file"
+    done
+    cd $topdir
   fi
 fi
 
