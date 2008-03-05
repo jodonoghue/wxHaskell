@@ -206,14 +206,6 @@ else
 fi
 fi
 
-# guess base.haddock location
-if findprogram "ghc"; then
-  guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/doc/html/base/base.haddock|'`"
-  if test -f "$guesshdocbase"; then
-    hdocbase="$guesshdocbase"
-  fi
-fi
-
 
 # improve the guesses if wx-config is present.
 if findprogram "$wxconfig"; then
@@ -673,8 +665,20 @@ else
   echo " You can specify the haddock executable on the command line."
   echo " For example: ./configure --haddock=/usr/local/bin/haddock"
   echo ""
-  hdocbase=""
+  hdocbases=""
   hdocfound="no"
+fi
+
+# guess base.haddock location
+if findprogram "ghc"; then
+  guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/doc/html/base/base.haddock|'`"
+  if test -f "$guesshdocbase"; then
+    hdocbases="$guesshdocbase"
+  fi
+  guessghclibdir=`which ghc | sed -e "s|/bin/ghc|/lib/ghc-$hcversion|"`
+  if test -d "$guessghclibdir"; then
+    hdocbases="$hdocbases -B $guessghclibdir"
+  fi
 fi
 
 
@@ -687,7 +691,7 @@ if test "$hdocfound" = "yes"; then
       6.0* | 6.1* | 6.2* | 6.3* | 6.4* | 6.5* | 6.6*)
 	docroot="$ghcroot/doc/html/libraries";;
       6.*) 
-	docroot="$ghcroot/doc/libraries";;
+	docroot="$ghcroot/share/doc/ghc/libraries";;
       *)
 	docroot="$ghcroot/doc/libraries";;
     esac
