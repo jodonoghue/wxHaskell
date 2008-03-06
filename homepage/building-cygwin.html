@@ -66,6 +66,7 @@ the mingw compiler, but all programs linked with it will fail mysteriously!
 prompted for the packages to install, click also on the <code>Devel</code> and <code>Archive</code>
 node until they show <code>install</code> (instead of <code>default</code>).</p>
 
+
 <p>After installation, you need to set a few environment variables. In the following description you
 should replace the variable <code>$cygwin</code> with your cygwin
 installation directory (<code>c:\cygwin</code> by default). Set your local environment variables
@@ -105,6 +106,15 @@ do this once:</p>
 </pre>
 
 <p>From now on, you can access the <code>c:</code> drive via <code>/c</code>, for example: <code>cd /c/windows</code></p>
+
+<p>Cygwin make 3.81 is no more recognizing the DOS style paths. You need to install a 3.80 version that you can get from <a href="http://cygwin.paracoda.com/release/make/make-3.80-1.tar.bz2">paracoda.</a> Once your cygwin installation is working, you can install the older make with:</p>
+<pre>
+cd /
+tar xjf /cygdrive/c/where-your-download-is/make-3.80-1.tar.bz2
+bin/make.exe --version
+</pre>
+<p> WARNING : It will override the 3.81 make</p>
+
 </div>
 
 <div class="text">
