@@ -942,7 +942,6 @@ binversion="${wxtoolkit}${wxversion}-${version}"
 
 #echo " package descriptions"
 echo " config/wxcore.pkg"
-if test "$ghcold" != "yes"; then
 # ghc 6.4+, the partial packages are only used for the windows installer
 cat > config/wxcore-partial.pkg << EOF
 name:wxcore
@@ -1013,32 +1012,6 @@ cp -f config/wx-partial.pkg config/wx.pkg
 echo "import-dirs:\${wxhlibdir}/imports" >> config/wx.pkg
 echo "library-dirs:\${wxhlibdir}"	 >> config/wx.pkg
 
-else
-# pre ghc 6.4
-cat > config/wxcore.pkg << EOF
-Package
-  { name="wxcore"
-  , import_dirs=["\${wxhlibdir}/imports"]
-  , library_dirs=["\${wxhlibdir}"]
-  , hs_libraries=["wxcore","wxcore0","wxcore1","wxcore2"]
-  , extra_libraries=["${wxclibname}-${binversion}"]
-  , package_deps = ["base","lang","haskell98","concurrent"]
-  , extra_ld_opts=[$extraldopts]
-  }
-EOF
-
-echo " config/wx.pkg"
-cat > config/wx.pkg << EOF
-Package
-  { name="wx"
-  , import_dirs=["\${wxhlibdir}"]
-  , library_dirs=["\${wxhlibdir}"]
-  , hs_libraries=["wx"]
-  , package_deps=["wxcore"]
-  }
-EOF
-fi
-
 
 # set version in msc project file
 updateversion () {
@@ -1060,21 +1033,13 @@ fi
 # generate windows installer files.
 echo " config/wxhaskell-register.bat"
 echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-register-temp
-if test "$ghcold" = "yes"; then
-  cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\${hcregister}|ghc-pkg -u -i|g" -e "s|\$|\\r|g" > config/wxhaskell-register.bat
-else
-  echo "@SET generate=yes" >> config/wxhaskell-register-temp
-  cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\${hcregister}|ghc-pkg update|g" -e "s|\$|\\r|g" > config/wxhaskell-register.bat
-fi
+echo "@SET generate=yes" >> config/wxhaskell-register-temp
+cat config/wxhaskell-register-temp bin/wxhaskell-register-template.bat | sed -e "s|\${hcregister}|ghc-pkg update|g" -e "s|\$|\\r|g" > config/wxhaskell-register.bat
 rm -f config/wxhaskell-register-temp
 
 echo " config/wxhaskell-unregister.bat"
 echo "@SET wxclibname=${wxclibname}-${binversion}"	>  config/wxhaskell-unregister-temp
-if test "$ghcold" = "yes"; then
-  cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\${hcunregister}|ghc-pkg -r|g" -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
-else
-  cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\${hcunregister}|ghc-pkg unregister|g" -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
-fi
+cat config/wxhaskell-unregister-temp bin/wxhaskell-unregister-template.bat | sed -e "s|\${hcunregister}|ghc-pkg unregister|g" -e "s|\$|\\r|g" > config/wxhaskell-unregister.bat
 rm -f config/wxhaskell-unregister-temp
 
 echo " config/setcd"
@@ -1100,19 +1065,11 @@ EOF
 
 # generate macosx post-install files.
 echo " config/macosx-postinstall"
-if test "$ghcold" = "yes"; then
 cat > config/macosx-postinstall << EOF
 #!/bin/sh      
-env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wxcore.pkg" 
-env wxhlibdir="$libdir" /usr/local/bin/ghc-pkg -u -i "\$1/Contents/Resources/wx.pkg" 
+cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | ghc-pkg --global update -
+cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | ghc-pkg --global update -
 EOF
-else
-cat > config/macosx-postinstall << EOF
-#!/bin/sh      
-cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | /usr/local/bin/ghc-pkg --global update -
-cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | /usr/local/bin/ghc-pkg --global update -
-EOF
-fi
 
 chmod a+x config/macosx-postinstall
 
