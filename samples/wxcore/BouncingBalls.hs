@@ -14,11 +14,18 @@ ballsFrame
 
        -- create a non-user-resizable top-level (orphan) frame.
        f <- frameCreate objectNull idAny "Bouncing balls" rectNull
-                         (wxMINIMIZE_BOX + wxSYSTEM_MENU + wxCAPTION + wxNO_FULL_REPAINT_ON_RESIZE + wxCLIP_CHILDREN)
-       windowSetClientSize f (sz maxX maxY)
+                         ( wxMINIMIZE_BOX + wxSYSTEM_MENU + wxCAPTION + wxNO_FULL_REPAINT_ON_RESIZE
+                         + wxCLIP_CHILDREN + wxCLOSE_BOX)
 
        -- add a panel to draw on, nice grey color.
        p <- panelCreate f idAny rectNull 0 -- (wxNO_FULL_REPAINT_ON_RESIZE)
+       let instructions = init . unlines $
+                                  [ "Click to create more bouncing balls"
+                                  , "Right-click to for a new window"
+                                  , "<+/-> to change the speed" ]
+       windowSetBackgroundColour f $ colorSystem Color3DFace
+       windowSetLayout f (column 1 [ minsize (sz maxX maxY) (widget p)
+                                   , label instructions ])
 
        -- create a timer, on each tick it advances all the balls to their next position
        t <- windowTimerCreate f
