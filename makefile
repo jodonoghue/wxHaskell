@@ -674,6 +674,19 @@ $(WXCORE-CORE-B-PROF-OBJ): $(WXCORE-CORE-B-PROF-OBJS)
 	  $(call combine-objs,$@,$^)
 $(WXCORE-CORE-C-PROF-OBJ): $(WXCORE-CORE-C-PROF-OBJS)
 	  $(call combine-objs,$@,$^)
+
+ifdef ENABLE-SPLITOBJS
+$(WXCORE-PROF-LIB): $(WXCORE-PROF-OBJS)  $(WXCORE-STUB-PROF-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$(WXCORE-PROF-OBJS))
+	  $(call make-archive,$@,$(WXCORE-STUB-PROF-OBJS))
+$(WXCORE-CORE-A-PROF-LIB): $(WXCORE-CORE-A-PROF-OBJS)
+	  $(call make-archive,$@,$(filter %WxcTypes.p_o,$^))
+	  $(call make-archive-of-splitobjs,$@,$(filter-out %WxcTypes.p_o,$^))
+$(WXCORE-CORE-B-PROF-LIB): $(WXCORE-CORE-B-PROF-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$^)
+$(WXCORE-CORE-C-PROF-LIB): $(WXCORE-CORE-C-PROF-OBJS)
+	  $(call make-archive-of-splitobjs,$@,$^)
+else
 $(WXCORE-PROF-LIB): $(WXCORE-PROF-OBJS)  $(WXCORE-STUB-PROF-OBJS)
 	  $(call make-archive,$@,$^)
 $(WXCORE-CORE-A-PROF-LIB): $(WXCORE-CORE-A-PROF-OBJS)
@@ -682,8 +695,12 @@ $(WXCORE-CORE-B-PROF-LIB): $(WXCORE-CORE-B-PROF-OBJS)
 	  $(call make-archive,$@,$^)
 $(WXCORE-CORE-C-PROF-LIB): $(WXCORE-CORE-C-PROF-OBJS)
 	  $(call make-archive,$@,$^)
+endif
+
 $(WXCORE-CORE-A-PROF-OBJS) $(WXCORE-CORE-B-PROF-OBJS) $(WXCORE-CORE-C-PROF-OBJS) $(WXCORE-PROF-OBJS): $(WXCORE-IMPORTSDIR)/%.p_o: $(WXCORE-SRCDIR)/%.hs
 	@$(call compile-prof-hs,$@,$<,$(WXCORE-HCFLAGS) $(HC-PROF-FLAGS) -Iwxc/include,$(WXCORE-IMPORTSDIR),$(WXCORE-HSDIRS) )
+$(WXCORE-STUB-PROF-OBJS): $(WXCORE-IMPORTSDIR)/%_stub.p_o: $(WXCORE-SRCDIR)/%.hs
+	$(HC) -c $(basename $@).c
 
 # automatically include all dependency information.
 -include $(WXCORE-DEPS)
@@ -792,7 +809,11 @@ $(WX-OBJS): $(WX-IMPORTSDIR)/%.o: $(WX-SRCDIR)/%.hs
 $(WX-PROF-OBJ): $(WX-PROF-OBJS)
 	$(call combine-objs,$@,$^)
 $(WX-PROF-LIB): $(WX-PROF-OBJS)
+ifdef ENABLE-SPLITOBJS
+	$(call make-archive-of-splitobjs,$@,$^)
+else
 	$(call make-archive,$@,$^)
+endif
 $(WX-PROF-OBJS): $(WX-IMPORTSDIR)/%.p_o: $(WX-SRCDIR)/%.hs
 	@$(call compile-prof-hs,$@,$<,$(WX-HCFLAGS) $(HC-PROF-FLAGS),$(WX-IMPORTSDIR),$(WX-HSDIRS))
 
