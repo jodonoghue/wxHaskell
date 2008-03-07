@@ -142,8 +142,8 @@ eind pan desert board
   | correct board = do infoDialog pan "Level up" "Congratulations! You succeeded."
                        varUpdate desert (const $ newBoard $ length board + 2)
                        repaint pan
-  | otherwise     = do infoDialog pan "Level down" "There are no more possible moves..."
-                       varUpdate desert (const $ newBoard $ max 3 $ length board - 2)
+  | otherwise     = do infoDialog pan "Level restart" "There are no more possible moves..."
+                       varUpdate desert (const $ newBoard $ max 3 $ length board)
                        repaint pan
 
 about :: Window a -> IO ()
