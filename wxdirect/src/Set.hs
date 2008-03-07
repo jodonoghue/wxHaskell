@@ -134,7 +134,8 @@ import qualified List
 {--------------------------------------------------------------------
   Operators
 --------------------------------------------------------------------}
-infixl 9 \\
+-- Comment on line below can be removed when we drop support for GHC 6.6.
+infixl 9 \\    -- Dummy comment to prevent CPP-preprocessor from seeing \\ as newline continuation
 
 -- | /O(n+m)/. See 'difference'.
 (\\) :: Ord a => Set a -> Set a -> Set a

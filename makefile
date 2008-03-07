@@ -425,7 +425,7 @@ WXD-DEPS	=$(call make-deps, $(WXD-OUTDIR), $(WXD-SOURCES))
 WXD-HS		=$(call make-hs,   $(WXD-SRCDIR), $(WXD-SOURCES))
 WXD-FLAGS	= --wxc $(WXC) -o $(WXCORE-SRCDIR)/$(WXCORE-HPATH)
 
-# build executable
+# Build executable
 wxd: wxd-dirs $(WXD-EXE)
 
 wxd-dirs:
@@ -445,7 +445,7 @@ $(WXD-EXE): $(WXD-OBJS)
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) $(PKG-TIME),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) -cpp $(HAS-DATA-TIME) $(PKG-TIME),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)

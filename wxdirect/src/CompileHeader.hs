@@ -16,7 +16,12 @@ import qualified Set
 import qualified Map
 import qualified MultiSet
 
+#ifdef NO_DATA_TIME
+import Time( getClockTime)
+#else
 import Data.Time( getCurrentTime)
+#endif
+import Data.List( isPrefixOf )
 import Data.Char( toUpper, isUpper )
 import Data.List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
 
@@ -25,6 +30,10 @@ import HaskellNames
 import Classes( isClassName, classNames, classExtends )
 import ParseC( parseC )
 import DeriveTypes( deriveTypesAll, classifyName, Name(..), Method(..), ClassName, MethodName, PropertyName )
+
+#ifdef NO_DATA_TIME
+getCurrentTime = getClockTime
+#endif
 
 {-----------------------------------------------------------------------------------------
   Compile
