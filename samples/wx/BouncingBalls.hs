@@ -28,9 +28,14 @@ ballsFrame
              ,on (charKey '-') := set t [interval :~ \i -> i*2] -- increase interval
              ,on (charKey '+') := set t [interval :~ \i -> max 1 (i `div` 2)]  -- decrease interval
              ]
-
+       let instructions = init . unlines $
+                                  [ "Click to create more bouncing balls"
+                                  , "Right-click to for a new window"
+                                  , "<p> to pause"
+                                  , "<+/-> to change the speed" ]
        -- put the panel in the frame
-       set f [layout := minsize (sz maxX maxY) $ widget p]
+       set f [layout := column 1 [ minsize (sz maxX maxY) (widget p)
+                                 , label instructions ] ]
        return ()
   where
     -- drop a new ball
