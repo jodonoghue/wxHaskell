@@ -703,7 +703,8 @@ if findprogram "ghc"; then
     hdocbases="$guesshdocbase"
   fi
   guessghclibdir=`which ghc | sed -e "s|/bin/ghc|/lib/ghc-$hcversion|"`
-  if test -d "$guessghclibdir"; then
+  haddockversion=`haddock --version | sed -e "s|.*version \([0-9]*\)\..*|\1|"`
+  if test -d "$guessghclibdir" -a $haddockversion -eq "2"; then
     hdocbases="$hdocbases -B $guessghclibdir"
   fi
 fi
