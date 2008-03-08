@@ -32,6 +32,7 @@ help:
 	@echo " bindist         binaries, docs, and samples zip (windows distribution)"
 	@echo " macdist         installer for MacOS X (.dmg file) (includes docs and samples)"
 	@echo " rpmdist         unix RPM installer (no docs and samples included)"
+	@echo " debdist         unix DEB installer (no docs and samples included)"
 	@echo ""
 	@echo "maintenance:"
 	@echo " clean           remove object files and binaries"
@@ -385,6 +386,28 @@ rpmdist: srcdist
 	$(CP) -f $(DIST-SRC) $(RPM-SOURCE-DIR)
 	rpmbuild -ba config/wxhaskell.spec
 
+# DEB dist
+DEBIAN_DIST=dist/debian
+DEBIAN_INSTALL_LOCACTION=$(DEBIAN_DIST)/usr/local
+DEB_NAME=dist/wxhaskell-bin-$(REL-VERSION).deb
+
+debdist: debdist-clean bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
+	@$(call ensure-dir,$(DEBIAN_DIST))
+	@$(call cp-echo,config/DEBIAN,$(DEBIAN_DIST)/DEBIAN)
+	@$(call ensure-dir,$(DEBIAN_INSTALL_LOCACTION))
+	@$(call cp-echo,$(BINDIST-LIBDIR),$(DEBIAN_INSTALL_LOCACTION))
+	# copy packages
+	@$(call cp-echo,config/wxcore.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wxcore.pkg)
+	@$(call cp-echo,config/wx.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wx.pkg)
+	# permissions
+	chmod 555 $(DEBIAN_DIST)/DEBIAN/prerm
+	chmod 555 $(DEBIAN_DIST)/DEBIAN/postinst
+	# dpkg
+	dpkg --build dist/debian/ $(DEB_NAME)
+
+debdist-clean:
+	@$(RM) $(DEB_NAME)
+	-@$(call full-remove-dir,$(DEBIAN_DIST))
 
 # MAC dist
 WXHASKELLINS=wxhaskell

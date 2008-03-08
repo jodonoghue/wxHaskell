@@ -1142,6 +1142,37 @@ echo ""						>> config/wxhaskell.spec.temp
 cat config/wxhaskell.spec.temp bin/wxhaskell-spec-template > config/wxhaskell.spec
 rm -f config/wxhaskell.spec.temp
 
+# generate DEB installer files
+
+mkdir config/DEBIAN
+
+cat > config/DEBIAN/control << EOF
+Package: libghc6-6-wxhaskell
+Version: 0.10.3
+Section: devel
+Priority: optional
+Architecture: i386
+Essential: no
+Depends: ghc6 (>= 6.6-3), libwxgtk2.6-0 (>= 2.6.3.2.1.5)
+Installed-Size: 1024
+Maintainer: Mads Lindstroem [mads_lindstroem@yahoo.dk]
+Description: wxHaskell is a portable and native GUI library for Haskell
+EOF
+
+
+cat > config/DEBIAN/prerm << EOF
+#!/bin/sh
+ghc-pkg -r wx
+ghc-pkg -r wxcore
+exit 0
+EOF
+
+cat > config/DEBIAN/postinst << EOF
+#!/bin/sh
+cat /usr/local/lib/wxcore.pkg | sed -e "s|\\\${wxhlibdir}|/usr/local/lib|"  | ghc-pkg update -
+cat /usr/local/lib/wx.pkg | sed -e "s|\\\${wxhlibdir}|/usr/local/lib|"  | ghc-pkg update -
+EOF
+
 # generate prologue for documentation
 echo " config/prologue.txt"
 echo "Documentation for wxHaskell $version"  >  config/prologue.txt.temp
