@@ -1046,6 +1046,19 @@ rm -f config/wxhaskell-unregister-temp
 echo " config/setcd"
 cp bin/setcd config/setcd
 
+cat > config/README-template-windows << EOF
+Click on the newly created wxhaskell-${version}\\bin\\wxhaskell-register.bat
+program to register the wxHaskell package.
+
+To uninstall, you can click on
+wxhaskell-${version}\\bin\\wxhaskell-unregister.bat and than remove the
+wxhaskell-${version} directory.
+EOF
+
+if test "$wxtoolkit" = "msw"; then
+  cat config/README-template-windows | sed -e "s|\${version}|${version}|g" > README
+fi
+
 # generate maxosx installer files.
 echo " config/macosx-install.info"
 cat > config/macosx-install.info << EOF

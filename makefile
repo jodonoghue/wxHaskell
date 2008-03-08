@@ -362,6 +362,7 @@ bindist: bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist docdist
 ifeq ($(TOOLKIT),msw)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxcore-partial.pkg config/wx-partial.pkg)
 	@$(call cp-bindist,config,$(BINDIST-BINDIR),config/wxhaskell-register.bat config/wxhaskell-unregister.bat config/setcd)
+	@$(call cp-bindist,.,$(BINDIST-BINDIR),README)
 else
 	@$(call cp-bindist,bin,$(BINDIST-BINDIR),bin/wxhaskell-register bin/wxhaskell-unregister)
 endif
