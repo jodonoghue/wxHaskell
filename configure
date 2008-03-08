@@ -676,7 +676,7 @@ else
     echo "not found"
 fi
 
-#rm TestDataTime.hs
+rm TestDataTime.hs
 
 #--------------------------------------------------------------------
 # Haddock
