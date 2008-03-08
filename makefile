@@ -728,7 +728,7 @@ endif
 wx-register:
 	@$(call install-pkg  ,$(LIBDIR),$(WX-PKG))
 
-wx-install-files: wx-main
+wx-install-files: wx-only
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-BINS))
 ifdef ENABLE-PROF
 	@$(call install-files,$(WX-OUTDIR),$(LIBDIR),$(WX-PROF-BINS))
