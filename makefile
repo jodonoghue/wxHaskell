@@ -407,9 +407,12 @@ macdist: docdist bindist
 	@$(call cp-echo,license.txt,$(RESOURCEDIR)/License.txt)
 	@echo "See <http://wxhaskell.sourceforge.net> for more information." > $(RESOURCEDIR)/Readme.txt
 	# create package
+	chmod u+x bin/macosx-package
 	bin/macosx-package $(BINDIST-OUTDIR)/$(WXHASKELLVER) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
 	$(CP) -R $(DOCDIST-SRCDIR)/doc $(PACKAGEDIR)
 	$(CP) -R $(DOCDIST-SRCDIR)/samples $(PACKAGEDIR)
+	$(CP) -R $(DOCDIST-SRCDIR)/bugs $(PACKAGEDIR)
+	chmod u+x bin/macosx-builddmg
 	bin/macosx-builddmg $(PACKAGEDIR) $(OUTDIR)
 	@mv -f $(OUTDIR)/$(WXHASKELLINS).dmg $(WXHASKELLDMG)
 	echo "created: $(WXHASKELLDMG)"
