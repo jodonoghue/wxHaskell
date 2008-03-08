@@ -1067,9 +1067,26 @@ EOF
 # generate macosx post-install files.
 echo " config/macosx-postinstall"
 cat > config/macosx-postinstall << EOF
-#!/bin/sh      
-cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | ghc-pkg --global update -
-cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | ghc-pkg --global update -
+#!/bin/sh
+
+GHCPKG=`which ghc-pkg`
+# try these versions of GHC-PKG in turn
+# would it maybe be best just to let the installer fail?
+if test "\$GHCPKG" = ""; then
+  if test -f /usr/local/bin/ghc-pkg; then
+    GHCPKG=/usr/local/bin/ghc-pkg
+  elif test -f /opt/local/bin/ghc-pkg; then
+    GHCPKG=/opt/local/bin/ghc-pkg
+  elif test -f /sw/bin/ghc-pkg; then
+    GHCPKG=/sw/bin/ghc-pkg
+  else
+    echo "I can't find ghc-pkg in the path (\$PATH)!"
+    echo "Is GHC even installed?"
+    exit 1
+  fi
+fi
+cat "\$1/Contents/Resources/wxcore.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | \$GHCPKG --global update -
+cat "\$1/Contents/Resources/wx.pkg" | sed -e "s|\\\${wxhlibdir}|${libdir}|" | \$GHCPKG --global update -
 EOF
 
 chmod a+x config/macosx-postinstall
