@@ -388,7 +388,7 @@ rpmdist: srcdist
 
 # MAC dist
 WXHASKELLINS=wxhaskell
-WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-bin-$(REL-VERSION).dmg
+WXHASKELLDMG=$(DIST-OUTDIR)/wxhaskell-$(ARCHITECTURE)-bin-$(REL-VERSION).dmg
 RESOURCEDIR=$(OUTDIR)/macdist/recources
 PACKAGEDIR=$(OUTDIR)/macdist/$(WXHASKELLINS)
 INFOFILE=$(PACKAGEDIR).info
