@@ -4,6 +4,37 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
+Version 0.10.3
+-------------
+Non backward compatible changes:
+- Changed repository to darcs
+- Changed encoding to Unicode
+- Changed the configuration, make files, and install scripts to work 
+  with GHC 6.6, GHC 6.8 or higher
+- Added basic cabal script
+- Added Haddock2 support
+- Added "--with-mediactrl" argument to configure script
+- Added "--with-stc" argument to configure script
+- Added "--hcprof" argument to configure script for builing profiling 
+  version of library
+- Added "--enable-split-objs" argument to configure script
+
+Backward compatible additions:
+- Added CalendarCtrl events
+- Added StyledTextCtrl events
+- Added Drag & Drop events
+- Added TaskBar icon events
+- Added "Wave" type synonym. But "Wave" type is deprecated. Use "Sound"
+  instead of "Wave".
+- Added MediaCtrl control
+- Added "Media" class
+- Changed "play" function to "Media" classes' method
+
+Bugfixes:
+- Fixed bug in listCtrl. "get" returns null string
+- Fixed old example
+- wxcore's BouncingBalls example disabled the close button.
+
 Version 0.9.4-1
 -------------
 Bugfixes:
@@ -42,62 +73,4 @@ Backward compatible additions:
 
 Bug fixes:
 - fixed "on command" event handlers in submenus.
-
-Version 0.8
--------------
-Non backward compatible changes:
-- Added wildcards argument to the "fileSaveDialog" function.
-- Removed the call to "buttonSetDefault" in the "defaultButton" 
-  property since GTK seems to enlarge the button in that case.
-- Removed alignment argument for text controls
-- Removed sorted and labels argument for choice and combo boxes.
-- Removed sorted argument for listboxes.
-- Added default "stretch" to every toplevel layout, assuring that
-  such layout gets at least all available space assigned.
-- (un)set "maximize box" when "resizeable" is set.
-- Removed default "wxTAB_TRAVERSAL" style on frames (to make the grid
-  work correctly).
-- Renamed "WXCore.WxcClassTypes" to "WXCore.WxcClassInfo".
-- Ignore double buffering on the Mac toolkit to avoid bugs (?) in
-  wxMac 2.5.2.
-
-Backward compatible additions:
-- Added pure "bitmap" and "sound"
-- Added "variable" objects (mutable variables)
-- Added custom control demo.
-- Made "refresh" erase the background too.
-- Added "children" attribute for windows.
-- Added "border" attribute for windows.
-- Added "tabTraversal" attribute for windows.
-- Added wxGrid events and demo (samples/wx/Grid.hs).
-- Improved signatures for wxGrid.
-- Added "changes.txt" file :-)
-- Added "HAS_RADIO_MENU_ITEMS" to "isDefined".
-- Added support for radio menu items.
-- New wxHaskell+HOpenGL sample added to the contributions. Thanks
-  to Shelarcy and Sean Seefried.
-- Added "Align" and "Wrapped" classes to set alignment
-  and wrap mode for text controls.
-- Added "Sorted" class to set the sort mode of choice, combo box,
-  and listbox controls.
-- Added "creation time" attributes that use reflective attributes
-  not compositional (and thus not so nice), but very convenient!
-- Added "entry" as shorthand for "textEntry"
-- Added "SystemColor" and "colorSystem" to get standard system colors.
-- Defaulted background color of "Frame"s to Color3DFace (as a Panel).
-- Made the definition of "Closure" in "wrappers.h" more liberal to 
-  support wxOCaml better.
-- Added "frameCentre" method
-- Huge internal changes: split up wxcClasses in three files and added
-  support for managed objects like bitmaps. Also added checks for NULL 
-  pointers. 
-
-
-Bug fixes:
-- HtmlLinkClicked events are now properly generated.
-- Fixed bug that crashed wxHaskell when a tree control had the focus
-  and a key was pressed. Thanks to Olivier Spier for sending a fix.
-- The "item" attribute of a list control always returned the first
-  item and disregarded the parameter. Thanks to Olivier Spier for 
-  sending a fix.
 
