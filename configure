@@ -1062,7 +1062,7 @@ wxhaskell-${version} directory.
 EOF
 
 if test "$wxtoolkit" = "msw"; then
-  cat config/README-template-windows | sed -e "s|\${version}|${version}|g" > README
+  cat config/README-template-windows | sed -e "s|\${version}|${version}|g" > README.txt
 fi
 
 # generate maxosx installer files.
