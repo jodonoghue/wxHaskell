@@ -1148,7 +1148,7 @@ mkdir config/DEBIAN
 
 cat > config/DEBIAN/control << EOF
 Package: libghc6-6-wxhaskell
-Version: 0.10.3
+Version: $version
 Section: devel
 Priority: optional
 Architecture: i386
