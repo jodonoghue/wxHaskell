@@ -402,8 +402,10 @@ debdist: debdist-clean bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bin
 	@$(call cp-echo,config/wxcore.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wxcore.pkg)
 	@$(call cp-echo,config/wx.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wx.pkg)
 	# permissions
-	chmod 555 $(DEBIAN_DIST)/DEBIAN/prerm
-	chmod 555 $(DEBIAN_DIST)/DEBIAN/postinst
+	chmod 755 $(DEBIAN_DIST)/DEBIAN/prerm
+	chmod 755 $(DEBIAN_DIST)/DEBIAN/postinst
+	#ownership
+	chown --recursive root.root $(DEBIAN_DIST)
 	# dpkg
 	dpkg --build dist/debian/ $(DEB_NAME)
 
