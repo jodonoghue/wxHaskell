@@ -1153,7 +1153,7 @@ Section: devel
 Priority: optional
 Architecture: i386
 Essential: no
-Depends: ghc6 (>= 6.6), ghc6 (<<6.6+), libwxgtk-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
+Depends: ghc6 (>= 6.6), ghc6 (<<6.6+), libwxgtk2.6-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
 Installed-Size: 21238821
 Maintainer: Mads Lindstroem [mads_lindstroem@yahoo.dk]
 Description: wxHaskell is a portable and native GUI library for Haskell
