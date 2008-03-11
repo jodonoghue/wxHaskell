@@ -1163,6 +1163,7 @@ cat > config/DEBIAN/prerm << EOF
 #!/bin/sh
 ghc-pkg -r wx
 ghc-pkg -r wxcore
+ldconfig
 exit 0
 EOF
 
@@ -1170,6 +1171,7 @@ cat > config/DEBIAN/postinst << EOF
 #!/bin/sh
 cat /usr/local/lib/wxcore.pkg | sed -e "s|\\\${wxhlibdir}|/usr/local/lib|"  | ghc-pkg update -
 cat /usr/local/lib/wx.pkg | sed -e "s|\\\${wxhlibdir}|/usr/local/lib|"  | ghc-pkg update -
+ldconfig
 EOF
 
 # generate prologue for documentation
