@@ -391,7 +391,7 @@ rpmdist: srcdist
 # DEB dist
 DEBIAN_DIST=dist/debian
 DEBIAN_INSTALL_LOCACTION=$(DEBIAN_DIST)/usr/local
-DEB_NAME=dist/wxhaskell-bin-$(REL-VERSION).deb
+DEB_NAME=$(DIST-OUTDIR)/wxhaskell$(ARCHITECTURE)-bin-$(REL-VERSION).deb
 
 debdist: debdist-clean bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call ensure-dir,$(DEBIAN_DIST))
