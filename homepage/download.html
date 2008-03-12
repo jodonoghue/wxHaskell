@@ -69,6 +69,57 @@ samples to see if everything works as expected:</p>
 </div>
 
 <div class="text">
+<h2>Version 0.10.3-rc1 &ndash; March 11, 2008</h2>
+<p>All of these files are also directly available from the
+<a href="http://sourceforge.net/project/showfiles.php?group_id=73133">sourceforge</a> project page.</p>
+
+<h3>Basic packages</h3>
+<dl>
+<dt><a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-src-0.10.3-rc1.zip?download">wxhaskell-src-0.10.3-rc1.zip</a> (updated)</dt>
+<dd>Source release of wxHaskell. See the <a href="building.html">building</a> guide for installation instructions.</dd>
+<dt><a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-doc-0.10.3-rc1.zip?download">wxhaskell-doc-0.10.3.zip</a></dt>
+<dd>Documentation and samples.</dd>
+</dl>
+
+<h3>Binary packages</h3>
+
+<p>The file name of a binary release contains the version of the wxWidgets toolkit that has been used,
+and the version of the Haskell compiler was used to build wxHaskell. Make sure that
+you have the same version of the compiler installed, for example <a href="http://www.haskell.org/ghc">ghc6.8.2</a>. All packages have ODBC support (but not OpenGL). Documentation and samples are not included with Linux packages.</p>
+
+<dl>
+<dt><a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-bin-msw2.6.4-ghc6.4-0.10.3-rc1.zip?download">Windows, ghc 6.8.2 [.zip]</a><br>
+</dt>
+
+<dd>Unzip the release somewhere and click on the newly created <code>wxhaskell-0.10.3\bin\wxhaskell-register.bat</code> program to register the wxHaskell package. To uninstall, you can click on <code>wxhaskell-0.10.3\bin\wxhaskell-unregister.bat</code> and than remove the <code>wxhaskell-0.10.3</code> directory.
+
+<p><em>Note:</em>If you have an older version of wxHaskell installed, please remove it before installing this version.
+Older releases can be uninstalled by clicking on <code>wxhaskell-unregister.bat</code>.
+</p>
+</dd>
+
+<dt><a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-gtk2.6.0-ghc6.8.2-0.10.3-rc1.i386.deb?download">Linux, ghc 6.8.2 [.deb]</a><br></dt>
+<dd>Linux .deb package built on Debian XXX</dd>
+
+<dt><a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-bin-i386-mac2.6.4-ghc6.8.2-0.10.3-rc1.dmg?download">MacOS X, Intel, ghc 6.8.2, [.dmg]</a><br>
+<a href="http://prdownloads.sourceforge.net/wxhaskell/wxhaskell-bin-powerpc-mac2.6.4-ghc6.8.2-0.10.3-rc1.dmg?download">MacOS X, PowerPC, ghc 6.8.2 [.dmg]</a>
+<dd>The installer copies the wxHaskell libraries to
+<code>/usr/local/wxhaskell</code> and registers them with ghc. To test the installation,
+you can run the following commands from the <code>samples/wx</code>
+directory:
+<pre>
+&gt; ghc -package wx HelloWorld.hs -o hello
+&gt; /usr/local/wxhaskell/bin/macosx-app -v hello
+&gt; open hello
+</pre>
+
+<p>It is recommended to read the <a href="building-macosx.html">notes</a> on using wxHaskell with MacOS X.<p>
+</dd>
+</dl>
+</div>
+
+
+<div class="text">
 <h2>Version 0.9.4 &ndash; May 3, 2005 &nbsp; (updated May 8, 2005)</h2>
 <p>All of these files are also directly available from the
 <a href="http://sourceforge.net/project/showfiles.php?group_id=73133">sourceforge</a> project page.</p>
