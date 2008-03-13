@@ -1,8 +1,12 @@
 COMPILE=ghc -package wx
+
 ifeq ($(shell uname),Darwin)
-PREP=macosx-app
+%: %.hs
+	$(COMPILE) -o $@ $<
+	macosx-app $@
 else
-PREP=#
+%: %.hs
+	$(COMPILE) -o $@ $<
 endif
 
 APPS= BouncingBalls\
@@ -27,10 +31,6 @@ APPS= BouncingBalls\
 .PHONY: clean
 
 all: $(APPS)
-
-%: %.hs
-	$(COMPILE) -o $@ $<
-	$(PREP) $@
 
 clean:
 	rm -rf $(APPS) *.o *.hi *.app
