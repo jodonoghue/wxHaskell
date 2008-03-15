@@ -836,6 +836,7 @@ sizerFromLayout parent layout
            insert (downcastSizer sizer) layout
            when (container /= objectNull) 
              (sizerAddSizerWithOptions container sizer options)
+           windowLower box
            return (downcastSizer sizer)
 
     insert container (Line options (Size w h))
