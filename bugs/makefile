@@ -6,7 +6,6 @@ PREP=echo
 endif
 
 APPS= \
-      BoxedCombinator\
       NonModalDialog\
       StartStart\
       SubMenu\
