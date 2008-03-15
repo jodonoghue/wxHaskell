@@ -36,10 +36,12 @@ module Graphics.UI.WXCore.Image
     , imageGetPixelArray
     , imageCreateFromPixelArray
     , imageGetSize
+    , withImageData
 
     -- ** Pixel buffer
     , imageCreateFromPixelBuffer
     , imageGetPixelBuffer
+    , withPixelBuffer
     , PixelBuffer
     , pixelBufferCreate
     , pixelBufferDelete
@@ -298,19 +300,35 @@ imageCreateFromPixelBuffer :: PixelBuffer -> IO (Image ())
 imageCreateFromPixelBuffer (PixelBuffer owned size buffer) 
   = imageCreateFromDataEx size buffer False
 
--- | Get the pixel buffer of an image.
-imageGetPixelBuffer :: Image a -> IO PixelBuffer
-imageGetPixelBuffer image
-  = do ptr <- imageGetData image
+-- | Do something with the pixels of an image
+withImageData :: Image a -> (Ptr () -> IO b) -> IO b
+withImageData image f = do
+    pixels <- imageGetData image
+    x <- f pixels
+    image `seq` return x -- about this seq:
+    -- it's not that we're trying to force evaluation order;
+    -- we merely want to prevent image from being garbage
+    -- collected before we've managed to use the array that
+    -- is being pointed to
+
+withPixelBuffer :: Image a -> (PixelBuffer -> IO b) -> IO b
+withPixelBuffer image f =
+    withImageData image $ \ptr -> do
        w   <- imageGetWidth image
        h   <- imageGetHeight image
-       return (PixelBuffer False (sz w h) (ptrCast ptr))
+       f $ PixelBuffer False (sz w h) (ptrCast ptr)
+
+{-# DEPRECATED imageGetPixelBuffer "Use withPixelBuffer instead" #-}
+-- | Get the pixel buffer of an image.
+--   Note: use 'withPixelBuffer' instead
+imageGetPixelBuffer :: Image a -> IO PixelBuffer
+imageGetPixelBuffer image
+  = withPixelBuffer image return
 
 -- | Get the pixels of an image.
 imageGetPixels :: Image a -> IO [Color]
 imageGetPixels image
-  = do pb <- imageGetPixelBuffer image
-       pixelBufferGetPixels pb
+  = withPixelBuffer image pixelBufferGetPixels
 
 -- | Create an image from a list of pixels.
 imageCreateFromPixels :: Size -> [Color] -> IO (Image ())
