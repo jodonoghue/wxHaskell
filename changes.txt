@@ -34,6 +34,10 @@ Bugfixes:
 - Fixed bug in listCtrl. "get" returns null string
 - Fixed old example
 - wxcore's BouncingBalls example disabled the close button.
+- treeCtrl now returns all children for node, not just the first one
+- avoided a segfault in image getPixelData (bug 1003006)
+- boxed combinator no longer 'disables' the widgets it contains (bug 1549363)
+- Fixed bug where dbGetDataSources only returns the first letter of every word.
 
 Version 0.9.4-1
 -------------
