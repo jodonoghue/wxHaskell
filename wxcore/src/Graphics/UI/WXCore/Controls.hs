@@ -41,7 +41,7 @@ treeCtrlGetSelections2 treeCtrl
 
 -- | Represents the children of a tree control.
 data TreeCookie   = TreeCookie (Var Cookie)
-data Cookie       = Cookie TreeItem CInt
+data Cookie       = Cookie TreeItem
                   | CookieFirst TreeItem
                   | CookieInvalid
 
@@ -60,17 +60,15 @@ treeCtrlGetNextChild2 treeCtrl treeCookie@(TreeCookie pcookie)
          CookieInvalid    -> return Nothing
          CookieFirst item -> with 0 $ \pint ->
                              do first <- treeCtrlGetFirstChild treeCtrl item pint
-                                i     <- peek pint
                                 if (treeItemIsOk first)
-                                 then do varSet pcookie (Cookie item i)
+                                 then do varSet pcookie (Cookie first)
                                          return (Just first)
                                  else do varSet pcookie (CookieInvalid)
                                          return Nothing
-         Cookie parent i  -> with i $ \pint ->
-                             do next <- treeCtrlGetNextChild treeCtrl parent pint
-                                j    <- peek pint
+         Cookie item ->
+                             do next <- treeCtrlGetNextSibling treeCtrl item
                                 if (treeItemIsOk next)
-                                 then do varSet pcookie (Cookie parent j)
+                                 then do varSet pcookie (Cookie next)
                                          return (Just next)
                                  else do varSet pcookie (CookieInvalid)
                                          return Nothing
