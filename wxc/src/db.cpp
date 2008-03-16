@@ -200,6 +200,9 @@ EWXWEXPORT(int,wxDb_SqlTypeToStandardSqlType)( int sqlType )
 {
 #ifdef wxUSE_ODBC
   switch (sqlType) {
+#if defined(wxUSE_UNICODE) && defined(SQL_WCHAR)
+    case SQL_WCHAR:     return SqlChar;
+#endif
     case SQL_CHAR:      return SqlChar;
     case SQL_NUMERIC:   return SqlNumeric;
     case SQL_DECIMAL:   return SqlDecimal;
@@ -212,6 +215,9 @@ EWXWEXPORT(int,wxDb_SqlTypeToStandardSqlType)( int sqlType )
     case SQL_DATE:      return SqlDate;
     case SQL_TIME:      return SqlTime;
     case SQL_TIMESTAMP: return SqlTimeStamp;
+#endif
+#if defined(wxUSE_UNICODE) && defined(SQL_WVARCHAR)
+    case SQL_WVARCHAR:  return SqlVarChar;
 #endif
     case SQL_VARCHAR:   return SqlVarChar;
 #ifdef SQL_BIT
@@ -236,7 +242,11 @@ EWXWEXPORT(int,wxDb_StandardSqlTypeToSqlType)( int sqlType )
 {
 #ifdef wxUSE_ODBC
   switch (sqlType) {
+#if defined(wxUSE_UNICODE) && defined(SQL_WCHAR)
+    case SqlChar      : return SQL_WCHAR;
+#else
     case SqlChar      : return SQL_CHAR;
+#endif
     case SqlNumeric   : return SQL_NUMERIC;
     case SqlDecimal   : return SQL_DECIMAL;
     case SqlInteger   : return SQL_INTEGER;
@@ -249,7 +259,11 @@ EWXWEXPORT(int,wxDb_StandardSqlTypeToSqlType)( int sqlType )
     case SqlTime      : return SQL_TIME;
     case SqlTimeStamp : return SQL_TIMESTAMP;
 #endif
+#if defined(wxUSE_UNICODE) && defined(SQL_WVARCHAR)
+    case SqlVarChar   : return SQL_WVARCHAR;
+#else
     case SqlVarChar   : return SQL_VARCHAR;
+#endif
 #ifdef SQL_BIT
     case SqlBit       : return SQL_BIT;
 #endif
@@ -1195,6 +1209,14 @@ EWXWEXPORT(wxDbColInf*, wxDb_GetResultColumns)( wxDb* db, int* pnumCols )
     colInf[column].dbDataType = 0;
     switch (colInf[column].sqlDataType)
     {
+#ifndef wxUSE_UNICODE
+    #if defined(SQL_WVARCHAR)
+        case SQL_WVARCHAR:
+    #endif
+    #if defined(SQL_WCHAR)
+        case SQL_WCHAR:
+    #endif
+#endif
         case SQL_VARCHAR:
         case SQL_CHAR:
             colInf[column].dbDataType = DB_DATA_TYPE_VARCHAR;

@@ -767,8 +767,8 @@ dbGetDataSourceEx henv isFirst
                                (if isFirst then wxSQL_FETCH_FIRST else wxSQL_FETCH_NEXT)
        if not ok
         then return Nothing
-        else do dsn  <- peekCString cdsn
-                desc <- peekCString cdesc 
+        else do dsn  <- peekCWString cdsn
+                desc <- peekCWString cdesc 
                 return (Just (dsn,desc))
   where
     dsnLen  = 255
