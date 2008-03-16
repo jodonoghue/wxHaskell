@@ -254,7 +254,6 @@ SAMPLE-SOURCES= \
 	bugs/SubMenu.hs\
 	bugs/StartStart.hs\
 	bugs/NonModalDialog.hs\
-	bugs/BoxedCombinator.hs\
 	bugs/TextColor.hs\
 	
 #--------------------------------------------------------------------------
