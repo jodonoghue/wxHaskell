@@ -10,7 +10,6 @@ APPS= \
       StartStart\
       SubMenu\
       TextColor\
-      TreeCtrlTest\
 
 .PHONY: clean
 

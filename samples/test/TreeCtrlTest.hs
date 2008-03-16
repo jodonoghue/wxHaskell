@@ -6,8 +6,7 @@ main :: IO ()
 main = start $ do
 
   f <- frame []
-  p <- panel f []
-  t <- treeCtrl p []
+  t <- treeCtrl f []
 
   root <- treeCtrlAddRoot t "root" (-1) (-1) objectNull
   treeCtrlAppendItem t root "item1" (-1) (-1) objectNull
@@ -16,5 +15,5 @@ main = start $ do
   treeCtrlExpand t root
 
   cs <- treeCtrlGetChildren t root
+  -- set f [ layout := fill $ widget t ]
   runTestTT $ TestCase $ assertEqual "tree children" 3 (length cs)
-  close f
