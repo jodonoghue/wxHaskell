@@ -1146,14 +1146,30 @@ rm -f config/wxhaskell.spec.temp
 
 mkdir config/DEBIAN
 
+case "$hcversion" in
+    6.6*)
+	deb_package=libghc6-6-wxhaskell
+	deb_ghc_dependency=6.6
+	;;
+    6.8*)
+	deb_package=libghc6-8-wxhaskell
+	deb_ghc_dependency=$hcversion
+	;;
+    *)
+	deb_package=libghc6-unknown-wxhaskell
+	deb_ghc_dependency=6
+	;;
+esac
+
 cat > config/DEBIAN/control << EOF
-Package: libghc6-6-wxhaskell
+Package: $deb_package
 Version: $version
 Section: devel
 Priority: optional
 Architecture: i386
 Essential: no
-Depends: ghc6 (>= 6.6), ghc6 (<<6.6+), libwxgtk2.6-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
+Depends: ghc6 (>= $deb_ghc_dependency), ghc6 (<<$deb_ghc_dependency+), libwxgtk2.6-dev
+Recommends: libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
 Installed-Size: 21238821
 Maintainer: Mads Lindstroem [mads_lindstroem@yahoo.dk]
 Description: wxHaskell is a portable and native GUI library for Haskell
