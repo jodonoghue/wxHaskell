@@ -391,8 +391,12 @@ rpmdist: srcdist
 DEBIAN_DIST=dist/debian
 DEBIAN_INSTALL_LOCACTION=$(DEBIAN_DIST)/usr/local
 DEB_NAME=$(DIST-OUTDIR)/wxhaskell$(ARCHITECTURE)-bin-$(REL-VERSION).deb
+DEB_DOC=$(DEBIAN_DIST)/usr/local/share
 
-debdist: debdist-clean bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bindist
+.PHONY: debdist debdist-clean
+debdist: 
+
+debdist:dist-dirs wxc-bindist wxcore-bindist wx-bindist
 	@$(call ensure-dir,$(DEBIAN_DIST))
 	@$(call cp-echo,config/DEBIAN,$(DEBIAN_DIST)/DEBIAN)
 	@$(call ensure-dir,$(DEBIAN_INSTALL_LOCACTION))
@@ -400,15 +404,20 @@ debdist: debdist-clean bindist-clean dist-dirs wxc-bindist wxcore-bindist wx-bin
 	# copy packages
 	@$(call cp-echo,config/wxcore.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wxcore.pkg)
 	@$(call cp-echo,config/wx.pkg,$(DEBIAN_INSTALL_LOCACTION)/lib/wx.pkg)
+	# copy license
+	@$(call cp-echo,license.txt,$(DEBIAN_DIST)/DEBIAN/copyright)
 	# permissions
 	chmod 755 $(DEBIAN_DIST)/DEBIAN/prerm
 	chmod 755 $(DEBIAN_DIST)/DEBIAN/postinst
+	#extract doc-zip
+	@$(call ensure-dir,$(DEB_DOC))
+	unzip wxhaskell-doc-0.10.3.zip -d $(DEB_DOC)
 	#ownership
 	chown --recursive root.root $(DEBIAN_DIST)
-	# dpkg
+	#build
 	dpkg --build dist/debian/ $(DEB_NAME)
 
-debdist-clean:
+debdist-clean: bindist-clean
 	@$(RM) $(DEB_NAME)
 	-@$(call full-remove-dir,$(DEBIAN_DIST))
 
