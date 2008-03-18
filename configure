@@ -756,6 +756,19 @@ fi
 # wxWidgets
 #--------------------------------------------------------------------
 
+# confirm that we have unicode enabled
+`$wxconfig --unicode=yes`
+if test "$?" = 0; then
+  echo " wxWidgets Unicode support found"
+else
+  echo ""
+  echo " I can't find the Unicode version of wxWidgets!"
+  echo ""
+  echo " Did you configure configure wxWidgets with --enable-unicode?"
+  echo " If you have more than one copy, are you passing in the right"
+  echo " version via --wx-config?"
+  exit 1
+fi
 
 #--------------------------------------------------------------------
 # install
