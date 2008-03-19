@@ -942,8 +942,10 @@ $(WXC-OBJS): $(WXC-OUTDIR)/%.o: $(WXC-SRCDIR)/%.cpp
 DOC-OUTDIR  =$(OUTDIR)/doc/html
 WXCORE-DOC-OUTDIR  =$(DOC-OUTDIR)/wxcore
 WX-DOC-OUTDIR  	   =$(DOC-OUTDIR)/wx
+WXBOTH-DOC-OUTDIR  =$(DOC-OUTDIR)
 WXCORE-DOCFILE     =$(WXCORE-DOC-OUTDIR)/wxcore.haddock
 WX-DOCFILE     	   =$(WX-DOC-OUTDIR)/wx.haddock
+WXBOTH-DOCFILE     =$(WXBOTH-DOC-OUTDIR)/wxhaskell.haddock
 WXCORE-HDOCFLAGS   = --prologue=config/prologue.txt --html $(HDOCBASES)
 WX-HDOCFLAGS   = $(WXCORE-HDOCFLAGS) -i$(WXCORE-DOC-OUTDIR)/wxcore.haddock
 WXCORE-DOCSOURCES  = $(WXCORE-DOCS)
@@ -955,10 +957,14 @@ doc: doc-dirs $(WXCORE-DOCFILE) $(WX-DOCFILE)
 doc-dirs:
 	@$(call ensure-dir,$(WXCORE-DOC-OUTDIR))
 	@$(call ensure-dir,$(WX-DOC-OUTDIR))
+	@$(call ensure-dir,$(WXBOTH-DOC-OUTDIR))
 
 doc-clean:
 	-@$(call full-remove-dir,$(WXCORE-DOC-OUTDIR))
 	-@$(call full-remove-dir,$(WX-DOC-OUTDIR))
+	-@$(call full-remove-dir,$(WXBOTH-DOC-OUTDIR))
+
+combined-doc: doc-dirs $(WXBOTH-DOCFILE)
 
 # copy documentation to the wxhaskell website
 webdoc: doc
@@ -966,7 +972,7 @@ webdoc: doc
 
 # documentation distribution
 ifeq ($(HDOCFOUND),yes)
-docdist: docdist-clean doc
+docdist: docdist-clean combined-doc
 	@echo "-- adding documentation"
 	@echo $(wildcard $(DOC-OUTDIR)/*)
 	@$(call cp-docdist,$(OUTDIR),$(wildcard $(DOC-OUTDIR)/*))
@@ -989,6 +995,9 @@ $(WXCORE-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES)
 
 $(WX-DOCFILE): config/prologue.txt $(WX-DOCSOURCES)
 	$(HDOC) --odir $(WX-DOC-OUTDIR) --dump-interface=$(WX-DOCFILE) $(WX-HDOCFLAGS) $(WX-DOCSOURCES)
+
+$(WXBOTH-DOCFILE): config/prologue.txt $(WXCORE-DOCSOURCES) $(WX-DOCSOURCES)
+	$(HDOC) --odir $(WXBOTH-DOC-OUTDIR) --dump-interface=$(WXBOTH-DOCFILE) $(WXCORE-HDOCFLAGS) $(WXCORE-DOCSOURCES) $(WX-DOCSOURCES)
 
 #--------------------------------------------------------------------------
 # Cabal / Hackage stuff
