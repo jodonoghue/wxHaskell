@@ -17,7 +17,7 @@ module HaskellNames( haskellDeclName
                    , getPrologue
                    ) where
 
-import qualified Set
+import qualified Data.Set as Set
 import Data.Char( toLower, toUpper, isLower, isUpper )
 #ifdef NO_DATA_TIME
 import Time( getClockTime)

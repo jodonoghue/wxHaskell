@@ -16,7 +16,7 @@ module DeriveTypes ( deriveTypes, deriveTypesAll
                    , classifyName
                    ) where
 
-import qualified Set
+import qualified Data.Set as Set
 import qualified Data.Map as Map
 
 import Data.Char( toLower, toUpper, isSpace, isLower, isUpper )

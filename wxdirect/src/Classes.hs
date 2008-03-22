@@ -25,7 +25,7 @@ module Classes( isClassName, isBuiltin, haskellClassDefs
 import System( getEnv )
 import Data.Char( isUpper )
 import Data.List( sort, sortBy )
-import qualified Set
+import qualified Data.Set as Set
 import qualified Data.Map as Map
 import HaskellNames( haskellTypeName, isBuiltin )
 import Types

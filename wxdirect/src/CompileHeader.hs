@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module CompileHeader( compileHeader ) where
 
-import qualified Set
+import qualified Data.Set as Set
 import qualified Data.Map as Map
 import qualified MultiSet
 

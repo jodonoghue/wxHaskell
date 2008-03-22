@@ -127,7 +127,6 @@ WXCORE-STUBS = \
 # wxdirect
 #--------------------------------------------------------------------------
 WXD-SOURCES = \
-	Set\
 	MultiSet \
 	HaskellNames Types \
 	ParseEiffel ParseC \
