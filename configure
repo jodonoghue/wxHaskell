@@ -637,6 +637,13 @@ if test "$hcpkglocal"; then
   hcpkg="$hcpkg -f $hcpkglocal"
 fi
 
+# Test if we can include the containers package explicitly
+$hcpkg -s containers > /dev/null 2> /dev/null
+case $? in
+  0) pkgcontainers="-package containers";;
+  *) pkgcontainers="";;
+esac
+
 # Test if we can include the parsec package explicitly
 $hcpkg -s parsec > /dev/null 2> /dev/null
 case $? in
@@ -896,6 +903,7 @@ ENABLE-SPLITOBJS=$enablesplitobjs
 HC-PROF-FLAGS=-hisuf p_hi $hcprof
 
 # Packages
+PKG-CONTAINERS=$pkgcontainers
 PKG-PARSEC=$pkgparsec
 PKG-TIME=$pkgtime
 

@@ -482,7 +482,7 @@ wxd-dist: $(WXD-HS)
 
 # build executable
 $(WXD-EXE): $(WXD-OBJS)
-	$(HC) $(HCFLAGS) $(PKG-PARSEC) $(PKG-TIME) -o $@ $^
+	$(HC) $(HCFLAGS) $(PKG-CONTAINERS) $(PKG-PARSEC) $(PKG-TIME) -o $@ $^
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
