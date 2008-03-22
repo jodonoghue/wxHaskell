@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module CompileClassTypes( compileClassTypes ) where
 
-import qualified Map
+import qualified Data.Map as Map
 
 #ifdef NO_DATA_TIME
 import Time( getClockTime)

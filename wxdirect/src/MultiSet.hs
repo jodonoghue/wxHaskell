@@ -94,7 +94,7 @@ module MultiSet (
 import Prelude   hiding  (map,filter)
 import qualified Prelude (map,filter)
 
-import qualified Map as M
+import qualified Data.Map as M
 
 {--------------------------------------------------------------------
   Operators
@@ -118,7 +118,7 @@ newtype MultiSet a  = MultiSet (M.Map a Int)
 -- | /O(1)/. Is the multi set empty?
 isEmpty :: MultiSet a -> Bool
 isEmpty (MultiSet m)
-  = M.isEmpty m
+  = M.null m
 
 -- | /O(1)/. Returns the number of distinct elements in the multi set, ie. (@distinctSize mset == Set.size ('toSet' mset)@).
 distinctSize :: MultiSet a -> Int
@@ -145,7 +145,7 @@ occur x (MultiSet m)
 -- | /O(n+m)/. Is this a subset of the multi set?
 subset :: Ord a => MultiSet a -> MultiSet a -> Bool
 subset (MultiSet m1) (MultiSet m2)
-  = M.subsetBy (<=) m1 m2
+  = M.isSubmapOfBy (<=) m1 m2
 
 -- | /O(n+m)/. Is this a proper subset? (ie. a subset and not equal)
 properSubset :: Ord a => MultiSet a -> MultiSet a -> Bool
@@ -165,7 +165,7 @@ empty
 -- | /O(1)/. Create a singleton multi set.
 single :: a -> MultiSet a
 single x
-  = MultiSet (M.single x 0)
+  = MultiSet (M.singleton x 0)
 
 {--------------------------------------------------------------------
   Insertion, Deletion
@@ -419,4 +419,4 @@ showTreeWith hang wide (MultiSet m)
 -- | /O(n)/. Is this a valid multi set?
 valid :: Ord a => MultiSet a -> Bool
 valid (MultiSet m)
-  = M.valid m && (M.isEmpty (M.filter (<=0) m))
+  = M.valid m && (M.null (M.filter (<=0) m))

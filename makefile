@@ -127,7 +127,6 @@ WXCORE-STUBS = \
 # wxdirect
 #--------------------------------------------------------------------------
 WXD-SOURCES = \
-	Map\
 	Set\
 	MultiSet \
 	HaskellNames Types \

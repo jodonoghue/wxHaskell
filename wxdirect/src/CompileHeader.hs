@@ -13,7 +13,7 @@
 module CompileHeader( compileHeader ) where
 
 import qualified Set
-import qualified Map
+import qualified Data.Map as Map
 import qualified MultiSet
 
 #ifdef NO_DATA_TIME

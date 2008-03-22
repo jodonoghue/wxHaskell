@@ -17,7 +17,7 @@ module DeriveTypes ( deriveTypes, deriveTypesAll
                    ) where
 
 import qualified Set
-import qualified Map
+import qualified Data.Map as Map
 
 import Data.Char( toLower, toUpper, isSpace, isLower, isUpper )
 import Data.List( isPrefixOf, sort, sortBy, intersperse )
