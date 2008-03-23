@@ -198,7 +198,7 @@ WXC-SRCS=$(wildcard wxc/src/*.cpp) \
 #--------------------------------------------------------------------------
 WXHASKELL-SOURCES= \
 	Setup.lhs wxcore.cabal\
-	wx/Setup.lhs wx/wx.cabal\
+	wx/Setup.lhs wx/wx.cabal wx/license.txt\
        	configure makefile makefile.lib \
 	bin/prologue-template.txt license.txt changes.txt \
 	bin/wxhaskell-spec-template \
