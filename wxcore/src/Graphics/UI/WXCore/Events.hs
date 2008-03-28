@@ -245,7 +245,7 @@ import Data.Maybe ( fromMaybe )
 import Control.Concurrent.MVar
 import System.IO.Unsafe( unsafePerformIO )
 
-import qualified Graphics.UI.WXCore.IntMap as IntMap
+import qualified Data.IntMap as IntMap
 import Graphics.UI.WXCore.WxcTypes
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses

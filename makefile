@@ -83,7 +83,6 @@ WXCORE-SOURCES = \
 	Graphics/UI/WXCore/WxcClasses \
 	Graphics/UI/WXCore/WxcClassInfo \
 	Graphics/UI/WXCore/WxcDefs \
-	Graphics/UI/WXCore/IntMap \
 	Graphics/UI/WXCore/Types \
 	Graphics/UI/WXCore/Defines \
 	Graphics/UI/WXCore/Draw \

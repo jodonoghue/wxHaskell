@@ -29,7 +29,6 @@ Library
   Graphics.UI.WXCore.WxcClassesMZ
   Graphics.UI.WXCore.Events
   Graphics.UI.WXCore.Frame
-  Graphics.UI.WXCore.IntMap
   Graphics.UI.WXCore.Layout
   Graphics.UI.WXCore.Controls
   Graphics.UI.WXCore.Types
