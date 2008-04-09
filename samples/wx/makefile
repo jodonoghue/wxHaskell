@@ -33,4 +33,4 @@ APPS= BouncingBalls\
 all: $(APPS)
 
 clean:
-	rm -rf $(APPS) *.o *.hi *.app
+	rm -rf $(APPS) *.o *.hi *.app *exe *.manifest
