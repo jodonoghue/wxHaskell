@@ -157,7 +157,7 @@ listCtrlShowDir :: ListCtrl a -> FilePath -> IO ()
 listCtrlShowDir listCtrl path
   = do itemsDelete listCtrl
        contents <- getDirectoryContents path
-       let paths = map (\dir -> path ++ dir ++ "/") contents
+       let paths = map (\cont -> path ++ cont) contents
        mapM_ (listCtrlAddFile listCtrl) (zip3 [0..] contents paths)
   `catch` \err -> return ()
 
