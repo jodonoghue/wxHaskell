@@ -162,7 +162,7 @@ instance Dimensions (Window a) where
         = windowSetSize w rect wxSIZE_USE_EXISTING
 
   bestSize
-    = readAttr "bestSize" windowGetAdjustedBestSize
+    = readAttr "bestSize" windowGetEffectiveMinSize
 
   position
     = newAttr "position" windowGetPosition windowMove

@@ -66,14 +66,14 @@ EWXWEXPORT(void*,wxPlotWindow_GetAt)(void* _obj, int n)
 	return (void*)((wxPlotWindow*)_obj)->GetAt((size_t)n);
 }
 	
-EWXWEXPORT(void,wxPlotWindow_SetCurrent)(void* _obj, void*  current)
+EWXWEXPORT(void,wxPlotWindow_SetCurrentCurve)(void* _obj, void*  current)
 {
-	((wxPlotWindow*)_obj)->SetCurrent((wxPlotCurve*)current);
+	((wxPlotWindow*)_obj)->SetCurrentCurve((wxPlotCurve*)current);
 }
 	
-EWXWEXPORT(void*,wxPlotWindow_GetCurrent)(void* _obj)
+EWXWEXPORT(void*,wxPlotWindow_GetCurrentCurve)(void* _obj)
 {
-	return (void*)((wxPlotWindow*)_obj)->GetCurrent();
+	return (void*)((wxPlotWindow*)_obj)->GetCurrentCurve();
 }
 	
 EWXWEXPORT(void,wxPlotWindow_AddOnOff)(void* _obj, void* curve)

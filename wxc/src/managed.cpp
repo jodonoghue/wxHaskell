@@ -207,7 +207,7 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromIcon)(wxIcon* ptr)
 -----------------------------------------------------------------------------*/
 /* defined as macro to type without casts ... sigh */
 /* use indirection array to let wx properly initialize the object pointers */
-#if (wxVERSION_NUMBER < 2800)
+
 #define IsStatic(obj,statics) \
   { \
     int i; \
@@ -218,23 +218,11 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromIcon)(wxIcon* ptr)
     }  \
     return false; \
   }
-#else
-#define IsStatic(obj,statics) \
-  { \
-    int i; \
-    if (obj==NULL) return true; \
-    for( i = 0; statics[i] != NULL; i++ ) \
-    { \
-      if (statics[i] == obj) return true; \
-    }  \
-    return false; \
-  }
-#endif
 
-
-static wxBrush* wxNULL_BRUSH = &wxNullBrush;
 
 #if (wxVERSION_NUMBER < 2800)
+static wxBrush* wxNULL_BRUSH = &wxNullBrush;
+
 static wxBrush** staticsBrush[] =
     {&wxNULL_BRUSH
     ,&wxBLUE_BRUSH
@@ -250,20 +238,41 @@ static wxBrush** staticsBrush[] =
     ,NULL
     };
 #else
-  static const wxBrush* staticsBrush[] =
-    {wxNULL_BRUSH
-    ,wxBLUE_BRUSH
-    ,wxGREEN_BRUSH
-    ,wxWHITE_BRUSH
-    ,wxBLACK_BRUSH
-    ,wxGREY_BRUSH
-    ,wxMEDIUM_GREY_BRUSH
-    ,wxLIGHT_GREY_BRUSH
-    ,wxTRANSPARENT_BRUSH
-    ,wxCYAN_BRUSH
-    ,wxRED_BRUSH
+/* VS2005 doesn't allow taking the address of the returned value of 
+   a function call. The code below ensures that there's actually an
+   address assigned in each case.
+
+   Just to compilcate matters, all of the values are now const
+   pointers. This is correct, but implies lots of downstream changes
+   so (horrible hack) I get rid of the 'constness'...
+ */
+static wxBrush* wxNULL_BRUSH         = const_cast<wxBrush*>(&wxNullBrush);
+static wxBrush* wxcBLUE_BRUSH        = const_cast<wxBrush*>(wxBLUE_BRUSH);
+static wxBrush* wxcGREEN_BRUSH       = const_cast<wxBrush*>(wxGREEN_BRUSH);
+static wxBrush* wxcWHITE_BRUSH       = const_cast<wxBrush*>(wxWHITE_BRUSH);
+static wxBrush* wxcBLACK_BRUSH       = const_cast<wxBrush*>(wxBLACK_BRUSH);
+static wxBrush* wxcGREY_BRUSH        = const_cast<wxBrush*>(wxGREY_BRUSH);
+static wxBrush* wxcMEDIUM_GREY_BRUSH = const_cast<wxBrush*>(wxMEDIUM_GREY_BRUSH);
+static wxBrush* wxcLIGHT_GREY_BRUSH  = const_cast<wxBrush*>(wxLIGHT_GREY_BRUSH);
+static wxBrush* wxcTRANSPARENT_BRUSH = const_cast<wxBrush*>(wxTRANSPARENT_BRUSH);
+static wxBrush* wxcCYAN_BRUSH        = const_cast<wxBrush*>(wxCYAN_BRUSH);
+static wxBrush* wxcRED_BRUSH         = const_cast<wxBrush*>(wxRED_BRUSH);
+
+static wxBrush** staticsBrush[] =
+    {&wxNULL_BRUSH
+    ,&wxcBLUE_BRUSH
+    ,&wxcGREEN_BRUSH
+    ,&wxcWHITE_BRUSH
+    ,&wxcBLACK_BRUSH
+    ,&wxcGREY_BRUSH
+    ,&wxcMEDIUM_GREY_BRUSH
+    ,&wxcLIGHT_GREY_BRUSH
+    ,&wxcTRANSPARENT_BRUSH
+    ,&wxcCYAN_BRUSH
+    ,&wxcRED_BRUSH
     ,NULL
     };
+
 #endif
 
 EWXWEXPORT(bool,wxBrush_IsStatic)(wxBrush* obj)
@@ -306,15 +315,23 @@ static wxColour** staticsColour[] =
     ,NULL
     };
 #else
-static const wxColour* staticsColour[] = 
-    {wxNULL_COLOUR
-    ,wxBLACK
-    ,wxWHITE
-    ,wxRED
-    ,wxBLUE
-    ,wxGREEN
-    ,wxCYAN
-    ,wxLIGHT_GREY
+static wxColour* wxcBLACK      = const_cast<wxColour *>(wxBLACK);
+static wxColour* wxcWHITE      = const_cast<wxColour *>(wxWHITE);
+static wxColour* wxcRED        = const_cast<wxColour *>(wxRED);
+static wxColour* wxcBLUE       = const_cast<wxColour *>(wxBLUE);
+static wxColour* wxcGREEN      = const_cast<wxColour *>(wxGREEN);
+static wxColour* wxcCYAN       = const_cast<wxColour *>(wxCYAN);
+static wxColour* wxcLIGHT_GREY = const_cast<wxColour *>(wxLIGHT_GREY);
+
+static wxColour** staticsColour[] = 
+    {&wxNULL_COLOUR
+    ,&wxcBLACK
+    ,&wxcWHITE
+    ,&wxcRED
+    ,&wxcBLUE
+    ,&wxcGREEN
+    ,&wxcCYAN
+    ,&wxcLIGHT_GREY
     ,NULL
     };
 #endif
@@ -345,9 +362,10 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromColour)(wxColour* ptr)
 /*-----------------------------------------------------------------------------
   Finalize wxCursor
 -----------------------------------------------------------------------------*/
-static wxCursor* wxNULL_CURSOR = &wxNullCursor;
 
 #if (wxVERSION_NUMBER < 2800)
+static wxCursor* wxNULL_CURSOR = &wxNullCursor;
+
 static wxCursor** staticsCursor[] = 
     {&wxNULL_CURSOR
     ,&wxSTANDARD_CURSOR
@@ -356,15 +374,19 @@ static wxCursor** staticsCursor[] =
     ,NULL
     };
 #else
-static const wxCursor* staticsCursor[] = 
-    {wxNULL_CURSOR
-    ,wxSTANDARD_CURSOR
-    ,wxHOURGLASS_CURSOR
-    ,wxCROSS_CURSOR
+static wxCursor* wxNULL_CURSOR       = const_cast<wxCursor *>(&wxNullCursor);
+static wxCursor* wxcSTANDARD_CURSOR  = const_cast<wxCursor *>(wxSTANDARD_CURSOR);
+static wxCursor* wxcHOURGLASS_CURSOR = const_cast<wxCursor *>(wxHOURGLASS_CURSOR);
+//static wxCursor* wxcCROSS_CURSOR     = const_cast<wxCursor *>(wxCROSS_CURSOR);
+
+static wxCursor** staticsCursor[] = 
+    {&wxNULL_CURSOR
+    ,&wxcSTANDARD_CURSOR
+    ,&wxcHOURGLASS_CURSOR
+     //,&wxcCROSS_CURSOR
     ,NULL
     };
 #endif
-  
 
 EWXWEXPORT(bool,wxCursor_IsStatic)(wxCursor* obj)
 {
@@ -392,9 +414,10 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromCursor)(wxCursor* ptr)
 /*-----------------------------------------------------------------------------
   Finalize wxFont
 -----------------------------------------------------------------------------*/
-static wxFont* wxNULL_FONT  = &wxNullFont;
 
 #if (wxVERSION_NUMBER < 2800)
+static wxFont* wxNULL_FONT  = &wxNullFont;
+
 static wxFont** staticsFont[] = 
     {&wxNULL_FONT
     ,&wxNORMAL_FONT
@@ -404,16 +427,21 @@ static wxFont** staticsFont[] =
     ,NULL
     };
 #else
-static const wxFont* staticsFont[] = 
-    {wxNULL_FONT
-    ,wxNORMAL_FONT
-    ,wxSMALL_FONT
-    ,wxITALIC_FONT
-    ,wxSWISS_FONT
+static wxFont* wxNULL_FONT    = const_cast<wxFont *>(&wxNullFont);
+// static wxFont* wxcNORMAL_FONT = const_cast<wxFont *>(wxNORMAL_FONT);
+//static wxFont* wxcSMALL_FONT  = const_cast<wxFont *>(wxSMALL_FONT);
+//static wxFont* wxcITALIC_FONT = const_cast<wxFont *>(wxITALIC_FONT);
+//static wxFont* wxcSWISS_FONT  = const_cast<wxFont *>(wxSWISS_FONT);
+
+static wxFont** staticsFont[] = 
+    {&wxNULL_FONT
+     //    ,&wxcNORMAL_FONT
+     //,&wxcSMALL_FONT
+     //,&wxcITALIC_FONT
+     //,&wxcSWISS_FONT
     ,NULL
     };
 #endif
-
 
 EWXWEXPORT(bool,wxFont_IsStatic)(wxFont* obj)
 {
@@ -459,18 +487,29 @@ static wxPen** staticsPen[] =
     ,NULL
     };
 #else
-static const wxPen* staticsPen[] = 
-    {wxNULL_PEN
-    ,wxRED_PEN
-    ,wxCYAN_PEN
-    ,wxGREEN_PEN
-    ,wxBLACK_PEN
-    ,wxWHITE_PEN
-    ,wxTRANSPARENT_PEN
-    ,wxBLACK_DASHED_PEN
-    ,wxGREY_PEN
-    ,wxMEDIUM_GREY_PEN
-    ,wxLIGHT_GREY_PEN
+static wxPen* wxcRED_PEN          = const_cast<wxPen *>(wxRED_PEN);
+static wxPen* wxcCYAN_PEN         = const_cast<wxPen *>(wxCYAN_PEN);
+static wxPen* wxcGREEN_PEN        = const_cast<wxPen *>(wxGREEN_PEN);
+static wxPen* wxcBLACK_PEN        = const_cast<wxPen *>(wxBLACK_PEN);
+static wxPen* wxcWHITE_PEN        = const_cast<wxPen *>(wxWHITE_PEN);
+static wxPen* wxcTRANSPARENT_PEN  = const_cast<wxPen *>(wxTRANSPARENT_PEN);
+static wxPen* wxcBLACK_DASHED_PEN = const_cast<wxPen *>(wxBLACK_DASHED_PEN);
+static wxPen* wxcGREY_PEN         = const_cast<wxPen *>(wxGREY_PEN);
+static wxPen* wxcMEDIUM_GREY_PEN  = const_cast<wxPen *>(wxMEDIUM_GREY_PEN);
+static wxPen* wxcLIGHT_GREY_PEN   = const_cast<wxPen *>(wxLIGHT_GREY_PEN);
+
+static wxPen** staticsPen[] = 
+    {&wxNULL_PEN
+    ,&wxcRED_PEN
+    ,&wxcCYAN_PEN
+    ,&wxcGREEN_PEN
+    ,&wxcBLACK_PEN
+    ,&wxcWHITE_PEN
+    ,&wxcTRANSPARENT_PEN
+    ,&wxcBLACK_DASHED_PEN
+    ,&wxcGREY_PEN
+    ,&wxcMEDIUM_GREY_PEN
+    ,&wxcLIGHT_GREY_PEN
     ,NULL
     };
 #endif

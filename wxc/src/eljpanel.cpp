@@ -30,5 +30,11 @@ EWXWEXPORT(void, wxPanel_SetDefaultItem)(void* _obj, void* btn)
 	((wxTopLevelWindow*)_obj)->SetDefaultItem((wxButton*) btn);
 #endif
 }
-	
+
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxPanel_SetFocus)(void* _obj)
+{
+	((wxPanel*)_obj)->SetFocus();
+}
+#endif
 }

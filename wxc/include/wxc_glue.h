@@ -1328,10 +1328,13 @@ void       wxDC_DrawCircle( TSelf(wxDC) _obj, TPoint(x,y), int radius );
 void       wxDC_DrawEllipse( TSelf(wxDC) _obj, TRect(x,y,width,height) );
 void       wxDC_DrawEllipticArc( TSelf(wxDC) _obj, TRect(x,y,w,h), double sa, double ea );
 void       wxDC_DrawIcon( TSelf(wxDC) _obj, TClass(wxIcon) icon, TPoint(x,y) );
+void       wxDC_DrawLabel( TSelf(wxDC) _obj, TString str, TRect(x,y,w,h), int align, int indexAccel);
+void       wxDC_DrawLabelBitmap( TSelf(wxDC) _obj, TString str, TClass(wxBitmap) bmp, TRect(x,y,w,h), int align, int indexAccel, int *_x, int *_y, int *_w, int *_h );
 void       wxDC_DrawLine( TSelf(wxDC) _obj, TPoint(x1,y1), TPoint(x2,y2) );
 void       wxDC_DrawLines( TSelf(wxDC) _obj, int n, void* x, void* y, TPoint(xoffset,yoffset) );
 void       wxDC_DrawPoint( TSelf(wxDC) _obj, TPoint(x,y) );
 void       wxDC_DrawPolygon( TSelf(wxDC) _obj, int n, void* x, void* y, TPoint(xoffset,yoffset), int fillStyle );
+void       wxDC_DrawPolyPolygon( TSelf(wxDC) _obj, int n, void *count, void *x, void *y, TPoint(xoffset,yoffset), int fillStyle);
 void       wxDC_DrawRectangle( TSelf(wxDC) _obj, TRect(x,y,width,height) );
 void       wxDC_DrawRotatedText( TSelf(wxDC) _obj, TStringVoid text, TPoint(x,y), double angle );
 void       wxDC_DrawRoundedRectangle( TSelf(wxDC) _obj, TRect(x,y,width,height), double radius );
@@ -1584,12 +1587,11 @@ void       wxDialUpManager_SetOnlineStatus( TSelf(wxDialUpManager) _obj, TBool i
 void       wxDialUpManager_SetWellKnownHost( TSelf(wxDialUpManager) _obj, void* hostname, int portno );
 
 /* wxDialog */
-TClassDefExtend(wxDialog,wxWindow)
+TClassDefExtend(wxDialog,wxTopLevelWindow)
 TClass(wxDialog) wxDialog_Create( TClass(wxWindow) _prt, int _id, TString _txt, TRect(_lft,_top,_wdt,_hgt), int _stl );
 void       wxDialog_EndModal( TSelf(wxDialog) _obj, int retCode );
 int        wxDialog_GetReturnCode( TSelf(wxDialog) _obj );
 TBool      wxDialog_IsModal( TSelf(wxDialog) _obj );
-void       wxDialog_SetIcons( TSelf(wxDialog) _obj, void* _icons );
 void       wxDialog_SetReturnCode( TSelf(wxDialog) _obj, int returnCode );
 int        wxDialog_ShowModal( TSelf(wxDialog) _obj );
 
@@ -1967,23 +1969,16 @@ TStringLen wxFontMapper_GetAltForEncoding( TSelf(wxFontMapper) _obj, int encodin
 TStringLen wxFontMapper_IsEncodingAvailable( TSelf(wxFontMapper) _obj, int encoding, TStringOutVoid _buf );
 
 /* wxFrame */
-TClassDefExtend(wxFrame,wxWindow)
+TClassDefExtend(wxFrame,wxTopLevelWindow)
 TClass(wxFrame) wxFrame_Create( TClass(wxWindow) _prt, int _id, TString _txt, TRect(_lft,_top,_wdt,_hgt), int _stl );
 TClass(wxStatusBar) wxFrame_CreateStatusBar( TSelf(wxFrame) _obj, int number, int style );
 TClass(wxToolBar)   wxFrame_CreateToolBar( TSelf(wxFrame) _obj, long style );
 int        wxFrame_GetClientAreaOrigin_left( TSelf(wxFrame) _obj );
 int        wxFrame_GetClientAreaOrigin_top( TSelf(wxFrame) _obj );
-TClass(wxIcon) wxFrame_GetIcon( TSelf(wxFrame) _obj );
 TClass(wxMenuBar) wxFrame_GetMenuBar( TSelf(wxFrame) _obj );
 TClass(wxStatusBar) wxFrame_GetStatusBar( TSelf(wxFrame) _obj );
 TClass(wxToolBar) wxFrame_GetToolBar( TSelf(wxFrame) _obj );
-void       wxFrame_Iconize( TSelf(wxFrame) _obj );
-TBool      wxFrame_IsIconized( TSelf(wxFrame) _obj );
-TBool      wxFrame_IsMaximized( TSelf(wxFrame) _obj );
-void       wxFrame_Maximize( TSelf(wxFrame) _obj );
 void       wxFrame_Restore( TSelf(wxFrame) _obj );
-void       wxFrame_SetIcon( TSelf(wxFrame) _obj, TClass(wxIcon) _icon );
-void       wxFrame_SetIcons( TSelf(wxFrame) _obj, void* _icons );
 void       wxFrame_SetMenuBar( TSelf(wxFrame) _obj, TClass(wxMenuBar) menubar );
 void       wxFrame_SetStatusBar( TSelf(wxFrame) _obj, TClass(wxStatusBar) statBar );
 void       wxFrame_SetStatusText( TSelf(wxFrame) _obj, TString _txt, int _number );
@@ -2545,6 +2540,9 @@ int        wxIcon_GetWidth( TSelf(wxIcon) _obj );
 TBool      wxIcon_IsEqual( TSelf(wxIcon) _obj, void* other );
 int        wxIcon_Load( TSelf(wxIcon) _obj, TStringVoid name, long type, TSize(width,height) );
 TBool      wxIcon_Ok( TSelf(wxIcon) _obj );
+void       wxIcon_SetDepth( TSelf(wxIcon) _obj, int depth );
+void       wxIcon_SetHeight( TSelf(wxIcon) _obj, int height );
+void       wxIcon_SetWidth( TSelf(wxIcon) _obj, int width );
 
 /* wxIconBundle */
 TClassDef(wxIconBundle)
@@ -3308,11 +3306,7 @@ int        wxNotebook_SetSelection( TSelf(wxNotebook) _obj, int nPage );
 TClassDefExtend(wxNotebookEvent,wxNotifyEvent)
 
 /* wxNotebookSizer */
-TClassDefExtend(wxNotebookSizer,wxSizer)
-void       wxNotebookSizer_CalcMin( TSelf(wxNotebookSizer) _obj, TSizeOutVoid(_w,_h) );
-TClass(wxNotebookSizer) wxNotebookSizer_Create( TClass(wxNotebook) nb );
-TClass(wxNotebook) wxNotebookSizer_GetNotebook( TSelf(wxNotebookSizer) _obj );
-void       wxNotebookSizer_RecalcSizes( TSelf(wxNotebookSizer) _obj );
+/* Class removed from wxWidgets >= 2.8 */
 
 /* wxNotifyEvent */
 TClassDefExtend(wxNotifyEvent,wxCommandEvent)
@@ -3409,9 +3403,8 @@ void       wxPaletteChangedEvent_SetChangedWindow( TSelf(wxPaletteChangedEvent) 
 /* wxPanel */
 TClassDefExtend(wxPanel,wxWindow)
 TClass(wxPanel)  wxPanel_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
-TClass(wxButton) wxPanel_GetDefaultItem( TSelf(wxPanel) _obj );
 void       wxPanel_InitDialog( TSelf(wxPanel) _obj );
-void       wxPanel_SetDefaultItem( TSelf(wxPanel) _obj, TClass(wxButton) btn );
+void       wxPanel_SetFocus( TSelf(wxPanel) _obj);
 
 /* wxPathList */
 TClassDefExtend(wxPathList,wxList)
@@ -3993,16 +3986,40 @@ void       wxSizer_Prepend( TSelf(wxSizer) _obj, TSize(width,height), int option
 void       wxSizer_PrependSizer( TSelf(wxSizer) _obj, TClass(wxSizer) sizer, int option, int flag, int border, void* userData );
 void       wxSizer_PrependWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window, int option, int flag, int border, void* userData );
 void       wxSizer_RecalcSizes( TSelf(wxSizer) _obj );
-int        wxSizer_Remove( TSelf(wxSizer) _obj, int pos );
-int        wxSizer_RemoveSizer( TSelf(wxSizer) _obj, TClass(wxSizer) sizer );
-int        wxSizer_RemoveWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window );
 void       wxSizer_SetDimension( TSelf(wxSizer) _obj, TRect(x,y,width,height) );
 void       wxSizer_SetItemMinSize( TSelf(wxSizer) _obj, int pos, TSize(width,height) );
 void       wxSizer_SetItemMinSizeSizer( TSelf(wxSizer) _obj, TClass(wxSizer) sizer, TSize(width,height) );
 void       wxSizer_SetItemMinSizeWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window, TSize(width,height) );
 void       wxSizer_SetMinSize( TSelf(wxSizer) _obj, TSize(width,height) );
 void       wxSizer_SetSizeHints( TSelf(wxSizer) _obj, TClass(wxWindow) window );
-
+void       wxSizer_AddSpacer( TSelf(wxSizer) _obj, int size );
+void       wxSizer_AddStretchSpacer( TSelf(wxSizer) _obj, int size );
+void       wxSizer_Clear( TSelf(wxSizer) _obj, int delete_windows );
+TBool      wxSizer_DetachWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window );
+TBool      wxSizer_DetachSizer( TSelf(wxSizer) _obj, TClass(wxSizer) sizer );
+TBool      wxSizer_Detach( TSelf(wxSizer) _obj, int index );
+void       wxSizer_FitInside( TSelf(wxSizer) _obj, TClass(wxWindow) window );
+TClass(wxWindow)    wxSizer_GetContainingWindow( TSelf(wxSizer) _obj );
+TClass(wxSizerItem) wxSizer_GetItemWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window, int recursive );
+TClass(wxSizerItem) wxSizer_GetItemSizer( TSelf(wxSizer) _obj, TClass(wxSizer) window, int recursive );
+TClass(wxSizerItem) wxSizer_GetItem( TSelf(wxSizer) _obj, int index );
+TBool      wxSizer_HideWindow( TSelf(wxWindow) _obj, TClass(wxWindow) window );
+TBool      wxSizer_HideSizer( TSelf(wxWindow) _obj, TClass(wxSizer) sizer );
+TBool      wxSizer_Hide( TSelf(wxWindow) _obj, int index );
+TClass(wxSizerItem) wxSizer_InsertSpacer( TSelf(wxSizer) _obj, int index, int size );
+TClass(wxSizerItem) wxSizer_InsertStretchSpacer( TSelf(wxSizer) _obj, int index, int prop );
+TBool      wxSizer_IsShownWindow( TSelf(wxSizer) _obj, TClass(wxWindow) *window );
+TBool      wxSizer_IsShownSizer( TSelf(wxSizer) _obj, TClass(wxSizer) *sizer );
+TBool      wxSizer_IsShown( TSelf(wxSizer) _obj, int index );
+TClass(wxSizerItem) wxSizer_PrependSpacer( TSelf(wxSizer) _obj, int size );
+TClass(wxSizerItem) wxSizer_PrependStretchSpacer( TSelf(wxSizer) _obj, int prop );
+TClass(wxWindow)    wxSizer_ReplaceWindow( TSelf(wxSizer) _obj, TClass(wxWindow) oldwin, TClass(wxWindow) newwin, int recursive );
+TClass(wxWindow)    wxSizer_ReplaceSizer( TSelf(wxSizer) _obj, TClass(wxSizer) oldsz, TClass(wxSizer) newsz, int recursive );
+TClass(wxWindow)    wxSizer_Replace( TSelf(wxSizer) _obj, int oldindex, TClass(wxSizerItem) newitem );
+void       wxSizer_SetVirtualSizeHints( TSelf(wxSizer) _obj, TClass(wxWindow) window );
+TBool      wxSizer_ShowWindow( TSelf(wxSizer) _obj, TClass(wxWindow) window, int show, int recursive );
+TBool      wxSizer_ShowSizer( TSelf(wxSizer) _obj, TClass(wxSizer) sizer, int show, int recursive );
+TBool      wxSizer_Show( TSelf(wxSizer) _obj, TClass(wxSizer) sizer, int index, int show );
 /* wxSizerItem */
 TClassDefExtend(wxSizerItem,wxObject)
 void       wxSizerItem_CalcMin( TSelf(wxSizerItem) _obj, TSizeOutVoid(_w,_h) );
@@ -4012,7 +4029,6 @@ void*      wxSizerItem_CreateInWindow( TClass(wxWindow) window, int option, int 
 int        wxSizerItem_GetBorder( TSelf(wxSizerItem) _obj );
 int        wxSizerItem_GetFlag( TSelf(wxSizerItem) _obj );
 void       wxSizerItem_GetMinSize( TSelf(wxSizerItem) _obj, TSizeOutVoid(_w,_h) );
-int        wxSizerItem_GetOption( TSelf(wxSizerItem) _obj );
 void       wxSizerItem_GetPosition( TSelf(wxSizerItem) _obj, TPointOutVoid(_x,_y) );
 float      wxSizerItem_GetRatio( TSelf(wxSizerItem) _obj );
 void       wxSizerItem_GetSize( TSelf(wxSizerItem) _obj, TSizeOutVoid(_w,_h) );
@@ -4027,10 +4043,20 @@ void       wxSizerItem_SetDimension( TSelf(wxSizerItem) _obj, TRect(_x,_y,_w,_h)
 void       wxSizerItem_SetFlag( TSelf(wxSizerItem) _obj, int flag );
 void       wxSizerItem_SetFloatRatio( TSelf(wxSizerItem) _obj, float ratio );
 void       wxSizerItem_SetInitSize( TSelf(wxSizerItem) _obj, TPoint(x,y) );
-void       wxSizerItem_SetOption( TSelf(wxSizerItem) _obj, int option );
 void       wxSizerItem_SetRatio( TSelf(wxSizerItem) _obj, TSize(width,height) );
 void       wxSizerItem_SetSizer( TSelf(wxSizerItem) _obj, TClass(wxSizer) sizer );
 void       wxSizerItem_SetWindow( TSelf(wxSizerItem) _obj, TClass(wxWindow) window );
+void       wxSizerItem_Delete( TSelf(wxSizerItem) _obj );
+void       wxSizerItem_DeleteWindows( TSelf(wxSizerItem) _obj );
+void       wxSizerItem_DetachSizer( TSelf(wxSizerItem) _obj );
+int        wxSizerItem_GetProportion( TSelf(wxSizerItem) _obj );
+void       wxSizerItem_GetRect( TSelf(wxSizerItem) _obj, TRectOutVoid(_x,_y,_w,_h) );
+void       wxSizerItem_GetSpacer( TSelf(wxSizerItem) _obj, TSizeOutVoid(_w,_h) );
+int        wxSizerItem_IsShown( TSelf(wxSizerItem) _obj );
+void       wxSizerItem_SetProportion( TSelf(wxSizerItem) _obj, int proportion );
+void       wxSizerItem_SetSpacer( TSelf(wxSizerItem) _obj, TSize(width,height) );
+void       wxSizerItem_Show( TSelf(wxSizerItem) _obj, int show );
+
 
 /* wxSlider */
 TClassDefExtend(wxSlider,wxControl)
@@ -4218,9 +4244,10 @@ TClassDefExtend(wxSystemOptions,wxObject)
 
 /* wxSystemSettings */
 TClassDefExtend(wxSystemSettings,wxObject)
-void       wxSystemSettings_GetSystemColour( int index, TClassRef(wxColour) _ref );
-void       wxSystemSettings_GetSystemFont( int index, TClassRef(wxFont) _ref );
-int        wxSystemSettings_GetSystemMetric( int index );
+void       wxSystemSettings_GetColour( int index, TClassRef(wxColour) _ref );
+void       wxSystemSettings_GetFont( int index, TClassRef(wxFont) _ref );
+int        wxSystemSettings_GetMetric( int index );
+int        wxSystemSettings_GetScreenType( );
 
 /* wxTabCtrl */
 TClassDefExtend(wxTabCtrl,wxControl)
@@ -4313,12 +4340,15 @@ TClassDef(wxTextOutputStream)
 /* wxTextValidator */
 TClassDefExtend(wxTextValidator,wxValidator)
 TClass(wxTextValidator) wxTextValidator_Create( int style, void* val );
-TArrayLen  wxTextValidator_GetExcludeList( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
-TArrayLen  wxTextValidator_GetIncludeList( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
+TArrayLen  wxTextValidator_GetExcludes( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
+TArrayLen  wxTextValidator_GetIncludes( TSelf(wxTextValidator) _obj, TArrayStringOutVoid _ref );
+void       wxTextValidator_SetExcludes( TSelf(wxTextValidator) _obj, TStringVoid list, int count );
+void       wxTextValidator_SetIncludes( TSelf(wxTextValidator) _obj, TStringVoid list, int count );
+TClass(wxValidator) wxTextValidator_Clone( TSelf(wxTextValidator) _obj );
+TBool      wxTextValidator_TransferToWindow( TSelf(wxTextValidator) _obj );
+TBool      wxTextValidator_TransferFromWindow( TSelf(wxTextValidator) _obj );
 int        wxTextValidator_GetStyle( TSelf(wxTextValidator) _obj );
 void       wxTextValidator_OnChar( TSelf(wxTextValidator) _obj, TClass(wxEvent) event );
-void       wxTextValidator_SetExcludeList( TSelf(wxTextValidator) _obj, TClass(wxList) list, int count );
-void       wxTextValidator_SetIncludeList( TSelf(wxTextValidator) _obj, TClass(wxList) list, int count );
 void       wxTextValidator_SetStyle( TSelf(wxTextValidator) _obj, int style );
 
 /* wxThinSplitterWindow */
@@ -4430,6 +4460,27 @@ TClass(wxToolWindow) wxToolWindow_Create( void* _obj, void* _btn, void* _ttl );
 TClass(wxClient) wxToolWindow_GetClient( TSelf(wxToolWindow) _obj );
 void       wxToolWindow_SetClient( TSelf(wxToolWindow) _obj, TClass(wxWindow) _wnd );
 void       wxToolWindow_SetTitleFont( TSelf(wxToolWindow) _obj, void* _fnt );
+
+/* wxTopLevelWindow */
+TClassDefExtend(wxTopLevelWindow,wxWindow)
+TBool      wxTopLevelWindow_EnableCloseButton( TSelf(wxTopLevelWindow) _obj, TBoolInt enable );
+TClass(wxButton) wxTopLevelWindow_GetDefaultButton( TSelf(wxTopLevelWindow) _obj );
+TClass(wxWindow) wxTopLevelWindow_GetDefaultItem( TSelf(wxTopLevelWindow) _obj );
+TClass(wxIcon) wxTopLevelWindow_GetIcon( TSelf(wxTopLevelWindow) _obj );
+TStringLen wxTopLevelWindow_GetTitle( TSelf(wxTopLevelWindow) _obj, TStringOutVoid _buf );
+TBool      wxTopLevelWindow_Iconize( TSelf(wxTopLevelWindow) _obj, TBoolInt iconize );
+TBool      wxTopLevelWindow_IsActive( TSelf(wxTopLevelWindow) _obj );
+TBool      wxTopLevelWindow_IsIconized( TSelf(wxTopLevelWindow) _obj );
+TBool      wxTopLevelWindow_IsMaximized( TSelf(wxTopLevelWindow) _obj );
+void       wxTopLevelWindow_Maximize( TSelf(wxTopLevelWindow) _obj, TBoolInt maximize );
+void       wxTopLevelWindow_RequestUserAttention( TSelf(wxTopLevelWindow) _obj, int flags );
+void       wxTopLevelWindow_SetDefaultButton( TSelf(wxTopLevelWindow) _obj, TClass(wxButton) pBut );
+void       wxTopLevelWindow_SetDefaultItem( TSelf(wxTopLevelWindow) _obj, TClass(wxWindow) pBut );
+void       wxTopLevelWindow_SetIcon( TSelf(wxTopLevelWindow) _obj, TClass(wxIcon) pIcon );
+void       wxTopLevelWindow_SetIcons( TSelf(wxTopLevelWindow) _obj, void* _icons );
+void       wxTopLevelWindow_SetMaxSize( TSelf(wxTopLevelWindow) _obj, TSize(w,h) );
+void       wxTopLevelWindow_SetMinSize( TSelf(wxTopLevelWindow) _obj, TSize(w,h) );
+void       wxTopLevelWindow_SetTitle( TSelf(wxTopLevelWindow) _obj, TStringVoid pString );
 
 /* wxTreeCompanionWindow */
 TClassDefExtend(wxTreeCompanionWindow,wxWindow)
@@ -4549,7 +4600,6 @@ TClassDefExtend(wxValidator,wxEvtHandler)
 TClass(wxValidator) wxValidator_Create(  );
 void       wxValidator_Delete( TSelf(wxValidator) _obj );
 TClass(wxWindow) wxValidator_GetWindow( TSelf(wxValidator) _obj );
-TBool      wxValidator_IsSilent(  );
 void       wxValidator_SetBellOnError( TBool doIt );
 void       wxValidator_SetWindow( TSelf(wxValidator) _obj, TClass(wxWindow) win );
 int        wxValidator_TransferFromWindow( TSelf(wxValidator) _obj );
@@ -4575,7 +4625,8 @@ void       wxWindow_AddConstraintReference( TSelf(wxWindow) _obj, TClass(wxWindo
 void       wxWindow_CaptureMouse( TSelf(wxWindow) _obj );
 void       wxWindow_Center( TSelf(wxWindow) _obj, int direction );
 void       wxWindow_CenterOnParent( TSelf(wxWindow) _obj, int dir );
-void       wxWindow_Clear( TSelf(wxWindow) _obj );
+void       wxWindow_ClearBackground( TSelf(wxWindow) _obj );
+void       wxWindow_ClientToScreen( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(sx,sy) );
 TBool      wxWindow_Close( TSelf(wxWindow) _obj, TBool _force );
 void       wxWindow_ConvertDialogToPixels( TSelf(wxWindow) _obj, TPointOut(_x,_y) );
 void       wxWindow_ConvertPixelsToDialog( TSelf(wxWindow) _obj, TPointOut(_x,_y) );
@@ -4589,8 +4640,9 @@ TBoolInt   wxWindow_Enable( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindFocus( TSelf(wxWindow) _obj );
 TClass(wxWindow) wxWindow_FindWindow( TSelf(wxWindow) _obj, TString name );
 void       wxWindow_Fit( TSelf(wxWindow) _obj );
+void       wxWindow_FitInside( TSelf(wxWindow) _obj );
 void       wxWindow_Freeze( TSelf(wxWindow) _obj );
-void       wxWindow_GetAdjustedBestSize( TSelf(wxWindow) _obj, TSizeOutVoid(_w,_h) );
+void       wxWindow_GetEffectiveMinSize( TSelf(wxWindow) _obj, TSizeOutVoid(_w,_h) );
 int        wxWindow_GetAutoLayout( TSelf(wxWindow) _obj );
 void       wxWindow_GetBackgroundColour( TSelf(wxWindow) _obj, TClassRef(wxColour) _ref );
 void       wxWindow_GetBestSize( TSelf(wxWindow) _obj, TSizeOutVoid(_w,_h) );
@@ -4631,6 +4683,7 @@ void       wxWindow_GetTextExtent( TSelf(wxWindow) _obj, TString string, int* x,
 TStringLen wxWindow_GetToolTip( TSelf(wxWindow) _obj, TStringOutVoid _buf );
 TClass(wxRegion) wxWindow_GetUpdateRegion( TSelf(wxWindow) _obj );
 TClass(wxValidator) wxWindow_GetValidator( TSelf(wxWindow) _obj );
+void       wxWindow_GetVirtualSize( TSelf(wxWindow) _obj, TSizeOut(w,h) );
 int        wxWindow_GetWindowStyleFlag( TSelf(wxWindow) _obj );
 TBool      wxWindow_HasFlag( TSelf(wxWindow) _obj, int flag );
 TBool      wxWindow_Hide( TSelf(wxWindow) _obj );
@@ -4696,6 +4749,7 @@ TBoolInt   wxWindow_TransferDataToWindow( TSelf(wxWindow) _obj );
 void       wxWindow_UnsetConstraints( TSelf(wxWindow) _obj, void* c );
 void       wxWindow_UpdateWindowUI( TSelf(wxWindow) _obj );
 TBool      wxWindow_Validate( TSelf(wxWindow) _obj );
+void       wxWindow_SetVirtualSize( TSelf(wxWindow) _obj, TSize(w,h) );
 void       wxWindow_WarpPointer( TSelf(wxWindow) _obj, TPoint(x,y) );
 
 /* wxWindowCreateEvent */

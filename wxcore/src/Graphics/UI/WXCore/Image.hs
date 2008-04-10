@@ -10,7 +10,7 @@
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Image
     ( -- * Images
-      frameSetIconFromFile
+      topLevelWindowSetIconFromFile
     -- ** Imagelist
     , imageListAddIconsFromFiles
     , imageListAddIconFromFile
@@ -91,9 +91,9 @@ imageListAddIconFromFile images desiredSize fname
 -----------------------------------------------------------------------------------------}
 
 -- | Set the icon of a frame.
-frameSetIconFromFile :: Frame a -> FilePath -> IO ()
-frameSetIconFromFile f fname
-  = withIconFromFile fname sizeNull (frameSetIcon f)
+topLevelWindowSetIconFromFile :: TopLevelWindow a -> FilePath -> IO ()
+topLevelWindowSetIconFromFile f fname
+  = withIconFromFile fname sizeNull (topLevelWindowSetIcon f)
 
 
 -- | Load an icon (see 'iconCreateFromFile') and automatically delete it

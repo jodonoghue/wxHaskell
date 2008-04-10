@@ -162,7 +162,7 @@ preprocess_args ()
 	lib=""
 	dll=".dll"
 	wxtoolkit="msw"
-	wxversion="2.6.4";;  # guess?
+	wxversion="2.8.7";;  # guess?
      *)
         arguments="$arguments $1";;    # save argument
     esac
@@ -399,7 +399,7 @@ process_args ()
 	  lib=""
 	  dll=".dll"
 	  wxtoolkit="msw"
-	  wxversion="2.6.4";;  # guess?
+	  wxversion="2.8.7";;  # guess?
       -wxc-libname=*|--wxc-libname=*)
 	  if test "$withmsc" = "yes"; then
 	    wxclibname="$arg"

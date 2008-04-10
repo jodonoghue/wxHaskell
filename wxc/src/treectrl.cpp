@@ -79,7 +79,10 @@ EWXWEXPORT(wxTreeItemId*, wxTreeItemId_CreateFromValue) (int value)
 #if wxVERSION_NUMBER < 2800
     return new wxTreeItemId( value );
 #else
-    return new wxTreeItemId( reinterpret_cast<void*>(value) );
+    // TODO: This function should be removed. No longer any equivalent in wxWidgets
+    wxTreeItemId *item = new wxTreeItemId();
+    item->m_pItem = reinterpret_cast<wxTreeItemIdValue>(value);
+    return item;
 #endif
 }
 
@@ -322,11 +325,15 @@ EWXWEXPORT(int, wxTreeCtrl_GetSelections)(void* _obj, intptr_t* selections)
             /*
 			*(((wxTreeItemId**)selections)[i]) = sel[i];
             */
-	    #if wxCHECK_VERSION(2,5,0) && !wxCHECK_VERSION(2,8,0)
+#if (wxVERSION_NUMBER < 2800)
+	    #if wxCHECK_VERSION(2,5,0)
             selections[i] = (intptr_t)(((wxTreeItemId*)sel[i])->m_pItem);
-            #else
-	    selections[i] = (intptr_t)(sel[i].m_pItem);
+        #else
+	        selections[i] = (intptr_t)(sel[i].m_pItem);
 	    #endif
+#else
+            selections[i] = (intptr_t)(((wxTreeItemId)sel[i]).m_pItem);
+#endif
 	  }
 	}
 	return result;		

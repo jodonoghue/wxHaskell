@@ -19,13 +19,9 @@ EWXWEXPORT(int, wxWindow_Destroy)(void* _obj)
 	return (int)((wxWindow*)_obj)->Destroy();
 }
 	
-EWXWEXPORT(void, wxWindow_Clear)(void* _obj)
+EWXWEXPORT(void, wxWindow_ClearBackground)(void* _obj)
 {
-#if wxCHECK_VERSION(2,5,0)
-        ((wxWindow*)_obj)->ClearBackground();
-#else
-	((wxWindow*)_obj)->Clear();
-#endif
+  ((wxWindow*)_obj)->ClearBackground();
 }
 	
 EWXWEXPORT(void, wxWindow_Fit)(void* _obj)
@@ -656,16 +652,21 @@ EWXWEXPORT(int, wxWindow_Reparent)(void* _obj, void* _par)
 	return (int)((wxWindow*)_obj)->Reparent((wxWindow*)_par);
 }
 
+#if (wxVERSION_NUMBER < 2800)
 EWXWEXPORT(void, wxWindow_GetAdjustedBestSize)(void* _obj, void* _w, void* _h)
 {
-#if (wxVERSION_NUMBER < 2800)
 	wxSize sz = ((wxWindow*)_obj)->GetAdjustedBestSize();
-#else
-	wxSize sz = ((wxWindow*)_obj)->GetEffectiveMinSize();
-#endif
         *((int*)_w) = sz.GetWidth();
         *((int*)_h) = sz.GetHeight();
 }
+#else
+EWXWEXPORT(void, wxWindow_GetEffectiveMinSize)(void* _obj, void* _w, void* _h)
+{
+	wxSize sz = ((wxWindow*)_obj)->GetEffectiveMinSize();
+        *((int*)_w) = sz.GetWidth();
+        *((int*)_h) = sz.GetHeight();
+}
+#endif
 
 EWXWEXPORT(void, wxWindow_Freeze)(void* _obj)
 {
@@ -677,5 +678,29 @@ EWXWEXPORT(void, wxWindow_Thaw)(void* _obj)
 	((wxWindow*)_obj)->Thaw();
 }
 
-	
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxWindow_ClientToScreen)(void *_obj, int x, int y, int* sx, int* sy)
+{
+  wxPoint pt = ((wxWindow *)_obj)->ClientToScreen( wxPoint(x,y) );
+  if (sx) *sx = pt.x;
+  if (sy) *sy = pt.y;
+}
+
+EWXWEXPORT(void, wxWindow_FitInside)(void* _obj)
+{
+    ((wxWindow*)_obj)->FitInside();
+}
+
+EWXWEXPORT(void, wxWindow_SetVirtualSize)(void* _obj, int w, int h )
+{
+    ((wxWindow*)_obj)->SetVirtualSize( w, h );
+}
+
+EWXWEXPORT(void, wxWindow_GetVirtualSize)(void* _obj, int* w, int* h )
+{
+    ((wxWindow*)_obj)->GetVirtualSize( w, h );
+}
+
+
+#endif
 }

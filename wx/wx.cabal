@@ -23,6 +23,7 @@ Library
  Exposed-Modules:
   Graphics.UI.WX.Draw
   Graphics.UI.WX.Media
+  Graphics.UI.WX.TopLevelWindow
   Graphics.UI.WX.Attributes
   Graphics.UI.WX.Window
   Graphics.UI.WX.Variable

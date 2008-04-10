@@ -35,7 +35,9 @@ EWXWEXPORT(void, wxFileDialog_SetWildcard)(void* _obj, void* wildCard)
 	
 EWXWEXPORT(void, wxFileDialog_SetStyle)(void* _obj, int style)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	((wxFileDialog*)_obj)->SetStyle((long)style);
+#endif
 }
 	
 EWXWEXPORT(void, wxFileDialog_SetFilterIndex)(void* _obj, int filterIndex)
@@ -99,7 +101,11 @@ EWXWEXPORT(int, wxFileDialog_GetWildcard)(void* _obj, void* _buf)
 	
 EWXWEXPORT(int, wxFileDialog_GetStyle)(void* _obj)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	return (int)((wxFileDialog*)_obj)->GetStyle();
+#else
+  return 0;
+#endif
 }
 	
 EWXWEXPORT(int, wxFileDialog_GetFilterIndex)(void* _obj)

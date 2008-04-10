@@ -898,11 +898,7 @@ sizerFromLayout parent layout
     insert container (XNotebook options nbook pages)
       = do pages' <- addImages objectNull pages
            mapM_ addPage pages'
-           if (div wxVersion 100) < 26
-             then do
-                 nbsizer <- notebookSizerCreate nbook
-                 sizerAddSizerWithOptions container nbsizer options
-             else sizerAddWindowWithOptions container nbook options
+           sizerAddWindowWithOptions container nbook options
            return container
       where
         addPage (title,idx,WidgetContainer options win layout)

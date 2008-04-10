@@ -966,6 +966,12 @@ feature {NONE}
 	wxSYS_SHOW_SOUNDS             : INTEGER is 36
 	wxSYS_SWAP_BUTTONS            : INTEGER is 37	
 
+   wxSYS_SCREEN_NONE             : INTEGER is 0
+   wxSYS_SCREEN_TINY             : INTEGER is 1
+   wxSYS_SCREEN_PDA              : INTEGER is 2
+   wxSYS_SCREEN_SMALL            : INTEGER is 3
+   wxSYS_SCREEN_DESKTOP          : INTEGER is 4
+
 	wxCAL_BORDER_NONE:		INTEGER is 0
 	wxCAL_BORDER_SQUARE:	INTEGER is 1
 	wxCAL_BORDER_ROUND:		INTEGER is 2

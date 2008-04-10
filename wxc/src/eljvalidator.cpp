@@ -38,10 +38,12 @@ EWXWEXPORT(void, wxValidator_SetWindow)(void* _obj, void* win)
 	((wxValidator*)_obj)->SetWindow((wxWindowBase*)win);
 }
 	
+#if (wxVERSION_NUMBER < 2800)	
 EWXWEXPORT(int, wxValidator_IsSilent)()
 {
 	return (int)wxValidator::IsSilent();
 }
+#endif
 	
 EWXWEXPORT(void, wxValidator_SetBellOnError)(int doIt)
 {
@@ -63,6 +65,7 @@ EWXWEXPORT(void, wxTextValidator_SetStyle)(void* _obj, int style)
 	((wxTextValidator*)_obj)->SetStyle((long) style);
 }
 	
+#if (wxVERSION_NUMBER < 2800)	
 EWXWEXPORT(void, wxTextValidator_SetIncludeList)(void* _obj, void* list, int count)
 {
 #if (wxVERSION_NUMBER <= 2600)
@@ -130,7 +133,90 @@ EWXWEXPORT(int, wxTextValidator_GetExcludeList)(void* _obj, void* _ref)
 	return arr.GetCount();
 #endif
 }
+#else
+EWXWEXPORT(void, wxTextValidator_SetIncludes)(void* _obj, void* list, int count)
+{
+  wxArrayString str;
+  
+  for (int i = 0; i < count; i++)
+    str.Add(((wxChar**)list)[i]);
+  
+  ((wxTextValidator*)_obj)->SetIncludes(str);
+}
+
+EWXWEXPORT(void *, wxTextValidator_GetIncludes)(void* _obj, int *_nitems)
+{
+  void *retval = NULL;
+
+  if (_nitems != NULL)
+  {
+    wxArrayString items = ((wxTextValidator*)_obj)->GetIncludes();
+    wxChar **items_copy = (wxChar **) malloc(sizeof(wxChar *) * items.GetCount());
+
+    for (unsigned int i = 0; i < items.GetCount(); i++)
+    {
+#ifdef wxUSE_UNICODE
+      items_copy[i] = _wcsdup(items.Item(i).GetData());
+#else
+      items_copy[i] = strdup(items.Item(i).GetData());
+#endif
+    }
+    retval = (void *) items_copy;
+    *_nitems = items.GetCount();
+  }
+  return retval;
+}
 	
+EWXWEXPORT(void, wxTextValidator_SetExcludes)(void* _obj, void* list, int count)
+{
+	wxArrayString str;
+	
+	for (int i = 0; i < count; i++)
+		str.Add(((wxChar**)list)[i]);
+		
+	((wxTextValidator*)_obj)->SetExcludes(str);
+}
+	
+EWXWEXPORT(void *, wxTextValidator_GetExcludes)(void* _obj, int* _nitems)
+{
+  void *retval = NULL;
+
+  if (_nitems != NULL)
+  {
+    wxArrayString items = ((wxTextValidator*)_obj)->GetExcludes();
+    wxChar **items_copy = (wxChar **) malloc(sizeof(wxChar *) * items.GetCount());
+
+    for (unsigned int i = 0; i < items.GetCount(); i++)
+    {
+#ifdef wxUSE_UNICODE
+      items_copy[i] = _wcsdup(items.Item(i).GetData());
+#else
+      items_copy[i] = strdup(items.Item(i).GetData());
+#endif
+    }
+    retval = (void *) items_copy;
+    *_nitems = items.GetCount();
+  }
+  return retval;
+}
+
+EWXWEXPORT(void *, wxTextValidator_Clone)(void *_obj)
+{
+  return (void *)((wxTextValidator*)_obj)->Clone();
+}
+
+EWXWEXPORT(int, wxTextValidator_TransferToWindow)(void* _obj)
+{
+	return (int)((wxTextValidator*)_obj)->TransferToWindow();
+}
+	
+EWXWEXPORT(int, wxTextValidator_TransferFromWindow)(void* _obj)
+{
+	return (int)((wxTextValidator*)_obj)->TransferFromWindow();
+}
+	
+#endif
+
 EWXWEXPORT(void, wxTextValidator_OnChar)(void* _obj, void* event)
 {
 	((wxTextValidator*)_obj)->OnChar(*((wxKeyEvent*)event));

@@ -316,7 +316,11 @@ EWXWEXPORT(int, ELJApp_MainLoop)()
 
 EWXWEXPORT(int, ELJApp_Initialized)()
 {
+#if WXWIN_COMPATIBILITY_2_6
         return (int)wxGetApp().Initialized();
+#else
+        return TRUE;
+#endif
 }
 
 EWXWEXPORT(int, ELJApp_Pending)()

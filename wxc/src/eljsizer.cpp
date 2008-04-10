@@ -79,15 +79,13 @@ EWXWEXPORT(void, wxSizerItem_SetInitSize)(void* _obj, int x, int y)
 	((wxSizerItem*)_obj)->SetInitSize(x, y);
 }
 	
+#if (wxVERSION_NUMBER < 2800)	
 EWXWEXPORT(void, wxSizerItem_SetOption)(void* _obj, int option)
 {
-#if (wxVERSION_NUMBER <= 2600)
 	((wxSizerItem*)_obj)->SetOption(option);
-#else
-	((wxSizerItem*)_obj)->SetProportion(option);
-#endif
 }
-	
+#endif
+
 EWXWEXPORT(void, wxSizerItem_SetFlag)(void* _obj, int flag)
 {
 	((wxSizerItem*)_obj)->SetFlag(flag);
@@ -118,15 +116,13 @@ EWXWEXPORT(void, wxSizerItem_SetSizer)(void* _obj, void* sizer)
 	((wxSizerItem*)_obj)->SetSizer((wxSizer*) sizer);
 }
 	
+#if (wxVERSION_NUMBER < 2800)
 EWXWEXPORT(int, wxSizerItem_GetOption)(void* _obj)
 {
-#if (wxVERSION_NUMBER < 2600)
 	return ((wxSizerItem*)_obj)->GetOption();
-#else
-	return ((wxSizerItem*)_obj)->GetProportion();
-#endif
 }
-	
+#endif
+
 EWXWEXPORT(int, wxSizerItem_GetFlag)(void* _obj)
 {
 	return ((wxSizerItem*)_obj)->GetFlag();
@@ -149,6 +145,70 @@ EWXWEXPORT(void, wxSizerItem_GetPosition)(void* _obj, void* _x, void* _y)
 	(*(int*)_y) = res.y;
 }
 	
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxSizerItem_Delete)(void* _obj)
+{
+  delete ((wxSizerItem*)_obj);
+}
+
+EWXWEXPORT(void, wxSizerItem_DeleteWindows)(void *_obj)
+{
+  ((wxSizerItem*)_obj)->DeleteWindows();
+}
+
+EWXWEXPORT(void, wxSizerItem_DetachSizer)(void *_obj)
+{
+  ((wxSizerItem*)_obj)->DetachSizer();
+}
+
+EWXWEXPORT(int, wxSizerItem_GetProportion)(void *_obj)
+{
+  return ((wxSizerItem*)_obj)->GetProportion();
+}
+
+EWXWEXPORT(void, wxSizerItem_GetRect)(void *_obj, void *_x, void *_y, void *_w, void *_h)
+{
+  wxRect r = ((wxSizerItem*)_obj)->GetRect();
+
+  (*(int *)_x) = r.GetX();
+  (*(int *)_y) = r.GetY();
+  (*(int *)_w) = r.GetWidth();
+  (*(int *)_h) = r.GetHeight();
+}
+
+EWXWEXPORT(void, wxSizerItem_GetSpacer)(void *_obj, void *_w, void *_h)
+{
+  wxSize sz(0,0);
+
+  if (((wxSizerItem*)_obj)->IsSpacer())
+  {
+    sz = ((wxSizerItem*)_obj)->GetSpacer();
+  }
+  (*(int *)_w) = sz.GetWidth();
+  (*(int *)_h) = sz.GetHeight();
+}
+
+EWXWEXPORT(int, wxSizerItem_IsShown)(void *_obj)
+{
+  return (int) ((wxSizerItem*)_obj)->IsShown();
+}
+
+EWXWEXPORT(void, wxSizerItem_SetProportion)(void *_obj, int proportion)
+{
+  ((wxSizerItem*)_obj)->SetProportion(proportion);
+}
+
+EWXWEXPORT(void, wxSizerItem_SetSpacer)(void *_obj, int width, int height)
+{
+  ((wxSizerItem*)_obj)->SetSpacer(wxSize(width, height));
+}
+
+EWXWEXPORT(void, wxSizerItem_Show)(void *_obj, int show)
+{
+  ((wxSizerItem*)_obj)->Show(show);
+}
+#endif
+
 EWXWEXPORT(void, wxSizer_AddWindow)(void* _obj, void* window, int option, int flag, int border, void* userData)
 {
 	((wxSizer*)_obj)->Add((wxWindow*)window, option, flag, border, new ELJDataObject (userData));
@@ -194,13 +254,10 @@ EWXWEXPORT(void, wxSizer_Prepend)(void* _obj, int width, int height, int option,
 	((wxSizer*)_obj)->Prepend(width, height, option, flag, border, new ELJDataObject (userData));
 }
 	
+#if (wxVERSION_NUMBER < 2800)	
 EWXWEXPORT(int, wxSizer_RemoveWindow)(void* _obj, void* window)
 {
-#if (wxVERSION_NUMBER < 2600)
 	return (int)((wxSizer*)_obj)->Remove((wxWindow*) window);
-#else
-	return (int)((wxSizer*)_obj)->Detach((wxWindow*) window);
-#endif
 }
 	
 EWXWEXPORT(int, wxSizer_RemoveSizer)(void* _obj, void* sizer)
@@ -212,6 +269,7 @@ EWXWEXPORT(int, wxSizer_Remove)(void* _obj, int pos)
 {
 	return (int)((wxSizer*)_obj)->Remove(pos);
 }
+#endif
 	
 EWXWEXPORT(void, wxSizer_SetMinSize)(void* _obj, int width, int height)
 {
@@ -306,6 +364,148 @@ EWXWEXPORT(int, wxSizer_GetChildren)(void* _obj, void* _res, int _cnt)
 	else
 		return ((wxSizer*)_obj)->GetChildren().GetCount();
 }
+
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxSizer_AddSpacer)(void* _obj, int size)
+{
+  ((wxSizer*)_obj)->AddSpacer(size);
+}
+
+EWXWEXPORT(void, wxSizer_AddStretchSpacer)(void* _obj, int size)
+{
+  ((wxSizer*)_obj)->AddStretchSpacer(size);
+}
+
+EWXWEXPORT(void, wxSizer_Clear)(void* _obj, int delete_windows)
+{
+  ((wxSizer*)_obj)->Clear((bool) delete_windows);
+}
+
+EWXWEXPORT(int, wxSizer_DetachWindow)(void* _obj, void *window)
+{
+  return (int)((wxSizer*)_obj)->Detach((wxWindow*) window);
+}
+
+EWXWEXPORT(int, wxSizer_DetachSizer)(void* _obj, void *sizer)
+{
+  return (int)((wxSizer*)_obj)->Detach((wxSizer*) sizer);
+}
+
+EWXWEXPORT(int, wxSizer_Detach)(void* _obj, int index)
+{
+  return (int)((wxSizer*)_obj)->Detach((size_t) index);
+}
+
+EWXWEXPORT(void, wxSizer_FitInside)(void* _obj, void *window)
+{
+  ((wxSizer*)_obj)->FitInside((wxWindow*) window);
+}
+
+EWXWEXPORT(void *, wxSizer_GetContainingWindow)(void* _obj)
+{
+  return (void *)((wxSizer*)_obj)->GetContainingWindow();
+}
+
+EWXWEXPORT(void *, wxSizer_GetItemWindow)(void* _obj, void *window, int recursive)
+{
+  return (void *)((wxSizer*)_obj)->GetItem((wxWindow*) window, (bool) recursive);
+}
+
+EWXWEXPORT(void *, wxSizer_GetItemSizer)(void* _obj, void *sizer, int recursive)
+{
+  return (void *)((wxSizer*)_obj)->GetItem((wxSizer*) sizer, (bool) recursive);
+}
+
+EWXWEXPORT(void *, wxSizer_GetItem)(void* _obj, int index)
+{
+  return (void *)((wxSizer*)_obj)->GetItem((size_t) index);
+}
+
+EWXWEXPORT(int, wxSizer_HideWindow)(void* _obj, void *window)
+{
+  return (int)((wxSizer*)_obj)->Hide((wxWindow*) window);
+}
+
+EWXWEXPORT(int, wxSizer_HideSizer)(void* _obj, void *sizer)
+{
+  return (int)((wxSizer*)_obj)->Hide((wxSizer*) sizer);
+}
+
+EWXWEXPORT(int, wxSizer_Hide)(void* _obj, int index)
+{
+  return (int)((wxSizer*)_obj)->Hide((size_t) index);
+}
+
+EWXWEXPORT(void *, wxSizer_InsertSpacer)(void* _obj, int index, int size)
+{
+  return (void *)((wxSizer*)_obj)->InsertSpacer((size_t) index, size);
+}
+
+EWXWEXPORT(void *, wxSizer_InsertStretchSpacer)(void* _obj, int index, int prop)
+{
+  return (void *)((wxSizer*)_obj)->InsertStretchSpacer((size_t) index, prop);
+}
+
+EWXWEXPORT(int, wxSizer_IsShownWindow)(void* _obj, void *window)
+{
+  return (int)((wxSizer*)_obj)->IsShown((wxWindow*) window);
+}
+
+EWXWEXPORT(int, wxSizer_IsShownSizer)(void* _obj, void *sizer)
+{
+  return (int)((wxSizer*)_obj)->IsShown((wxSizer*) sizer);
+}
+
+EWXWEXPORT(int, wxSizer_IsShown)(void* _obj, int index)
+{
+  return (int)((wxSizer*)_obj)->IsShown((size_t) index);
+}
+
+EWXWEXPORT(void *, wxSizer_PrependSpacer)(void* _obj, int size)
+{
+  return (void *)((wxSizer*)_obj)->PrependSpacer(size);
+}
+
+EWXWEXPORT(void *, wxSizer_PrependStretchSpacer)(void* _obj, int prop)
+{
+  return (void *)((wxSizer*)_obj)->PrependStretchSpacer(prop);
+}
+
+EWXWEXPORT(int, wxSizer_ReplaceWindow)(void* _obj, void *oldwin, void *newwin, int recursive)
+{
+  return (int)((wxSizer*)_obj)->Replace((wxWindow*) oldwin, (wxWindow*) newwin, (bool) recursive);
+}
+
+EWXWEXPORT(int, wxSizer_ReplaceSizer)(void* _obj, void *oldsz, void *newsz, int recursive)
+{
+  return (int)((wxSizer*)_obj)->Replace((wxSizer*) oldsz, (wxSizer*) newsz, (bool) recursive);
+}
+
+EWXWEXPORT(int, wxSizer_Replace)(void* _obj, int oldindex, void *newsz)
+{
+  return (int)((wxSizer*)_obj)->Replace((size_t) oldindex, (wxSizerItem*) newsz);
+}
+
+EWXWEXPORT(void, wxSizer_SetVirtualSizeHints)(void* _obj, void *window)
+{
+  ((wxSizer*)_obj)->SetVirtualSizeHints((wxWindow*) window);
+}
+
+EWXWEXPORT(int, wxSizer_ShowWindow)(void* _obj, void *window, int show, int recursive)
+{
+  return (int)((wxSizer*)_obj)->Show((wxWindow*) window, (bool) show, (bool) recursive);
+}
+
+EWXWEXPORT(int, wxSizer_ShowSizer)(void* _obj, void *sizer, int show, int recursive)
+{
+  return (int)((wxSizer*)_obj)->Show((wxSizer*) sizer, (bool) show, (bool) recursive);
+}
+
+EWXWEXPORT(int, wxSizer_Show)(void* _obj, int index, int show)
+{
+  return (int)((wxSizer*)_obj)->Show((size_t) index, (bool) show);
+}
+#endif
 	
 EWXWEXPORT(void, wxSizer_SetDimension)(void* _obj, int x, int y, int width, int height)
 {
@@ -450,38 +650,28 @@ EWXWEXPORT(void*, wxStaticBoxSizer_GetStaticBox)(void* _obj)
 	return (void*)((wxStaticBoxSizer*)_obj)->GetStaticBox();
 }
 	
+#if (wxVERSION_NUMBER < 2800)
 EWXWEXPORT(void*, wxNotebookSizer_Create)(void* nb)
 {
-#if (wxVERSION_NUMBER < 2600)
 	return (void*) new wxNotebookSizer((wxNotebook*)nb);
-#else
-	return NULL;
-#endif
 }
 	
 EWXWEXPORT(void, wxNotebookSizer_RecalcSizes)(void* _obj)
 {
-#if (wxVERSION_NUMBER < 2600)
 	((wxNotebookSizer*)_obj)->RecalcSizes();
-#endif
 }
 	
 EWXWEXPORT(void, wxNotebookSizer_CalcMin)(void* _obj, void* _w, void* _h)
 {
-#if (wxVERSION_NUMBER < 2600)
 	wxSize res = ((wxNotebookSizer*)_obj)->CalcMin();
 	(*(int*)_w) = res.GetWidth();
 	(*(int*)_h) = res.GetHeight();
-#endif
 }
 	
 EWXWEXPORT(void*, wxNotebookSizer_GetNotebook)(void* _obj)
 {
-#if (wxVERSION_NUMBER < 2600)
 	return (void*)((wxNotebookSizer*)_obj)->GetNotebook();
-#else
-	return NULL;
-#endif
 }
-	
+#endif
+
 }

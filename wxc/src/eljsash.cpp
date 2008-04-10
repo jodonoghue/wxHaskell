@@ -20,12 +20,18 @@ EWXWEXPORT(int, wxSashWindow_GetSashVisible)(void* _obj, int edge)
 	
 EWXWEXPORT(void, wxSashWindow_SetSashBorder)(void* _obj, int edge, int border)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	((wxSashWindow*)_obj)->SetSashBorder((wxSashEdgePosition)edge, border != 0);
+#endif
 }
 	
 EWXWEXPORT(int, wxSashWindow_HasBorder)(void* _obj, int edge)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	return (int)((wxSashWindow*)_obj)->HasBorder((wxSashEdgePosition)edge);
+#else
+  return FALSE;
+#endif
 }
 	
 EWXWEXPORT(int, wxSashWindow_GetEdgeMargin)(void* _obj, int edge)

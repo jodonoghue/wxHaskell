@@ -5,10 +5,14 @@ extern "C"
 
 EWXWEXPORT(void*, wxFontDialog_Create) (void* _prt, void* fnt)
 {
-#ifdef wxMAC_USE_EXPERIMENTAL_FONTDIALOG
-	return (void*) new wxFontDialog ((wxWindow*)_prt, (wxFontData&) fnt);
+#if WXWIN_COMPATIBILITY_2_6
+  #ifdef wxMAC_USE_EXPERIMENTAL_FONTDIALOG
+	  return (void*) new wxFontDialog ((wxWindow*)_prt, (wxFontData&) fnt);
+  #else
+	  return (void*) new wxFontDialog ((wxWindow*)_prt, (wxFontData*) fnt);
+  #endif
 #else
-	return (void*) new wxFontDialog ((wxWindow*)_prt, (wxFontData*) fnt);
+	return (void*) new wxFontDialog ((wxWindow*)_prt, (wxFontData&) fnt);
 #endif
 }
 

@@ -55,6 +55,7 @@ module Graphics.UI.WX.Classes
     , Pictured( picture )
     , Valued( value )
     , Sized( size )
+    , HasDefault( unsafeDefaultItem, defaultButton )
     ) where
 
 import Data.Dynamic
@@ -370,3 +371,17 @@ class Sized w where
   -- | The size of an object. (is 'outerSize' for 'Dimensions' widgets).
   size :: Attr w Size
 
+{--------------------------------------------------------------------------
+  HasDefault
+--------------------------------------------------------------------------}  
+-- | Objects which activate a 'Window' by default keypress
+class HasDefault w where
+  -- | Define a default item as any type deriving from 'Window'. Great care
+  --   is required when using this option as you will have to cast the item
+  --   to/from Window() using 'objectCast'. 
+  --   For the common use case where the window in question is a 'Button', 
+  --   please use 'defaultButton' as it is typesafe.
+  unsafeDefaultItem :: Attr w (Window ())
+  -- | Define the default button for a 'TopLevelWindow'. This is recommended
+  --   for most use cases as the most common default control is a 'Button'.
+  defaultButton :: Attr w (Button ())

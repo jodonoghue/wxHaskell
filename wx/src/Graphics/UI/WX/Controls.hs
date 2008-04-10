@@ -25,7 +25,7 @@ module Graphics.UI.WX.Controls
       , Wrap(..), Wrapped, wrap
       , Sorted, sorted
       -- * Containers
-      , Panel, panel, panelEx, defaultButton
+      , Panel, panel, panelEx
       , Notebook, notebook
       , focusOn
       -- * Controls
@@ -87,7 +87,7 @@ defaultStyle
 -- controls. It has a standard background and maintains standard keyboard
 -- navigation (ie. /Tab/ moves through the controls).
 --
--- * Attributes: 'defaultButton', 'focusOn'
+-- * Attributes: 'focusOn'
 --
 -- * Instances: 'Form' -- 'Dimensions', 'Colored', 'Visible', 'Child',
 --             'Able', 'Tipped', 'Identity', 'Styled',
@@ -99,7 +99,7 @@ panel parent props
 
 -- | Create a 'Panel' with a specific style.
 --
--- * Attributes: 'defaultButton', 'focusOn'
+-- * Attributes: 'focusOn'
 --
 -- * Instances: 'Form' -- 'Dimensions', 'Colored', 'Visible', 'Child',
 --             'Able', 'Tipped', 'Identity', 'Styled',
@@ -116,18 +116,6 @@ panelEx parent style props
 instance Form (Panel a) where
   layout
     = writeAttr "layout" windowSetLayout
-
-defaultButton :: Attr (Panel p) (Button ())
-defaultButton
-  = newAttr "defaultButton" getter setter
-  where
-    getter panel
-      = panelGetDefaultItem panel
-
-    setter panel button
-      = do panelSetDefaultItem panel button
-           -- buttonSetDefault button       -- note: seems to enlarge the button on GTK?
-           focusOn button
 
 -- | Set the initial focus on this control.
 focusOn :: Window a -> IO ()

@@ -68,6 +68,23 @@ EWXWEXPORT(int, wxIcon_GetHeight)(void* _obj)
 	return (int)((wxIcon*)_obj)->GetHeight();
 }
 
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxIcon_SetDepth)(void* _obj, int depth)
+{
+	((wxIcon*)_obj)->SetDepth(depth);
+}
+
+EWXWEXPORT(void, wxIcon_SetWidth)(void* _obj, int width)
+{
+	((wxIcon*)_obj)->SetWidth(width);
+}
+
+EWXWEXPORT(void, wxIcon_SetHeight)(void* _obj, int height)
+{
+	((wxIcon*)_obj)->SetHeight(height);
+}
+#endif
+
 EWXWEXPORT(void, wxIcon_Assign)(void* _obj, void* other)
 {
 	*((wxIcon*)_obj) = *((wxIcon*)other);

@@ -775,12 +775,7 @@ EWXWEXPORT(int, wxNavigationKeyEvent_ShouldPropagate)(void* _obj)
 {
         return (int)((wxNavigationKeyEvent*)_obj)->ShouldPropagate();
 }
-/*
-EWXWEXPORT(void, wxNavigationKeyEvent_SetPropagate)(void* _obj, int bDoIt)
-{
-        ((wxNavigationKeyEvent*)_obj)->SetPropagate(bDoIt != 0);
-}
-*/
+	
 EWXWEXPORT(void*, wxNavigationKeyEvent_GetCurrentFocus)(void* _obj)
 {
         return (void*)((wxNavigationKeyEvent*)_obj)->GetCurrentFocus();
@@ -831,17 +826,6 @@ EWXWEXPORT(int, wxListEvent_GetIndex)(void* _obj)
 {
         return (int)((wxListEvent*)_obj)->GetIndex();
 }
-/*
-EWXWEXPORT(int, wxListEvent_GetOldIndex)(void* _obj)
-{
-        return (int)((wxListEvent*)_obj)->GetOldIndex();
-}
-
-EWXWEXPORT(int, wxListEvent_GetOldItem)(void* _obj)
-{
-        return (int)((wxListEvent*)_obj)->GetOldItem();
-}
-*/
 EWXWEXPORT(int, wxListEvent_GetColumn)(void* _obj)
 {
         return ((wxListEvent*)_obj)->GetColumn();

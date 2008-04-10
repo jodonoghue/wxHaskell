@@ -104,12 +104,7 @@ EWXWEXPORT(int, wxColour_ValidName)(wxChar* _name)
 #if (wxVERSION_NUMBER < 2600)
   return (wxTheColourDatabase->FindColour (wxString(_name))) != NULL;
 #else
-  wxColour col = (wxTheColourDatabase->Find (wxString(_name)));
-#if (wxVERSION_NUMBER < 2800)
-  return col.Ok();
-#else
-  return col.IsOk();
-#endif
+  return wxTheColourDatabase->Find(wxString(_name)).Ok();
 #endif
 }
 

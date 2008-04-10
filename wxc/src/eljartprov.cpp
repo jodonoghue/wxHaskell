@@ -48,17 +48,29 @@ EWXWEXPORT(void,ELJArtProv_Release)(void* _obj)
 	
 EWXWEXPORT(void,PushProvider)(void* provider)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	wxArtProvider::PushProvider((wxArtProvider*)provider);
+#else
+  wxArtProvider::Push((wxArtProvider*)provider);
+#endif
 }
 
 EWXWEXPORT(int,PopProvider)()
 {
+#if WXWIN_COMPATIBILITY_2_6
 	return (int)wxArtProvider::PopProvider();
+#else
+  return wxArtProvider::Pop();
+#endif
 }
 
 EWXWEXPORT(int,RemoveProvider)(void* provider)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	return (int)wxArtProvider::RemoveProvider((wxArtProvider*)provider);
+#else
+  return wxArtProvider::Remove((wxArtProvider*)provider);
+#endif
 }
 
 }

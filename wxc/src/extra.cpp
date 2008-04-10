@@ -376,7 +376,7 @@ bool wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const 
 #if (wxVERSION_NUMBER < 2800)
     if (cell==NULL) return;
 #else
-    if (cell==NULL) return 0;
+    if (cell==NULL) return false;
 #endif
 
     linkPtr = cell->GetLink(x, y);
@@ -396,7 +396,7 @@ bool wxcHtmlWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const 
       this->ProcessEvent( htmlEvent );
     }
 #if (wxVERSION_NUMBER >= 2800)
-    return 1;
+    return true;
 #endif
 }
 
@@ -1558,29 +1558,6 @@ EWXWEXPORT(void, wxWindow_SetClientObject)(void* _obj, void * obj )
     ((wxWindow*)_obj)->SetClientObject( (wxClientData*)obj );
 }
 
-
-EWXWEXPORT(void, wxWindow_SetVirtualSize)(void* _obj, int w, int h )
-{
-    ((wxWindow*)_obj)->SetVirtualSize( w, h );
-}
-
-EWXWEXPORT(void, wxWindow_GetVirtualSize)(void* _obj, int* w, int* h )
-{
-    ((wxWindow*)_obj)->GetVirtualSize( w, h );
-}
-
-EWXWEXPORT(void, wxWindow_FitInside)(void* _obj)
-{
-    ((wxWindow*)_obj)->FitInside();
-}
-
-
-EWXWEXPORT(void, wxWindow_ClientToScreen)(wxWindow* self, int x, int y, int* sx, int* sy)
-{
-  wxPoint pt = self->ClientToScreen( wxPoint(x,y) );
-  if (sx) *sx = pt.x;
-  if (sy) *sy = pt.y;
-}
 
 EWXWEXPORT(void, wxWindow_ScreenToClient2)(wxWindow* self, int x, int y, int *cx, int *cy)
 {

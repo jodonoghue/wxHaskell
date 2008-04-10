@@ -20,7 +20,9 @@ EWXWEXPORT(void, wxDirDialog_SetPath)(void* _obj, void* pth)
 	
 EWXWEXPORT(void, wxDirDialog_SetStyle)(void* _obj, int style)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	((wxDirDialog*)_obj)->SetStyle((long)style);
+#endif
 }
 	
 EWXWEXPORT(int, wxDirDialog_GetMessage)(void* _obj, void* _buf)
@@ -37,7 +39,11 @@ EWXWEXPORT(int, wxDirDialog_GetPath)(void* _obj, void* _buf)
 	
 EWXWEXPORT(int, wxDirDialog_GetStyle)(void* _obj)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	return (int)((wxDirDialog*)_obj)->GetStyle();
+#else
+  return 0;
+#endif
 }
 	
 }

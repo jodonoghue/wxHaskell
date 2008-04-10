@@ -33,7 +33,7 @@ EWXWEXPORT(int, wxDialog_GetReturnCode)(void* _obj)
 	return ((wxDialog*)_obj)->GetReturnCode();
 }
 	
-#if wxVERSION_NUMBER >= 2400
+#if (wxVERSION_NUMBER >= 2400) && (wxVERSION_NUMBER < 2800)
 EWXWEXPORT(void, wxDialog_SetIcons)(void* _obj, void* _icons)
 {
 	((wxDialog*)_obj)->SetIcons(*((wxIconBundle*)_icons));

@@ -9,14 +9,20 @@ EWXWEXPORT(void, wxDC_Delete) (void* _obj)
 	delete (wxDC*) _obj;
 }
 
+  // deprecated
 EWXWEXPORT(void, wxDC_BeginDrawing)(void* _obj)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	((wxDC*)_obj)->BeginDrawing();
+#endif
 }
 	
+  // deprecated
 EWXWEXPORT(void, wxDC_EndDrawing)(void* _obj)
 {
+#if WXWIN_COMPATIBILITY_2_6
 	((wxDC*)_obj)->EndDrawing();
+#endif
 }
 	
 EWXWEXPORT(void, wxDC_FloodFill)(void* _obj, int x, int y, void* col, int style)
@@ -587,4 +593,53 @@ EWXWEXPORT(void, wxMetafile_Delete) (void* _obj)
 #endif
 }
 
+#if (wxVERSION_NUMBER >= 2800)
+EWXWEXPORT(void, wxDC_DrawLabel)(void* _obj, void *str, int x, int y, int w, int h, int align, int indexAccel)
+{
+  wxRect rect(x, y, w, h);
+  ((wxDC*)_obj)->DrawLabel((wxChar *)str, rect, align, indexAccel);
+}
+
+EWXWEXPORT(void, wxDC_DrawLabelBitmap)(void* _obj, void *str, void *bmp, int x, int y, int w, int h, int align, int indexAccel, int *_x, int *_y, int *_w, int *_h)
+{
+  wxRect rect(x, y, w, h);
+  wxRect bound;
+  ((wxDC*)_obj)->DrawLabel((wxChar *)str, *((wxBitmap *)bmp), rect, align, indexAccel, &bound);
+  *_x = bound.GetX();
+  *_y = bound.GetY();
+  *_w = bound.GetWidth();
+  *_h = bound.GetHeight();
+}
+
+EWXWEXPORT(void, wxDC_DrawPolyPolygon)(void* _obj, int n, void *count, void* x, void* y, int xoffset, int yoffset, int fillStyle)
+{
+    int     *tmp = (int *) count;
+    int     *cnt = new int[n];
+    int      i, j;
+    int      totalItems = 0;
+    int      item = 0;
+
+    // Work out the size of wxPoint array required
+    for (i = 0; i < n; i++)
+    {
+      cnt[i] = *tmp++;
+      totalItems += cnt[i];
+    }
+	wxPoint* lst = new wxPoint[totalItems];
+
+	for (i = 0; i < n; i++)
+    {
+      for(j = 0; j < cnt[i]; j++)
+      {
+		lst[item] = wxPoint(((intptr_t*)x)[item], ((intptr_t*)y)[item]);
+        item++;
+      }
+    }
+	
+	((wxDC*)_obj)->DrawPolyPolygon(n, cnt, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
+	
+	free (lst);
+    delete cnt;
+}
+#endif
 }

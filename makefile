@@ -66,6 +66,7 @@ WX-SOURCES= \
 	Graphics/UI/WX/Variable \
 	Graphics/UI/WX/Events \
 	Graphics/UI/WX/Window \
+	Graphics/UI/WX/TopLevelWindow \
 	Graphics/UI/WX/Frame \
 	Graphics/UI/WX/Media \
 	Graphics/UI/WX/Menu \
