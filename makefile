@@ -483,7 +483,7 @@ $(WXD-EXE): $(WXD-OBJS)
 
 # create an object file from source files.
 $(WXD-OBJS): $(WXD-OUTDIR)/%.o: $(WXD-SRCDIR)/%.hs
-	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) -cpp $(HAS-DATA-TIME) $(PKG-TIME),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
+	@$(call compile-hs,$@,$<,$(HCFLAGS) $(PKG-PARSEC) $(PKG-TIME),$(WXD-OUTDIR),-i$(WXD-SRCDIR))
 
 # automatically include all dependency information.
 -include $(WXD-DEPS)

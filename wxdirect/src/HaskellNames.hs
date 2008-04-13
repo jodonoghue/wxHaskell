@@ -19,16 +19,9 @@ module HaskellNames( haskellDeclName
 
 import qualified Data.Set as Set
 import Data.Char( toLower, toUpper, isLower, isUpper )
-#ifdef NO_DATA_TIME
-import Time( getClockTime)
-#else
 import Data.Time( getCurrentTime)
-#endif
 import Data.List( isPrefixOf )
 
-#ifdef NO_DATA_TIME
-getCurrentTime = getClockTime
-#endif
 {-----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------}

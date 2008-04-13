@@ -14,19 +14,11 @@ module CompileClassTypes( compileClassTypes ) where
 
 import qualified Data.Map as Map
 
-#ifdef NO_DATA_TIME
-import Time( getClockTime)
-#else
 import Data.Time( getCurrentTime)
-#endif
 import Types
 import HaskellNames
 import Classes( isClassName, haskellClassDefs )
 import DeriveTypes( ClassName )
-
-#ifdef NO_DATA_TIME
-getCurrentTime = getClockTime
-#endif
 
 {-----------------------------------------------------------------------------------------
   Compile

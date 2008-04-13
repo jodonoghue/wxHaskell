@@ -99,8 +99,7 @@ import qualified Data.Map as M
 {--------------------------------------------------------------------
   Operators
 --------------------------------------------------------------------}
--- Comment on line below can be removed when we drop support for GHC 6.6.
-infixl 9 \\   -- Dummy comment to prevent CPP-preprocessor from seeing \\ as newline continuation
+infixl 9 \\
 
 -- | /O(n+m)/. See 'difference'.
 (\\) :: Ord a => MultiSet a -> MultiSet a -> MultiSet a

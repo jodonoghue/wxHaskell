@@ -659,33 +659,6 @@ case $? in
 esac
 
 #--------------------------------------------------------------------
-# Support for Data.Time ?
-#--------------------------------------------------------------------
-
-#GHC 6.6 do not support Data.Time and if no seperate Data.Time package
-#is installed we need to use the old System.Time package.
-
-echo -n " Data.Time package "
-
-cat > TestDataTime.hs << EOF
-module Main
-where
-import Data.Time
-main :: IO ()
-main = return ()
-EOF
-
-if runhaskell TestDataTime.hs >/dev/null 2>&1 ; then
-    hasdatatime="";
-    echo found
-else
-    hasdatatime="-DNO_DATA_TIME";
-    echo "not found"
-fi
-
-rm TestDataTime.hs
-
-#--------------------------------------------------------------------
 # Haddock
 #--------------------------------------------------------------------
 # Do we have haddock?
@@ -925,9 +898,6 @@ WXC-LIBNAME=$wxclibname
 
 # STC
 WXC-STC=$wxcstc
-
-# WxDirect
-HAS-DATA-TIME = $hasdatatime
 
 # WxWidgets
 WXWIN-VERSION=$wxversion
