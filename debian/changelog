@@ -1,0 +1,63 @@
+wxhaskell (0.10.3~rc2-3) unstable; urgency=low
+
+  * Get version from wxcore.cabal 
+
+ -- Pavel Shramov <shramov@mexmat.net>  Wed, 19 Mar 2008 15:02:50 +0300
+
+wxhaskell (0.10.3~rc2-2) unstable; urgency=low
+
+  * Fix unregister script 
+
+ -- Pavel Shramov <shramov@mexmat.net>  Wed, 19 Mar 2008 14:36:36 +0300
+
+wxhaskell (0.10.3~rc2-1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Packages 0.10.3-rc2 release.
+
+ -- Pavel Shramov <shramov@mexmat.net>  Tue, 06 Nov 2007 13:53:05 +0300
+
+wxhaskell (0.8-2) unstable; urgency=low
+
+  * Recompile with ghc 6.2.2
+
+ -- Isaac Jones <ijones@debian.org>  Mon, 18 Oct 2004 23:23:46 -0400
+
+wxhaskell (0.8-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Isaac Jones <ijones@debian.org>  Tue, 27 Jul 2004 15:52:50 -0400
+
+wxhaskell (0.6-0.4) unstable; urgency=low
+
+  * Recompile with ghc 6.2.1
+
+ -- Ian Lynagh (wibble) <igloo@debian.org>  Sat, 20 Mar 2004 19:44:05 +0000
+
+wxhaskell (0.6-0.3) unstable; urgency=low
+
+  * Make shlibs
+
+ -- Ian Lynagh (wibble) <igloo@debian.org>  Sat, 20 Mar 2004 19:44:05 +0000
+
+wxhaskell (0.6-0.2) unstable; urgency=low
+
+  * Fix error where postinst wasn't created in debian/
+  * Split into library and dev binary packages.
+
+ -- Ian Lynagh (wibble) <igloo@debian.org>  Sat, 20 Mar 2004 14:03:20 +0000
+
+wxhaskell (0.6-0.1) unstable; urgency=low
+
+  * Remove hardcoded "6.2" in postinst.
+  * Put the samples in the deb.
+
+ -- Ian Lynagh (wibble) <igloo@debian.org>  Sun, 14 Mar 2004 23:51:09 +0000
+
+wxhaskell (0.6-0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Ian Lynagh (wibble) <igloo@debian.org>  Sun, 14 Mar 2004 18:22:59 +0000
+

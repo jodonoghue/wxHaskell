@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+
+PWD	:= $(shell pwd)
+PKG	:= libghc6-wxhaskell
+LIBDIR	:= $(shell ghc6 --print-libdir)
+VERSION := $(shell sed -ne "s/^Version: *//Ip" wxcore.cabal)
+
+configure/$(PKG)-dev::
+	./configure --with-opengl --prefix=/usr --libdir=$(LIBDIR) --hc=ghc6
+
+debian/unregister.sh: debian/unregister.sh.in wxcore.cabal
+	sed 's|$${wxversion}|$(VERSION)|' < $< > $@
+
+install/$(PKG)0.10:: debian/unregister.sh
+	$(MAKE) DESTDIR=$(PWD)/debian/$(PKG)-dev wxcore-install-files
+	mkdir -p $(PWD)/debian/$(PKG)-dev/usr/lib/$(PKG)-dev
+	install -m0755 debian/unregister.sh $(PWD)/debian/$(PKG)-dev/usr/lib/$(PKG)-dev/
+	install -m0755 debian/register.sh $(PWD)/debian/$(PKG)-dev/usr/lib/$(PKG)-dev/
+	mkdir -p $(PWD)/debian/$(PKG)-dev/$(LIBDIR)/package.conflets
+	sed 's|$${wxhlibdir}|$(LIBDIR)|' < config/wxcore.pkg > $(PWD)/debian/$(PKG)-dev/$(LIBDIR)/package.conflets/wxcore.pkg
+	sed 's|$${wxhlibdir}|$(LIBDIR)|' < config/wx.pkg > $(PWD)/debian/$(PKG)-dev/$(LIBDIR)/package.conflets/wx.pkg
+	mkdir -p $(PWD)/debian/$(PKG)0.10/usr/lib
+	mv $(PWD)/debian/$(PKG)-dev/$(LIBDIR)/*.so $(PWD)/debian/$(PKG)0.10/usr/lib
+
+install/$(PKG)-dev:: install/$(PKG)0.10
+	sed 's|$${wxhlibdir}|$(PWD)/debian/$(PKG)-dev/$(LIBDIR)|' < config/wxcore.pkg | ghc-pkg -f out/wxcore.conf update -
+	$(MAKE) HCFLAGS="-package-conf out/wxcore.conf" DESTDIR=$(PWD)/debian/$(PKG)-dev wx wx-install-files

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+VERSION="${wxversion}"
+
+/usr/bin/ghc-pkg6 unregister wx-${VERSION}
+/usr/bin/ghc-pkg6 unregister wxcore-${VERSION}

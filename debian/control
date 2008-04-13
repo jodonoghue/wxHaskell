@@ -1,0 +1,21 @@
+Source: wxhaskell
+Section: devel
+Priority: optional
+Maintainer: Isaac Jones <ijones@debian.org>
+Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5), cdbs, ghc6 (>= 6.2.1), libwxgtk2.6-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libghc6-parsec-dev
+XS-Upstream-Depends: git-core
+XS-Vcs-Git: git://grid.pp.ru/psha/wxhaskell/
+XS-Vcs-Browse: http://grid.pp.ru/git/?p=psha/wxhaskell/.git
+
+Package: libghc6-wxhaskell0.10
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Haskell bindings for wxWidgets (runtime)
+ Haskell bindings for wxWidgets.
+
+Package: libghc6-wxhaskell-dev
+Architecture: any
+Depends: libghc6-wxhaskell0.10 (= ${Source-Version}), haskell-utils, ghc6 (>= 6.2.1), ${shlibs:Depends}, ${misc:Depends}
+Description: Haskell bindings for wxWidgets (development)
+ Haskell bindings for wxWidgets.
