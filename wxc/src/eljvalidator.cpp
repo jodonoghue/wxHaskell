@@ -156,7 +156,7 @@ EWXWEXPORT(void *, wxTextValidator_GetIncludes)(void* _obj, int *_nitems)
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
 #ifdef wxUSE_UNICODE
-      items_copy[i] = _wcsdup(items.Item(i).GetData());
+      items_copy[i] = wxStrdup(items.Item(i).GetData());
 #else
       items_copy[i] = strdup(items.Item(i).GetData());
 #endif
@@ -189,7 +189,7 @@ EWXWEXPORT(void *, wxTextValidator_GetExcludes)(void* _obj, int* _nitems)
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
 #ifdef wxUSE_UNICODE
-      items_copy[i] = _wcsdup(items.Item(i).GetData());
+      items_copy[i] = wxStrdup(items.Item(i).GetData());
 #else
       items_copy[i] = strdup(items.Item(i).GetData());
 #endif
