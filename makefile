@@ -218,9 +218,11 @@ SAMPLE-SOURCES= \
 	samples/wx/HelloWorld.hs \
 	samples/wx/ImageViewer.hs \
 	samples/wx/Layout.hs \
+	samples/wx/ListCtrl.hs \
 	samples/wx/Minimal.hs \
 	samples/wx/Process.hs \
 	samples/wx/Paint.hs \
+	samples/wx/Print.hs \
 	samples/wx/TimeFlows.hs \
 	samples/wx/TimeFlowsEx.hs \
 	\
