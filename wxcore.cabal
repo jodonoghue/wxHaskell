@@ -14,9 +14,10 @@ Flag splitBase
     Description: Choose the new smaller, split-up base package.
 Library
     if flag(splitBase)
-        build-depends: base >= 3, parsec, array, containers, directory, old-time, time
+        build-depends: base >= 3, array, containers, directory,
+                       parsec, old-time, time, stm
     else
-        build-depends: base <  3, parsec, time
+        build-depends: base <  3, parsec, time, stm
  Exposed-Modules:
   Graphics.UI.WXCore
   Graphics.UI.WXCore.WxcObject

@@ -86,7 +86,7 @@ import System.IO.Unsafe( unsafePerformIO )
 -- utility
 import Data.Array
 import Data.Bits
-import Data.IORef
+import Control.Concurrent.STM
 import qualified Control.Exception as CE
 import qualified Control.Monad as M
 
@@ -196,28 +196,32 @@ finalize last first
 
 -- | A mutable variable. Use this instead of 'MVar's or 'IORef's to accomodate for
 -- future expansions with possible concurrency.
-type Var a  = IORef a
+type Var a  = TVar a
 
 -- | Create a fresh mutable variable.
 varCreate :: a -> IO (Var a)
-varCreate x    = newIORef x
+varCreate x    = newTVarIO x
 
 -- | Get the value of a mutable variable.
 varGet :: Var a -> IO a
-varGet v    = readIORef v
+varGet v    = atomically $ readTVar v
 
 -- | Set the value of a mutable variable.
 varSet :: Var a -> a -> IO ()
-varSet v x = writeIORef v x
+varSet v x = atomically $ writeTVar v x
 
 -- | Swap the value of a mutable variable.
 varSwap :: Var a -> a -> IO a
-varSwap v x = do prev <- varGet v; varSet v x; return prev
+varSwap v x = atomically $ do
+                   prev <- readTVar v
+                   writeTVar v x
+                   return prev
 
 -- | Update the value of a mutable variable and return the old value.
 varUpdate :: Var a -> (a -> a) -> IO a
-varUpdate v f = do x <- varGet v
-                   varSet v (f x)
+varUpdate v f = atomically $ do
+                   x <- readTVar v
+                   writeTVar v (f x)
                    return x
 
 

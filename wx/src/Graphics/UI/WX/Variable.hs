@@ -14,7 +14,7 @@ module Graphics.UI.WX.Variable
             ( variable
             ) where
 
-import Data.IORef
+import Control.Concurrent.STM.TVar
 import Graphics.UI.WX.Types( Var, varGet, varSet, varCreate, varUpdate )
 import Graphics.UI.WX.Attributes
 import Graphics.UI.WX.Classes
@@ -22,7 +22,7 @@ import Graphics.UI.WX.Classes
 {--------------------------------------------------------------------
 
 --------------------------------------------------------------------}
-instance Valued IORef where
+instance Valued TVar where
   value = makeAttr "value" varGet varSet varUpdate
 
 -- | Create a mutable variable. Change the value using the |value| attribute.

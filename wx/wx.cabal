@@ -16,9 +16,9 @@ Flag splitBase
 
 Library
     if flag(splitBase)
-        build-depends: base >= 3, wxcore >= 0.10.1
+        build-depends: base >= 3, wxcore >= 0.10.1, stm
     else
-        build-depends: base <  3, wxcore >= 0.10.1
+        build-depends: base <  3, wxcore >= 0.10.1, stm
 
  Exposed-Modules:
   Graphics.UI.WX.Draw

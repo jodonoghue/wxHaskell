@@ -658,6 +658,13 @@ case $? in
   *) pkgtime="";;
 esac
 
+# Test if we can include the stm package explicitly
+$hcpkg -s stm > /dev/null 2> /dev/null
+case $? in
+  0) pkgstm="-package stm";;
+  *) pkgstm="";;
+esac
+
 #--------------------------------------------------------------------
 # Haddock
 #--------------------------------------------------------------------
@@ -879,6 +886,7 @@ HC-PROF-FLAGS=-hisuf p_hi $hcprof
 PKG-CONTAINERS=$pkgcontainers
 PKG-PARSEC=$pkgparsec
 PKG-TIME=$pkgtime
+PKG-STM=$pkgstm
 
 # C compiler
 CXX=$cxx
@@ -941,6 +949,13 @@ fi
 # create packages
 binversion="${wxtoolkit}${wxversion}-${version}"
 
+# behave like Cabal's configuration.
+if test "$pkgcontainers"; then
+  wxcoredepends="base, containers"
+else
+  wxcoredepends="base"
+fi
+
 #echo " package descriptions"
 echo " config/wxcore.pkg"
 # ghc 6.4+, the partial packages are only used for the windows installer
@@ -975,7 +990,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: base,haskell98
+depends: ${wxcoredepends}, haskell98, stm
 extra-ld-opts:$extraldopts
 EOF
 cp -f config/wxcore-partial.pkg config/wxcore.pkg
@@ -998,6 +1013,7 @@ exposed-modules: Graphics.UI.WX,
 	Graphics.UI.WX.Variable,
 	Graphics.UI.WX.Events,
 	Graphics.UI.WX.Window,
+	Graphics.UI.WX.TopLevelWindow,
 	Graphics.UI.WX.Frame,
 	Graphics.UI.WX.Media,
 	Graphics.UI.WX.Menu,
@@ -1006,7 +1022,7 @@ exposed-modules: Graphics.UI.WX,
 	Graphics.UI.WX.Controls,
 	Graphics.UI.WX.Dialogs
 hs-libraries:wx
-depends:wxcore-${version}
+depends: wxcore-${version}, stm
 EOF
 cp -f config/wx-partial.pkg config/wx.pkg
 echo "import-dirs:\${wxhlibdir}/imports" >> config/wx.pkg
