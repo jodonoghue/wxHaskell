@@ -33,7 +33,7 @@ gui
        b <- buttonCreate p idAny "Bye" rectNull 0
 
        -- press spacebar to invoke the button by default
-       panelSetDefaultItem p b
+       topLevelWindowSetDefaultItem f b
 
        -- set the layout
        windowSetLayout f (fill (container p (margin 5 (column 5 [widget t, widget b]))))

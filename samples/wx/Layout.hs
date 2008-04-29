@@ -18,8 +18,8 @@ gui
        xinput <- textEntry p [text := "100", alignment := AlignRight]
        yinput <- textEntry p [text := "100", alignment := AlignRight]
 
-       set p [defaultButton := ok]
-       set f [layout := container p $
+       set f [defaultButton := ok
+             ,layout := container p $
                         margin 10 $
                         column 5 [boxed "coordinates" (grid 5 5 [[label "x:", hfill $ widget xinput]
                                                                 ,[label "y:", hfill $ widget yinput]])

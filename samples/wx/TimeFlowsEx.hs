@@ -110,8 +110,8 @@ showOptionDialog frame vtimeSpan vflowText status
        can   <- button p [text := "Cancel"]           
        
        -- layout
-       set p [defaultButton := ok]
-       set d [layout := container p $ margin 10 $ 
+       set d [defaultButton := ok
+             ,layout := container p $ margin 10 $ 
                         column 10 [ boxed "" $ grid 5 5 [[label "text:",  hfill $ widget entry]
                                                         ,[label "delay:", floatRight $ widget delay]
                                                         ]
