@@ -87,6 +87,10 @@ defaultStyle
 -- controls. It has a standard background and maintains standard keyboard
 -- navigation (ie. /Tab/ moves through the controls).
 --
+-- Note: 'defaultButton' attibute is removed. Set 'defaultButton' to parent
+-- 'Frame' or 'Dialog' instead of this control now. This is an incompatible
+-- change to support wxWidgets 2.8.x.
+--
 -- * Attributes: 'focusOn'
 --
 -- * Instances: 'Form' -- 'Dimensions', 'Colored', 'Visible', 'Child',
@@ -98,6 +102,10 @@ panel parent props
 
 
 -- | Create a 'Panel' with a specific style.
+--
+-- Note: 'defaultButton' attibute is removed. Set 'defaultButton' to parent
+-- 'Frame' or 'Dialog' instead of this control now. This is an incompatible
+-- change to support wxWidgets 2.8.x.
 --
 -- * Attributes: 'focusOn'
 --
