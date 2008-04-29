@@ -18,8 +18,7 @@ main
 gui :: IO ()
 gui
   = do im <- imageCreateSized rgbSize
-       pb <- imageGetPixelBuffer im
-       fillGreenBlue pb
+       withPixelBuffer im fillGreenBlue
        bm  <- bitmapCreateFromImage im (-1)
        f   <- frame [text := "Paint demo", fullRepaintOnResize := False]
        sw  <- scrolledWindow f [on paintRaw := onpaint bm
