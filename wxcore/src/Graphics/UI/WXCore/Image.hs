@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 --------------------------------------------------------------------------------
 {-| Module      :  Image
     Copyright   :  (c) Daan Leijen 2003
@@ -54,7 +55,7 @@ module Graphics.UI.WXCore.Image
     ) where
 
 import Data.Char( toLower )
-import Data.Array
+import Data.Array.IArray ( IArray, listArray, bounds, elems )
 import Foreign.Marshal.Array
 import Foreign.C.String
 import Foreign.Storable
@@ -338,7 +339,7 @@ imageCreateFromPixels size colors
        imageCreateFromPixelBuffer pb   -- image deletes pixel buffer
 
 -- | Get the pixels of an image as an array
-imageGetPixelArray :: Image a -> IO (Array Point Color)
+imageGetPixelArray :: (IArray a Color) => Image b -> IO (a Point Color)
 imageGetPixelArray image
   = do h  <- imageGetHeight image
        w  <- imageGetWidth image
@@ -347,7 +348,7 @@ imageGetPixelArray image
        return (listArray bounds ps)        
 
 -- | Create an image from a pixel array
-imageCreateFromPixelArray :: Array Point Color -> IO (Image ())
+imageCreateFromPixelArray :: (IArray a Color) => a Point Color -> IO (Image ())
 imageCreateFromPixelArray pixels
   = let (Point x y) = snd (bounds pixels)
     in imageCreateFromPixels (sz (x+1) (y+1)) (elems pixels)

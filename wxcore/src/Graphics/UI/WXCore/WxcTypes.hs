@@ -1,4 +1,5 @@
 {-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 -----------------------------------------------------------------------------------------
 {-| Module      :  WxcTypes
     Copyright   :  (c) Daan Leijen 2003, 2004
@@ -45,7 +46,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
             -- ** Color
-            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk
+            , Color(..), rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk
 
             -- * Marshalling
             -- ** Basic types
@@ -111,6 +112,8 @@ import Foreign.Marshal.Array
 import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
 
+import Data.Array.MArray (MArray)
+import Data.Array.Unboxed (IArray, UArray)
 import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 
 {- note: this is just for instances for the WX library and not necessary for WXCore -}
@@ -984,8 +987,21 @@ foreign import ccall "wxString_GetString" wxString_GetString :: Ptr (TWxString a
   Color
 -----------------------------------------------------------------------------------------}
 -- | An abstract data type to define colors.
+--
+--   Note: Haddock 0.8 and 0.9 doesn't support GeneralizedNewtypeDeriving. So, This class
+--   doesn't have 'IArray' class's unboxed array instance now. If you want to use this type
+--   with unboxed array, you must write code like this.
+--
+-- > {-# LANGUAGE GeneralizedNewtypeDeriving, StandaloneDeriving, MultiParamTypeClasses #-}
+-- > import Graphics.UI.WXCore.WxcTypes
+-- > ...
+-- > deriving instance IArray UArray Color
+--
+--   We can't derive 'MArray' class's unboxed array instance this way. This is a bad point
+--   of current 'MArray' class definition.
+--
 newtype Color = Color Int 
-              deriving (Eq,Typeable)
+              deriving (Eq, Typeable) -- , IArray UArray) 
 
 instance Show Color where
   showsPrec d c
