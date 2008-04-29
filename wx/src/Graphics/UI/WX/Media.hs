@@ -17,7 +17,7 @@ module Graphics.UI.WX.Media
               Media(..)
             
               -- * Sound
-            , Wave, sound, playLoop, playWait
+            , sound, playLoop, playWait
               -- * Images
             , image, imageCreateFromFile, imageCreateFromPixels, imageGetPixels
             , imageCreateFromPixelArray, imageGetPixelArray
@@ -89,11 +89,6 @@ class Media w where
 sound :: FilePath -> Sound ()
 sound fname 
   = unsafePerformIO $ soundCreate fname False
-
-{-# DEPRECATED Wave "Use Sound instead" #-}
--- | Define Wave type synonym for people who are familiar with
--- wxWidgets 2.4.x or lower name.
-type Wave a = Sound a
 
 instance Media (Sound a) where
   play sound =
