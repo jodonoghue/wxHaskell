@@ -91,23 +91,16 @@ sound fname
   = unsafePerformIO $ soundCreate fname False
 
 instance Media (Sound a) where
-  play sound =
-    if (div wxVersion 100) == 24
-      then unitIO (soundPlayCompatible sound True False)
-      else unitIO (soundPlay sound wxSOUND_ASYNC)
+  play sound = unitIO (soundPlay sound wxSOUND_ASYNC)
   stop = soundStop
 
 -- | Play a sound fragment repeatedly (and asynchronously).
 playLoop :: Sound a -> IO ()
 playLoop sound
-  = if (div wxVersion 100) == 24
-      then unitIO (soundPlayCompatible sound True True)
-      else unitIO (soundPlay sound $ wxSOUND_ASYNC .+. wxSOUND_LOOP)
+  = unitIO (soundPlay sound $ wxSOUND_ASYNC .+. wxSOUND_LOOP)
 
 -- | Play a sound fragment synchronously (i.e. wait till completion).
 playWait :: Sound a -> IO ()
 playWait sound
-  = if (div wxVersion 100) == 24
-      then unitIO (soundPlayCompatible sound False False)
-      else unitIO (soundPlay sound wxSOUND_SYNC)
+  = unitIO (soundPlay sound wxSOUND_SYNC)
 
