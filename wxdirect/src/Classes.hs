@@ -159,7 +159,7 @@ managedClasses
 
     -- managed objects (that are not passed by reference)
     map standard
-    ["Wave"] ++
+    ["Sound"] ++
 
     -- translated directly to a Haskell datatype
     [ ClassInfo "wxColour" (affix "withColourRef") "withColourPtr" "withManagedColourResult"
