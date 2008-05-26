@@ -57,22 +57,24 @@ module Graphics.UI.WXCore.Types(
             , SystemColor(..), colorSystem
 
             -- ** Points
-            , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
+            , Point, Point2(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
             , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
             -- ** Sizes
-            , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+            , Size, Size2D(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
             , sizeMin, sizeMax
 
             -- ** Vectors
-            , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
+            , Vector, Vector2(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
             , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecBetween, vecLength
+            , vecLengthDouble
 
             -- ** Rectangles
-            , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+            , Rect, Rect2D(Rect,rectLeft,rectTop,rectWidth,rectHeight)
             , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
             , rectContains, rectMoveTo, rectFromPoint, rectCentralPoint, rectCentralRect, rectStretchTo
+            , rectCentralPointDouble, rectCentralRectDouble
             , rectMove, rectOverlaps, rectsDiff, rectUnion, rectOverlap, rectUnions
 
             ) where
@@ -229,31 +231,31 @@ varUpdate v f = atomically $ do
 {-----------------------------------------------------------------------------------------
   Point
 -----------------------------------------------------------------------------------------}
-pointMove :: Vector -> Point -> Point
+pointMove :: (Num a) => Vector2 a -> Point2 a -> Point2 a
 pointMove (Vector dx dy) (Point x y)
   = Point (x+dx) (y+dy)
 
-pointMoveBySize :: Point -> Size -> Point
+pointMoveBySize :: (Num a) => Point2 a -> Size2D a -> Point2 a
 pointMoveBySize (Point x y) (Size w h)  = Point (x + w) (y + h)
 
-pointAdd :: Point -> Point -> Point
+pointAdd :: (Num a) => Point2 a -> Point2 a -> Point2 a
 pointAdd (Point x1 y1) (Point x2 y2) = Point (x1+x2) (y1+y2)
 
-pointSub :: Point -> Point -> Point
+pointSub :: (Num a) => Point2 a -> Point2 a -> Point2 a
 pointSub (Point x1 y1) (Point x2 y2) = Point (x1-x2) (y1-y2)
 
-pointScale :: Point -> Int -> Point
+pointScale :: (Num a) => Point2 a -> a -> Point2 a
 pointScale (Point x y) v = Point (v*x) (v*y)
 
 
-instance Ord Point where
+instance (Num a, Ord a) => Ord (Point2 a) where
   compare (Point x1 y1) (Point x2 y2)             
     = case compare y1 y2 of
         EQ  -> compare x1 x2
         neq -> neq
 
 
-instance Ix Point where
+instance Ix (Point2 Int) where
   range (Point x1 y1,Point x2 y2)             
     = [Point x y | y <- [y1..y2], x <- [x1..x2]]
 
@@ -275,101 +277,114 @@ instance Ix Point where
   Size
 -----------------------------------------------------------------------------------------}
 -- | Return the width. (see also 'sizeW').
-sizeWidth :: Size -> Int
+sizeWidth :: (Num a) => Size2D a -> a
 sizeWidth (Size w h)
   = w
 
 -- | Return the height. (see also 'sizeH').
-sizeHeight :: Size -> Int
+sizeHeight :: (Num a) => Size2D a -> a
 sizeHeight (Size w h)
   = h
 
 -- | Returns 'True' if the first size totally encloses the second argument.
-sizeEncloses :: Size -> Size -> Bool
+sizeEncloses :: (Num a, Ord a) => Size2D a -> Size2D a -> Bool
 sizeEncloses (Size w0 h0) (Size w1 h1)
   = (w0 >= w1) && (h0 >= h1)
 
 -- | The minimum of two sizes.
-sizeMin :: Size -> Size -> Size
+sizeMin :: (Num a, Ord a) => Size2D a -> Size2D a -> Size2D a
 sizeMin (Size w0 h0) (Size w1 h1)
   = Size (min w0 w1) (min h0 h1)
 
 -- | The maximum of two sizes.
-sizeMax :: Size -> Size -> Size
+sizeMax :: (Num a, Ord a) => Size2D a -> Size2D a -> Size2D a
 sizeMax (Size w0 h0) (Size w1 h1)
   = Size (max w0 w1) (max h0 h1)
 
 {-----------------------------------------------------------------------------------------
   Vector
 -----------------------------------------------------------------------------------------}
-vecNegate :: Vector -> Vector
+vecNegate :: (Num a) => Vector2 a -> Vector2 a
 vecNegate (Vector x y)
   = Vector (-x) (-y)
 
-vecOrtogonal :: Vector -> Vector
+vecOrtogonal :: (Num a) => Vector2 a -> Vector2 a
 vecOrtogonal (Vector x y) = (Vector y (-x))
 
-vecAdd :: Vector -> Vector -> Vector
+vecAdd :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
 vecAdd (Vector x1 y1) (Vector x2 y2) = Vector (x1+x2) (y1+y2)
 
-vecSub :: Vector -> Vector -> Vector
+vecSub :: (Num a) => Vector2 a -> Vector2 a -> Vector2 a
 vecSub (Vector x1 y1) (Vector x2 y2) = Vector (x1-x2) (y1-y2)
 
-vecScale :: Vector -> Int -> Vector
+vecScale :: (Num a) => Vector2 a -> a -> Vector2 a
 vecScale (Vector x y) v = Vector (v*x) (v*y)
 
-vecBetween :: Point -> Point -> Vector
+vecBetween :: (Num a) => Point2 a -> Point2 a -> Vector2 a
 vecBetween (Point x1 y1) (Point x2 y2) = Vector (x2-x1) (y2-y1)
 
 vecLength :: Vector -> Double
 vecLength (Vector x y)
   = sqrt (fromIntegral (x*x + y*y))
 
+vecLengthDouble :: Vector2 Double -> Double
+vecLengthDouble (Vector x y)
+  = sqrt (x*x + y*y)
+
 {-----------------------------------------------------------------------------------------
   Rectangle
 -----------------------------------------------------------------------------------------}
-rectContains :: Rect -> Point -> Bool
+rectContains :: (Num a, Ord a) => Rect2D a -> Point2 a -> Bool
 rectContains (Rect l t w h) (Point x y) 
   = (x >= l && x <= (l+w) && y >= t && y <= (t+h))
 
-rectMoveTo :: Rect -> Point -> Rect
+rectMoveTo :: (Num a) => Rect2D a -> Point2 a -> Rect2D a
 rectMoveTo r p
   = rect p (rectSize r)
 
-rectFromPoint :: Point -> Rect
+rectFromPoint :: (Num a) => Point2 a -> Rect2D a
 rectFromPoint (Point x y)
   = Rect x y x y
 
-rectCentralPoint :: Rect -> Point
+rectCentralPoint :: Rect2D Int -> Point2 Int
 rectCentralPoint (Rect l t w h)
   = Point (l + div w 2) (t + div h 2)
 
-rectCentralRect :: Rect -> Size -> Rect
+rectCentralRect :: Rect2D Int -> Size -> Rect2D Int
 rectCentralRect r@(Rect l t rw rh) (Size w h)
   = let c = rectCentralPoint r
     in Rect (pointX c - (w - div w 2)) (pointY c - (h - div h 2)) w h
 
+rectCentralPointDouble :: (Fractional a) => Rect2D a -> Point2 a
+rectCentralPointDouble (Rect l t w h)
+  = Point (l + w/2) (t + h/2)
 
-rectStretchTo :: Rect -> Size -> Rect
+rectCentralRectDouble :: (Fractional a) => Rect2D a -> Size2D a -> Rect2D a
+rectCentralRectDouble r@(Rect l t rw rh) (Size w h)
+  = let c = rectCentralPointDouble r
+    in Rect (pointX c - (w - w/2)) (pointY c - (h - h/2)) w h
+
+
+rectStretchTo :: (Num a) => Rect2D a -> Size2D a -> Rect2D a
 rectStretchTo (Rect l t _ _) (Size w h)
   = Rect l t w h
 
-rectMove :: Rect -> Vector -> Rect
+rectMove :: (Num a) => Rect2D a -> Vector2 a -> Rect2D a
 rectMove  (Rect x y w h) (Vector dx dy)
   = Rect (x+dx) (y+dy) w h
 
-rectOverlaps :: Rect -> Rect -> Bool
+rectOverlaps :: (Num a, Ord a) => Rect2D a -> Rect2D a -> Bool
 rectOverlaps (Rect x1 y1 w1 h1) (Rect x2 y2 w2 h2)
   = (x1+w1 >= x2 && x1 <= x2+w2) && (y1+h1 >= y2 && y1 <= y2+h2)
 
 
 -- | A list with rectangles that constitute the difference between two rectangles.
-rectsDiff :: Rect -> Rect -> [Rect]
+rectsDiff :: (Num a, Ord a) => Rect2D a -> Rect2D a -> [Rect2D a]
 rectsDiff rect1 rect2
   = subtractFittingRect rect1 (rectOverlap rect1 rect2)
   where
     -- subtractFittingRect r1 r2 subtracts r2 from r1 assuming that r2 fits inside r1
-    subtractFittingRect :: Rect -> Rect -> [Rect]
+    subtractFittingRect :: (Num a, Ord a) => Rect2D a -> Rect2D a -> [Rect2D a]
     subtractFittingRect r1 r2 =
             filter (not . rectIsEmpty)
                     [ rectBetween (rectTopLeft r1) (rectTopRight r2)
@@ -378,19 +393,19 @@ rectsDiff rect1 rect2
                     , rectBetween (rectTopRight r2) (rectBottomRight r1)
                     ]
 
-rectUnion :: Rect -> Rect -> Rect
+rectUnion :: (Num a, Ord a) => Rect2D a -> Rect2D a -> Rect2D a
 rectUnion r1 r2
   = rectBetween (pt (min (rectLeft r1) (rectLeft r2)) (min (rectTop r1) (rectTop r2)))
          (pt (max (rectRight r1) (rectRight r2)) (max (rectBottom r1) (rectBottom r2)))
 
-rectUnions :: [Rect] -> Rect
+rectUnions :: (Num a, Ord a) => [Rect2D a] -> Rect2D a
 rectUnions []
   = rectZero
 rectUnions (r:rs)
   = foldr rectUnion r rs
 
 -- | The intersection between two rectangles.
-rectOverlap :: Rect -> Rect -> Rect
+rectOverlap :: (Num a, Ord a) => Rect2D a -> Rect2D a -> Rect2D a
 rectOverlap r1 r2
   | rectOverlaps r1 r2  = rectBetween (pt (max (rectLeft r1) (rectLeft r2)) (max (rectTop r1) (rectTop r2)))
                                (pt (min (rectRight r1) (rectRight r2)) (min (rectBottom r1) (rectBottom r2)))

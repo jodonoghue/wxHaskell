@@ -32,16 +32,16 @@ module Graphics.UI.WXCore.WxcTypes(
             , intFromBool, boolFromInt
 
             -- ** Point
-            , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
+            , Point, Point2(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
 
             -- ** Size
-            , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
+            , Size, Size2D(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull
 
             -- ** Vector
-            , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
+            , Vector, Vector2(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
 
             -- * Rectangle
-            , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+            , Rect, Rect2D(Rect,rectLeft,rectTop,rectWidth,rectHeight)
             , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
@@ -54,6 +54,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , withSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
             , withVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
             , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
+            , withRectDoubleResult, withCRectDouble
             , withArrayString, withArrayWString, withArrayInt, withArrayObject
             , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
 
@@ -186,48 +187,51 @@ foreign import ccall wxObject_SafeDelete           :: Ptr (TWxObject a) -> IO ()
 {-----------------------------------------------------------------------------------------
   Point
 -----------------------------------------------------------------------------------------}
+--- | Define Point type synonym for backward compatibility.
+type Point = Point2 Int
+
 -- | A point has an x and y coordinate. Coordinates are normally relative to the
 -- upper-left corner of their view frame, where a positive x goes to the right and
 -- a positive y to the bottom of the view.
-data Point  = Point
-        { pointX :: !Int -- ^ x component of a point.
-        , pointY :: !Int -- ^ y component of a point.
+data (Num a) => Point2 a = Point
+        { pointX :: {-# UNPACK #-} !a -- ^ x component of a point.
+        , pointY :: {-# UNPACK #-} !a -- ^ y component of a point.
         }
         deriving (Eq,Show,Read,Typeable)
 
 -- | Construct a point.
-point :: Int -> Int -> Point
+point :: (Num a) => a -> a -> Point2 a
 point x y  = Point x y
 
 -- | Shorter function to construct a point.
-pt :: Int -> Int -> Point
+pt :: (Num a) => a -> a -> Point2 a
 pt x y  = Point x y
 
-pointFromVec :: Vector -> Point
+pointFromVec :: (Num a) => Vector -> Point2 a
 pointFromVec (Vector x y)
-  = Point x y
+  = Point (fromIntegral x) (fromIntegral y)
 
-pointFromSize :: Size -> Point
+pointFromSize :: (Num a) => Size -> Point2 a
 pointFromSize (Size w h)
-  = Point w h
+  = Point (fromIntegral w) (fromIntegral h)
 
 -- | Point at the origin.
-pointZero :: Point
+pointZero :: (Num a) => Point2 a
 pointZero
   = Point 0 0
 
 -- | A `null' point is not a legal point (x and y are -1) and can be used for some
 -- wxWindows functions to select a default point.
-pointNull :: Point
+pointNull :: (Num a) => Point2 a
 pointNull
   = Point (-1) (-1)
 
 -- marshalling
-withCPoint :: Point -> (CInt -> CInt -> IO a) -> IO a
+withCPoint :: Point2 Int -> (CInt -> CInt -> IO a) -> IO a
 withCPoint (Point x y) f
   = f (toCInt x) (toCInt y)
 
-withPointResult :: (Ptr CInt -> Ptr CInt -> IO ()) -> IO Point
+withPointResult :: (Ptr CInt -> Ptr CInt -> IO ()) -> IO (Point2 Int)
 withPointResult f
   = alloca $ \px ->
     alloca $ \py ->
@@ -236,11 +240,11 @@ withPointResult f
        y <- peek py
        return (fromCPoint x y)
 
-toCIntPointX, toCIntPointY :: Point -> CInt
+toCIntPointX, toCIntPointY :: Point2 Int -> CInt
 toCIntPointX (Point x y)  = toCInt x
 toCIntPointY (Point x y)  = toCInt y
 
-fromCPoint :: CInt -> CInt -> Point
+fromCPoint :: CInt -> CInt -> Point2 Int
 fromCPoint x y
   = Point (fromCInt x) (fromCInt y)
 
@@ -248,38 +252,41 @@ fromCPoint x y
 {-----------------------------------------------------------------------------------------
   Size
 -----------------------------------------------------------------------------------------}
+--- | Define Point type synonym for backward compatibility.
+type Size = Size2D Int
+
 -- | A @Size@ has a width and height.
-data Size   = Size
-        { sizeW :: !Int -- ^ the width  of a size
-        , sizeH :: !Int -- ^ the height of a size
+data (Num a) => Size2D a = Size
+        { sizeW :: {-# UNPACK #-} !a -- ^ the width  of a size
+        , sizeH :: {-# UNPACK #-} !a -- ^ the height of a size
         }
         deriving (Eq,Show,Typeable)
 
 -- | Construct a size from a width and height.
-size :: Int -> Int -> Size
+size :: (Num a) => a -> a -> Size2D a
 size w h
   = Size w h
 
 -- | Short function to construct a size
-sz :: Int -> Int -> Size
+sz :: (Num a) => a -> a -> Size2D a
 sz w h
   = Size w h
 
-sizeFromPoint :: Point -> Size
+sizeFromPoint :: (Num a) => Point2 a -> Size2D a
 sizeFromPoint (Point x y)
   = Size x y
 
-sizeFromVec   :: Vector -> Size
+sizeFromVec   :: (Num a) => Vector2 a -> Size2D a
 sizeFromVec (Vector x y)
   = Size x y
 
-sizeZero :: Size
+sizeZero :: (Num a) => Size2D a
 sizeZero
   = Size 0 0
 
 -- | A `null' size is not a legal size (width and height are -1) and can be used for some
 -- wxWindows functions to select a default size.
-sizeNull :: Size
+sizeNull :: (Num a) => Size2D a
 sizeNull
   = Size (-1) (-1)
 
@@ -308,33 +315,36 @@ toCIntSizeH (Size w h)  = toCInt h
 {-----------------------------------------------------------------------------------------
   Vector
 -----------------------------------------------------------------------------------------}
+--- | Define Point type synonym for backward compatibility.
+type Vector = Vector2 Int
+
 -- | A vector with an x and y delta.
-data Vector = Vector
-        { vecX :: !Int -- ^ delta-x component of a vector
-        , vecY :: !Int -- ^ delta-y component of a vector
+data (Num a) => Vector2 a = Vector
+        { vecX :: {-# UNPACK #-} !a -- ^ delta-x component of a vector
+        , vecY :: {-# UNPACK #-} !a -- ^ delta-y component of a vector
         }
         deriving (Eq,Show,Read,Typeable)
 
 -- | Construct a vector.
-vector :: Int -> Int -> Vector
+vector :: (Num a) => a -> a -> Vector2 a
 vector dx dy  = Vector dx dy
 
 -- | Short function to construct a vector.
-vec :: Int -> Int -> Vector
+vec :: (Num a) => a -> a -> Vector2 a
 vec dx dy  = Vector dx dy
 
 -- | A zero vector
-vecZero :: Vector
+vecZero :: (Num a) => Vector2 a
 vecZero
   = Vector 0 0
 
 -- | A `null' vector has a delta x and y of -1 and can be used for some
 -- wxWindows functions to select a default vector.
-vecNull :: Vector
+vecNull :: (Num a) => Vector2 a
 vecNull
   = Vector (-1) (-1)
 
-vecFromPoint :: Point -> Vector
+vecFromPoint :: (Num a) => Point2 a -> Vector2 a
 vecFromPoint (Point x y)
   = Vector x y
 
@@ -369,59 +379,62 @@ fromCVector x y
 {-----------------------------------------------------------------------------------------
   Rectangle
 -----------------------------------------------------------------------------------------}
+--- | Define Point type synonym for backward compatibility.
+type Rect = Rect2D Int
+
 -- | A rectangle is defined by the left x coordinate, the top y coordinate,
 -- the width and the height.
-data Rect   = Rect
-        { rectLeft   :: !Int
-        , rectTop    :: !Int
-        , rectWidth  :: !Int
-        , rectHeight :: !Int
+data (Num a) => Rect2D a = Rect
+        { rectLeft   :: {-# UNPACK #-} !a
+        , rectTop    :: {-# UNPACK #-} !a
+        , rectWidth  :: {-# UNPACK #-} !a
+        , rectHeight :: {-# UNPACK #-} !a
         }
         deriving (Eq,Show,Read,Typeable)
 
 
-rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight :: Rect -> Point
+rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight :: (Num a) => Rect2D a -> Point2 a
 rectTopLeft     (Rect l t w h)  = Point l t
 rectTopRight    (Rect l t w h)  = Point (l+w) t
 rectBottomLeft  (Rect l t w h)  = Point l (t+h)
 rectBottomRight (Rect l t w h)  = Point (l+w) (t+h)
 
-rectBottom, rectRight :: Rect -> Int
+rectBottom, rectRight :: (Num a) => Rect2D a -> a
 rectBottom (Rect x y w h)  = y + h
 rectRight  (Rect x y w h)  = x + w
 
 -- | Create a rectangle at a certain (upper-left) point with a certain size.
-rect :: Point -> Size -> Rect
+rect :: (Num a) => Point2 a -> Size2D a -> Rect2D a
 rect (Point x y) (Size w h)
   = Rect x y w h
 
 -- | Construct a (positive) rectangle between two (arbitrary) points.
-rectBetween :: Point -> Point -> Rect
+rectBetween :: (Num a, Ord a) => Point2 a -> Point2 a -> Rect2D a
 rectBetween (Point x0 y0) (Point x1 y1)
   = Rect (min x0 x1) (min y0 y1) (abs (x1-x0)) (abs (y1-y0))
 
 -- | An empty rectangle at (0,0).
-rectZero :: Rect
+rectZero :: (Num a) => Rect2D a
 rectZero
   = Rect 0 0 0 0
 
 -- | An `null' rectangle is not a valid rectangle (@Rect -1 -1 -1 -1@) but can
 -- used for some wxWindows functions to select a default rectangle. (i.e. 'frameCreate').
-rectNull :: Rect
+rectNull :: (Num a) => Rect2D a
 rectNull
   = Rect (-1) (-1) (-1) (-1)
 
 -- | Get the size of a rectangle.
-rectSize :: Rect -> Size
+rectSize :: (Num a) => Rect2D a -> Size2D a
 rectSize (Rect l t w h)
   = Size w h
 
 -- | Create a rectangle of a certain size with the upper-left corner at ('pt' 0 0).
-rectFromSize :: Size -> Rect
+rectFromSize :: (Num a) => Size2D a -> Rect2D a
 rectFromSize (Size w h)
   = Rect 0 0 w h
 
-rectIsEmpty :: Rect -> Bool
+rectIsEmpty :: (Num a) => Rect2D a -> Bool
 rectIsEmpty (Rect l t w h)
   = (w==0 && h==0)
 

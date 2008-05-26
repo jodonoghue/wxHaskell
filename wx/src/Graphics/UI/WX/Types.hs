@@ -68,22 +68,24 @@ module Graphics.UI.WX.Types
     -- * Geometrical types
 
     -- ** Points
-    , Point(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
+    , Point, Point2(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
     , pointMove, pointMoveBySize, pointAdd, pointSub, pointScale
 
     -- ** Sizes
-    , Size(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
+    , Size, Size2D(Size,sizeW,sizeH), sz, sizeFromPoint, sizeFromVec, sizeZero, sizeNull, sizeEncloses
     , sizeMin, sizeMax
 
     -- ** Vectors
-    , Vector(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
+    , Vector, Vector2(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
     , vecNegate, vecOrtogonal, vecAdd, vecSub, vecScale, vecBetween, vecLength
+    , vecLengthDouble
 
     -- ** Rectangles
-    , Rect(Rect,rectLeft,rectTop,rectWidth,rectHeight)
+    , Rect, Rect2D(Rect,rectLeft,rectTop,rectWidth,rectHeight)
     , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
     , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
     , rectContains, rectMoveTo, rectFromPoint, rectCentralPoint, rectCentralRect, rectStretchTo
+    , rectCentralPointDouble, rectCentralRectDouble
     , rectMove, rectOverlaps, rectsDiff, rectUnion, rectOverlap, rectUnions
 
     -- * IO Control
