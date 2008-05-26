@@ -123,10 +123,10 @@ import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 {- note: this is just for instances for the WX library and not necessary for WXCore -}
 import Data.Dynamic
 
+import Debug.Trace (putTraceMsg)
+
 import Graphics.UI.WXCore.WxcObject
 import Graphics.UI.WXCore.WxcClassTypes
-
-import System.IO(stderr, hPutStrLn)
 
 {-----------------------------------------------------------------------------------------
     Objects
@@ -690,7 +690,7 @@ withCharResult :: (Num a, Integral a) => IO a -> IO Char
 withCharResult io
   = do x <- io
        if (x < 0)
-          then do hPutStrLn stderr ("Recieved negative unicode: " ++ (show x))
+          then do putTraceMsg ("Recieved negative unicode: " ++ (show x))
                   return '\n'
           else return (fromCWchar x)
 
@@ -700,6 +700,11 @@ reported here
 http://sourceforge.net/mailarchive/message.php?msg_id=54647.129.16.31.149.1111686341.squirrel%40webmail.chalmers.se
 and here
 http://www.mail-archive.com/wxhaskell-users@lists.sourceforge.net/msg00267.html
+
+Windows GUI-only programs have no stdin, stdout or stderr. So we use Debug.Trace.putTraceMsg
+for reporting message.
+http://www.haskell.org/ghc/docs/6.8.2/html/users_guide/terminal-interaction.html
+http://www.haskell.org/ghc/docs/6.8.2/html/libraries/base/Debug-Trace.html#v%3AputTraceMsg
 -}
 
 
