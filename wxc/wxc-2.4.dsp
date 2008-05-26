@@ -116,6 +116,10 @@ SOURCE=.\include\glcanvas.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\graphicscontext.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\managed.h
 # End Source File
 # Begin Source File
@@ -197,6 +201,10 @@ SOURCE=.\src\extra.cpp
 # Begin Source File
 
 SOURCE=.\src\glcanvas.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\graphicscontext.cpp
 # End Source File
 # Begin Source File
 

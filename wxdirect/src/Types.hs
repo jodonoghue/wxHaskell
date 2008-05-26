@@ -114,5 +114,5 @@ data Type = Int CBaseType
           deriving (Eq,Show)
 
 
-data CBaseType  = CVoid | CInt | CLong | CChar | TimeT | SizeT | CObject
+data CBaseType  = CVoid | CInt | CLong | CDouble | CChar | TimeT | SizeT | CObject
                 deriving (Eq,Show)

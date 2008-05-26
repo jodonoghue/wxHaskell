@@ -142,4 +142,14 @@
 #define TRectLong(x,y,w,h)    long x,  long y,  long w,  long h
 #define TRectOutLong(x,y,w,h) long* x, long* y, long* w, long* h
 
+/* Define "Double" variants for long declared signatures. */
+#define TPointDouble(x,y)       double x,  double y
+#define TPointOutDouble(x,y)    double* x, double* y
+#define TVectorDouble(w,h)      double x,  double y
+#define TVectorOutDouble(w,h)   double* x, double* y
+#define TRectDouble(x,y,w,h)    double x,  double y,  double w,  double h
+#define TRectOutDouble(x,y,w,h) double* x, double* y, double* w, double* h
+#define TSizeDouble(w,h)        double x,  double y
+#define TSizeOutDouble(w,h)     double* x, double* y
+
 #endif /* WXC_TYPES_H */

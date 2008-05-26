@@ -146,7 +146,7 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db dragimage glcanvas sound managed	\
+	treectrl image apppath db dragimage glcanvas graphicscontext sound managed \
 	mediactrl printout previewframe taskbaricon textstream stc
 
 WXC-EWXW= \
@@ -178,6 +178,7 @@ WXC-SPECS-EIFFEL = \
 WXC-SPECS-HEADER = \
 	wxc/include/wxc.h \
 	wxc/include/db.h wxc/include/glcanvas.h \
+	wxc/include/graphicscontext.h \
 	wxc/include/sound.h wxc/include/managed.h \
 	wxc/include/printout.h wxc/include/previewframe.h \
 	wxc/include/textstream.h \

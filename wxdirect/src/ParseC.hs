@@ -216,12 +216,18 @@ pargType2
   =   do reserved "TPoint";  return (Point CInt)
   <|> do reserved "TSize";   return (Size CInt)
   <|> do reserved "TVector"; return (Vector CInt)
+  <|> do reserved "TPointDouble"; return (Point CDouble)
   <|> do reserved "TPointLong"; return (Point CLong)
+  <|> do reserved "TSizeDouble";   return (Size CDouble)
+  <|> do reserved "TVectorDouble"; return (Vector CDouble)
   <|> do reserved "TPointOut";  return (PointOut CInt)
   <|> do reserved "TSizeOut";   return (SizeOut CInt)
   <|> do reserved "TVectorOut"; return (VectorOut CInt)
+  <|> do reserved "TPointOutDouble";  return (PointOut CDouble)
   <|> do reserved "TPointOutVoid";  return (PointOut CVoid)
+  <|> do reserved "TSizeOutDouble";   return (SizeOut CDouble)
   <|> do reserved "TSizeOutVoid";   return (SizeOut CVoid)
+  <|> do reserved "TVectorOutDouble"; return (VectorOut CDouble)
   <|> do reserved "TVectorOutVoid"; return (VectorOut CVoid)
   <|> do reserved "TArrayString"; return (ArrayString CChar)
   <|> do reserved "TArrayInt"; return (ArrayInt CInt)
@@ -231,7 +237,9 @@ pargType3
 
 pargType4
   =   do reserved "TRect"; return (Rect CInt)
+  <|> do reserved "TRectDouble"; return (Rect CDouble)
   <|> do reserved "TRectOut"; return (RectOut CInt)
+  <|> do reserved "TRectOutDouble"; return (RectOut CDouble)
   <|> do reserved "TRectOutVoid"; return (RectOut CVoid)
 
 
@@ -257,7 +265,8 @@ lexer
                       ,"TPointOut","TSizeOut","TVectorOut","TRectOut"
                       ,"TPointOutVoid","TSizeOutVoid","TVectorOutVoid","TRectOutVoid"
                       ,"TClosureFun"
-                      ,"TPointLong"
+                      ,"TPointDouble", "TPointLong", "TSizeDouble", "TVectorDouble", "TRectDouble"
+                      ,"TPointOutDouble", "TSizeOutDouble", "TVectorOutDouble", "TRectOutDouble"
                       ,"TArrayLen","TArrayStringOut","TArrayStringOutVoid","TArrayObjectOut","TArrayObjectOutVoid"
                       ,"TColorRGB"
                       ,"EXPORT"

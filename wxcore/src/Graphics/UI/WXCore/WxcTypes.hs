@@ -51,8 +51,11 @@ module Graphics.UI.WXCore.WxcTypes(
             -- * Marshalling
             -- ** Basic types
             , withPointResult, toCIntPointX, toCIntPointY, fromCPoint, withCPoint
+            , withPointDoubleResult, withCPointDouble
             , withSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
+            , withSizeDoubleResult, withCSizeDouble
             , withVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
+            , withVectorDoubleResult, withCVectorDouble
             , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
             , withRectDoubleResult, withCRectDouble
             , withArrayString, withArrayWString, withArrayInt, withArrayObject
@@ -248,6 +251,19 @@ fromCPoint :: CInt -> CInt -> Point2 Int
 fromCPoint x y
   = Point (fromCInt x) (fromCInt y)
 
+withCPointDouble :: Point2 Double -> (Double -> Double -> IO a) -> IO a
+withCPointDouble (Point x y) f
+  = f x y
+
+withPointDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Point2 Double)
+withPointDoubleResult f
+  = alloca $ \px ->
+    alloca $ \py ->
+    do f px py
+       x <- peek px
+       y <- peek py
+       return (Point x y)
+
 
 {-----------------------------------------------------------------------------------------
   Size
@@ -312,6 +328,19 @@ toCIntSizeW, toCIntSizeH :: Size -> CInt
 toCIntSizeW (Size w h)  = toCInt w
 toCIntSizeH (Size w h)  = toCInt h
 
+withCSizeDouble :: Size2D Double -> (Double -> Double -> IO a) -> IO a
+withCSizeDouble (Size x y) f
+  = f x y
+
+withSizeDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Size2D Double)
+withSizeDoubleResult f
+  = alloca $ \px ->
+    alloca $ \py ->
+    do f px py
+       x <- peek px
+       y <- peek py
+       return (Size x y)
+
 {-----------------------------------------------------------------------------------------
   Vector
 -----------------------------------------------------------------------------------------}
@@ -374,6 +403,19 @@ toCIntVectorY (Vector x y)  = toCInt y
 fromCVector :: CInt -> CInt -> Vector
 fromCVector x y
   = Vector (fromCInt x) (fromCInt y)
+
+withCVectorDouble :: Vector2 Double -> (Double -> Double -> IO a) -> IO a
+withCVectorDouble (Vector x y) f
+  = f x y
+
+withVectorDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Vector2 Double)
+withVectorDoubleResult f
+  = alloca $ \px ->
+    alloca $ \py ->
+    do f px py
+       x <- peek px
+       y <- peek py
+       return (Vector x y)
 
 
 {-----------------------------------------------------------------------------------------
@@ -467,6 +509,23 @@ toCIntRectX (Rect x y w h)  = toCInt x
 toCIntRectY (Rect x y w h)  = toCInt y
 toCIntRectW (Rect x y w h)  = toCInt w
 toCIntRectH (Rect x y w h)  = toCInt h
+
+withCRectDouble :: Rect2D Double -> (Double -> Double -> Double -> Double -> IO a) -> IO a
+withCRectDouble (Rect x0 y0 x1 y1) f
+  = f x0 y0 x1 y1
+
+withRectDoubleResult :: (Ptr Double -> Ptr Double -> Ptr Double -> Ptr Double -> IO ()) -> IO (Rect2D Double)
+withRectDoubleResult f
+  = alloca $ \cx ->
+    alloca $ \cy ->
+    alloca $ \cw ->
+    alloca $ \ch ->
+    do f cx cy cw ch
+       x <- peek cx
+       y <- peek cy
+       w <- peek cw
+       h <- peek ch
+       return (Rect x y w h)
 
 {-----------------------------------------------------------------------------------------
   CInt

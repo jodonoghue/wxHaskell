@@ -359,9 +359,13 @@ haskellToCResult decl tp call
       -}
       Object obj -> withResult (classInfo obj)  ++ " $" ++ nl ++ call
       String _ -> "withWStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
+      Point CDouble -> "withPointDoubleResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
+      Vector CDouble -> "withVectorDoubleResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
       Vector _ -> "withVectorResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
+      Size CDouble -> "withSizeDoubleResult $ \\pw ph -> " ++ nl ++ call ++ " pw ph"       -- always last argument!
       Size _   -> "withSizeResult $ \\pw ph -> " ++ nl ++ call ++ " pw ph"       -- always last argument!
+      Rect CDouble -> "withRectDoubleResult $ \\px py pw ph -> " ++ nl ++ call ++ "px py pw ph"       -- always last argument!
       Rect _   -> "withRectResult $ \\px py pw ph -> " ++ nl ++ call ++ "px py pw ph"       -- always last argument!
       
       -- RefObject name  -> "withRef" ++ haskellTypeName name ++ " $ \\pref -> " ++ nl ++ call ++ " pref"  -- always last argument!
@@ -435,9 +439,14 @@ haskellToCArg decl arg
       Object obj | obj == "wxTreeItemId" -> haskellCManagedName (argName arg)
       -}
       Object obj -> haskellCObjectName (argName arg)
+      Point CDouble -> pparens ("pointX " ++ name) ++ " " ++ pparens( "pointY " ++ name)
       Point _  -> pparens ("toCIntPointX " ++ name) ++ " " ++ pparens( "toCIntPointY " ++ name)
+      Vector CDouble -> pparens ("vecX " ++ name) ++ " " ++ pparens( "vecY " ++ name)
       Vector _ -> pparens ("toCIntVectorX " ++ name) ++ " " ++ pparens( "toCIntVectorY " ++ name)
+      Size CDouble -> pparens ("sizeW " ++ name) ++ " " ++ pparens( "sizeH " ++ name)
       Size _   -> pparens ("toCIntSizeW " ++ name) ++ " " ++ pparens( "toCIntSizeH " ++ name)
+      Rect CDouble -> pparens ("rectLeft " ++ name) ++ " " ++ pparens( "rectTop " ++ name)
+                   ++ pparens ("rectWidth " ++ name) ++ " " ++ pparens( "rectHeight " ++ name)
       Rect _   -> pparens ("toCIntRectX " ++ name) ++ " " ++ pparens( "toCIntRectY " ++ name)
                   ++ pparens ("toCIntRectW " ++ name) ++ " " ++ pparens( "toCIntRectH " ++ name)
       ColorRGB _ ->    pparens ("toCCharColorRed " ++ name) ++ " " 
@@ -533,14 +542,18 @@ haskellType i tp
       Ptr Void  -> "Ptr " ++ typeVar i
       Ptr t  -> "Ptr " ++ foreignTypePar i t
       -- special
+      Vector CDouble -> "(Vector2 Double)"
       Vector _ -> "Vector"
+      Point CDouble  -> "(Point2 Double)"
       Point _  -> "Point"
+      Size CDouble -> "(Size2D Double)"
       Size _   -> "Size"
       ColorRGB _ -> "Color"
       String _ -> "String"
       ArrayString _ -> "[String]"
       ArrayInt _    -> "[Int]"
       ArrayObject name _ -> "[" ++ haskellTypeName name ++ typeVar i ++ "]"
+      Rect CDouble   -> "(Rect2D Double)"
       Rect _   -> "Rect"
       {-
       RefObject "wxColour"  -> "Color"
@@ -586,10 +599,14 @@ foreignResultType tp
       ArrayString _ -> "Ptr (Ptr CWchar) -> IO CInt"
       ArrayObject name _ -> "Ptr " ++ foreignTypePar 0 (Object name) ++ " -> IO CInt"
       String _ -> "Ptr CWchar -> IO CInt"
+      Point CDouble -> "Ptr Double -> Ptr Double -> IO ()"
       Point _  -> "Ptr CInt -> Ptr CInt -> IO ()"
+      Vector CDouble -> "Ptr Double -> Ptr Double -> IO ()"
       Vector _ -> "Ptr CInt -> Ptr CInt -> IO ()"
+      Size CDouble -> "Ptr Double -> Ptr Double -> IO ()"
       Size _   -> "Ptr CInt -> Ptr CInt -> IO ()"
-      Rect _   -> "Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()"
+      Rect CDouble -> "Ptr Double -> Ptr Double -> Ptr Double -> Ptr Double -> IO ()"
+      Rect _    -> "Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO ()"
       -- RefObject "wxColour"  -> "ColourPtr () -> IO ()"
       RefObject name        -> foreignType 0 tp ++ " -> IO ()"
       EventId -> "IO CInt"
@@ -610,10 +627,14 @@ foreignType i tp
       Ptr t     -> "Ptr " ++ foreignTypePar i t
       -- special
       String _ -> "CWString"
+      Point CDouble  -> "Double -> Double"
       Point _  -> "CInt -> CInt"
+      Vector CDouble  -> "Double -> Double"
       Vector _ -> "CInt -> CInt"
+      Size CDouble  -> "Double -> Double"
       Size _   -> "CInt -> CInt"
       ColorRGB _ -> "CChar -> CChar -> CChar"
+      Rect CDouble -> "Double -> Double -> Double -> Double"
       Rect _   -> "CInt -> CInt -> CInt -> CInt"
       Fun f    -> "Ptr " ++ pparens f
       ArrayObject name _ -> "CInt -> Ptr " ++ foreignTypePar i (Object name)
