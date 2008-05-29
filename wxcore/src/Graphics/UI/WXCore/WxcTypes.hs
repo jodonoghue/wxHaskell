@@ -40,7 +40,7 @@ module Graphics.UI.WXCore.WxcTypes(
             -- ** Vector
             , Vector, Vector2(Vector,vecX,vecY), vector, vec, vecFromPoint, vecFromSize, vecZero, vecNull
 
-            -- * Rectangle
+            -- ** Rectangle
             , Rect, Rect2D(Rect,rectLeft,rectTop,rectWidth,rectHeight)
             , rectTopLeft, rectTopRight, rectBottomLeft, rectBottomRight, rectBottom, rectRight
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
