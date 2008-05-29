@@ -25,7 +25,6 @@ help:
 	@echo " install-files   install, but do not register with the Haskell compiler"
 	@echo ""
 	@echo "distribution:"
-	@echo " before-dist     uninstall wxcore files, and make wxcore again"
 	@echo " fulldist        make a source, documentation, and binary distribution"
 	@echo " srcdist         make a source distribution (as a .zip file)"
 	@echo " docdist         make a documentation and samples zip file"
@@ -335,8 +334,6 @@ BINDIST-OUTDIR  =$(DIST-OUTDIR)/bindist
 BINDIST-LIBDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-DLLDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/lib
 BINDIST-BINDIR  =$(BINDIST-OUTDIR)/$(WXHASKELLVER)/bin
-
-before-dist: wxcore-unregister wxcore-uninstall-files wxcore
 
 # full distribution
 fulldist: dist-dirs all srcdist bindist docdist
