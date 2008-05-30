@@ -51,13 +51,13 @@ module Graphics.UI.WXCore.WxcTypes(
             -- * Marshalling
             -- ** Basic types
             , withPointResult, toCIntPointX, toCIntPointY, fromCPoint, withCPoint
-            , withPointDoubleResult, withCPointDouble
+            , withPointDoubleResult, toCDoublePointX, toCDoublePointY, fromCPointDouble, withCPointDouble
             , withSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
-            , withSizeDoubleResult, withCSizeDouble
+            , withSizeDoubleResult, toCDoubleSizeW, toCDoubleSizeH, fromCSizeDouble, withCSizeDouble
             , withVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
-            , withVectorDoubleResult, withCVectorDouble
+            , withVectorDoubleResult, toCDoubleVectorX, toCDoubleVectorY, fromCVectorDouble, withCVectorDouble
             , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
-            , withRectDoubleResult, withCRectDouble
+            , withRectDoubleResult, toCDoubleRectX, toCDoubleRectY, toCDoubleRectW, toCDoubleRectH, fromCRectDouble, withCRectDouble
             , withArrayString, withArrayWString, withArrayInt, withArrayObject
             , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
 
@@ -95,6 +95,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , CWString, withCWString, withWStringResult
             -- *** CInt
             , CInt, toCInt, fromCInt, withIntResult
+            -- *** CDouble
+            , CDouble, toCDouble, fromCDouble, withDoubleResult
             -- *** CChar
             , CChar, toCChar, fromCChar, withCharResult
             , CWchar, toCWchar
@@ -251,18 +253,26 @@ fromCPoint :: CInt -> CInt -> Point2 Int
 fromCPoint x y
   = Point (fromCInt x) (fromCInt y)
 
-withCPointDouble :: Point2 Double -> (Double -> Double -> IO a) -> IO a
+withCPointDouble :: Point2 Double -> (CDouble -> CDouble -> IO a) -> IO a
 withCPointDouble (Point x y) f
-  = f x y
+  = f (toCDouble x) (toCDouble y)
 
-withPointDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Point2 Double)
+withPointDoubleResult :: (Ptr CDouble -> Ptr CDouble -> IO ()) -> IO (Point2 Double)
 withPointDoubleResult f
   = alloca $ \px ->
     alloca $ \py ->
     do f px py
        x <- peek px
        y <- peek py
-       return (Point x y)
+       return (fromCPointDouble x y)
+
+toCDoublePointX, toCDoublePointY :: Point2 Double -> CDouble
+toCDoublePointX (Point x y)  = toCDouble x
+toCDoublePointY (Point x y)  = toCDouble y
+
+fromCPointDouble :: CDouble -> CDouble -> Point2 Double
+fromCPointDouble x y
+  = Point (fromCDouble x) (fromCDouble y)
 
 
 {-----------------------------------------------------------------------------------------
@@ -328,18 +338,26 @@ toCIntSizeW, toCIntSizeH :: Size -> CInt
 toCIntSizeW (Size w h)  = toCInt w
 toCIntSizeH (Size w h)  = toCInt h
 
-withCSizeDouble :: Size2D Double -> (Double -> Double -> IO a) -> IO a
-withCSizeDouble (Size x y) f
-  = f x y
+withCSizeDouble :: Size2D Double -> (CDouble -> CDouble -> IO a) -> IO a
+withCSizeDouble (Size w h) f
+  = f (toCDouble w) (toCDouble h)
 
-withSizeDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Size2D Double)
+withSizeDoubleResult :: (Ptr CDouble -> Ptr CDouble -> IO ()) -> IO (Size2D Double)
 withSizeDoubleResult f
-  = alloca $ \px ->
-    alloca $ \py ->
-    do f px py
-       x <- peek px
-       y <- peek py
-       return (Size x y)
+  = alloca $ \cw ->
+    alloca $ \ch ->
+    do f cw ch
+       w <- peek cw
+       h <- peek ch
+       return (fromCSizeDouble w h)
+
+fromCSizeDouble :: CDouble -> CDouble -> Size2D Double
+fromCSizeDouble w h
+  = Size (fromCDouble w) (fromCDouble h)
+
+toCDoubleSizeW, toCDoubleSizeH :: Size2D Double -> CDouble
+toCDoubleSizeW (Size w h)  = toCDouble w
+toCDoubleSizeH (Size w h)  = toCDouble h
 
 {-----------------------------------------------------------------------------------------
   Vector
@@ -404,18 +422,26 @@ fromCVector :: CInt -> CInt -> Vector
 fromCVector x y
   = Vector (fromCInt x) (fromCInt y)
 
-withCVectorDouble :: Vector2 Double -> (Double -> Double -> IO a) -> IO a
+withCVectorDouble :: Vector2 Double -> (CDouble -> CDouble -> IO a) -> IO a
 withCVectorDouble (Vector x y) f
-  = f x y
+  = f (toCDouble x) (toCDouble y)
 
-withVectorDoubleResult :: (Ptr Double -> Ptr Double -> IO ()) -> IO (Vector2 Double)
+withVectorDoubleResult :: (Ptr CDouble -> Ptr CDouble -> IO ()) -> IO (Vector2 Double)
 withVectorDoubleResult f
   = alloca $ \px ->
     alloca $ \py ->
     do f px py
        x <- peek px
        y <- peek py
-       return (Vector x y)
+       return (fromCVectorDouble x y)
+
+toCDoubleVectorX, toCDoubleVectorY :: Vector2 Double -> CDouble
+toCDoubleVectorX (Vector x y)  = toCDouble x
+toCDoubleVectorY (Vector x y)  = toCDouble y
+
+fromCVectorDouble :: CDouble -> CDouble -> Vector2 Double
+fromCVectorDouble x y
+  = Vector (fromCDouble x) (fromCDouble y)
 
 
 {-----------------------------------------------------------------------------------------
@@ -510,11 +536,11 @@ toCIntRectY (Rect x y w h)  = toCInt y
 toCIntRectW (Rect x y w h)  = toCInt w
 toCIntRectH (Rect x y w h)  = toCInt h
 
-withCRectDouble :: Rect2D Double -> (Double -> Double -> Double -> Double -> IO a) -> IO a
+withCRectDouble :: Rect2D Double -> (CDouble -> CDouble -> CDouble -> CDouble -> IO a) -> IO a
 withCRectDouble (Rect x0 y0 x1 y1) f
-  = f x0 y0 x1 y1
+  = f (toCDouble (x0)) (toCDouble (y0)) (toCDouble (x1)) (toCDouble (y1))
 
-withRectDoubleResult :: (Ptr Double -> Ptr Double -> Ptr Double -> Ptr Double -> IO ()) -> IO (Rect2D Double)
+withRectDoubleResult :: (Ptr CDouble -> Ptr CDouble -> Ptr CDouble -> Ptr CDouble -> IO ()) -> IO (Rect2D Double)
 withRectDoubleResult f
   = alloca $ \cx ->
     alloca $ \cy ->
@@ -525,7 +551,17 @@ withRectDoubleResult f
        y <- peek cy
        w <- peek cw
        h <- peek ch
-       return (Rect x y w h)
+       return (fromCRectDouble x y w h)
+
+fromCRectDouble :: CDouble -> CDouble -> CDouble -> CDouble -> Rect2D Double
+fromCRectDouble x y w h
+  = Rect (fromCDouble x) (fromCDouble y) (fromCDouble w) (fromCDouble h)
+
+toCDoubleRectX, toCDoubleRectY, toCDoubleRectW, toCDoubleRectH :: Rect2D Double -> CDouble
+toCDoubleRectX (Rect x y w h)  = toCDouble x
+toCDoubleRectY (Rect x y w h)  = toCDouble y
+toCDoubleRectW (Rect x y w h)  = toCDouble w
+toCDoubleRectH (Rect x y w h)  = toCDouble h
 
 {-----------------------------------------------------------------------------------------
   CInt
@@ -541,6 +577,21 @@ toCInt i = fromIntegral i
 fromCInt :: CInt -> Int
 fromCInt ci
   = fromIntegral ci
+
+{-----------------------------------------------------------------------------------------
+  CDouble
+-----------------------------------------------------------------------------------------}
+withDoubleResult :: IO CDouble -> IO Double
+withDoubleResult io
+  = do x <- io
+       return (fromCDouble x)
+
+toCDouble :: Double -> CDouble
+toCDouble d = realToFrac d
+
+fromCDouble :: CDouble -> Double
+fromCDouble cd
+  = realToFrac cd
 
 {-----------------------------------------------------------------------------------------
   CBool
