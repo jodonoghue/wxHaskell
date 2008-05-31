@@ -357,6 +357,8 @@ process_args ()
       -libexecdir=*|--libexecdir=*) ;; # just for cabal
       -shared-prefix=*|--shared-prefix=*)
 	  sharedprefix="$arg";;
+      -enable-optimization|--enable-optimization)
+	  enableoptimization="yes";;
       -enable-split-objs|--enable-split-objs)
 	  enablesplitobjs="yes";;
       -enable-strip|--enable-strip)
@@ -817,6 +819,10 @@ else
  if test "$enablestrip" = "yes"; then
    runcompress="echo strip \$(1); strip \$(1)"
  fi
+fi
+
+if test "$enableoptimization" = "yes"; then
+  hcflags="$hcflags -O2"
 fi
 
 if test "$enablesplitobjs" = "yes"; then
