@@ -17,7 +17,7 @@ CD >> bin\setcd.bat
 CD bin
 CALL setcd.bat
 DEL setcd.bat
-SET installdir=%CURDIR%
+SET installdir=%CURDIR: =^ %
 GOTO check
 
 :check
@@ -26,12 +26,12 @@ GOTO checkfile
 
 :generate
 IF NOT EXIST %installdir%\bin\wx-partial.pkg GOTO notfound
-COPY /Y %installdir%\bin\wx-partial.pkg %installdir%\bin\wx.pkg
-ECHO import-dirs:%installdir%\lib\imports >> %installdir%\bin\wx.pkg
-ECHO library-dirs:%installdir%\lib        >> %installdir%\bin\wx.pkg
-COPY /Y %installdir%\bin\wxcore-partial.pkg %installdir%\bin\wxcore.pkg
-ECHO import-dirs:%installdir%\lib\imports >> %installdir%\bin\wxcore.pkg
-ECHO library-dirs:%installdir%\lib        >> %installdir%\bin\wxcore.pkg
+COPY /Y "%installdir%\bin\wx-partial.pkg" "%installdir%\bin\wx.pkg"
+ECHO import-dirs:%installdir%\lib\imports >> "%installdir%\bin\wx.pkg"
+ECHO library-dirs:%installdir%\lib        >> "%installdir%\bin\wx.pkg"
+COPY /Y "%installdir%\bin\wxcore-partial.pkg" "%installdir%\bin\wxcore.pkg"
+ECHO import-dirs:%installdir%\lib\imports >> "%installdir%\bin\wxcore.pkg"
+ECHO library-dirs:%installdir%\lib        >> "%installdir%\bin\wxcore.pkg"
 GOTO checkfile
 
 :checkfile
@@ -48,12 +48,12 @@ IF ERRORLEVEL 1 GOTO regerror
 ECHO.
 IF "%OS%"=="Windows_NT" GOTO copyNT
 ECHO - copy %wxclibname%.dll to the windows system directory (%WINDIR%\system)
-COPY %installdir%\lib\%wxclibname%.dll %WINDIR%\system\%wxclibname%.dll
+COPY "%installdir%\lib\%wxclibname%.dll" %WINDIR%\system\%wxclibname%.dll
 GOTO checkcopy
 
 :copyNT
 ECHO - copy %wxclibname%.dll to the windows system directory (%WINDIR%\system32)
-COPY %installdir%\lib\%wxclibname%.dll %WINDIR%\system32\%wxclibname%.dll
+COPY "%installdir%\lib\%wxclibname%.dll" %WINDIR%\system32\%wxclibname%.dll
 
 :checkcopy
 IF ERRORLEVEL 1 GOTO copyerror
