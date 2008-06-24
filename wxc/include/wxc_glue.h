@@ -842,6 +842,11 @@ int        PopProvider(  );
 void       PushProvider( TClass(wxArtProvider) provider );
 TBool      RemoveProvider( TClass(wxArtProvider) provider );
 
+/* wxAutoBufferedPaintDC */
+TClassDefExtend(wxAutoBufferedPaintDC,wxDC)
+TClass(wxAutoBufferedPaintDC) wxAutoBufferedPaintDC_Create( TClass(wxWindow) window );
+void       wxAutoBufferedPaintDC_Delete( TSelf(wxAutoBufferedPaintDC) self );
+
 /* wxAutomationObject */
 TClassDefExtend(wxAutomationObject,wxObject)
 
@@ -927,6 +932,18 @@ void       wxBrush_SetStyle( TSelf(wxBrush) _obj, int style );
 
 /* wxBrushList */
 TClassDefExtend(wxBrushList,wxList)
+
+/* wxBufferedDC */
+TClassDefExtend(wxBufferedDC,wxDC)
+TClass(wxBufferedDC) wxBufferedDC_CreateByDCAndSize( TClass(wxDC) dc, TSize(width, hight), int style );
+TClass(wxBufferedDC) wxBufferedDC_CreateByDCAndBitmap( TClass(wxDC) dc, TClass(wxBitmap) bitmap, int style );
+void       wxBufferedDC_Delete( TSelf(wxBufferedDC) self );
+
+/* wxBufferedPaintDC */
+TClassDefExtend(wxBufferedPaintDC,wxDC)
+TClass(wxBufferedPaintDC) wxBufferedPaintDC_Create( TClass(wxWindow) window, int style );
+TClass(wxBufferedPaintDC) wxBufferedPaintDC_CreateWithBitmap( TClass(wxWindow) window, TClass(wxBitmap) bitmap, int style );
+void       wxBufferedPaintDC_Delete( TSelf(wxBufferedPaintDC) self );
 
 /* wxBufferedInputStream */
 TClassDefExtend(wxBufferedInputStream,wxFilterInputStream)
@@ -1363,7 +1380,8 @@ TBoolInt   wxDC_GetPixel( TSelf(wxDC) _obj, TPoint(x,y), TClass(wxColour) col );
 void       wxDC_GetSize( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetSizeMM( TSelf(wxDC) _obj, TSizeOutVoid(_w,_h) );
 void       wxDC_GetTextBackground( TSelf(wxDC) _obj, TClassRef(wxColour) _ref );
-void       wxDC_GetTextExtent( TSelf(wxDC) _obj, TStringVoid string, void* x, void* y, void* descent, void* externalLeading, TClass(wxFont) theFont );
+void       wxDC_GetTextExtent( TSelf(wxDC) self, TStringVoid string, void* w, void* h, void* descent, void* externalLeading, TClass(wxFont) theFont );
+void       wxDC_GetMultiLineTextExtent( TSelf(wxDC) self, TStringVoid string, void* w, void* h, void* heightLine, TClass(wxFont) theFont );
 void       wxDC_GetTextForeground( TSelf(wxDC) _obj, TClassRef(wxColour) _ref );
 void       wxDC_GetUserScale( TSelf(wxDC) _obj, void* x, void* y );
 int        wxDC_LogicalToDeviceX( TSelf(wxDC) _obj, int x );
@@ -3009,6 +3027,7 @@ TClassDefExtend(wxMaximizeEvent,wxEvent)
 TClassDefExtend(wxMemoryDC,wxDC)
 TClass(wxMemoryDC) wxMemoryDC_Create(  );
 TClass(wxMemoryDC) wxMemoryDC_CreateCompatible( TClass(wxDC) dc );
+TClass(wxMemoryDC) wxMemoryDC_CreateWithBitmap( TClass(wxBitmap) bitmap );
 void       wxMemoryDC_Delete( TSelf(wxMemoryDC) _obj );
 void       wxMemoryDC_SelectObject( TSelf(wxMemoryDC) _obj, TClass(wxBitmap) bitmap );
 
@@ -3157,6 +3176,11 @@ int        wxMimeTypesManager_ReadMimeTypes( TSelf(wxMimeTypesManager) _obj, voi
 /* wxMiniFrame */
 TClassDefExtend(wxMiniFrame,wxFrame)
 TClass(wxMiniFrame) wxMiniFrame_Create( TClass(wxWindow) _prt, int _id, TStringVoid _txt, TRect(_lft,_top,_wdt,_hgt), int _stl );
+
+/* wxMirrorDC */
+TClassDefExtend(wxMirrorDC,wxDC)
+TClass(wxMirrorDC) wxMirrorDC_Create( TClass(wxDC) dc );
+void       wxMirrorDC_Delete( TSelf(wxMemoryDC) _obj );
 
 /* wxModule */
 TClassDefExtend(wxModule,wxObject)
@@ -3512,6 +3536,10 @@ TClassDefExtend(wxPopupWindow,wxWindow)
 
 /* wxPostScriptDC */
 TClassDefExtend(wxPostScriptDC,wxDC)
+TClass(wxPostScriptDC) wxPostScriptDC_Create( TClass(wxPrintData) data );
+void       wxPostScriptDC_Delete( TSelf(wxPostScriptDC) self );
+void       wxPostScriptDC_SetResolution( TSelf(wxPostScriptDC) self, int ppi );
+int        wxPostScriptDC_GetResolution( TSelf(wxPostScriptDC) self );
 
 /* wxPreviewCanvas */
 TClassDefExtend(wxPreviewCanvas,wxScrolledWindow)
@@ -3659,6 +3687,9 @@ TBoolInt   wxPrinter_Setup( TSelf(wxPrinter) _obj, TClass(wxWindow) parent );
 
 /* wxPrinterDC */
 TClassDefExtend(wxPrinterDC,wxDC)
+TClass(wxPrinterDC) wxPrinterDC_Create( TClass(wxPrintData) data );
+void       wxPrinterDC_Delete( TSelf(wxPrinterDC) self );
+void       wxPrinterDC_GetPaperRect( TSelf(wxPrinterDC) self, TRectOut(_x,_y,_w,_h) );
 
 /* wxPrintout */
 TClassDefExtend(wxPrintout,wxObject)
@@ -3867,9 +3898,9 @@ TClassDef(wxScopedPtr)
 TClassDefExtend(wxScreenDC,wxDC)
 TClass(wxScreenDC) wxScreenDC_Create(  );
 void       wxScreenDC_Delete( TSelf(wxScreenDC) _obj );
-int        wxScreenDC_EndDrawingOnTop( TSelf(wxScreenDC) _obj );
-int        wxScreenDC_StartDrawingOnTop( TSelf(wxScreenDC) _obj, int l, int t, TSize(w,h) );
-int        wxScreenDC_StartDrawingOnTopOfWin( TSelf(wxScreenDC) _obj, TClass(wxWindow) win );
+TBool      wxScreenDC_EndDrawingOnTop( TSelf(wxScreenDC) _obj );
+TBool      wxScreenDC_StartDrawingOnTop( TSelf(wxScreenDC) _obj, TRect(x,y,w,h) );
+TBool      wxScreenDC_StartDrawingOnTopOfWin( TSelf(wxScreenDC) _obj, TClass(wxWindow) win );
 
 /* wxScrollBar */
 TClassDefExtend(wxScrollBar,wxControl)

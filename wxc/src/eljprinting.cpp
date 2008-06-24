@@ -1,11 +1,20 @@
 #include "wrapper.h"
 
+#if !defined(__WXGTK__)
+# include <wx/dcprint.h>
+#endif
+
 #if defined(wxUSE_POSTSCRIPT) && (wxUSE_POSTSCRIPT==0)
 # undef wxUSE_POSTSCRIPT
 #endif
 
 #ifdef wxUSE_POSTSCRIPT
-#include "wx/generic/prntdlgg.h"
+# include <wx/dcps.h>
+# include "wx/generic/prntdlgg.h"
+#endif
+
+#ifndef wxUSE_POSTSCRIPT
+# define wxPostScriptDC        void
 #endif
 
 extern "C"
@@ -817,4 +826,63 @@ EWXWEXPORT(void, wxPrintDialogData_AssignData)(void* _obj, void* data)
 	*((wxPrintDialogData*)_obj) = *((wxPrintData*)data);
 }
 	
+EWXWEXPORT(wxPostScriptDC*, wxPostScriptDC_Create) (const wxPrintData* printData)
+{
+#ifdef wxUSE_POSTSCRIPT
+	return new wxPostScriptDC(*printData);
+#else
+	return NULL;
+#endif
+}
+
+EWXWEXPORT(void, wxPostScriptDC_Delete) (wxPostScriptDC* self)
+{
+#ifdef wxUSE_POSTSCRIPT
+	if (self) delete self;
+#endif
+}
+
+EWXWEXPORT(void, wxPostScriptDC_SetResolution)(wxPostScriptDC* self, int ppi )
+{
+#ifdef wxUSE_POSTSCRIPT
+	self->SetResolution(ppi);
+#endif
+}
+
+EWXWEXPORT(int, wxPostScriptDC_GetResolution)(wxPostScriptDC* self, int ppi )
+{
+#ifdef wxUSE_POSTSCRIPT
+	return self->GetResolution();
+#else
+	return 0;
+#endif
+}
+
+EWXWEXPORT(void*,wxPrinterDC_Create)(const wxPrintData* printData)
+{
+#if defined(__WXGTK__) 
+	return NULL;
+#else
+	return new wxPrinterDC(*printData);
+#endif
+}
+
+EWXWEXPORT(void, wxPrinterDC_Delete) (void* _obj)
+{
+#if !defined(__WXGTK__)
+	delete (wxPrinterDC*)_obj;
+#endif
+}
+
+EWXWEXPORT(void, wxPrinterDC_GetPaperRect) (void* _obj, int* x, int* y, int* w, int* h)
+{
+#if !defined(__WXGTK__)
+	wxRect rct = ((wxPrinterDC*)_obj)->GetPaperRect();
+	*x = rct.x;
+	*y = rct.y;
+	*w = rct.width;
+	*h = rct.height;
+#endif
+}
+
 }

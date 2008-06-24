@@ -1,5 +1,7 @@
 #include "wrapper.h"
-#include "wx/metafile.h"
+#include <wx/metafile.h>
+#include <wx/dcmirror.h>
+#include <wx/dcbuffer.h>
 
 extern "C"
 {
@@ -224,11 +226,16 @@ EWXWEXPORT(int, wxDC_GetCharWidth)(void* _obj)
 	return (int)((wxDC*)_obj)->GetCharWidth();
 }
 	
-EWXWEXPORT(void, wxDC_GetTextExtent)(void* _obj, void* string, void* x, void* y, void* descent, void* externalLeading, void* theFont)
+EWXWEXPORT(void, wxDC_GetTextExtent)(wxDC* self, wxChar* string, void* w, void* h, void* descent, void* externalLeading, void* theFont)
 {
-	((wxDC*)_obj)->GetTextExtent((wxChar*)string, (wxCoord*)x, (wxCoord*)y, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
+	self->GetTextExtent(string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
 }
 	
+EWXWEXPORT(void, wxDC_GetMultiLineTextExtent)(wxDC* self, wxChar* string, void* w, void* h, void* heightLine, void* theFont)
+{
+	self->GetMultiLineTextExtent(string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)heightLine, (wxFont*)theFont);
+}
+
 EWXWEXPORT(void, wxDC_GetSize)(void* _obj, void* width, void* height)
 {
 	((wxDC*)_obj)->GetSize((int*)width, (int*)height);
@@ -486,6 +493,11 @@ EWXWEXPORT(void*, wxMemoryDC_CreateCompatible) (void* dc)
 	return (void*) new wxMemoryDC((wxDC*) dc);
 }
 
+EWXWEXPORT(wxMemoryDC*, wxMemoryDC_CreateWithBitmap) (wxBitmap* bitmap)
+{
+	return new wxMemoryDC(*bitmap);
+}
+
 EWXWEXPORT(void, wxMemoryDC_Delete) (void* _obj)
 {
 	delete (wxMemoryDC*)_obj;
@@ -495,7 +507,17 @@ EWXWEXPORT(void, wxMemoryDC_SelectObject)(void* _obj, void* bitmap)
 {
 	((wxMemoryDC*)_obj)->SelectObject(*((wxBitmap*)bitmap));
 }
-	
+
+EWXWEXPORT(wxMirrorDC*, wxMirrorDC_Create) (wxDC* dc, bool mirror)
+{
+	return new wxMirrorDC(*dc, mirror);
+}
+
+EWXWEXPORT(void, wxMirrorDC_Delete) (wxMirrorDC* self)
+{
+	if (self) delete self;
+}
+
 EWXWEXPORT(void*, wxScreenDC_Create) ()
 {
 	return (void*) new wxScreenDC();
@@ -521,7 +543,47 @@ EWXWEXPORT(int, wxScreenDC_EndDrawingOnTop)(void* _obj)
 {
 	return (int)((wxScreenDC*)_obj)->EndDrawingOnTop();
 }
-	
+
+EWXWEXPORT(wxBufferedDC*, wxBufferedDC_CreateByDCAndSize) ( wxDC *dc, int width, int hight, int style )
+{
+	return new wxBufferedDC(dc, wxSize(width, hight), style);
+}
+
+EWXWEXPORT(wxBufferedDC*, wxBufferedDC_CreateByDCAndBitmap) ( wxDC *dc, wxBitmap* buffer, int style )
+{
+	return new wxBufferedDC(dc, *buffer, style);
+}
+
+EWXWEXPORT(void, wxBufferedDC_Delete) (wxBufferedDC* self)
+{
+	if (self) delete self;
+}
+
+EWXWEXPORT(wxBufferedPaintDC*, wxBufferedPaintDC_Create) ( wxWindow *window, int style )
+{
+	return new wxBufferedPaintDC(window, style);
+}
+
+EWXWEXPORT(wxBufferedPaintDC*, wxBufferedPaintDC_CreateWithBitmap) ( wxWindow *window, wxBitmap* buffer, int style )
+{
+	return new wxBufferedPaintDC(window, *buffer, style);
+}
+
+EWXWEXPORT(void, wxBufferedPaintDC_Delete) (wxBufferedPaintDC* self)
+{
+	if (self) delete self;
+}
+
+EWXWEXPORT(wxAutoBufferedPaintDC*, wxAutoBufferedPaintDC_Create) ( wxWindow *window )
+{
+	return new wxAutoBufferedPaintDC(window);
+}
+
+EWXWEXPORT(void, wxAutoBufferedPaintDC_Delete) (wxAutoBufferedPaintDC* self)
+{
+	if (self) delete self;
+}
+
 EWXWEXPORT(void*,wxMetafileDC_Create)(void* _file)
 {
 #if defined(__WXGTK__) || defined(__WXMAC__) 
