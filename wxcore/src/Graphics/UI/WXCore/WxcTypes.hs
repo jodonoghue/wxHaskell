@@ -95,6 +95,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , CWString, withCWString, withWStringResult
             -- *** CInt
             , CInt, toCInt, fromCInt, withIntResult
+            -- *** 64 bit Integer
+            , Int64
             -- *** CDouble
             , CDouble, toCDouble, fromCDouble, withDoubleResult
             -- *** CChar
@@ -125,6 +127,7 @@ import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 {- note: this is just for instances for the WX library and not necessary for WXCore -}
 import Data.Dynamic
 
+import Data.Int
 import Debug.Trace (putTraceMsg)
 
 import Graphics.UI.WXCore.WxcObject

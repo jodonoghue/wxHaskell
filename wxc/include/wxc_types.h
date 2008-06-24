@@ -13,6 +13,7 @@
 #undef TClassDef
 #undef TClassDefExtend
 #undef TChar
+#undef TInt64
 #undef TBool
 #undef TBoolInt
 #undef TClass
@@ -70,6 +71,9 @@
 #else
 #define TChar             char
 #endif
+
+/* 64 bit integer */
+#define TInt64            int64_t
 
 /* boolean as int */
 #define TBoolInt          int

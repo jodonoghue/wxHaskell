@@ -535,6 +535,7 @@ haskellType i tp
   = case tp of
       Bool   -> "Bool"
       Int _  -> "Int"
+      Int64  -> "Int64"
       Void   -> "()"
       Char   -> "Char"
       Double -> "Double"
@@ -619,6 +620,7 @@ foreignType i tp
   = case tp of
       Bool   -> "CBool"
       Int _  -> "CInt"
+      Int64  -> "Int64"
       Void   -> "()"
       Char   -> "CWchar"
       Double -> "Double"

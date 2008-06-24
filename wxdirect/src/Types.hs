@@ -79,6 +79,7 @@ argName arg
   = concat (argNames arg)
 
 data Type = Int CBaseType
+          | Int64
           | Void
           | Char
           | Double
