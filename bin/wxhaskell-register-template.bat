@@ -17,7 +17,8 @@ CD >> bin\setcd.bat
 CD bin
 CALL setcd.bat
 DEL setcd.bat
-SET installdir=%CURDIR: =^ %
+SET installdirhelper=%CURDIR: =^ %
+SET installdir=%installdirhelper:\=\\%
 GOTO check
 
 :check
@@ -27,11 +28,11 @@ GOTO checkfile
 :generate
 IF NOT EXIST %installdir%\bin\wx-partial.pkg GOTO notfound
 COPY /Y "%installdir%\bin\wx-partial.pkg" "%installdir%\bin\wx.pkg"
-ECHO import-dirs:%installdir%\lib\imports >> "%installdir%\bin\wx.pkg"
-ECHO library-dirs:%installdir%\lib        >> "%installdir%\bin\wx.pkg"
+ECHO import-dirs:"%installdir%\\lib\\imports" >> "%installdir%\bin\wx.pkg"
+ECHO library-dirs:"%installdir%\\lib"        >> "%installdir%\bin\wx.pkg"
 COPY /Y "%installdir%\bin\wxcore-partial.pkg" "%installdir%\bin\wxcore.pkg"
-ECHO import-dirs:%installdir%\lib\imports >> "%installdir%\bin\wxcore.pkg"
-ECHO library-dirs:%installdir%\lib        >> "%installdir%\bin\wxcore.pkg"
+ECHO import-dirs:"%installdir%\\lib\\imports" >> "%installdir%\bin\wxcore.pkg"
+ECHO library-dirs:"%installdir%\\lib"        >> "%installdir%\bin\wxcore.pkg"
 GOTO checkfile
 
 :checkfile
