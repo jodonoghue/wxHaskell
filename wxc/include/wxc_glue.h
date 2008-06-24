@@ -1314,6 +1314,7 @@ void       wxDC_CalcBoundingBox( TSelf(wxDC) _obj, TPoint(x,y) );
 TBool      wxDC_CanDrawBitmap( TSelf(wxDC) _obj );
 TBool      wxDC_CanGetTextExtent( TSelf(wxDC) _obj );
 void       wxDC_Clear( TSelf(wxDC) _obj );
+void       wxDC_ComputeScaleAndOrigin( TSelf(wxDC) obj );
 void       wxDC_CrossHair( TSelf(wxDC) _obj, TPoint(x,y) );
 void       wxDC_Delete( TSelf(wxDC) _obj );
 void       wxDC_DestroyClippingRegion( TSelf(wxDC) _obj );
@@ -3806,11 +3807,10 @@ void       wxRemotelyScrolledTreeCtrl_SetScrollbars( TSelf(wxRemotelyScrolledTre
 
 /* wxSVGFileDC */
 TClassDefExtend(wxSVGFileDC,wxDC)
-void*      wxSVGFileDC_ComputeScaleAndOrigin( TSelf(wxSVGFileDC) obj );
-TClass(wxSVGFileDC) wxSVGFileDC_Create( void* f );
-void*      wxSVGFileDC_CreateWithSize( TSelf(wxSVGFileDC) f, int a_width, int a_height );
-void*      wxSVGFileDC_CreateWithSizeAndResolution( TSelf(wxSVGFileDC) f, int a_width, int a_height, float a_dpi );
-void*      wxSVGFileDC_Delete( TSelf(wxSVGFileDC) obj );
+TClass(wxSVGFileDC) wxSVGFileDC_Create( TString fileName );
+TClass(wxSVGFileDC) wxSVGFileDC_CreateWithSize( TString fileName, TSize(w,h) );
+TClass(wxSVGFileDC) wxSVGFileDC_CreateWithSizeAndResolution( TString fileName, TSize(w,h), float a_dpi );
+void       wxSVGFileDC_Delete( TSelf(wxSVGFileDC) obj );
 
 /* wxSashEvent */
 TClassDefExtend(wxSashEvent,wxEvent)

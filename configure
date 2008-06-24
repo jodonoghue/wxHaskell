@@ -502,8 +502,8 @@ if test "$withmsc" != "yes"; then
   fi
 
   if test "$withcontrib" = "yes"; then
-    wxlibswanted="$wxlibswanted stc"
-    wxccontrib="-DwxUSE_STC=1"
+    wxlibswanted="$wxlibswanted stc svg"
+    wxccontrib="-DwxUSE_STC=1 -DwxUSE_SVG=1"
   fi
   wxwinlibs="`$wxconfig --libs $wxlibswanted`"
 
@@ -968,8 +968,10 @@ echo " config/wxcore.pkg"
 cat > config/wxcore-partial.pkg << EOF
 name:wxcore
 version:$version
+license:LGPL
 homepage:http://wxhaskell.sourceforge.net
 author:Daan Leijen
+maintainer:wxhaskell-devel@lists.sourceforge.net
 exposed:True
 exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClasses,
@@ -1008,8 +1010,10 @@ echo " config/wx.pkg"
 cat > config/wx-partial.pkg << EOF
 name:wx
 version:$version
+license:LGPL
 homepage:http://wxhaskell.sourceforge.net
 author:Daan Leijen
+maintainer:wxhaskell-devel@lists.sourceforge.net
 exposed:True
 exposed-modules: Graphics.UI.WX,
 	Graphics.UI.WX.Types,

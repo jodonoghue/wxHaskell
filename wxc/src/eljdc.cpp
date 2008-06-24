@@ -139,6 +139,11 @@ EWXWEXPORT(void, wxDC_Clear)(void* _obj)
 	((wxDC*)_obj)->Clear();
 }
 	
+EWXWEXPORT(void, wxDC_ComputeScaleAndOrigin) (wxDC* dc)
+{
+	dc->ComputeScaleAndOrigin();
+}
+	
 EWXWEXPORT(int, wxDC_StartDoc)(void* _obj, void* msg)
 {
 	return (int)((wxDC*)_obj)->StartDoc((wxChar*)msg);

@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxWidgets-2.6.4\lib\vc_lib\mswu" /I "..\..\wxWidgets-2.6.4\contrib\include" /I "include" /I "..\..\wxWidgets-2.6.4\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxWidgets-2.6.4\lib\vc_lib\mswu" /I "..\..\wxWidgets-2.6.4\contrib\include" /I "include" /I "..\..\wxWidgets-2.6.4\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 
-# ADD LINK32 wxzlib.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxexpat.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26u_xml.lib wxmsw26u_core.lib wxmsw26u_adv.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_stc.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\dist\wxc\wxc-msw2.8.7-0.10.3.dll" /libpath:"..\..\wxWidgets-2.6.4\lib\vc_lib"
+# ADD LINK32 wxzlib.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxexpat.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26u_xml.lib wxmsw26u_core.lib wxmsw26u_adv.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_stc.lib wxmsw26u_svg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\dist\wxc\wxc-msw2.8.7-0.10.3.dll" /libpath:"..\..\wxWidgets-2.6.4\lib\vc_lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxc-msw2.8.7-0.10.3.lib	move libwxc-msw2.8.7-0.10.3.a ..\dist\wxc	move wxc-msw2.8.7-0.10.3.def ..\dist\wxc	echo Done.
@@ -74,7 +74,7 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\w
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxWidgets-2.6.4\lib\vc_lib\mswud" /I "include" /I "..\..\wxWidgets-2.6.4\include" /I "..\..\wxWidgets-2.6.4\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxWidgets-2.6.4\lib\vc_lib\mswud" /I "include" /I "..\..\wxWidgets-2.6.4\include" /I "..\..\wxWidgets-2.6.4\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
@@ -85,7 +85,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxexpatd.lib wxbase26ud.lib wxbase26ud_net.lib wxbase26ud_odbc.lib wxbase26ud_xml.lib wxmsw26ud_core.lib wxmsw26ud_adv.lib wxmsw26ud_dbgrid.lib wxmsw26ud_gl.lib wxmsw26ud_html.lib wxmsw26ud_media.lib wxmsw26ud_stc.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\dist\wxc\wxcd-msw2.8.7-0.10.3.dll" /pdbtype:sept /libpath:"..\..\wxWidgets-2.6.4\lib\vc_lib"
+# ADD LINK32 wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxexpatd.lib wxbase26ud.lib wxbase26ud_net.lib wxbase26ud_odbc.lib wxbase26ud_xml.lib wxmsw26ud_core.lib wxmsw26ud_adv.lib wxmsw26ud_dbgrid.lib wxmsw26ud_gl.lib wxmsw26ud_html.lib wxmsw26ud_media.lib wxmsw26ud_stc.lib wxmsw26ud_svg.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\dist\wxc\wxcd-msw2.8.7-0.10.3.dll" /pdbtype:sept /libpath:"..\..\wxWidgets-2.6.4\lib\vc_lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxcd-msw2.8.7-0.10.3.lib	move libwxcd-msw2.8.7-0.10.3.a ..\dist\wxc	move wxcd-msw2.8.7-0.10.3.def ..\dist\wxc	echo Done.
@@ -350,6 +350,10 @@ SOURCE=.\src\eljdatetime.cpp
 # Begin Source File
 
 SOURCE=.\src\eljdc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\eljdcsvg.cpp
 # End Source File
 # Begin Source File
 

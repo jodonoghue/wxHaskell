@@ -17,6 +17,7 @@ module Graphics.UI.WXCore.Draw
           drawLines, drawPolygon, getTextExtent, getFullTextExtent, dcClearRect
         -- ** Creation
         , withPaintDC, withClientDC, dcDraw
+        , withSVGFileDC, withSVGFileDCWithSize, withSVGFileDCWithSizeAndResolution
         -- ** Draw state
         , DrawState, dcEncapsulate, dcGetDrawState, dcSetDrawState, drawStateDelete
         -- ** Double buffering
@@ -79,6 +80,19 @@ withPaintDC window draw
 withClientDC :: Window a -> (ClientDC () -> IO b) -> IO b
 withClientDC window draw
   = bracket (clientDCCreate window) (clientDCDelete) (\dc -> dcDraw dc (draw dc))
+
+-- | Use a 'SVGFileDC'.
+withSVGFileDC :: FilePath -> (SVGFileDC () -> IO b) -> IO b
+withSVGFileDC fname draw
+  = bracket (sVGFileDCCreate fname) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
+
+withSVGFileDCWithSize :: FilePath -> Size -> (SVGFileDC () -> IO b) -> IO b
+withSVGFileDCWithSize fname size draw
+  = bracket (sVGFileDCCreateWithSize fname size) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
+
+withSVGFileDCWithSizeAndResolution :: FilePath -> Size -> Float -> (SVGFileDC () -> IO b) -> IO b
+withSVGFileDCWithSizeAndResolution fname size dpi draw
+  = bracket (sVGFileDCCreateWithSizeAndResolution fname size dpi) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
 
 
 -- | Clear a specific rectangle with the current background brush.

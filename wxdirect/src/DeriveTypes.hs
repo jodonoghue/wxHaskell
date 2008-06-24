@@ -309,8 +309,6 @@ ignore
     ,prefix "ELJPlot"                   "plot"
   -- xml resources
     ,prefix "wxXmlResource"             "xml resource"
-  -- svg files
-    ,prefix "wxSVGFileDC"               "svg file dc"
   -- joystick: eljjoystick
     ,prefix "expEVT_JOY"                "joystick"
     ,prefix "wxJoystick"                "joystick"
