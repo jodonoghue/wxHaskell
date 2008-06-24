@@ -63,8 +63,8 @@ architecture=""
 # extras
 withopengl="no"
 withmediactrl="no"
-withstc="no"
-wxcstc=""
+withcontrib="no"
+wxccontrib=""
 
 #--------------------------------------------------------------------
 # Function "findprogram": find a program in the path
@@ -305,7 +305,7 @@ process_args ()
 	  echo " --wx-toolkit=<name>    wxWidgets gui toolkit [$wxtoolkit]"
 	  echo " --with-opengl          enable openGL support [$withopengl]"
 	  echo " --with-mediactrl       enable mediactrl support [$withmediactrl]"
-          echo " --with-stc             enable stc support [$withstc]"
+          echo " --with-contrib         enable contrib libraries support [$withcontrib]"
 	  echo " --wx-config=<program>  wxWidgets configure script [$wxconfig]"
 	  echo ""
 	  echo "platform options:"
@@ -381,8 +381,8 @@ process_args ()
 	  withopengl="yes";;
       -with-mediactrl|--with-mediactrl)
 	  withmediactrl="yes";;
-      -with-stc|--with-stc)
-	  withstc="yes";;
+      -with-contrib|--with-contrib)
+	  withcontrib="yes";;
       -wx-config=*|--wx-config=*)
 	  echo "warning:"
 	  echo " Ignoring --wx-config option; this option must be the first option."
@@ -501,9 +501,9 @@ if test "$withmsc" != "yes"; then
     wxwincxxflags="-DwxcREFUSE_MEDIACTRL $wxwincxxflags"
   fi
 
-  if test "$withstc" = "yes"; then
+  if test "$withcontrib" = "yes"; then
     wxlibswanted="$wxlibswanted stc"
-    wxcstc="-DwxUSE_STC=1"
+    wxccontrib="-DwxUSE_STC=1"
   fi
   wxwinlibs="`$wxconfig --libs $wxlibswanted`"
 
@@ -910,8 +910,8 @@ run-compress=$runcompress
 WITHMSC=$withmsc
 WXC-LIBNAME=$wxclibname
 
-# STC
-WXC-STC=$wxcstc
+# Contrib libraries
+WXC-CONTRIB=$wxccontrib
 
 # WxWidgets
 WXWIN-VERSION=$wxversion
@@ -1177,7 +1177,7 @@ echo " wxwidgets:   $wxtoolkit-$wxversion"
 echo " extensions:"
 echo "   openGL:    $withopengl"
 echo "   mediactrl: $withmediactrl"
-echo "   stc:       $withstc"
+echo "   contrib:   $withcontrib"
 echo " library dir: $libdir"
 
 if test "$wxrezfile"; then
