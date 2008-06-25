@@ -152,7 +152,7 @@ WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
 	caret checkbox checklistbox choice clipboard coldata \
 	colour colourdlg combobox configbase control cursor \
-	dataformat datetime dc dialog dirdlg dnd drawing \
+	dataformat datetime dc dcsvg dialog dirdlg dnd drawing \
 	filedialog filehist font fontdata fontdlg frame gauge \
 	grid helpcontroller icon image imagelist layoutconstraints \
 	listbox listctrl locale log mask mdi menu menubar \
