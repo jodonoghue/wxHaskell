@@ -157,7 +157,7 @@ WXC-EWXW= \
 	grid helpcontroller icon image imagelist layoutconstraints \
 	listbox listctrl locale log mask mdi menu menubar \
 	messagedialog miniframe notebook palette panel pen \
-	printdlg printing process radiobox radiobutton region \
+	printdlg printing process radiobox radiobutton rc region \
 	regioniter sash scrollbar scrolledwindow sizer \
 	slider spinctrl splitterwindow staticbox staticline \
 	statictext statusbar systemsettings textctrl timer \

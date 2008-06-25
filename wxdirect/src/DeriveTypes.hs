@@ -307,8 +307,6 @@ ignore
     ,prefix "expEVT_PLOT"               "plot"
     ,prefix "wxPlot"                    "plot"
     ,prefix "ELJPlot"                   "plot"
-  -- xml resources
-    ,prefix "wxXmlResource"             "xml resource"
   -- joystick: eljjoystick
     ,prefix "expEVT_JOY"                "joystick"
     ,prefix "wxJoystick"                "joystick"
