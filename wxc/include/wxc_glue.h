@@ -3883,11 +3883,6 @@ void       wxSashWindow_SetMinimumSizeY( TSelf(wxSashWindow) _obj, int min );
 void       wxSashWindow_SetSashBorder( TSelf(wxSashWindow) _obj, int edge, int border );
 void       wxSashWindow_SetSashVisible( TSelf(wxSashWindow) _obj, int edge, int sash );
 
-/* wxScintilla */
-TClassDef(wxScintilla)
-TClass(wxScintilla) wxScintilla_Create( void* obj, void* fnc, TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
-int        wxScintilla_Exec( TSelf(wxScintilla) obj, int code, int param1, int param2 );
-
 /* wxScopedArray */
 TClassDef(wxScopedArray)
 

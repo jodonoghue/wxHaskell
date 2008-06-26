@@ -529,10 +529,6 @@ SOURCE=.\src\eljsash.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\eljscintilla.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\eljscrollbar.cpp
 # End Source File
 # Begin Source File
@@ -614,10 +610,6 @@ SOURCE=.\src\eljwindow.cpp
 # Begin Source File
 
 SOURCE=.\src\eljwizard.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\Scintilla.h
 # End Source File
 # End Group
 # Begin Group "ewxw headers"

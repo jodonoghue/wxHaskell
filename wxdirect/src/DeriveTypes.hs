@@ -320,7 +320,6 @@ ignore
     ,prefix "wxToggleButton_"            "toggle button"
     ,prefix "wxDialUpEvent_"             "dialup events"
     ,prefix "wxDialUpManager_"           "dialup manager"
-    ,prefix "wxScintilla_"               "scintilla"
     ,prefix "wxCriticalSection_"         "threads"
     ,prefix "wxMutex_"                   "threads"
     ,prefix "wxCondition_"               "threads"
