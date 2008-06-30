@@ -53,10 +53,8 @@ wxMDIParentFrameXmlHandler::wxMDIParentFrameXmlHandler() : wxXmlResourceHandler(
     XRC_ADD_STYLE(wxCAPTION);
     XRC_ADD_STYLE(wxDEFAULT_DIALOG_STYLE);
     XRC_ADD_STYLE(wxDEFAULT_FRAME_STYLE);
-    XRC_ADD_STYLE(wxTHICK_FRAME);
     XRC_ADD_STYLE(wxSYSTEM_MENU);
     XRC_ADD_STYLE(wxRESIZE_BORDER);
-    XRC_ADD_STYLE(wxRESIZE_BOX);
 
     XRC_ADD_STYLE(wxFRAME_TOOL_WINDOW);
     XRC_ADD_STYLE(wxFRAME_FLOAT_ON_PARENT);
@@ -64,7 +62,6 @@ wxMDIParentFrameXmlHandler::wxMDIParentFrameXmlHandler() : wxXmlResourceHandler(
     XRC_ADD_STYLE(wxMINIMIZE_BOX);
     XRC_ADD_STYLE(wxSTAY_ON_TOP);
 
-    XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
@@ -109,10 +106,8 @@ wxMDIChildFrameXmlHandler::wxMDIChildFrameXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxCAPTION);
     XRC_ADD_STYLE(wxDEFAULT_DIALOG_STYLE);
     XRC_ADD_STYLE(wxDEFAULT_FRAME_STYLE);
-    XRC_ADD_STYLE(wxTHICK_FRAME);
     XRC_ADD_STYLE(wxSYSTEM_MENU);
     XRC_ADD_STYLE(wxRESIZE_BORDER);
-    XRC_ADD_STYLE(wxRESIZE_BOX);
 
     XRC_ADD_STYLE(wxFRAME_TOOL_WINDOW);
     XRC_ADD_STYLE(wxFRAME_FLOAT_ON_PARENT);
@@ -120,7 +115,6 @@ wxMDIChildFrameXmlHandler::wxMDIChildFrameXmlHandler() : wxXmlResourceHandler()
     XRC_ADD_STYLE(wxMINIMIZE_BOX);
     XRC_ADD_STYLE(wxSTAY_ON_TOP);
 
-    XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxWS_EX_VALIDATE_RECURSIVELY);
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
@@ -167,13 +161,10 @@ wxSplitterWindowXmlHandler::wxSplitterWindowXmlHandler() : wxXmlResourceHandler(
     XRC_ADD_STYLE(wxSP_3D);
     XRC_ADD_STYLE(wxSP_3DSASH);
     XRC_ADD_STYLE(wxSP_BORDER);
-    XRC_ADD_STYLE(wxSP_FULLSASH);
-    XRC_ADD_STYLE(wxSP_BORDER);
     XRC_ADD_STYLE(wxSP_NOBORDER);
     XRC_ADD_STYLE(wxSP_PERMIT_UNSPLIT);
     XRC_ADD_STYLE(wxSP_LIVE_UPDATE);
 
-    XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
 
@@ -223,7 +214,6 @@ bool wxSplitterWindowXmlHandler::CanHandle(wxXmlNode *node)
 #ifdef wxUSE_STC
 wxStyledTextCtrlXmlHandler::wxStyledTextCtrlXmlHandler() : wxXmlResourceHandler()
 {
-    XRC_ADD_STYLE(wxNO_3D);
     AddWindowStyles();
 }
 
@@ -255,7 +245,6 @@ bool wxStyledTextCtrlXmlHandler::CanHandle(wxXmlNode *node)
 
 wxGridXmlHandler::wxGridXmlHandler() : wxXmlResourceHandler()
 {
-    XRC_ADD_STYLE(wxNO_3D);
     XRC_ADD_STYLE(wxTAB_TRAVERSAL);
     XRC_ADD_STYLE(wxCLIP_CHILDREN);
 
