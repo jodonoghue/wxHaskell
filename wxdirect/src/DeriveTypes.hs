@@ -438,7 +438,7 @@ deriveBetterTypes decl
   $ deriveExtTypes
   $ deriveStringReturn
   $ deriveSimpleTypes
-  $ deriveEventId
+  $ deriveId
   $ decl
 
 
@@ -672,11 +672,14 @@ deriveThis decl
     args = declArgs decl
 
 
--- derive event ids: int expEVT_XXX();
-deriveEventId decl@Decl{ declRet = Int _, declArgs = [] }
+-- derive event ids: int expEVT_XXX() and expXXX_XXX();
+deriveId decl@Decl{ declRet = Int _, declArgs = [] }
   | isPrefixOf "expEVT_" (declName decl)
   = decl{ declRet = EventId }
-deriveEventId decl
+deriveId decl@Decl{ declRet = Int _, declArgs = [] }
+  | isPrefixOf "exp" (declName decl)
+  = decl{ declRet = Id }
+deriveId decl
   = decl
 
 {-----------------------------------------------------------------------------------------

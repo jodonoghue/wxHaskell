@@ -948,7 +948,6 @@ EWXWEXPORT(int, wxScrollEvent_GetPosition)(void* _obj)
         return ((wxScrollEvent*)_obj)->GetPosition();
 }
 
-#if wxVERSION_NUMBER >= 2400
 EWXWEXPORT(void,wxHelpEvent_GetPosition)(void* _obj, void* x, void* y)
 {
         wxPoint pos = ((wxHelpEvent*)_obj)->GetPosition();
@@ -2088,6 +2087,619 @@ EWXWEXPORT(int,expEVT_GRID_EDITOR_CREATED)()
         return (int)wxEVT_GRID_EDITOR_CREATED;
 }
 
-#endif /* wxVERSION >= 2400 */
+EWXWEXPORT(int,expK_BACK)()
+{
+        return (int)WXK_BACK;
+}
+
+EWXWEXPORT(int,expK_TAB)()
+{
+        return (int)WXK_TAB;
+}
+
+EWXWEXPORT(int,expK_RETURN)()
+{
+        return (int)WXK_RETURN;
+}
+
+EWXWEXPORT(int,expK_ESCAPE)()
+{
+        return (int)WXK_ESCAPE;
+}
+
+EWXWEXPORT(int,expK_SPACE)()
+{
+        return (int)WXK_SPACE;
+}
+
+EWXWEXPORT(int,expK_DELETE)()
+{
+        return (int)WXK_DELETE;
+}
+
+EWXWEXPORT(int,expK_START)()
+{
+        return (int)WXK_START;
+}
+
+EWXWEXPORT(int,expK_LBUTTON)()
+{
+        return (int)WXK_LBUTTON;
+}
+
+EWXWEXPORT(int,expK_RBUTTON)()
+{
+        return (int)WXK_RBUTTON;
+}
+
+EWXWEXPORT(int,expK_CANCEL)()
+{
+        return (int)WXK_CANCEL;
+}
+
+EWXWEXPORT(int,expK_MBUTTON)()
+{
+        return (int)WXK_MBUTTON;
+}
+
+EWXWEXPORT(int,expK_CLEAR)()
+{
+        return (int)WXK_CLEAR;
+}
+
+EWXWEXPORT(int,expK_SHIFT)()
+{
+        return (int)WXK_SHIFT;
+}
+
+EWXWEXPORT(int,expK_ALT)()
+{
+        return (int)WXK_ALT;
+}
+
+EWXWEXPORT(int,expK_CONTROL)()
+{
+        return (int)WXK_CONTROL;
+}
+
+EWXWEXPORT(int,expK_MENU)()
+{
+        return (int)WXK_MENU;
+}
+
+EWXWEXPORT(int,expK_PAUSE)()
+{
+        return (int)WXK_PAUSE;
+}
+
+EWXWEXPORT(int,expK_CAPITAL)()
+{
+        return (int)WXK_CAPITAL;
+}
+
+EWXWEXPORT(int,expK_END)()
+{
+        return (int)WXK_END;
+}
+
+EWXWEXPORT(int,expK_HOME)()
+{
+        return (int)WXK_HOME;
+}
+
+EWXWEXPORT(int,expK_LEFT)()
+{
+        return (int)WXK_LEFT;
+}
+
+EWXWEXPORT(int,expK_UP)()
+{
+        return (int)WXK_UP;
+}
+
+EWXWEXPORT(int,expK_RIGHT)()
+{
+        return (int)WXK_RIGHT;
+}
+
+EWXWEXPORT(int,expK_DOWN)()
+{
+        return (int)WXK_DOWN;
+}
+
+EWXWEXPORT(int,expK_SELECT)()
+{
+        return (int)WXK_SELECT;
+}
+
+EWXWEXPORT(int,expK_PRINT)()
+{
+        return (int)WXK_PRINT;
+}
+
+EWXWEXPORT(int,expK_EXECUTE)()
+{
+        return (int)WXK_EXECUTE;
+}
+
+EWXWEXPORT(int,expK_SNAPSHOT)()
+{
+        return (int)WXK_SNAPSHOT;
+}
+
+EWXWEXPORT(int,expK_INSERT)()
+{
+        return (int)WXK_INSERT;
+}
+
+EWXWEXPORT(int,expK_HELP)()
+{
+        return (int)WXK_HELP;
+}
+
+EWXWEXPORT(int,expK_NUMPAD0)()
+{
+        return (int)WXK_NUMPAD0;
+}
+
+EWXWEXPORT(int,expK_NUMPAD1)()
+{
+        return (int)WXK_NUMPAD1;
+}
+
+EWXWEXPORT(int,expK_NUMPAD2)()
+{
+        return (int)WXK_NUMPAD2;
+}
+
+EWXWEXPORT(int,expK_NUMPAD3)()
+{
+        return (int)WXK_NUMPAD3;
+}
+
+EWXWEXPORT(int,expK_NUMPAD4)()
+{
+        return (int)WXK_NUMPAD4;
+}
+
+EWXWEXPORT(int,expK_NUMPAD5)()
+{
+        return (int)WXK_NUMPAD5;
+}
+
+EWXWEXPORT(int,expK_NUMPAD6)()
+{
+        return (int)WXK_NUMPAD6;
+}
+
+EWXWEXPORT(int,expK_NUMPAD7)()
+{
+        return (int)WXK_NUMPAD7;
+}
+
+EWXWEXPORT(int,expK_NUMPAD8)()
+{
+        return (int)WXK_NUMPAD8;
+}
+
+EWXWEXPORT(int,expK_NUMPAD9)()
+{
+        return (int)WXK_NUMPAD9;
+}
+
+EWXWEXPORT(int,expK_MULTIPLY)()
+{
+        return (int)WXK_MULTIPLY;
+}
+
+EWXWEXPORT(int,expK_ADD)()
+{
+        return (int)WXK_ADD;
+}
+
+EWXWEXPORT(int,expK_SEPARATOR)()
+{
+        return (int)WXK_SEPARATOR;
+}
+
+EWXWEXPORT(int,expK_SUBTRACT)()
+{
+        return (int)WXK_SUBTRACT;
+}
+
+EWXWEXPORT(int,expK_DECIMAL)()
+{
+        return (int)WXK_DECIMAL;
+}
+
+EWXWEXPORT(int,expK_DIVIDE)()
+{
+        return (int)WXK_DIVIDE;
+}
+
+EWXWEXPORT(int,expK_F1)()
+{
+        return (int)WXK_F1;
+}
+
+EWXWEXPORT(int,expK_F2)()
+{
+        return (int)WXK_F2;
+}
+
+EWXWEXPORT(int,expK_F3)()
+{
+        return (int)WXK_F3;
+}
+
+EWXWEXPORT(int,expK_F4)()
+{
+        return (int)WXK_F4;
+}
+
+EWXWEXPORT(int,expK_F5)()
+{
+        return (int)WXK_F5;
+}
+
+EWXWEXPORT(int,expK_F6)()
+{
+        return (int)WXK_F6;
+}
+
+EWXWEXPORT(int,expK_F7)()
+{
+        return (int)WXK_F7;
+}
+
+EWXWEXPORT(int,expK_F8)()
+{
+        return (int)WXK_F8;
+}
+
+EWXWEXPORT(int,expK_F9)()
+{
+        return (int)WXK_F9;
+}
+
+EWXWEXPORT(int,expK_F10)()
+{
+        return (int)WXK_F10;
+}
+
+EWXWEXPORT(int,expK_F11)()
+{
+        return (int)WXK_F11;
+}
+
+EWXWEXPORT(int,expK_F12)()
+{
+        return (int)WXK_F12;
+}
+
+EWXWEXPORT(int,expK_F13)()
+{
+        return (int)WXK_F13;
+}
+
+EWXWEXPORT(int,expK_F14)()
+{
+        return (int)WXK_F14;
+}
+
+EWXWEXPORT(int,expK_F15)()
+{
+        return (int)WXK_F15;
+}
+
+EWXWEXPORT(int,expK_F16)()
+{
+        return (int)WXK_F16;
+}
+
+EWXWEXPORT(int,expK_F17)()
+{
+        return (int)WXK_F17;
+}
+
+EWXWEXPORT(int,expK_F18)()
+{
+        return (int)WXK_F18;
+}
+
+EWXWEXPORT(int,expK_F19)()
+{
+        return (int)WXK_F19;
+}
+
+EWXWEXPORT(int,expK_F20)()
+{
+        return (int)WXK_F20;
+}
+
+EWXWEXPORT(int,expK_F21)()
+{
+        return (int)WXK_F21;
+}
+
+EWXWEXPORT(int,expK_F22)()
+{
+        return (int)WXK_F22;
+}
+
+EWXWEXPORT(int,expK_F23)()
+{
+        return (int)WXK_F23;
+}
+
+EWXWEXPORT(int,expK_F24)()
+{
+        return (int)WXK_F24;
+}
+
+EWXWEXPORT(int,expK_NUMLOCK)()
+{
+        return (int)WXK_NUMLOCK;
+}
+
+EWXWEXPORT(int,expK_SCROLL)()
+{
+        return (int)WXK_SCROLL;
+}
+
+EWXWEXPORT(int,expK_PAGEUP)()
+{
+        return (int)WXK_PAGEUP;
+}
+
+EWXWEXPORT(int,expK_PAGEDOWN)()
+{
+        return (int)WXK_PAGEDOWN;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_SPACE)()
+{
+        return (int)WXK_NUMPAD_SPACE;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_TAB)()
+{
+        return (int)WXK_NUMPAD_TAB;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_ENTER)()
+{
+        return (int)WXK_NUMPAD_ENTER;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_F1)()
+{
+        return (int)WXK_NUMPAD_F1;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_F2)()
+{
+        return (int)WXK_NUMPAD_F2;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_F3)()
+{
+        return (int)WXK_NUMPAD_F3;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_F4)()
+{
+        return (int)WXK_NUMPAD_F4;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_HOME)()
+{
+        return (int)WXK_NUMPAD_HOME;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_LEFT)()
+{
+        return (int)WXK_NUMPAD_LEFT;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_UP)()
+{
+        return (int)WXK_NUMPAD_UP;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_RIGHT)()
+{
+        return (int)WXK_NUMPAD_RIGHT;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_DOWN)()
+{
+        return (int)WXK_NUMPAD_DOWN;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_PAGEUP)()
+{
+        return (int)WXK_NUMPAD_PAGEUP;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_PAGEDOWN)()
+{
+        return (int)WXK_NUMPAD_PAGEDOWN;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_END)()
+{
+        return (int)WXK_NUMPAD_END;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_BEGIN)()
+{
+        return (int)WXK_NUMPAD_BEGIN;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_INSERT)()
+{
+        return (int)WXK_NUMPAD_INSERT;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_DELETE)()
+{
+        return (int)WXK_NUMPAD_DELETE;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_EQUAL)()
+{
+        return (int)WXK_NUMPAD_EQUAL;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_MULTIPLY)()
+{
+        return (int)WXK_NUMPAD_MULTIPLY;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_ADD)()
+{
+        return (int)WXK_NUMPAD_ADD;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_SEPARATOR)()
+{
+        return (int)WXK_NUMPAD_SEPARATOR;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_SUBTRACT)()
+{
+        return (int)WXK_NUMPAD_SUBTRACT;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_DECIMAL)()
+{
+        return (int)WXK_NUMPAD_DECIMAL;
+}
+
+EWXWEXPORT(int,expK_NUMPAD_DIVIDE)()
+{
+        return (int)WXK_NUMPAD_DIVIDE;
+}
+
+EWXWEXPORT(int,expK_WINDOWS_LEFT)()
+{
+        return (int)WXK_WINDOWS_LEFT;
+}
+
+EWXWEXPORT(int,expK_WINDOWS_RIGHT)()
+{
+        return (int)WXK_WINDOWS_RIGHT;
+}
+
+EWXWEXPORT(int,expK_WINDOWS_MENU)()
+{
+        return (int)WXK_WINDOWS_MENU;
+}
+
+EWXWEXPORT(int,expK_COMMAND)()
+{
+        return (int)WXK_COMMAND;
+}
+
+EWXWEXPORT(int,expK_SPECIAL1)()
+{
+        return (int)WXK_SPECIAL1;
+}
+
+EWXWEXPORT(int,expK_SPECIAL2)()
+{
+        return (int)WXK_SPECIAL2;
+}
+
+EWXWEXPORT(int,expK_SPECIAL3)()
+{
+        return (int)WXK_SPECIAL3;
+}
+
+EWXWEXPORT(int,expK_SPECIAL4)()
+{
+        return (int)WXK_SPECIAL4;
+}
+
+EWXWEXPORT(int,expK_WXK_SPECIAL5)()
+{
+        return (int)WXK_SPECIAL5;
+}
+
+EWXWEXPORT(int,expK_SPECIAL6)()
+{
+        return (int)WXK_SPECIAL6;
+}
+
+EWXWEXPORT(int,expK_SPECIAL7)()
+{
+        return (int)WXK_SPECIAL7;
+}
+
+EWXWEXPORT(int,expK_SPECIAL8)()
+{
+        return (int)WXK_SPECIAL8;
+}
+
+EWXWEXPORT(int,expK_SPECIAL9)()
+{
+        return (int)WXK_SPECIAL9;
+}
+
+EWXWEXPORT(int,expK_SPECIAL10)()
+{
+        return (int)WXK_SPECIAL10;
+}
+
+EWXWEXPORT(int,expK_SPECIAL11)()
+{
+        return (int)WXK_SPECIAL11;
+}
+
+EWXWEXPORT(int,expK_SPECIAL12)()
+{
+        return (int)WXK_SPECIAL12;
+}
+
+EWXWEXPORT(int,expK_SPECIAL13)()
+{
+        return (int)WXK_SPECIAL13;
+}
+
+EWXWEXPORT(int,expK_SPECIAL14)()
+{
+        return (int)WXK_SPECIAL14;
+}
+
+EWXWEXPORT(int,expK_SPECIAL15)()
+{
+        return (int)WXK_SPECIAL15;
+}
+
+EWXWEXPORT(int,expK_SPECIAL16)()
+{
+        return (int)WXK_SPECIAL16;
+}
+
+EWXWEXPORT(int,expK_SPECIAL17)()
+{
+        return (int)WXK_SPECIAL17;
+}
+
+EWXWEXPORT(int,expK_SPECIAL18)()
+{
+        return (int)WXK_SPECIAL18;
+}
+
+EWXWEXPORT(int,expK_SPECIAL19)()
+{
+        return (int)WXK_SPECIAL19;
+}
+
+EWXWEXPORT(int,expK_SPECIAL20)()
+{
+        return (int)WXK_SPECIAL20;
+}
 
 }

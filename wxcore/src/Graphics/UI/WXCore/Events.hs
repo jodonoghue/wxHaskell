@@ -1492,8 +1492,6 @@ data Key
   | KeySpace
   | KeyDelete
   | KeyInsert
-  | KeyPrior              -- ^ Page up.
-  | KeyNext               -- ^ Page down.
   | KeyEnd
   | KeyHome
   | KeyLeft
@@ -1579,9 +1577,7 @@ data Key
   | KeyNumUp
   | KeyNumRight
   | KeyNumDown
-  | KeyNumPrior
   | KeyNumPageUp
-  | KeyNumNext
   | KeyNumPageDown
   | KeyNumEnd
   | KeyNumBegin
@@ -1609,8 +1605,6 @@ keyToKeyCode key
       KeySpace        -> wxK_SPACE
       KeyDelete       -> wxK_DELETE
       KeyInsert       -> wxK_INSERT
-      KeyPrior        -> wxK_PRIOR
-      KeyNext         -> wxK_NEXT
       KeyEnd          -> wxK_END
       KeyHome         -> wxK_HOME
       KeyLeft         -> wxK_LEFT
@@ -1702,8 +1696,6 @@ keyCodeMap
     ,(wxK_SPACE        , KeySpace)
     ,(wxK_DELETE       , KeyDelete)
     ,(wxK_INSERT       , KeyInsert)
-    ,(wxK_PRIOR        , KeyPrior)
-    ,(wxK_NEXT         , KeyNext)
     ,(wxK_END          , KeyEnd)
     ,(wxK_HOME         , KeyHome)
     ,(wxK_LEFT         , KeyLeft)
@@ -1784,9 +1776,7 @@ keyCodeMap
     ,(wxK_NUMPAD_UP    , KeyUp)
     ,(wxK_NUMPAD_RIGHT , KeyRight)
     ,(wxK_NUMPAD_DOWN  , KeyDown)
-    ,(wxK_NUMPAD_PRIOR , KeyPrior)
     ,(wxK_NUMPAD_PAGEUP   , KeyPageUp)
-    ,(wxK_NUMPAD_NEXT     , KeyNext)
     ,(wxK_NUMPAD_PAGEDOWN , KeyPageDown)
     ,(wxK_NUMPAD_END      , KeyEnd)
 --            ,(wxK_NUMPAD_BEGIN    , KeyBegin)
@@ -1826,8 +1816,6 @@ showKey key
       KeySpace        -> "Space"
       KeyDelete       -> "Delete"
       KeyInsert       -> "Insert"
-      KeyPrior        -> "PgUp"
-      KeyNext         -> "PgDn"
       KeyEnd          -> "End"
       KeyHome         -> "Home"
       KeyLeft         -> "Left"

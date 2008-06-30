@@ -346,6 +346,7 @@ haskellToCResult decl tp call
     case tp of
       Fun f  -> traceWarning "function as result" decl $ call
       EventId -> "withIntResult $" ++ nl ++ call
+      Id    -> "withIntResult $" ++ nl ++ call
       Int _ -> "withIntResult $" ++ nl ++ call
       Bool  -> "withBoolResult $" ++ nl ++ call
       Char  -> "withCharResult $" ++ nl ++ call
@@ -380,6 +381,7 @@ haskellToCResult decl tp call
     unsafeIO body
       = case tp of
           EventId  -> "unsafePerformIO $" ++ nl ++ body
+          Id       -> "unsafePerformIO $" ++ nl ++ body
           other    | isPrefixOf "Null_" (declName decl)  -> "unsafePerformIO $" ++ nl ++ body
                    | otherwise -> body
 
@@ -428,6 +430,7 @@ haskellToCArg decl arg
   = case argType arg of
       RefObject name -> traceError "reference object as argument" decl $ name
       EventId        -> traceError "event id as argument" decl $ name
+      Id             -> traceError "id as argument" decl $ name
       Int _ -> pparens ("toCInt " ++ name)
       Char  -> pparens ("toCWchar " ++ name)
       Bool  -> pparens ("toCBool " ++ name)
@@ -514,6 +517,7 @@ haskellTypeArgs decl args
 haskellRetType decl typedecl
   = case declRet decl of
       EventId   -> "{-# NOINLINE " ++ haskellDeclName (declName decl) ++ " #-}\n" ++ typedecl ++ " EventId"
+      Id      -> "{-# NOINLINE " ++ haskellDeclName (declName decl) ++ " #-}\n" ++ typedecl ++ " Int"
       tp        | isPrefixOf "Null_" (declName decl)
                 -> typedecl ++ haskellType 0 tp
                 | otherwise
@@ -611,6 +615,7 @@ foreignResultType tp
       -- RefObject "wxColour"  -> "ColourPtr () -> IO ()"
       RefObject name        -> foreignType 0 tp ++ " -> IO ()"
       EventId -> "IO CInt"
+      Id    -> "IO CInt"
       other   -> "IO " ++ foreignTypePar 0 tp
 
 foreignTypePar i tp

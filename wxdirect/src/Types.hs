@@ -87,6 +87,7 @@ data Type = Int CBaseType
           | Ptr Type
           -- typedefs
           | EventId
+          | Id
           -- temporary types
           | StringLen
           | StringOut CBaseType

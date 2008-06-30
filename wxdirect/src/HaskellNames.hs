@@ -86,6 +86,7 @@ haskellDeclName name
   | isPrefixOf "wxDC_" name     = haskellName ("dc" ++ drop 5 name)
   | isPrefixOf "wxGL" name      = haskellName ("gl" ++ drop 4 name)
   | isPrefixOf "expEVT_" name   = ("wxEVT_" ++ drop 7 name) -- keep underscores
+  | isPrefixOf "exp" name       = ("wx"     ++ drop 3 name)
   | isPrefixOf "wxc" name       = haskellName name
   | isPrefixOf "wx" name        = haskellName (drop 2 name)
   | isPrefixOf "ELJ" name       = haskellName ("wxc" ++ drop 3 name)
