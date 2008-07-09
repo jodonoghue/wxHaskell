@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "..\dist\wxc\release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\wxWidgets-2.8.7\lib\vc_lib\mswu" /I "..\..\wxWidgets-2.8.7\contrib\include" /I "include" /I "..\..\wxWidgets-2.8.7\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\wxWidgets-2.8.7\lib\vc_lib\mswu" /I "..\..\wxWidgets-2.8.7\contrib\include" /I "include" /I "..\..\wxWidgets-2.8.7\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
@@ -73,8 +73,8 @@ PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\w
 # PROP Intermediate_Dir "..\dist\wxc\debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\wxWidgets-2.8.7\lib\vc_lib\mswud" /I "include" /I "..\..\wxWidgets-2.8.7\include" /I "..\..\wxWidgets-2.8.7\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\wxWidgets-2.8.7\lib\vc_lib\mswud" /I "include" /I "..\..\wxWidgets-2.8.7\include" /I "..\..\wxWidgets-2.8.7\contrib\include" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WXC_EXPORTS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D wxUSE_UNICODE=1 /D wxUSE_STC=1 /D wxUSE_SVG=1 /D BUILD_WXC=1 /D "_DLL" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
