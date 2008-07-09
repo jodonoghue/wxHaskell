@@ -60,7 +60,7 @@ EWXWEXPORT(bool,wxSound_Play)(wxSound* self, unsigned flag )
 EWXWEXPORT(void,wxSound_Stop)(wxSound* self)  
 {
 #ifdef wxUSE_SOUND
-  return self->Stop();
+  self->Stop();
 #endif
 }
 

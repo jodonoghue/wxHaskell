@@ -9,6 +9,11 @@
 /* just to ensure that intptr_t exists */
 #ifndef  _MSC_VER
 #include <inttypes.h>
+/* MSVC-6 defines _MSC_VER=1200 */
+#elif _MSC_VER> 1200
+#else
+/* MSVC-6 does not define intptr_t */
+typedef int intptr_t;
 #endif
 
 #include "ewxw_def.h"
