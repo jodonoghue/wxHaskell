@@ -1,5 +1,4 @@
 #include "wrapper.h"
-#include "wx/graphics.h"
 
 /* testing */
 // #define wxUSE_GRAPHICS_CONTEXT 0
@@ -14,7 +13,12 @@
 # undef wxUSE_GRAPHICS_CONTEXT
 #endif
 
+#ifdef wxUSE_GRAPHICS_CONTEXT
+#include "wx/graphics.h"
+#endif
+
 #ifndef wxUSE_GRAPHICS_CONTEXT
+# define wxPoint2DDouble        void
 # define wxGraphicsBrush        void
 # define wxGraphicsContext      void
 # define wxGraphicsFont         void
