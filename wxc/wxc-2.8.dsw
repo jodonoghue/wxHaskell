@@ -19,7 +19,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "stc"="..\..\wxWidgets-2.8.7\contrib\build\stc\stc.dsp" - Package Owner=<4>
+Project: "stc"="..\..\wxWidgets-2.8.8\contrib\build\stc\stc.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -31,7 +31,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "svg"="..\..\wxWidgets-2.8.7\contrib\build\svg\svg.dsp" - Package Owner=<4>
+Project: "svg"="..\..\wxWidgets-2.8.8\contrib\build\svg\svg.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
