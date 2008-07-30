@@ -543,7 +543,7 @@ EWXWEXPORT(void, ELJApp_Sleep)(int _scs)
         wxSleep(_scs);
 }
 
-EWXWEXPORT(void, ELJApp_USleep)(int _mscs)
+EWXWEXPORT(void, ELJApp_MilliSleep)(int _mscs)
 {
 #if (wxVERSION_NUMBER < 2600)
         wxUsleep(_mscs);

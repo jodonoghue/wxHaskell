@@ -403,7 +403,7 @@ void       ELJApp_SetTopWindow( TClass(wxWindow) _wnd );
 void       ELJApp_SetUseBestVisual( int flag );
 void       ELJApp_SetVendorName( TString name );
 void       ELJApp_Sleep( int _scs );
-void       ELJApp_USleep( int _mscs );
+void       ELJApp_MilliSleep( int _mscs );
 int        ELJApp_Yield(  );
 TBoolInt   ELJApp_IsTerminating(  );
 

@@ -21,6 +21,7 @@ module Graphics.UI.WXCore.Controls
       -- * Wrappers
     , listBoxGetSelectionList
     , execClipBoardData
+    , wxcAppUSleep
     ) where
 
 import Graphics.UI.WXCore.WxcTypes
@@ -121,3 +122,8 @@ textCtrlMakeLogActiveTarget textCtrl
 -- Global clipboard on your environment. So, long computation causes problem.
 execClipBoardData :: Clipboard a -> (Clipboard a -> IO b) -> IO b
 execClipBoardData cl event = bracket_ (clipboardOpen cl) (clipboardClose cl) (event cl)
+
+{-# DEPRECATED wxcAppUSleep "Use wxcAppMilliSleep instead" #-}
+-- | This function just left for backward-compatiblity.
+-- Update your code to use 'wxcAppMilliSleep' instead.
+wxcAppUSleep = wxcAppMilliSleep
