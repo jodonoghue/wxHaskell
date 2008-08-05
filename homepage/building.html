@@ -25,27 +25,27 @@
       <li><a class="menu-applications" href="applications.html">applications</a></li>
       </ul>
   </li>
-  <li><a class="menu-documentation" href="documentation.html">documentation</a>
+  <li><a class="menu-documentation" href="http://haskell.org/haskellwiki/WxHaskell/Documentation">documentation</a>
           <ul>
-          <li><a class="menu-documentation-license" href="license.html">license</a></li>
-          <li><a class="menu-documentation-quickstart" href="quickstart.html">quick start</a></li>
-          <li><a class="menu-documentation-faq" href="faq.html">faq</a></li>
+          <li><a class="menu-documentation-license" href="http://haskell.org/haskellwiki/WxHaskell/License">license</a></li>
+          <li><a class="menu-documentation-quickstart" href="http://haskell.org/haskellwiki/WxHaskell/Quickstart">quick start</a></li>
+          <li><a class="menu-documentation-faq" href="http://haskell.org/haskellwiki/WxHaskell/FAQ">faq</a></li>
           </ul>
   </li>
-  <li><a class="menu-download" href="download.html">download</a></li>
+  <li><a class="menu-download" href="http://haskell.org/haskellwiki/WxHaskell/Download">download</a></li>
   </ul>
 </div>
 <div class="menu">
   <ul>
-  <li><a class="menu-building" href="building.html">building</a>
+  <li><a class="menu-building" href="http://haskell.org/haskellwiki/WxHaskell/Building">building</a>
           <ul>
-          <li><a class="menu-building-cygwin" href="building-cygwin.html">cygwin</a></li>
-          <li><a class="menu-building-msc" href="building-msc.html">msc</a></li>
-          <li><a class="menu-building-macosx" href="building-macosx.html">macosx</a></li>
+          <li><a class="menu-building-cygwin" href="http://haskell.org/haskellwiki/WxHaskell/Building_on_Cygwin">cygwin</a></li>
+          <li><a class="menu-building-msc" href="http://haskell.org/haskellwiki/WxHaskell/Building_on_Windows">msc</a></li>
+          <li><a class="menu-building-macosx" href="http://haskell.org/haskellwiki/WxHaskell/Building_on_MacOS_X">macosx</a></li>
           </ul>
   </li>
-  <li><a class="menu-development" href="development.html">development</a></li>
-  <li><a class="menu-contribute" href="contribute.html">contribute</a></li>
+  <li><a class="menu-development" href="http://haskell.org/haskellwiki/WxHaskell/Development">development</a></li>
+  <li><a class="menu-contribute" href="http://haskell.org/haskellwiki/WxHaskell/Contribute">contribute</a></li>
 <!-- <li><a class="menu-dev-download" href="dev-download.html">download</a></li> -->
   </ul>
 </div>
@@ -54,7 +54,7 @@
 
 <div class="text">
 <h2>Building from sources</h2>
-<p>In principle we recommend the use of <a href="download.html">binary releases</a>, but
+<p>In principle we recommend the use of <a href="http://haskell.org/haskellwiki/WxHaskell/Download">binary releases</a>, but
 wxHaskell also has a build system to compile directly from sources. The build process has
 been specialized for three main platforms:</p>
 <ul>
@@ -83,7 +83,7 @@ been specialized for three main platforms:</p>
 <ul class="notes">
 <li><b>windows</b>: you need the cygwin environment together
 with the mingw compiler. The build process is very sensitive to the
-cygwin setup and there is a separate <a href="building-cygwin.html">guide</a> for installing cygwin properly.
+cygwin setup and there is a separate <a href="http://haskell.org/haskellwiki/WxHaskell/Building_on_Cygwin">guide</a> for installing cygwin properly.
 </li>
 
 <li><b>macosx</b>: you need to install the <code>gcc</code> compiler, which is part of the Apple
@@ -108,7 +108,7 @@ wxWidgets installation directory, for example: <code>~/dev/wxGTK-2.6.4</code>.</
 </ul>
 
 
-<p>If you have a <a href="download.html">source release</a> of wxHaskell,
+<p>If you have a <a href="http://haskell.org/haskellwiki/WxHaskell/Download">source release</a> of wxHaskell,
 just unpack it in a suitable directory. In the
 following descriptions, we assume that the variable <code>$wxhaskell</code> points to your
 installation directory, for example: <code>~/dev/wxhaskell</code>.
@@ -134,7 +134,7 @@ your <code>$wxhaskell</code> directory will be <code>~/dev/wxhaskell</code>.</p>
 <div class="text">
 <h2>Building wxWidgets</h2>
 <p><b>windows-msc</b>: this section describes how to build wxWidgets
-using standard gnu tools -- there is a separate <a href="building-msc.html">section</a> on
+using standard gnu tools -- there is a separate <a href="http://haskell.org/haskellwiki/WxHaskell/Building_on_Windows">section</a> on
 building the library with Microsoft Visual C++ on windows.</p>
 
 <p>According to the wxWidgets preferred installation, create a <code>mybuild</code> directory in the
@@ -219,7 +219,7 @@ flag when configuring wxWidgets (or you will get link errors).</li>
 wxWidgets (or you will get link errors).</li>
 <li>By default, the library is installed in the wxWidgets install directory. You can specify another directory with the
 <code>prefix</code> option of configure: <code>./configure --prefix=/usr/local</code>. Any directory that is on your library search path will do.</li>
-<li><b>windows-msc</b>. Read the <a href="building-msc.html">notes</a> on building wxHaskell with Visual C++.</li>
+<li><b>windows-msc</b>. Read the <a href="http://haskell.org/haskellwiki/WxHaskell/Building_on_Windows">notes</a> on building wxHaskell with Visual C++.</li>
 <li><b>ghc 6.0.1, wxhaskell 0.8</b>: In the file <code>wxcore/src/Graphics/UI/WXCore/WxcObjects.hs</code> you need to switch the parameters to <code>newForeignPtr</code> on line 172. In the file <code>wx/src/Graphics/UI/WX/Controls.hs</code> you need to replace the import of <code>Data.Typeable</code> by <code>Data.Dynamic</code>.</li>
 </ul>
 
@@ -256,7 +256,7 @@ Notes:
 <p>Notes:</p>
 <ul class="notes">
 <li><b>macosx</b>: Unfortunately, wxHaskell programs do not work directly as generated by
-GHC. Look at the MacOS X <a href="building-macosx.html">notes</a> for more information.</li>
+GHC. Look at the MacOS X <a href="http://haskell.org/haskellwiki/WxHaskell/Building_on_MacOS_X">notes</a> for more information.</li>
 </li>
 </ul>
 
@@ -275,7 +275,7 @@ with wxWidgets 2.4.2.
 <li><b>gtk</b>: Unfortunately, one can only start a wxWidgets program once with GHCi on GTK (rendering it
 useless).</li>
 <li><b>macosx</b>. You need to use a special command to run wxHaskell applications, see the
-Mac OS X <a href="building-macosx.html">notes</a> from more information.</li>
+Mac OS X <a href="http://haskell.org/haskellwiki/WxHaskell/Building_on_MacOS_X">notes</a> from more information.</li>
 </li>
 </ul>
 
