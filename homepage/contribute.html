@@ -49,76 +49,9 @@
   </ul>
 </div>
 
-<div class="text">
-<h2>Contribute to wxHaskell!</h2>
-<p>"<em>Do not ask yourself what wxHaskell can do for you, but what you can do for wxHaskell</em>" :-)</p>
-<p>However, it is hard to find out which features are particularly interesting, the
-hardness of certain tasks, and whether you are duplicating work done by others.
-This page tries to remedy this situation by giving a list of good starting points for
-contributing to wxHaskell.
-</p>
-<p>If you feel like doing one of these items, please notify the maintainer of wxHaskell, or
-send an e-mail to the <a href="http://sourceforge.net/mail/?group_id=73133">wxHaskell mailing list</a>, so that no effort is accidently duplicated.
-</p>
-</div>
-<div class="text">
-<p></p>
-<dl class="linklist">
-<dt>Create wxHaskell samples or screenshots</dt>
-<dd>If you have a good sample or screenshot, send it to the
-wxHaskell maintainer for inclusion into the samples or the webpage with screenshots.</dd>
-<dt>Add new widget abstractions to the WX library</dt>
-<dd>This task only requires a good understanding of Haskell (and a certain taste
-for elegant design :-). Examples for which abstractions can be created
-are <code>wxStopWatch</code> or MDI windows. You only need to add code to
-the WX library and the <code>WX.Controls</code> library can serve as a
-typical example of useful abstractions.</dd>
-<dt>Portable resources</dt>
-<dd>A pure Haskell task, but requires a lot of careful design work
-and probably access to a Windows, MacOS X, and Linux system.
-As a first step, it would be great if there is some method of loading images,
-like bitmaps and icons, in a platform independent way. This could be done
-for example by requiring different formats for the same image for different
-platforms (an <code>ico</code> on windows, a mac icon on MacOS X), together
-with some generic function that searches for the most appropiate image. Another
-facet of this task could be the use of resource bundles, or ways to internationalize
-the application.
-</dd>
-<dt>Create a good tree control / list control abstraction</dt>
-<dd>At the moment, trees and list controls are cumbersome to deal with.
-It would be nice if better abstractions could be devised that work well
-in practice. Furthermore, the haskell data in the tree control can
-maybe be typed by including the value types into the phantom type
-variable of the tree control. Requires a good feeling for elegant
-and practical design with Haskell, together with some GUI experience.</dd>
-</dl>
-<dt>XRC support</dt>
-<dd>From the wxWidgets homepage:
-<blockquote>
-The XML-based resource system, known as XRC, allows user interface
-elements such as dialogs, menu bars and toolbars, to be stored in text
-files and loaded into the application at run-time.
-</blockquote>
-It would certainly be useful if people could use tools like wxGlade
-to build interfaces and use them for Haskell programming.
-<a href="http://www.haskell.org/gtk2hs">gtk2hs</a> seems to support
-an equivalent feature, so perhaps you could get some tips from them.
-</dl>
-</div>
-
-<div class="text">
-<p>There are more desirable features that are planned for upcoming releases. However
-most of these are somewhat harder to do as they require more knowledge about the
-entire wxHaskell project. However, if you feel that you really need one of these
-items, feel free to try!
-<ul>
-<li>Drag and drop.</li>
-<li>Clipboard, copy and past.</li>
-<li>Grid control support.</li>
-<li>Better internet support.</li>
-<li>...</li>
-</ul>
-</p>
+<div class="text" style="padding-bottom:30ex">
+<h2>Moved!</h2>
+This page has been moved to the <a href="http://haskell.org/haskellwiki/WxHaskell">Haskell wiki</a>.
 </div>
 
 <div class="status">
