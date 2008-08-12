@@ -36,17 +36,15 @@ gui
        -- radio box page
        p2   <- panel  nb []
        let rlabels = ["first", "second", "third"]
-       r1   <- radioBox p2 Vertical rlabels   [text := "radio box", on select ::= logSelect rlabels]
-       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two", on select ::= logSelect rlabels ]
+       r1   <- radioBox p2 Vertical rlabels   [text := "radio box", on select ::= logSelect]
+       r2   <- radioBox p2 Horizontal rlabels [tooltip := "radio group two", on select ::= logSelect]
        rb1  <- button   p2 [text := "disable", on command ::= onEnable r1]
 
        -- choice
        p3   <- panel nb []
        let clabels = ["mies","noot","aap"]
-       c1   <- choice p3 [tooltip := "unsorted choices", on select ::= logSelect clabels
-                         ,sorted  := False, items := clabels]
-       c2   <- choice p3 [tooltip := "sorted choices", on select ::= logSelect clabels
-                         ,sorted  := True, items := clabels] 
+       c1   <- choice p3 [tooltip := "unsorted choices", on select ::= logSelect, sorted  := False, items := clabels]
+       c2   <- choice p3 [tooltip := "sorted choices", on select ::= logSelect, sorted  := True, items := clabels] 
        cb1  <- button p3 [text := "disable", on command ::= onEnable c1]
 
        -- list box page
@@ -54,12 +52,11 @@ gui
        sl1  <- singleListBox p4 
                   [items      := clabels
                   ,tooltip    := "unsorted single-selection listbox"
-                  ,on select ::= logSelect clabels]
+                  ,on select ::= logSelect]
        sl2  <- singleListBox p4 
                   [items      := clabels
                   ,tooltip    := "sorted listbox"
-                  ,on select ::= logSelect clabels
-                  ,sorted     := True]
+                  ,on select ::= logSelect, sorted     := True]
        sc1  <- checkBox p4 [text := "enable the listbox", checked := True, on command := set sl1 [enabled :~ not]]
 
        -- slider/gauge page
@@ -99,8 +96,8 @@ gui
        return ()
 
   where
-    -- logSelect :: (Selection w, Items w String) => [String] -> w -> IO ()
-    logSelect labels w
+    -- logSelect :: (Selection w, Items w String) => w -> IO ()
+    logSelect w
       = do i <- get w selection
            s <- get w (item i)
            logMessage ("selected index: " ++ show i ++ ": " ++ s)
