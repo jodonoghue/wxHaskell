@@ -220,32 +220,56 @@ EWXWEXPORT(wxFileOffset, wxMediaCtrl_Tell) (wxMediaCtrl* self)
 -----------------------------------------------------------------------------*/
 EWXWEXPORT(int,expEVT_MEDIA_LOADED)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_LOADED;
+#else
+    return NULL;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_MEDIA_STOP)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_STOP;
+#else
+    return NULL;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_MEDIA_FINISHED)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_FINISHED;
+#else
+    return NULL;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_MEDIA_STATECHANGED)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_STATECHANGED;
+#else
+    return NULL;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_MEDIA_PLAY)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_PLAY;
+#else
+    return NULL;
+#endif
 }
 
 EWXWEXPORT(int,expEVT_MEDIA_PAUSE)()
 {
+#ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_PAUSE;
+#else
+    return NULL;
+#endif
 }
 
 }
