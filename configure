@@ -640,7 +640,7 @@ if test "$hcpkglocal"; then
 fi
 
 # Get package's version
-basepkgversion=`ghc-pkg field base version | sed 's/.* //'`
+basepkgversion=`ghc-pkg field base version | head -1 | sed 's/.* //'`
 haskell98pkgversion=`ghc-pkg field haskell98 version | sed 's/.* //'`
 
 # Test if we can include the containers package explicitly
