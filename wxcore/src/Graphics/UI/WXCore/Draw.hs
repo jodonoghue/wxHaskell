@@ -84,15 +84,15 @@ withClientDC window draw
 -- | Use a 'SVGFileDC'.
 withSVGFileDC :: FilePath -> (SVGFileDC () -> IO b) -> IO b
 withSVGFileDC fname draw
-  = bracket (sVGFileDCCreate fname) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
+  = bracket (svgFileDCCreate fname) (svgFileDCDelete) (\dc -> dcDraw dc (draw dc))
 
 withSVGFileDCWithSize :: FilePath -> Size -> (SVGFileDC () -> IO b) -> IO b
 withSVGFileDCWithSize fname size draw
-  = bracket (sVGFileDCCreateWithSize fname size) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
+  = bracket (svgFileDCCreateWithSize fname size) (svgFileDCDelete) (\dc -> dcDraw dc (draw dc))
 
 withSVGFileDCWithSizeAndResolution :: FilePath -> Size -> Float -> (SVGFileDC () -> IO b) -> IO b
 withSVGFileDCWithSizeAndResolution fname size dpi draw
-  = bracket (sVGFileDCCreateWithSizeAndResolution fname size dpi) (sVGFileDCDelete) (\dc -> dcDraw dc (draw dc))
+  = bracket (svgFileDCCreateWithSizeAndResolution fname size dpi) (svgFileDCDelete) (\dc -> dcDraw dc (draw dc))
 
 
 -- | Clear a specific rectangle with the current background brush.
