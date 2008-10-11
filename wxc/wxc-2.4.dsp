@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmswu.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\dist\wxc\wxc-msw2.8.8-0.10.5.dll" /libpath:"..\dist\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlib.lib regex.lib png.lib jpeg.lib tiff.lib wxmswu.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /machine:I386 /nodefaultlib:"LIBCMT" /out:"..\dist\wxc\wxc-msw2.8.9-0.10.5.dll" /libpath:"..\dist\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxc-msw2.8.8-0.10.5.lib	move libwxc-msw2.8.8-0.10.5.a ..\dist\wxc	move wxc-msw2.8.8-0.10.5.def ..\dist\wxc	echo Done.
+PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxc-msw2.8.9-0.10.5.lib	move libwxc-msw2.8.9-0.10.5.a ..\dist\wxc	move wxc-msw2.8.9-0.10.5.def ..\dist\wxc	echo Done.
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "wxc - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswud.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\dist\wxc\wxcd-msw2.8.8-0.10.5.dll" /pdbtype:sept  /libpath:"..\dist\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
+# ADD LINK32 zlibd.lib regexd.lib pngd.lib jpegd.lib tiffd.lib wxmswud.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib opengl32.lib winmm.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBCMTD" /out:"..\dist\wxc\wxcd-msw2.8.9-0.10.5.dll" /pdbtype:sept  /libpath:"..\dist\wxc" /libpath:"..\..\wxWindows-2.4.2\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxcd-msw2.8.8-0.10.5.lib	move libwxcd-msw2.8.8-0.10.5.a ..\dist\wxc	move wxcd-msw2.8.8-0.10.5.def ..\dist\wxc	echo Done.
+PostBuild_Cmds=echo Generating mingw32 import library ...	..\bin\reimp ..\dist\wxc\wxcd-msw2.8.9-0.10.5.lib	move libwxcd-msw2.8.9-0.10.5.a ..\dist\wxc	move wxcd-msw2.8.9-0.10.5.def ..\dist\wxc	echo Done.
 # End Special Build Tool
 
 !ENDIF 
