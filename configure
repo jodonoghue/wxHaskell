@@ -642,13 +642,13 @@ if test "$hcpkglocal"; then
 fi
 
 # Get package's version
-basepkgversion=`ghc-pkg field base version | head -1 | sed 's/.* //'`
+basepkgversion=`ghc-pkg field base version | head -n 1 | sed 's/.* //'`
 haskell98pkgversion=`ghc-pkg field haskell98 version | sed 's/.* //'`
 
 # Test if we can include the containers package explicitly
 $hcpkg describe containers > /dev/null 2> /dev/null
 case $? in
-  0) containerspkgversion=`ghc-pkg field containers version | sed 's/.* //'`
+  0) containerspkgversion=`ghc-pkg field containers version | tail -n 1 | sed 's/.* //'`
      pkgcontainers="-package containers-$containerspkgversion";;
   *) pkgcontainers="";;
 esac
@@ -656,7 +656,7 @@ esac
 # Test if we can include the parsec package explicitly
 $hcpkg describe parsec > /dev/null 2> /dev/null
 case $? in
-  0) pkgversion=`ghc-pkg field parsec version | sed 's/.* //'`
+  0) pkgversion=`ghc-pkg field parsec version | tail -n 1 | sed 's/.* //'`
      pkgparsec="-package parsec-$pkgversion";;
   *) pkgparsec="";;
 esac
@@ -664,7 +664,7 @@ esac
 # Test if we can include the time package explicitly
 $hcpkg describe time > /dev/null 2> /dev/null
 case $? in
-  0) pkgversion=`ghc-pkg field time version | sed 's/.* //'`
+  0) pkgversion=`ghc-pkg field time version | tail -n 1 | sed 's/.* //'`
      pkgtime="-package time-$pkgversion";;
   *) pkgtime="";;
 esac
@@ -672,7 +672,7 @@ esac
 # Test if we can include the stm package explicitly
 $hcpkg describe stm > /dev/null 2> /dev/null
 case $? in
-  0) stmpkgversion=`ghc-pkg field stm version | sed 's/.* //'`
+  0) stmpkgversion=`ghc-pkg field stm version | tail -n 1 | sed 's/.* //'`
      pkgstm="-package stm-$stmpkgversion";;
   *) pkgstm="";;
 esac
