@@ -64,9 +64,10 @@ EWXWEXPORT(int, wxMenuBar_FindMenuItem)(void* _obj, wxChar* menuString, wxChar* 
 	return ((wxMenuBar*)_obj)->FindMenuItem(menuString, itemString);
 }
 	
-EWXWEXPORT(void*, wxMenuBar_FindItem)(void* _obj, int id, void *menu)
+EWXWEXPORT(void*, wxMenuBar_FindItem)(void* _obj, int id)
 {
-	return (void*)((wxMenuBar*)_obj)->FindItem(id, (wxMenu**) menu);
+    wxMenu* _foo = new wxMenu;
+	return (void*)((wxMenuBar*)_obj)->FindItem(id, &_foo);
 }
 	
 EWXWEXPORT(int, wxMenuBar_FindMenu)(void* _obj, wxChar* title)

@@ -1,8 +1,22 @@
 ----------------------------------------------------------------------
   Copyright (c) 2003, 2004, 2005 Daan Leijen.
+  Copyright (c) 2006, 2007, 2008 Jeremy O'Donoghue, 
+                                 Eric Kow, 
+                                 Kido Takahiro (Shelarcy),
+                                 Mads Lindstroem
 
   See license.txt for details.
 ----------------------------------------------------------------------
+
+Version 0.10.5
+--------------
+
+Backward compatible additions
+- Added support for using XRC resource files to load most controls
+  and menus attached to frames.
+- Added sample file showing how to use XRC support to attach command
+  handlers to menu items
+- Added sample file showing how to use properties with many controls.
 
 Version 0.10.4
 -------------
@@ -15,7 +29,7 @@ Non backward compatible changes:
   2.8 documentation for wxcore functions
 - Added "TopLevelWindow", which mainly removes some functionality 
   from "Frame"
-- Changed "--with-stc" argument to "--with-cotrib"
+- Changed "--with-stc" argument to "--with-contrib"
 - Removed "Wave" type synonym
 
 Backward compatible additions:

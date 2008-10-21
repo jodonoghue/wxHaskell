@@ -768,6 +768,12 @@ feature {NONE}
     wxSASH_STATUS_OK:			INTEGER is 0
     wxSASH_STATUS_OUT_OF_RANGE:	INTEGER is 1
 
+    -- from: xmlres.h
+    wxXRC_NONE:                 INTEGER is 0
+    wxXRC_USE_LOCALE:           INTEGER is 1
+    wxXRC_NO_SUBCLASSING:       INTEGER is 2
+    wxXRC_NO_RELOADING:         INTEGER is 4
+
 	-- from: settings.h
 
 	wxSYS_WHITE_BRUSH         : INTEGER is 0

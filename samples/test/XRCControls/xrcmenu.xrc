@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="menuTest">
+		<style>wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
+		<exstyle>wxFRAME_EX_METAL</exstyle>
+		<size>500,300</size>
+		<title>WxHaskell Menu Test</title>
+		<object class="wxMenuBar" name="mb1">
+			<label></label>
+			<object class="wxMenu" name="file">
+				<label>_File</label>
+				<object class="wxMenuItem" name="new">
+					<label>&amp;New\tCtrl+N</label>
+					<help>Open a thrilling new file</help>
+				</object>
+				<object class="wxMenuItem" name="open">
+					<label>&amp;Open\tCtrl+O</label>
+					<help>Open a file</help>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="exit">
+					<label>E&amp;xit\tAlt+F4</label>
+					<help>Terminate with extreme prejudice</help>
+				</object>
+			</object>
+			<object class="wxMenu" name="edit">
+				<label>_Edit</label>
+				<object class="wxMenuItem" name="something">
+					<label>So&amp;mething</label>
+					<help>This might do something in a real application</help>
+					<enabled>0</enabled>
+				</object>
+			</object>
+			<object class="wxMenu" name="help">
+				<label>_Help</label>
+				<object class="wxMenuItem" name="about">
+					<label>&amp;About Menu Test</label>
+					<help>Credits for this fine and functional sample</help>
+				</object>
+			</object>
+		</object>
+		<object class="wxTextCtrl" name="m_textCtrl1">
+			<style>wxTE_AUTO_URL|wxTE_MULTILINE|wxTE_RICH2</style>
+			<value></value>
+			<maxlength>0</maxlength>
+		</object>
+		<object class="wxStatusBar" name="status_bar">
+			<style>wxST_SIZEGRIP</style>
+			<fields>1</fields>
+		</object>
+	</object>
+</resource>

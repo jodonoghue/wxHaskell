@@ -118,9 +118,10 @@ EWXWEXPORT(int, wxMenu_FindItemByLabel)(void* _obj, wxChar* itemString)
 	return ((wxMenu*)_obj)->FindItem(itemString);
 }
 	
-EWXWEXPORT(void*, wxMenu_FindItem)(void* _obj, int id, void* menu)
+EWXWEXPORT(void*, wxMenu_FindItem)(void* _obj, int id)
 {
-	return (void*)((wxMenu*)_obj)->FindItem(id, (wxMenu**) menu);
+    wxMenu* _foo = new wxMenu;
+    return (void*)((wxMenu*)_obj)->FindItem(id, &_foo);
 }
 	
 EWXWEXPORT(void, wxMenu_Enable)(void* _obj, int id, int enable)

@@ -30,33 +30,34 @@ module Graphics.UI.WX.Controls
       , focusOn
       -- * Controls
       -- ** Button
-      , Button, button, buttonEx, smallButton
-      , BitmapButton, bitmapButton
+      , Button, button, buttonEx, smallButton, buttonRes
+      , BitmapButton, bitmapButton, bitmapButtonRes
       -- ** Text entry
       , TextCtrl, entry, textEntry, textCtrl, textCtrlRich, textCtrlEx
-      , processEnter, processTab
+      , textCtrlRes, processEnter, processTab
       -- ** CheckBox
-      , CheckBox, checkBox
+      , CheckBox, checkBox, checkBoxRes
       -- ** Choice
-      , Choice, choice, choiceEx
+      , Choice, choice, choiceEx, choiceRes
       -- ** ComboBox
-      , ComboBox, comboBox, comboBoxEx
+      , ComboBox, comboBox, comboBoxEx, comboBoxRes
       -- ** ListBox
-      , ListBox, SingleListBox, MultiListBox, singleListBox, multiListBox
+      , ListBox, SingleListBox, MultiListBox
+      , singleListBox, singleListBoxRes, multiListBox, multiListBoxRes
       -- ** RadioBox
-      , RadioBox, radioBox
+      , RadioBox, radioBox, radioBoxRes
       -- ** Spin Control
-      , SpinCtrl, spinCtrl
+      , SpinCtrl, spinCtrl, spinCtrlRes
       -- ** Slider
-      , Slider, hslider, vslider, sliderEx
+      , Slider, hslider, vslider, sliderEx, sliderRes
       -- ** Gauge
-      , Gauge, hgauge, vgauge, gaugeEx
+      , Gauge, hgauge, vgauge, gaugeEx, gaugeRes
       -- ** Tree control
-      , TreeCtrl, treeCtrl, treeCtrlEx, treeEvent
+      , TreeCtrl, treeCtrl, treeCtrlEx, treeEvent, treeCtrlRes
       -- ** List control
-      , ListCtrl, listCtrl, listCtrlEx, listEvent, columns
+      , ListCtrl, listCtrl, listCtrlEx, listCtrlRes, listEvent, columns
       -- ** Static text
-      , StaticText, staticText
+      , StaticText, staticText, staticTextRes
       -- ** SplitterWindow
       , SplitterWindow, splitterWindow
       -- ** ImageList
@@ -182,6 +183,18 @@ buttonEx parent stl props
        set b props
        return b
 
+-- | Complete the construction of a push button instance which has been loaded
+--   from a resource file.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
+buttonRes :: Window a -> String -> [Prop (Button ())] -> IO (Button ())
+buttonRes parent name props =
+    do b <- xmlResourceGetButton parent name
+       set b props
+       return b
+
 instance Commanding (Button a) where
   command  = newEvent "command" buttonGetOnCommand buttonOnCommand
 
@@ -198,6 +211,18 @@ bitmapButton parent props
     do bb <- bitmapButtonCreate parent id nullBitmap rect flags
        set bb props
        return bb
+
+-- | Complete the construction of a bitmap button instance which has been loaded
+--   from a resource file.
+--
+-- * Instances: 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
+bitmapButtonRes :: Window a -> String -> [Prop (BitmapButton ())] -> IO (BitmapButton ())
+bitmapButtonRes parent name props =
+    do b <- xmlResourceGetBitmapButton parent name
+       set b props
+       return b
 
 instance Pictured (BitmapButton a) where
   picture
@@ -351,6 +376,17 @@ textCtrlEx parent stl props
        set e props
        return e
 
+-- | Complete the construction of a text control instance which has been loaded
+--   from a resource file.
+--
+-- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
+textCtrlRes :: Window a -> String -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
+textCtrlRes parent name props =
+    do t <- xmlResourceGetTextCtrl parent name
+       set t props
+       return t
 
 instance Commanding (TextCtrl a) where
   command = newEvent "command" textCtrlGetOnTextEnter textCtrlOnTextEnter
@@ -397,6 +433,13 @@ staticText parent props
        set t props
        return t
 
+-- | Complete the construction of a static text label instance which has been loaded
+--   from a resource file.
+staticTextRes :: Window a -> String -> [Prop (StaticText ())] -> IO (StaticText ())
+staticTextRes parent name props =
+    do t <- xmlResourceGetStaticText parent name
+       set t props
+       return t
 
 {--------------------------------------------------------------------------------
   Check box
@@ -422,6 +465,18 @@ checkBox parent props
     initialWindow $ \id rect ->
     initialText   $ \txt -> \props flags ->
     do c <- checkBoxCreate parent id txt rect flags
+       set c props
+       return c
+
+-- | Complete the construction of a check box instance which has been loaded
+--   from a resource file.
+--
+-- * Instances: 'Commanding','Checkable' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
+checkBoxRes :: Window a -> String -> [Prop (CheckBox ())] -> IO (CheckBox ())
+checkBoxRes parent name props =
+    do c <- xmlResourceGetCheckBox parent name
        set c props
        return c
 
@@ -494,6 +549,14 @@ choiceEx parent flags props
        set c props
        return c
 
+-- | Complete the construction of a choice instance which has been loaded
+--   from a resource file.
+choiceRes :: Window a -> String -> [Prop (Choice ())] -> IO (Choice ())
+choiceRes parent name props =
+    do c <- xmlResourceGetChoice parent name
+       set c props
+       return c
+
 {--------------------------------------------------------------------------------
   ComboBox
 --------------------------------------------------------------------------------}
@@ -557,6 +620,13 @@ comboBoxEx parent flags props
        set cb props
        return cb
 
+-- | Complete the construction of a combo box instance which has been loaded
+--   from a resource file.
+comboBoxRes :: Window a -> String -> [Prop (ComboBox ())] -> IO (ComboBox ())
+comboBoxRes parent name props =
+    do c <- xmlResourceGetComboBox parent name
+       set c props
+       return c
 
 {--------------------------------------------------------------------------------
   ListBox
@@ -635,6 +705,15 @@ singleListBox parent props
        set sl props
        return sl
 
+-- | Complete the construction of a single list box instance which has been loaded
+--   from a resource file.
+singleListBoxRes :: Window a -> String -> [Prop (SingleListBox ())] -> IO (SingleListBox ())
+singleListBoxRes parent name props =
+    do l <- xmlResourceGetListBox parent name
+       let sl = (objectCast l :: SingleListBox())
+       set sl props
+       return sl
+
 -- | Create a multi selection list box.
 ----
 -- * Instances: 'Sorted', 'Selecting','Selections','Items' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
@@ -647,6 +726,15 @@ multiListBox parent props
     initialSorted $ \props flags ->
     do lb <- listBoxCreate parent id rect [] flags
        let ml = (objectCast lb :: MultiListBox ())
+       set ml props
+       return ml
+
+-- | Complete the construction of a single list box instance which has been loaded
+--   from a resource file.
+multiListBoxRes :: Window a -> String -> [Prop (MultiListBox ())] -> IO (MultiListBox ())
+multiListBoxRes parent name props =
+    do l <- xmlResourceGetListBox parent name
+       let ml = (objectCast l :: MultiListBox())
        set ml props
        return ml
 
@@ -690,6 +778,14 @@ radioBox parent direction labels props
        set r props
        return r
 
+-- | Complete the construction of a radio box instance which has been loaded
+--   from a resource file.
+radioBoxRes :: Window a -> String -> [Prop (RadioBox ())] -> IO (RadioBox ())
+radioBoxRes parent name props =
+    do rb <- xmlResourceGetRadioBox parent name
+       set rb props
+       return rb
+
 {--------------------------------------------------------------------------------
   Gauge
 --------------------------------------------------------------------------------}
@@ -725,6 +821,13 @@ gaugeEx parent range style props
        set g props
        return g
 
+-- | Complete the construction of a gauge instance which has been loaded
+--   from a resource file.
+gaugeRes :: Window a -> String -> [Prop (Gauge ())] -> IO (Gauge ())
+gaugeRes parent name props =
+    do g <- xmlResourceGetGauge parent name
+       set g props
+       return g
 
 instance Selection (Gauge a) where
   selection
@@ -779,6 +882,14 @@ sliderEx parent min max style props
        set s props
        return s
 
+-- | Complete the construction of a slider instance which has been loaded
+--   from a resource file.
+sliderRes :: Window a -> String -> [Prop (Slider ())] -> IO (Slider ())
+sliderRes parent name props =
+    do s <- xmlResourceGetSlider parent name
+       set s props
+       return s
+
 instance Selection (Slider a) where
   selection
     = newAttr "selection" getter setter
@@ -812,6 +923,15 @@ spinCtrl parent lo hi props
     do sc <- spinCtrlCreate parent id txt rect flags (min lo hi) (max lo hi) lo
        set sc props
        return sc
+
+-- | Complete the construction of a spin control instance which has been loaded
+--   from a resource file.
+spinCtrlRes :: Window a -> String -> [Prop (SpinCtrl ())] -> IO (SpinCtrl ())
+spinCtrlRes parent name props =
+    do s <- xmlResourceGetSpinCtrl parent name
+       set s props
+       return s
+
 
 instance Selection (SpinCtrl a) where
   selection
@@ -865,6 +985,14 @@ treeCtrlEx parent style props
   = feed2 props style $
     initialContainer $ \id rect -> \props flags ->
     do t <- treeCtrlCreate2 parent id rect flags
+       set t props
+       return t
+
+-- | Complete the construction of a tree control instance which has been loaded
+--   from a resource file.
+treeCtrlRes :: Window a -> String -> [Prop (TreeCtrl ())] -> IO (TreeCtrl ())
+treeCtrlRes parent name props =
+    do t <- xmlResourceGetTreeCtrl parent name
        set t props
        return t
 
@@ -970,6 +1098,14 @@ listCtrlEx parent style props
   = feed2 props style $
     initialContainer $ \id rect -> \props flags ->
     do l <- listCtrlCreate parent id rect flags
+       set l props
+       return l
+
+-- | Complete the construction of a list control instance which has been loaded
+--   from a resource file.
+listCtrlRes :: Window a -> String -> [Prop (ListCtrl ())] -> IO (ListCtrl ())
+listCtrlRes parent name props =
+    do l <- xmlResourceGetListCtrl parent name
        set l props
        return l
 

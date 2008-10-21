@@ -36,11 +36,12 @@ module Graphics.UI.WX.Menu
     ( -- * Menu
       -- ** Menu containers
       MenuBar, Menu, menuBar, menuPopup, menuPane, menuHelp
+    , menuRes, menuBarLoadRes
     -- ** Menu events
     , menu, menuId
       -- ** Menu items
     , MenuItem, menuItem, menuQuit, menuAbout, menuItemEx
-    , menuLine, menuSub, menuRadioItem
+    , menuItemOnCommandRes, menuLine, menuSub, menuRadioItem
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
     , ToolBarItem, toolMenu, toolItem, toolControl, tool
@@ -95,6 +96,15 @@ menuBar
            menuSetTitle menu ""
            menuBarAppend mb menu title
 
+-- | Retrieve a menu bar instance which has been constructed by loading
+--   a resource file for a given top level window.
+menuBarLoadRes :: Window a -> FilePath -> String -> IO (MenuBar ())
+menuBarLoadRes parent rc name =
+    do
+      res <- xmlResourceCreateFromFile rc wxXRC_USE_LOCALE
+      m   <- xmlResourceLoadMenuBar res parent name
+      return m
+
 -- | Show a popup menu for a certain window.
 menuPopup :: Menu b -> Point -> Window a -> IO ()
 menuPopup menu pt parent
@@ -125,6 +135,19 @@ menuHelp :: [Prop (Menu ())] -> IO (Menu ())
 menuHelp props
   = menuPane ([text := "&Help"] ++ props)
 
+-- | Complete the construction of a menu which has been loaded
+--   from a resource file.
+-- | Get a menu by name from a menu loaded from a resource file, 
+--   given the frame which owns the menu. You
+--   can directly set properties on the item as part of the call, which
+--   enables simple connection of event handlers (e.g. on command).
+menuRes :: Window a -> String -> [Prop (Menu ())] -> IO (Menu ())
+menuRes parent menu_name props =
+    do
+      menu <- xmlResourceGetMenu parent menu_name
+      set menu props
+      return menu
+
 instance Textual (Menu a) where
   text
     = newAttr "text" menuGetTitle menuSetTitle
@@ -145,7 +168,7 @@ menuSub parent menu props
        menuSetTitle menu ""           -- remove title on submenus
        menuAppendSub parent id label menu ""
        menuPropagateEvtHandlers menu  -- move the evtHandlers to the parent
-       item <- menuFindItem parent id nullPtr
+       item <- menuFindItem parent id
        set item props
        return item
 
@@ -240,7 +263,7 @@ menuItemEx menu id label kind props
   = do if (kind == wxITEM_RADIO)
         then menuAppendRadioItem menu id label ""
         else menuAppend menu id label "" (kind == wxITEM_CHECK)
-       item <- menuFindItem menu id nullPtr
+       item <- menuFindItem menu id
        set item props
        return item
 
@@ -317,6 +340,20 @@ menuItemOnCommand item io
     insert key val ((k,v):xs) | key == k  = (key,val):xs
                               | otherwise = (k,v):insert key val xs
 
+-- | When setting event handlers on menu items which have been loaded from
+--   XRC resource files, properties cannot be used as the menu item
+--   instances are opaque to wxHaskell.
+--
+--   This function offers a convenient way to attach menu item event
+--   handlers, given the identity of the window which owns the menu containing
+--   the menu item, and the name of the menu item
+
+menuItemOnCommandRes :: Window a -> String -> IO () -> IO ()
+menuItemOnCommandRes win item_name handler =
+    do
+      res     <- xmlResourceGet
+      item_id <- xmlResourceGetXRCID res item_name
+      evtHandlerOnMenuCommand win item_id handler
 
 -- Propagate the (delayed) event handlers of a submenu to the parent menu.
 -- This is necessary for event handlers set on menu items in a submenu that

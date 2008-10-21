@@ -22,6 +22,7 @@
 module Graphics.UI.WX.Frame
     ( -- * Frames
       Frame, frame, frameFixed, frameTool, frameEx
+    , frameLoadRes, frameLoadChildRes
     , initialFrame
       -- * MDI Frames
     , MDIParentFrame, MDIChildFrame
@@ -76,6 +77,21 @@ frameEx style props parent
        set f props
        return f
      
+-- | Complete the construction of a top level frame which has been loaded
+--   from a resource file.
+frameLoadRes :: FilePath -> String -> [Prop (Frame ())] -> IO (Frame ())
+frameLoadRes rc name props = 
+    frameLoadChildRes objectNull rc name props
+
+-- | Complete the construction of a frame whcih is the child of some
+--   existing parent window.
+frameLoadChildRes :: Window a -> FilePath -> String -> [Prop (Frame ())] -> IO (Frame ())
+frameLoadChildRes parent rc name props =
+    do res <- xmlResourceCreateFromFile rc wxXRC_USE_LOCALE
+       f   <- xmlResourceLoadFrame res parent name
+       set f props
+       return f
+
 -- | initial Frame flags
 initialFrame :: (Id -> Rect -> String -> [Prop (Window w)] -> Style -> a) -> [Prop (Window w)] -> Style -> a
 initialFrame cont 

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="f">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>528,367</size>
+		<title>Controls</title>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>3</option>
+				<flag>wxEXPAND | wxALL</flag>
+				<border>1</border>
+				<object class="wxNotebook" name="nb">
+					<object class="notebookpage">
+						<label>buttons</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="p1">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxHORIZONTAL</orient>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<size>0,0</size>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALIGN_CENTER|wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="ok">
+										<label>Ok</label>
+										<default>1</default>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALIGN_CENTER|wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="quit">
+										<label>Quit</label>
+										<default>0</default>
+									</object>
+								</object>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<size>0,0</size>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>radio box</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="p2">
+							<style>wxTAB_TRAVERSAL</style>
+							<tooltip>radio group 2</tooltip>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>10</border>
+									<object class="wxButton" name="rb1">
+										<label>disable</label>
+										<default>0</default>
+									</object>
+								</object>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>10</border>
+									<size>0,0</size>
+								</object>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+											<border>10</border>
+											<object class="wxRadioBox" name="r1">
+												<style>wxRA_SPECIFY_COLS</style>
+												<label>radio box</label>
+												<selection>0</selection>
+												<content>
+													<item>first</item>
+													<item>second</item>
+													<item>third</item>
+												</content>
+												<dimension>1</dimension>
+											</object>
+										</object>
+										<object class="spacer">
+											<option>1</option>
+											<flag>wxEXPAND</flag>
+											<border>5</border>
+											<size>0,0</size>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT|wxALL</flag>
+											<border>10</border>
+											<object class="wxRadioBox" name="r2">
+												<style>wxRA_SPECIFY_ROWS</style>
+												<label></label>
+												<selection>2</selection>
+												<content>
+													<item>first</item>
+													<item>second</item>
+													<item>third</item>
+												</content>
+												<dimension>1</dimension>
+											</object>
+										</object>
+									</object>
+								</object>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<size>0,0</size>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>choice</label>
+						<selected>1</selected>
+						<object class="wxPanel" name="p3">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="cb1">
+										<label>disable</label>
+										<default>0</default>
+									</object>
+								</object>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<size>0,0</size>
+								</object>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxChoice" name="c1">
+												<tooltip>unsorted choices</tooltip>
+												<selection>0</selection>
+												<content>
+													<item>mies</item>
+													<item>noot</item>
+													<item>aap</item>
+												</content>
+											</object>
+										</object>
+										<object class="spacer">
+											<option>1</option>
+											<flag></flag>
+											<border>5</border>
+											<size>0,0</size>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxStaticText" name="m_staticText1">
+												<label>sorted:</label>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL|wxFIXED_MINSIZE</flag>
+											<border>5</border>
+											<object class="wxChoice" name="c2">
+												<tooltip>sorted choices</tooltip>
+												<selection>1</selection>
+												<content>
+													<item>aap</item>
+													<item>mies</item>
+													<item>noot</item>
+												</content>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>list box</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="p4">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>10</border>
+									<object class="wxCheckBox" name="sc1">
+										<label>enable the listbox</label>
+										<checked>1</checked>
+									</object>
+								</object>
+								<object class="spacer">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<size>0,0</size>
+								</object>
+								<object class="sizeritem">
+									<option>2</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxBoxSizer">
+										<orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+											<border>5</border>
+											<object class="wxListBox" name="sl1">
+												<style>wxLB_SINGLE</style>
+												<content>
+													<item>mies</item>
+													<item>noot</item>
+													<item>aap</item>
+												</content>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+											<border>5</border>
+											<object class="wxListBox" name="sl2">
+												<style>wxLB_SINGLE|wxLB_SORT</style>
+												<content>
+													<item>mies</item>
+													<item>noot</item>
+													<item>aap</item>
+												</content>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>slider</label>
+						<selected>0</selected>
+						<object class="wxPanel" name="p5">
+							<style>wxTAB_TRAVERSAL</style>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>10</border>
+									<object class="wxSlider" name="s">
+										<style>wxSL_HORIZONTAL|wxSL_LABELS</style>
+										<value>50</value>
+										<min>1</min>
+										<max>100</max>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>10</border>
+									<object class="wxGauge" name="g">
+										<style>wxGA_HORIZONTAL|wxGA_SMOOTH</style>
+										<range>100</range>
+										<value>50</value>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>1</border>
+				<object class="wxTextCtrl" name="textlog">
+					<style>wxTE_DONTWRAP|wxTE_MULTILINE</style>
+					<enabled>0</enabled>
+					<value></value>
+					<maxlength>0</maxlength>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

@@ -108,3 +108,7 @@ int expEVT_STC_HOTSPOT_CLICK();
 int expEVT_STC_HOTSPOT_DCLICK();
 int expEVT_STC_CALLTIP_CLICK();
 int expEVT_STC_AUTOCOMP_SELECTION(); 
+
+/* Styled Text Control as an XML Resource */
+TClassDefExtend(wxXmlResource,wxObject)
+TClass(wxStyledTextCtrl) wxXmlResource_GetStyledTextCtrl( TSelf(wxWindow) _obj, TClass(wxString) str_id );
