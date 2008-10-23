@@ -429,9 +429,9 @@ EWXWEXPORT(wxXmlResource*,wxXmlResource_Get)(wxXmlResource* _obj)
 // BUILD_XRCGETCTRL_FN constructs functions for geting control pointers out of 
 // window hierarchies created from XRC files. The functions themselves 
 #define BUILD_XRCGETCTRL_FN(_typ)                                                            \
-  EWXWEXPORT(wx##_typ##*, wxXmlResource_Get##_typ)(wxWindow* _win, wxString* _str_id)          \
+  EWXWEXPORT(wx##_typ *, wxXmlResource_Get##_typ)(wxWindow* _win, wxString* _str_id)          \
   {                                                                                          \
-  return reinterpret_cast<wx##_typ##*>(_win->FindWindow(wxXmlResource::GetXRCID(*_str_id))); \
+  return reinterpret_cast<wx##_typ *>(_win->FindWindow(wxXmlResource::GetXRCID(*_str_id))); \
   }
 // Construct the XRC control getter functions
 BUILD_XRCGETCTRL_FN(Sizer)
