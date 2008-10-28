@@ -11,13 +11,6 @@
 
 Defines common GUI controls.
 -}
-
-{-
-    Modification History:
-    When    Who                          What
-    300806  jeremy.odonoghue@gmail.com   Set list item mask (wxLIST_MASK_TEXT)
-                                         (on behalf of shelarcy@gmail.com)
--}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Controls
     ( -- * Classes

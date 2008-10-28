@@ -54,13 +54,6 @@ a 'closing' event handler:
 
 > set w [on closing := do{ ...; propagateEvent }]
 -}
-
-{-
-    Modification History:
-    When    Who                          What
-    300806  jeremy.odonoghue@gmail.com   Add support for calendar event
-                                         (on behalf of shelarcy@gmail.com)
--}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Events
             ( -- * Event

@@ -25,12 +25,6 @@ entire application.
 >              ,on (menu mclose) := ...] 
 
 -}
-{-
-    Modification History:
-    When    Who                          What
-    300806  jeremy.odonoghue@gmail.com   Add support for toolbar divider
-                                         (on behalf of shelarcy@gmail.com)
--}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Menu
     ( -- * Menu
