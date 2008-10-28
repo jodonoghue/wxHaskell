@@ -3,7 +3,7 @@
     Copyright   :  (c) Daan Leijen 2002
     License     :  BSD-style
 
-    Maintainer  :  daan@cs.uu.nl
+    Maintainer  :  wxhaskell-devel@lists.sourceforge.net
     Stability   :  provisional
     Portability :  portable
 

@@ -1,3 +1,13 @@
+-----------------------------------------------------------------------------------------
+{-| Module      :  CompileSTC
+    Copyright   :  (c) Haste Developper Team 2004, 2005
+    License     :  BSD-style
+
+    Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+    Stability   :  provisional
+    Portability :  portable
+-}
+-----------------------------------------------------------------------------------------
 module CompileSTC ( compileSTC ) where
 
 import Text.ParserCombinators.Parsec

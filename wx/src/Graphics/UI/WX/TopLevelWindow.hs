@@ -4,7 +4,7 @@
 	Copyright   :  (c) Jeremy O'Donoghue, 2007
 	License     :  wxWindows
 
-	Maintainer  :  jeremy.odonoghue@gamil.com
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
 	Stability   :  provisional
 	Portability :  portable
 
