@@ -21,6 +21,7 @@ module Graphics.UI.WXCore.Controls
       -- * Wrappers
     , listBoxGetSelectionList
     , execClipBoardData
+      -- * Deprecated
     , wxcAppUSleep
     ) where
 
@@ -126,4 +127,5 @@ execClipBoardData cl event = bracket_ (clipboardOpen cl) (clipboardClose cl) (ev
 {-# DEPRECATED wxcAppUSleep "Use wxcAppMilliSleep instead" #-}
 -- | This function just left for backward-compatiblity.
 -- Update your code to use 'wxcAppMilliSleep' instead.
+wxcAppUSleep :: Int -> IO ()
 wxcAppUSleep = wxcAppMilliSleep

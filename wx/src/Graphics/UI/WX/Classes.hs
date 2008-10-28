@@ -270,6 +270,7 @@ class Able w where
   -- | Enable, or disable, the widget.
   enabled :: Attr w Bool
 
+{-# DEPRECATED enable "Use enabled instead" #-}
 -- | Deprecated: use 'enabled' instead
 enable :: Able w => Attr w Bool
 enable = enabled

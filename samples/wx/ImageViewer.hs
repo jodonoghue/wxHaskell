@@ -64,8 +64,8 @@ imageViewer
        -- note: set the layout before the menubar!
        set f [layout           := column 1 [hfill $ hrule 1  -- add divider between toolbar and scrolledWindow
                                            ,fill (widget sw)]
-             ,statusbar        := [status]
-             ,menubar          := [file,hlp]
+             ,statusBar        := [status]
+             ,menuBar          := [file,hlp]
              ,outerSize        := sz 400 300    -- niceness
              ,on (menu about)  := infoDialog f "About ImageViewer" "This is a wxHaskell demo"
              ,on (menu quit)   := close f

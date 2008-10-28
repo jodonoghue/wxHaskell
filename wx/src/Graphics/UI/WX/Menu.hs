@@ -61,6 +61,7 @@ import Graphics.UI.WX.Events
 {--------------------------------------------------------------------------------
   Menubar
 --------------------------------------------------------------------------------}
+{-# DEPRECATED menubar "Use menuBar instead" #-}
 -- | /Deprecated/: use 'menuBar'.
 menubar :: WriteAttr (Frame a) [Menu ()]
 menubar
@@ -108,6 +109,7 @@ menuPopup menu pt parent
 {--------------------------------------------------------------------------------
   Menu
 --------------------------------------------------------------------------------}
+{-# DEPRECATED menuList "Use menuPane instead" #-}
 -- | /Deprecated/: use 'menuPane'.
 menuList :: [Prop (Menu ())] -> IO (Menu ())
 menuList 
@@ -630,6 +632,7 @@ instance Textual StatusField where
 
 
 
+{-# DEPRECATED statusbar "Use statusBar instead" #-}
 -- | /Deprecated/: use 'statusBar'. 
 statusbar :: WriteAttr (Frame a) [StatusField]
 statusbar

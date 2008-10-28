@@ -282,6 +282,7 @@ processExecAsyncTimed parent cmd readInputOnEnd onEndProcess onOutput onErrOutpu
 
 
 
+{-# DEPRECATED processExecAsync "Use processExecAsyncTimed instead (if possible)" #-}
 -- | deprecated: use 'processExecAsyncTimed' instead (if possible).
 -- (@processExecAsync command bufferSize onEndProcess onOutput onErrorOutput parent@) starts
 -- the @command@ asynchronously. The handler @onEndProcess@ is called when the process

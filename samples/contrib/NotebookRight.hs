@@ -40,7 +40,7 @@ gui
  
  
        -- specify layout
-       set f [menubar := [file]
+       set f [menuBar := [file]
              ,layout :=
                 container p $
                 column 0
