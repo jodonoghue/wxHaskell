@@ -73,12 +73,13 @@ gui
        set p [ on resize := repaint p
              , on click  := klik p desert
              , on paint  := drawDesert desert b 
-             , defaultButton := q
              ]
        set f [ layout := column 0
                          [ fill $ widget p
                          , hfloatCentre $ margin 5 $ row 5 [widget q, widget h, widget a]
-                         ]]
+                         ]
+             , defaultButton := q
+             ]
        return ()
 
 drawDesert :: Var Board -> Bitmap () -> DC () -> Rect -> IO ()
