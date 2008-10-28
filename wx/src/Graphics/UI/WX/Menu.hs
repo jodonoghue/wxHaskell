@@ -1,28 +1,28 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Menu
-    Copyright   :  (c) Daan Leijen 2003
-                   (c) Shelarcy (shelarcy@gmail.com) 2006
-    License     :  wxWindows
+{-|	Module      :  Menu
+	Copyright   :  (c) Daan Leijen 2003
+	               (c) Shelarcy (shelarcy@gmail.com) 2006
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Defines Menus, toolbars, and statusbars.
+Defines Menus, toolbars, and statusbars.
     
-    The function 'menuPane' is used to create a menu
-    that can contain 'menuItem's. Menu items can contain event handlers
-    using ('on' 'command'), but they can also be set, using the 'menu'
-    function, on a frame or (mdi) window so that the menu command is handled
-    in the context of the active window instead of the context of the
-    entire application. 
+The function 'menuPane' is used to create a menu
+that can contain 'menuItem's. Menu items can contain event handlers
+using ('on' 'command'), but they can also be set, using the 'menu'
+function, on a frame or (mdi) window so that the menu command is handled
+in the context of the active window instead of the context of the
+entire application. 
 
-   > do frame  <- frame    [text := "Demo"]
-   >    file   <- menuPane [text := "&File"]
-   >    mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the document"] 
-   >    set frame [menuBar          := [file] 
-   >              ,on (menu mclose) := ...] 
+> do frame  <- frame    [text := "Demo"]
+>    file   <- menuPane [text := "&File"]
+>    mclose <- menuItem file [text := "&Close\tCtrl+C", help := "Close the document"] 
+>    set frame [menuBar          := [file] 
+>              ,on (menu mclose) := ...] 
 
 -}
 {-

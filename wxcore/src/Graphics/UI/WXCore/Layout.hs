@@ -1,123 +1,123 @@
 {-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  Layout
-    Copyright   :  (c) Daan Leijen & Wijnand van Suijlen 2003
-    License     :  wxWindows
+{-|	Module      :  Layout
+	Copyright   :  (c) Daan Leijen & Wijnand van Suijlen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Combinators to specify layout. (These combinators use wxWindows 'Sizer' objects).
+Combinators to specify layout. (These combinators use wxWindows 'Sizer' objects).
 
-    Layout can be specified using 'windowSetLayout'. For example:
+Layout can be specified using 'windowSetLayout'. For example:
 
-    > do f  <- frameCreateTopFrame "Test"
-    >    ok <- buttonCreate f idAny "Bye" rectNull 0
-    >    windowSetLayout f (widget ok)
-    >    ...
+> do f  <- frameCreateTopFrame "Test"
+>    ok <- buttonCreate f idAny "Bye" rectNull 0
+>    windowSetLayout f (widget ok)
+>    ...
 
-    The 'windowSetLayout' function takes 'Layout' as its argument.
-    The 'widget' combinator creates a layout from a window. The 'space' combinator creates
-    an empty layout with a specific width and height. Furthermore, we have the 'label' combinator
-    to create a static label label and 'boxed' to create a labeled border around a layout.
-    The 'grid' combinator lays out elements in a table with a given space between the elements.
-    Here is for example a layout for retrieving an /x/ and /y/ coordinate from the user, with 5 pixels space
-    between the controls:
+The 'windowSetLayout' function takes 'Layout' as its argument.
+The 'widget' combinator creates a layout from a window. The 'space' combinator creates
+an empty layout with a specific width and height. Furthermore, we have the 'label' combinator
+to create a static label label and 'boxed' to create a labeled border around a layout.
+The 'grid' combinator lays out elements in a table with a given space between the elements.
+Here is for example a layout for retrieving an /x/ and /y/ coordinate from the user, with 5 pixels space
+between the controls:
 
-    > boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
-    >                               ,[label "y", widget yinput]])
+> boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
+>                               ,[label "y", widget yinput]])
 
-    Combinators like 'row' and 'column' are specific instances of grids. We can use
-    these combinator to good effect to add an /ok/ and /cancel/ button at the bottom of our dialog:
+Combinators like 'row' and 'column' are specific instances of grids. We can use
+these combinator to good effect to add an /ok/ and /cancel/ button at the bottom of our dialog:
 
-    > column 5 [ boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
-    >                                          ,[label "y", widget yinput]])
-    >          , row 5 [widget ok, widget cancel]]
+> column 5 [ boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
+>                                          ,[label "y", widget yinput]])
+>          , row 5 [widget ok, widget cancel]]
 
-    Layout /tranformers/ influence attributes of a layout. The 'margin' combinator adds a
-    margin around a layout. The /align/ combinators specify how a combinator is aligned when
-    the assigned area is larger than the layout itself. We can use these transformers to
-    add a margin around our dialog and to align the buttons to the bottom right (instead of the
-    default top-left):
+Layout /tranformers/ influence attributes of a layout. The 'margin' combinator adds a
+margin around a layout. The /align/ combinators specify how a combinator is aligned when
+the assigned area is larger than the layout itself. We can use these transformers to
+add a margin around our dialog and to align the buttons to the bottom right (instead of the
+default top-left):
 
-    > margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
-    >                                                      ,[label "y", widget yinput]])
-    >                      , alignBottomRight $ row 5 [widget ok, widget cancel]]
+> margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", widget xinput]
+>                                                      ,[label "y", widget yinput]])
+>                      , alignBottomRight $ row 5 [widget ok, widget cancel]]
 
-    Besides aligning a layout in its assigned area, we can also specify that a layout should
-    expand to fill the assigned area. The 'shaped' combinator fills an area while maintaining the
-    original proportions (or aspect ratio) of a layout. The 'expand' combinator always tries to fill
-    the entire area (and alignment is ignored).
+Besides aligning a layout in its assigned area, we can also specify that a layout should
+expand to fill the assigned area. The 'shaped' combinator fills an area while maintaining the
+original proportions (or aspect ratio) of a layout. The 'expand' combinator always tries to fill
+the entire area (and alignment is ignored).
 
-    The final attribute is the /stretch/ of a layout. A stretchable layout may get a larger
-    area assigned than the minimally required area. This can be used to fill out the entire parent
-    area -- this happens for example when a user enlarges a dialog.
+The final attribute is the /stretch/ of a layout. A stretchable layout may get a larger
+area assigned than the minimally required area. This can be used to fill out the entire parent
+area -- this happens for example when a user enlarges a dialog.
 
-    The default stretch and expansion mode of layout containers, like 'grid' and 'boxed', depends on the
-    stretch of the child layouts.  A column of a /grid/ is only stretchable when all
-    elements of that column have horizontal stretch. The same holds for rows with vertical stretch.
-    When any column or row is stretchable, the grid itself will also be stretchable in that direction
-    and the grid will 'expand' to fill the assigned area by default (instead of being 'static'). Just like
-    a grid, other containers, like 'container', 'boxed', 'tabs', 'row', and 'column', will also propagate the stretch
-    and expansion mode of their child layouts.
+The default stretch and expansion mode of layout containers, like 'grid' and 'boxed', depends on the
+stretch of the child layouts.  A column of a /grid/ is only stretchable when all
+elements of that column have horizontal stretch. The same holds for rows with vertical stretch.
+When any column or row is stretchable, the grid itself will also be stretchable in that direction
+and the grid will 'expand' to fill the assigned area by default (instead of being 'static'). Just like
+a grid, other containers, like 'container', 'boxed', 'tabs', 'row', and 'column', will also propagate the stretch
+and expansion mode of their child layouts.
 
-    Armed with the 'stretch' combinators we can make our dialog resizeable.
-    We let the input widgets resize horizontally. Furthermore, the button row will resize
-    vertically and horizontally with the buttons aligned to the bottom right. Due to the
-    stretch propagation rules, the 'grid' and 'boxed' stretch horizontally and 'expand' to fill the
-    assigned area. The horizontal 'row' does /not/ stretch by default (and we need to use
-    an explicit 'stretch') and it does /not/ expand into the assigned area by default (and therefore
-    alignment works properly).
+Armed with the 'stretch' combinators we can make our dialog resizeable.
+We let the input widgets resize horizontally. Furthermore, the button row will resize
+vertically and horizontally with the buttons aligned to the bottom right. Due to the
+stretch propagation rules, the 'grid' and 'boxed' stretch horizontally and 'expand' to fill the
+assigned area. The horizontal 'row' does /not/ stretch by default (and we need to use
+an explicit 'stretch') and it does /not/ expand into the assigned area by default (and therefore
+alignment works properly).
 
-    > margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hstretch $ expand $ widget xinput]
-    >                                                      ,[label "y", hstretch $ expand $ widget yinput]])
-    >                      , stretch $ alignBottomRight $ row 5 [widget ok, widget cancel]]
+> margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hstretch $ expand $ widget xinput]
+>                                                      ,[label "y", hstretch $ expand $ widget yinput]])
+>                      , stretch $ alignBottomRight $ row 5 [widget ok, widget cancel]]
 
-    There are some common uses of stretchable combinators. The 'fill' combinators combine
-    stretch and expansion. For example, 'hfill' is defined as (@hstretch . expand@). The /float/
-    combinators combine alignment and 'stretch'. For example, 'floatBottomRight' is defined
-    as (@stretch . alignBottomRight@). There are also horizontal and vertical float combinators,
-    like 'hfloatCentre' and 'vfloatBottom'. Here is the above example using 'fill' and float:
+There are some common uses of stretchable combinators. The 'fill' combinators combine
+stretch and expansion. For example, 'hfill' is defined as (@hstretch . expand@). The /float/
+combinators combine alignment and 'stretch'. For example, 'floatBottomRight' is defined
+as (@stretch . alignBottomRight@). There are also horizontal and vertical float combinators,
+like 'hfloatCentre' and 'vfloatBottom'. Here is the above example using 'fill' and float:
 
-    > margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hfill $ widget xinput]
-    >                                                      ,[label "y", hfill $ widget yinput]])
-    >                      , floatBottomRight $ row 5 [widget ok, widget cancel]]
+> margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hfill $ widget xinput]
+>                                                      ,[label "y", hfill $ widget yinput]])
+>                      , floatBottomRight $ row 5 [widget ok, widget cancel]]
 
-    The 'glue' combinators are stretchable empty space. For example, 'hglue'
-    is defined as (@hstretch (space 0 0)@). We can use glue to mimic alignment. Here is the above
-    layout specified with glue. Note that we use 'hspace' to manually insert
-    space between the elements or  otherwise there would be space between the glue and
-    the /ok/ button.
+The 'glue' combinators are stretchable empty space. For example, 'hglue'
+is defined as (@hstretch (space 0 0)@). We can use glue to mimic alignment. Here is the above
+layout specified with glue. Note that we use 'hspace' to manually insert
+space between the elements or  otherwise there would be space between the glue and
+the /ok/ button.
 
-    > margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hfill $ widget xinput]
-    >                                                      ,[label "y", hfill $ widget yinput]])
-    >                      , glue
-    >                      , row 0 [hglue, widget ok, hspace 5, widget cancel]]
+> margin 10 $ column 5 [ boxed "coordinates" (grid 5 5 [[label "x", hfill $ widget xinput]
+>                                                      ,[label "y", hfill $ widget yinput]])
+>                      , glue
+>                      , row 0 [hglue, widget ok, hspace 5, widget cancel]]
 
-    Splitter windows can also be specified with layout; you get somewhat less functionality
-    but it is quite convenient for most applications. A horizontal split is done using
-    'hsplit' while a vertical split is specified with a 'vsplit'.
+Splitter windows can also be specified with layout; you get somewhat less functionality
+but it is quite convenient for most applications. A horizontal split is done using
+'hsplit' while a vertical split is specified with a 'vsplit'.
 
-    The layout for notebooks is specified with the 'tabs' combinator. The following
-    example shows this (and note also how we use 'container' to set the layout of panels):
+The layout for notebooks is specified with the 'tabs' combinator. The following
+example shows this (and note also how we use 'container' to set the layout of panels):
 
-    > nbook  <- notebookCreate ...
-    > panel1 <- panelCreate nbook ...
-    > ...
-    > panel2 <- panelCreate nbook ...
-    > ...
-    > windowSetLayout frame
-    >    (tabs nbook [tab "page one" $ container panel1 $ margin 10 $ floatCentre $ widget ok
-    >                ,tab "page two" $ container panel2 $ margin 10 $ hfill $ widget quit])
+> nbook  <- notebookCreate ...
+> panel1 <- panelCreate nbook ...
+> ...
+> panel2 <- panelCreate nbook ...
+> ...
+> windowSetLayout frame
+>    (tabs nbook [tab "page one" $ container panel1 $ margin 10 $ floatCentre $ widget ok
+>                ,tab "page two" $ container panel2 $ margin 10 $ hfill $ widget quit])
 
-    The pages /always/ need to be embedded inside a 'container' (normally a 'Panel'). The
-    title of the pages is determined from the label of the container widget.
+The pages /always/ need to be embedded inside a 'container' (normally a 'Panel'). The
+title of the pages is determined from the label of the container widget.
 
-    Note: /At the moment, extra space is divided evenly among stretchable layouts. We plan to add
-    a (/@proportion :: Int -> Layout -> Layout@/) combinator in the future to stretch layouts
-    according to a relative weight, but unfortunately, that entails implementing a better
-    /'FlexGrid'/ sizer for wxWindows./
+Note: /At the moment, extra space is divided evenly among stretchable layouts. We plan to add
+a (/@proportion :: Int -> Layout -> Layout@/) combinator in the future to stretch layouts
+according to a relative weight, but unfortunately, that entails implementing a better
+/'FlexGrid'/ sizer for wxWindows./
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Layout( -- * Types

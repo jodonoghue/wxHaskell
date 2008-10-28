@@ -1,13 +1,13 @@
 -----------------------------------------------------------------------------------------
-{-| Module      :  Process
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Process
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Process and stream wrappers.
+Process and stream wrappers.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Process

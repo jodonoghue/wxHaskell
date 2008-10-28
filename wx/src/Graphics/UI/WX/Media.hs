@@ -1,15 +1,15 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Media
-    Copyright   :  (c) Daan Leijen 2003
-    Copyright   :  (c) shelarcy 2007
-    License     :  wxWindows
+{-|	Module      :  Media
+	Copyright   :  (c) Daan Leijen 2003
+	               (c) shelarcy 2007
+	License     :  wxWindows
 
-    Maintainer  :  shelarcy@gmail.com
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Images, Media, Sounds, and action!
+Images, Media, Sounds, and action!
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Media

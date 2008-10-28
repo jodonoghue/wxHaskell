@@ -1,17 +1,17 @@
 --------------------------------------------------------------------------------
-{-| Module      :  WX
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  WX
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    The WX module just re-exports functionality from helper modules and
-    defines the 'start' function.
+The WX module just re-exports functionality from helper modules and
+defines the 'start' function.
 
-    The WX library provides a /haskellized/ interface to the raw wxWindows
-    functionality provided by the "Graphics.UI.WXCore" library.
+The WX library provides a /haskellized/ interface to the raw wxWindows
+functionality provided by the "Graphics.UI.WXCore" library.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX

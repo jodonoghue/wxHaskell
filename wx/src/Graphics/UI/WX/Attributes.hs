@@ -1,56 +1,56 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Attributes
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Attributes
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
 
-   Widgets @w@ can have attributes of type @a@ represented by the type 'Attr' @w a@.
-   An example of an attribute is 'Graphics.UI.WX.Classes.text' with type:
+Widgets @w@ can have attributes of type @a@ represented by the type 'Attr' @w a@.
+An example of an attribute is 'Graphics.UI.WX.Classes.text' with type:
 
-   > text :: Attr (Window a) String
+> text :: Attr (Window a) String
 
-   This means that any object derived from 'Window' has a 'Graphics.UI.WX.Classes.text' attribute of type 'String'.
-   An attribute can be read with the 'get' function:
+This means that any object derived from 'Window' has a 'Graphics.UI.WX.Classes.text' attribute of type 'String'.
+An attribute can be read with the 'get' function:
 
-   > get w title           :: IO String
+> get w title           :: IO String
 
-   When an attribute is associated with a value, we call it a /property/ of type 'Prop' @w@.
-   Properties are constructed by assigning a value to an attribute with the (':=') constructor:
+When an attribute is associated with a value, we call it a /property/ of type 'Prop' @w@.
+Properties are constructed by assigning a value to an attribute with the (':=') constructor:
 
-   > text := "hello world"      :: Prop (Window a)
+> text := "hello world"      :: Prop (Window a)
 
-   A list of properties can be set with the 'set' function:
+A list of properties can be set with the 'set' function:
 
-   > set w [text := "Hi"]   :: IO ()
+> set w [text := "Hi"]   :: IO ()
 
-   The (':~') constructor is used to transform an attribute value with an update function.
-   For example, the 'interval' on a timer can be doubled with the following expression.
+The (':~') constructor is used to transform an attribute value with an update function.
+For example, the 'interval' on a timer can be doubled with the following expression.
 
-   > set timer [interval :~ (*2)]
+> set timer [interval :~ (*2)]
 
-   The functions 'get', 'set', (':='), and (':~') are polymorphic and work for all widgets, but
-   the @text@ attribute just works for windows. Many attributes work for different kind
-   of objects and are organised into type classes. Actually, the real type of the
-   'Graphics.UI.WX.Classes.text' attribute is:
+The functions 'get', 'set', (':='), and (':~') are polymorphic and work for all widgets, but
+the @text@ attribute just works for windows. Many attributes work for different kind
+of objects and are organised into type classes. Actually, the real type of the
+'Graphics.UI.WX.Classes.text' attribute is:
 
-   > Textual w => Attr w String
+> Textual w => Attr w String
 
-   and 'Window' derived objects are part of this class:
+and 'Window' derived objects are part of this class:
 
-   > instance Textual (Window a)
+> instance Textual (Window a)
 
-   But also menus and status fields:
+But also menus and status fields:
 
-   > instance Textual (Menu a)
-   > instance Textual (StatusField)
+> instance Textual (Menu a)
+> instance Textual (StatusField)
 
-   Sometimes, it is convenient to also get a reference to the object itself when setting
-   a property. The operators ('::=') and ('::~') provide this reference.
+Sometimes, it is convenient to also get a reference to the object itself when setting
+a property. The operators ('::=') and ('::~') provide this reference.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Attributes

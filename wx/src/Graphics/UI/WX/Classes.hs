@@ -1,24 +1,24 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Classes
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Classes
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    This modules defines attributes common to many widgets and
-    organizes them into Haskell classes. Look at the instance definitions
-    to see what kind of widgets support the attributes. 
+This modules defines attributes common to many widgets and
+organizes them into Haskell classes. Look at the instance definitions
+to see what kind of widgets support the attributes. 
     
-    Sometimes it is
-    hard to find what attributes a certain widget supports since the instance
-    definitions might be on some class higher in the hierarchy. For example,
-    many instances are defined for 'Window' @a@ -- this means that all
-    those attributes are applicable to any kind of 'Window', i.e. frames,
-    buttons, panels etc. However, these attributes will not be explicitly
-    listed at the type definitions of those classes.
+Sometimes it is
+hard to find what attributes a certain widget supports since the instance
+definitions might be on some class higher in the hierarchy. For example,
+many instances are defined for 'Window' @a@ -- this means that all
+those attributes are applicable to any kind of 'Window', i.e. frames,
+buttons, panels etc. However, these attributes will not be explicitly
+listed at the type definitions of those classes.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WX.Classes

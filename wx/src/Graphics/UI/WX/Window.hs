@@ -1,16 +1,16 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Window
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Window
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Exports default instances for generic windows.
+Exports default instances for generic windows.
 
-    * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
+* Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.             
 -}
 --------------------------------------------------------------------------------

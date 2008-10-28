@@ -1,22 +1,22 @@
 {-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  WXCore
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  WXCore
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    The "WXCore" module is the interface to the core wxWindows functionality.
+The "WXCore" module is the interface to the core wxWindows functionality.
     
-    The library contains the automatically generated interface to the raw
-    wxWindows API in "Graphics.UI.WXCore.WxcClasses", "Graphics.UI.WXCore.WxcClassTypes",
-    and "Graphics.UI.WXCore.WxcDefs". 
+The library contains the automatically generated interface to the raw
+wxWindows API in "Graphics.UI.WXCore.WxcClasses", "Graphics.UI.WXCore.WxcClassTypes",
+and "Graphics.UI.WXCore.WxcDefs". 
 
-    The other helper modules contain convenient wrappers but only use functional
-    abstractions: no type classes or other fancy Haskell features. (The
-    higher-level "Graphics.UI.WX" module provides such abstractions.)
+The other helper modules contain convenient wrappers but only use functional
+abstractions: no type classes or other fancy Haskell features. (The
+higher-level "Graphics.UI.WX" module provides such abstractions.)
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore

@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
-{-| Module      :  Controls
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Controls
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Controls

@@ -1,13 +1,13 @@
 -----------------------------------------------------------------------------------------
-{-| Module      :  Frame
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Frame
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Frame utility functions.
+Frame utility functions.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Frame

@@ -1,23 +1,23 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  TopLevelWindow
-    Copyright   :  (c) Jeremy O'Donoghue, 2007
-    License     :  wxWindows
+{-|	Module      :  TopLevelWindow
+	Copyright   :  (c) Jeremy O'Donoghue, 2007
+	License     :  wxWindows
 
-    Maintainer  :  jeremy.odonoghue@gamil.com
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  jeremy.odonoghue@gamil.com
+	Stability   :  provisional
+	Portability :  portable
 
-    wxTopLevelwindow (wxWidgets >= 2.8.0) defines an (abstract) common base class
-    for wxFrame and wxDialog.
+wxTopLevelwindow (wxWidgets >= 2.8.0) defines an (abstract) common base class
+for wxFrame and wxDialog.
 
-    In the wxHaskell implementation, TopLevel has been added to encapsulate 
-    some of the common functionality between the 'Dialog' and 'Frame' modules.
+In the wxHaskell implementation, TopLevel has been added to encapsulate 
+some of the common functionality between the 'Dialog' and 'Frame' modules.
          
-    * Instances: 'HasDefault'
-    * Instances inherited from 'Window': 'Textual', 'Literate', 'Dimensions', 
-                 'Colored', 'Visible', 'Child', 'Able', 'Tipped', 'Identity', 
-		 'Styled', 'Reactive', 'Paint'.   
+* Instances: 'HasDefault'
+* Instances inherited from 'Window': 'Textual', 'Literate', 'Dimensions', 
+             'Colored', 'Visible', 'Child', 'Able', 'Tipped', 'Identity', 
+             'Styled', 'Reactive', 'Paint'.   
 
 -}
 --------------------------------------------------------------------------------

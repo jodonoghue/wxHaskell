@@ -1,13 +1,13 @@
 --------------------------------------------------------------------------------
-{-| Module      :  Dialogs
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Dialogs
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Standard dialogs and (non modal) tip windows.
+Standard dialogs and (non modal) tip windows.
 -}
 --------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Dialogs

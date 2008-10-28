@@ -1,15 +1,15 @@
 {-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  WxcTypes
-    Copyright   :  (c) Daan Leijen 2003, 2004
-    License     :  wxWindows
+{-|	Module      :  WxcTypes
+	Copyright   :  (c) Daan Leijen 2003, 2004
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Basic types and marshaling code for the wxWindows C library.
+Basic types and marshaling code for the wxWindows C library.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.WxcTypes(

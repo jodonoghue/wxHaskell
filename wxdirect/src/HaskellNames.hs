@@ -153,13 +153,13 @@ getPrologue moduleName content contains inputFiles
   where
     prologue time
       = [line
-        ,"{-| Module      :  " ++ moduleName
-        ,"    Copyright   :  Copyright (c) Daan Leijen 2003, 2004"
-        ,"    License     :  wxWindows"
+        ,"{-|\tModule      :  " ++ moduleName
+        ,"\tCopyright   :  Copyright (c) Daan Leijen 2003, 2004"
+        ,"\tLicense     :  wxWidgets"
         ,""
-        ,"    Maintainer  :  daan@cs.uu.nl"
-        ,"    Stability   :  provisional"
-        ,"    Portability :  portable"
+        ,"\tMaintainer  :  wxhaskell-devel@lists.sourceforge.net"
+        ,"\tStability   :  provisional"
+        ,"\tPortability :  portable"
         ,""
         ,"Haskell " ++ content ++ " definitions for the wxWidgets C library (@wxc.dll@)."
         ,""

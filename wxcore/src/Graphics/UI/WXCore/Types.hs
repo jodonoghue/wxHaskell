@@ -1,14 +1,14 @@
 {-# OPTIONS -fglasgow-exts -#include "wxc.h" #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  Types
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Types
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Basic types and operations.
+Basic types and operations.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Types(

@@ -1,14 +1,14 @@
 {-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  Draw
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Draw
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Drawing.
+Drawing.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Draw

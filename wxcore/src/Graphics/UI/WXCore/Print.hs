@@ -1,39 +1,39 @@
 -----------------------------------------------------------------------------------------
-{-| Module      :  Print
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Print
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Printer abstraction layer. See @samples/wx/Print.hs@ for a demo.
+Printer abstraction layer. See @samples/wx/Print.hs@ for a demo.
 
-    The application should create a 'pageSetupDialog' to hold the printer
-    settings of the user.
+The application should create a 'pageSetupDialog' to hold the printer
+settings of the user.
 
-    > f <- frame [text := "Print demo"]                               
-    > 
-    >  -- Create a pageSetup dialog with an initial margin of 25 mm.
-    > pageSetup <- pageSetupDialog f 25
+> f <- frame [text := "Print demo"]                               
+> 
+> -- Create a pageSetup dialog with an initial margin of 25 mm.
+> pageSetup <- pageSetupDialog f 25
 
-    The dialog can be shown using 'pageSetupShowModal'. Furthermore, the 
-    function 'printDialog' and 'printPreview' can be used to show a print dialog
-    and preview window.
+The dialog can be shown using 'pageSetupShowModal'. Furthermore, the 
+function 'printDialog' and 'printPreview' can be used to show a print dialog
+and preview window.
 
-    > mprint   <- menuItem file 
-    >                [ text := "&Print..."
-    >                , help := "Print a test"
-    >                , on command := printDialog pageSetup "Test"  pageFun printFun
-    >                ]
-    > mpreview <- menuItem file 
-    >                [ text := "P&rint preview"
-    >                , help := "Print preview"
-    >                , on command := printPreview pageSetup "Test" pageFun printFun 
+> mprint   <- menuItem file 
+>                [ text := "&Print..."
+>                , help := "Print a test"
+>                , on command := printDialog pageSetup "Test"  pageFun printFun
+>                ]
+> mpreview <- menuItem file 
+>                [ text := "&Print preview"
+>                , help := "Print preview"
+>                , on command := printPreview pageSetup "Test" pageFun printFun 
 
-    Those functions take a 'PageFunction' and 'PrintFunction' respectively that get called
-    to determine the number of needed pages and to draw on the printer DC respectively.
-    The framework takes automatic care of printer margins, preview scaling etc.
+Those functions take a 'PageFunction' and 'PrintFunction' respectively that get called
+to determine the number of needed pages and to draw on the printer DC respectively.
+The framework takes automatic care of printer margins, preview scaling etc.
 
 -}
 -----------------------------------------------------------------------------------------

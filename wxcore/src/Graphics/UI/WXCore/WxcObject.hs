@@ -1,14 +1,14 @@
 {-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  WxcObject
-    Copyright   :  (c) Daan Leijen 2003, 2004
-    License     :  wxWindows
+{-|	Module      :  WxcObject
+	Copyright   :  (c) Daan Leijen 2003, 2004
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Basic object type.
+Basic object type.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.WxcObject(

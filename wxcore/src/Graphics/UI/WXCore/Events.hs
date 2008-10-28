@@ -1,17 +1,17 @@
 {-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
-{-| Module      :  Events
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Events
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Dynamically set (and get) Haskell event handlers for basic wxWindows events.
-    Note that one should always call 'skipCurrentEvent' when an event is not
-    processed in the event handler so that other eventhandlers can process the
-    event.
+Dynamically set (and get) Haskell event handlers for basic wxWindows events.
+Note that one should always call 'skipCurrentEvent' when an event is not
+processed in the event handler so that other eventhandlers can process the
+event.
 -}
 -----------------------------------------------------------------------------------------
 module Graphics.UI.WXCore.Events

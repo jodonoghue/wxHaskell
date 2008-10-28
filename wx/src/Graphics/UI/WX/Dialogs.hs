@@ -1,16 +1,16 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Dialogs
-    Copyright   :  (c) Daan Leijen 2003
-    License     :  wxWindows
+{-|	Module      :  Dialogs
+	Copyright   :  (c) Daan Leijen 2003
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Defines common dialogs.
+Defines common dialogs.
 
-    * Instances: 'Form', 'Framed' -- 
+* Instances: 'Form', 'Framed' -- 
              'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 -}

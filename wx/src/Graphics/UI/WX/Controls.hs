@@ -1,15 +1,15 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Controls
-    Copyright   :  (c) Daan Leijen 2003
-                   (c) Shelarcy (shelarcy@gmail.com) 2006
-    License     :  wxWindows
+{-|	Module      :  Controls
+	Copyright   :  (c) Daan Leijen 2003
+	               (c) Shelarcy (shelarcy@gmail.com) 2006
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-   Defines common GUI controls.
+Defines common GUI controls.
 -}
 
 {-

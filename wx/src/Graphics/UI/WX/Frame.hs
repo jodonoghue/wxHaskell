@@ -1,17 +1,17 @@
 {-# OPTIONS -fglasgow-exts #-}
 --------------------------------------------------------------------------------
-{-| Module      :  Frame
-    Copyright   :  (c) Daan Leijen 2003
-    Copyright   :  (c) Jeremy O'Donoghue 2007
-    License     :  wxWindows
+{-|	Module      :  Frame
+	Copyright   :  (c) Daan Leijen 2003
+	               (c) Jeremy O'Donoghue 2007
+	License     :  wxWindows
 
-    Maintainer  :  daan@cs.uu.nl
-    Stability   :  provisional
-    Portability :  portable
+	Maintainer  :  wxhaskell-devel@lists.sourceforge.net
+	Stability   :  provisional
+	Portability :  portable
 
-    Frames.
+Frames.
     
- * Instances: 'HasImage', 'Form', 'Closeable', 'Framed' -- 
+* Instances: 'HasImage', 'Form', 'Closeable', 'Framed' -- 
              'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child', 
              'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint',
 	     'HasDefault'.
