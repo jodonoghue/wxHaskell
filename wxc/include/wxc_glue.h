@@ -2706,6 +2706,9 @@ TChar      wxImage_GetRed( TSelf(wxImage) _obj, TPoint(x,y) );
 void       wxImage_GetSubImage( TSelf(wxImage) _obj, TRect(x,y,w,h), TClassRef(wxImage) image );
 int        wxImage_GetWidth( TSelf(wxImage) _obj );
 TBool      wxImage_HasMask( TSelf(wxImage) _obj );
+TStringLen wxImage_GetOption( TSelf(wxImage) _obj, TClass(wxString) name, TStringOutVoid _buf );
+TBool      wxImage_GetOptionInt( TSelf(wxImage) _obj, TClass(wxString) name );
+TBool      wxImage_HasOption( TSelf(wxImage) _obj, TClass(wxString) name );
 void       wxImage_Initialize( TSelf(wxImage) _obj, TSize(width,height) );
 void       wxImage_InitializeFromData( TSelf(wxImage) _obj, TSize(width,height), void* data );
 TBoolInt   wxImage_LoadFile( TSelf(wxImage) _obj, TStringVoid name, int type );
@@ -2722,6 +2725,8 @@ void       wxImage_SetData( TSelf(wxImage) _obj, void* data );
 void       wxImage_SetDataAndSize( TSelf(wxImage) _obj, void* data, TSize(new_width,new_height) );
 void       wxImage_SetMask( TSelf(wxImage) _obj, int mask );
 void       wxImage_SetMaskColour( TSelf(wxImage) _obj, TColorRGB(r,g,b) );
+void       wxImage_SetOption( TSelf(wxImage) _obj, TClass(wxString) name, TClass(wxString) value );
+void       wxImage_SetOptionInt( TSelf(wxImage) _obj, TClass(wxString) name, int value );
 void       wxImage_SetRGB( TSelf(wxImage) _obj, TPoint(x,y), TColorRGB(r,g,b) );
 
 /* wxImageHandler */

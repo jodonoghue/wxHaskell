@@ -188,5 +188,27 @@ EWXWEXPORT(int, wxImage_CountColours)(void* _obj, int stopafter)
 {
 	return ((wxImage*)_obj)->CountColours((long)stopafter);
 }
-	
+
+EWXWEXPORT (int, wxImage_GetOption)(wxImage* _obj, wxString* key, wxChar* out) {
+	wxString result = _obj->GetOption(*key);
+	return copyStrToBuf(out, result);
+}
+
+EWXWEXPORT (int, wxImage_GetOptionInt)(wxImage* _obj, wxString* key) {
+	return  _obj->GetOptionInt(*key);
+}
+
+EWXWEXPORT(void, wxImage_SetOption)(wxImage* _obj, wxString* key, wxString* value) {
+	_obj->SetOption(*key, *value);
+}
+
+EWXWEXPORT(void, wxImage_SetOptionInt)(wxImage* _obj, wxString* key, int value) {
+	_obj->SetOption(*key, value);
+}
+
+EWXWEXPORT(int, wxImage_HasOption)(wxImage* _obj, wxString* key)
+{
+	return _obj->HasOption(*key);
+}
+
 }
