@@ -31,7 +31,7 @@ hc="ghc"
 hcflags=""
 hcpkg="ghc-pkg"
 hcopt=""
-hcprof="-prof -auto-all"
+hcprof="-prof"
 hcpkglocal=""
 hdoc="haddock"
 
@@ -332,9 +332,10 @@ process_args ()
       -hcflags=*|--hcflags=*)
 	  hcflags="$arg";;
       -hcprof|--hcprof)
+	  hcprof="$hcprof -auto-all"
 	  enableprof="yes";;
       -hcprof=*|--hcprof=*)
-	  hcprof="$arg"
+	  hcprof="$hcprof $arg"
 	  enableprof="yes";;
       -package-conf=*|--package-conf=*)
 	  hcpkglocal="$arg";;
