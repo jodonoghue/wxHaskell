@@ -359,6 +359,11 @@ process_args ()
       -libexecdir=*|--libexecdir=*) ;; # just for cabal
       -shared-prefix=*|--shared-prefix=*)
 	  sharedprefix="$arg";;
+      -enable-library-profiling|--enable-library-profiling)
+          # This option is the same as --hcprof option.
+          # But we added this option for repspecting Cabal's option.
+	  hcprof="$hcprof -auto-all"
+	  enableprof="yes";;
       -enable-optimization|--enable-optimization)
 	  enableoptimization="yes";;
       -enable-optimization=*|--enable-optimization=*)
