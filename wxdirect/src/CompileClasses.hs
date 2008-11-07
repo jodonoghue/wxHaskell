@@ -93,7 +93,8 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
            (exportsStatic,exportsClassClasses,classCount) = exportDefs decls exportsClass []
 
            methodCount  = length decls
-           ghcoptions   = ["{-# OPTIONS -fglasgow-exts -#include \"wxc.h\" #-}"]
+           ghcoptions   = [ "{-# INCLUDE \"wxc.h\" #-}"
+                          , "{-# LANGUAGE ForeignFunctionInterface #-}"]
 
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
                                 , "    ( -- * Version"

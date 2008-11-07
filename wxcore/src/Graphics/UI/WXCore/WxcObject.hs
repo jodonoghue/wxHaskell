@@ -1,4 +1,5 @@
-{-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
+{-# INCLUDE "wxc.h" #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  WxcObject
 	Copyright   :  (c) Daan Leijen 2003, 2004

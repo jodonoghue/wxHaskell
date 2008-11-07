@@ -1,4 +1,5 @@
-{-# OPTIONS -cpp -fglasgow-exts -#include "wxc.h" #-}
+{-# INCLUDE "wxc.h" #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface, DeriveDataTypeable #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  WxcTypes

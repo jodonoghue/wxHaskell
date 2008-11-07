@@ -1,4 +1,5 @@
-{-# OPTIONS -fglasgow-exts -#include "wxc.h" #-}
+{-# INCLUDE "wxc.h" #-}
+{-# LANGUAGE ForeignFunctionInterface, FlexibleInstances #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Types
 	Copyright   :  (c) Daan Leijen 2003
