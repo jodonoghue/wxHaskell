@@ -284,6 +284,7 @@ process_args ()
 	  echo " --hc=<program>         the haskell compiler [$hc]"
 	  echo " --hcpkg=<program>      package compiler [$hcpkg]"
           echo " --hcprof=<flags>       enable profiling (using flags [$hcprof])"
+	  echo " --fvia-C               use -fvia-C option"
 	  echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
 	  echo " --version=<version>    library version [$version]"
 	  echo " --release=<version>    library release version [$release]"
@@ -331,6 +332,8 @@ process_args ()
 	  hcpkg="$arg";;
       -hcflags=*|--hcflags=*)
 	  hcflags="$arg";;
+      -fvia-C|--fvia-C)
+	  hcflags="$hcflags -fvia-C";;
       -hcprof|--hcprof)
 	  hcprof="$hcprof -auto-all"
 	  enableprof="yes";;
