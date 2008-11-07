@@ -359,15 +359,30 @@ process_args ()
       -libexecdir=*|--libexecdir=*) ;; # just for cabal
       -shared-prefix=*|--shared-prefix=*)
 	  sharedprefix="$arg";;
+      # This option is the same as --hcprof option.
+      # But we added this option for repspecting Cabal's option.
       -enable-library-profiling|--enable-library-profiling)
-          # This option is the same as --hcprof option.
-          # But we added this option for repspecting Cabal's option.
+	  hcprof="$hcprof -auto-all"
+	  enableprof="yes";;
+      # short name for --enable-library-profiling
+      # --p works, but -p doesn't work currently. We don't know why.
+      -p|--p)
 	  hcprof="$hcprof -auto-all"
 	  enableprof="yes";;
       -enable-optimization|--enable-optimization)
 	  enableoptimization="yes";;
       -enable-optimization=*|--enable-optimization=*)
           hcopt="$arg"
+	  enableoptimization="yes";;
+      # short name for --enable-optimization
+      # --O works, -On works too. But -O doesn't work currently. We don't know why.
+      -O|--O)
+	  enableoptimization="yes";;
+      -O1|--O1)
+          hcopt="1"
+	  enableoptimization="yes";;
+      -O2|--O2)
+          hcopt="2"
 	  enableoptimization="yes";;
       -enable-split-objs|--enable-split-objs)
 	  enablesplitobjs="yes";;
