@@ -30,6 +30,7 @@ configflags="$*"
 hc="ghc"
 hcflags=""
 hcpkg="ghc-pkg"
+hcopt=""
 hcprof="-prof -auto-all"
 hcpkglocal=""
 hdoc="haddock"
@@ -358,6 +359,9 @@ process_args ()
       -shared-prefix=*|--shared-prefix=*)
 	  sharedprefix="$arg";;
       -enable-optimization|--enable-optimization)
+	  enableoptimization="yes";;
+      -enable-optimization=*|--enable-optimization=*)
+          hcopt="$arg"
 	  enableoptimization="yes";;
       -enable-split-objs|--enable-split-objs)
 	  enablesplitobjs="yes";;
@@ -832,7 +836,7 @@ else
 fi
 
 if test "$enableoptimization" = "yes"; then
-  hcflags="$hcflags -O2"
+  hcflags="$hcflags -O$hcopt"
 fi
 
 if test "$enablesplitobjs" = "yes"; then
