@@ -469,7 +469,7 @@ BUILD_XRCGETCTRL_FN(SplitterWindow)
 #ifdef wxUSE_STC
 BUILD_XRCGETCTRL_FN(StyledTextCtrl)
 #else
-EWXWEXPORT(void*, wxXmlResource_StyledTextCtrl)(wxWindow* _win, wxString* _str_id)
+EWXWEXPORT(void*, wxXmlResource_GetStyledTextCtrl)(wxWindow* _win, wxString* _str_id)
 {
   return NULL;
 }
