@@ -468,6 +468,11 @@ BUILD_XRCGETCTRL_FN(SpinCtrl)
 BUILD_XRCGETCTRL_FN(SplitterWindow)
 #ifdef wxUSE_STC
 BUILD_XRCGETCTRL_FN(StyledTextCtrl)
+#else
+EWXWEXPORT(void*, wxXmlResource_StyledTextCtrl)(wxWindow* _win, wxString* _str_id)
+{
+  return NULL;
+}
 #endif
 BUILD_XRCGETCTRL_FN(StaticBitmap)
 BUILD_XRCGETCTRL_FN(StaticBox)
