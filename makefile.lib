@@ -139,9 +139,16 @@ compile-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
 		 $(call silent-move-stubs,$(1),$(2)) && \
 		 $(call make-hs-deps,$(1),$(2),$(3),$(4),$(5))
 
+ifeq ($(GHCOLD),yes)
+# pre GHC 6.10
 # make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
 make-hs-prof-deps	=$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -optdep-f -optdep$(basename $(1)).p_d.in && \
 		 sed -e 's|\.o|\.p_o|g' -e 's|\.hi|\.p_o|g' $(basename $(1)).p_d.in | grep '^$(1)' > $(basename $(1)).p_d
+else
+# make-hs-deps(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
+make-hs-prof-deps	=$(HC) $(2) $(3) -odir $(4) -hidir $(4) $(5) -M -dep-makefile -optdep$(basename $(1)).p_d.in && \
+		 sed -e 's|\.o|\.p_o|g' -e 's|\.hi|\.p_o|g' $(basename $(1)).p_d.in | grep '^$(1)' > $(basename $(1)).p_d
+endif
 
 # compile-hs(<output .o>,<input .hs>,<compile flags>,<top output directory>,<hs directories>)
 compile-prof-hs      =$(call make-hs-obj,$(1),$(2),$(3),$(4)) && \
