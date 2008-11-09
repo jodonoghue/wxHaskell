@@ -712,6 +712,10 @@ esac
 if findprogram "$hdoc"; then
   echo " $hdoc found"
   hdocfound="yes"
+elif findprogram "haddock-ghc"; then
+  hdoc="haddock-ghc"
+  echo " $hdoc found"
+  hdocfound="yes"
 else
   echo "warning:"
   echo " Unable to find: $hdoc"
