@@ -730,6 +730,7 @@ fi
 # guess base.haddock location
 if findprogram "ghc"; then
   guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/doc/html/base/base.haddock|'`"
+  # guesshdocbase="`which ghc | sed -e 's|/bin/ghc|/ghc-$hcversion/doc/ghc/libraries/base/base.haddock|'`"
   if test -f "$guesshdocbase"; then
     hdocbases="$guesshdocbase"
   fi
@@ -758,8 +759,10 @@ if test "$hdocfound" = "yes"; then
       6.*) 
          if test "$cygpathfound"; then
            docroot="$ghcroot/doc/libraries"
-         else
+         elif test -d "$ghcroot/share/doc/ghc/libraries"; then
            docroot="$ghcroot/share/doc/ghc/libraries"
+         else
+           docroot="$ghcroot/share/ghc-$hcversion/doc/ghc/libraries"
          fi
          ;;
       *)
