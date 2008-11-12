@@ -105,6 +105,8 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
                               , exportsClassClasses
                               , [ "    ) where"
                                 , ""
+                                , "import qualified Data.ByteString as B (ByteString, useAsCStringLen)"
+                                , "import qualified Data.ByteString.Lazy as LB (ByteString, length, unpack)"
                                 , "import System.IO.Unsafe( unsafePerformIO )"
                                 , "import " ++ moduleRoot ++ "WxcTypes"
                                 , "import " ++ moduleRoot ++ moduleClassTypesName
@@ -361,6 +363,8 @@ haskellToCResult decl tp call
       -}
       Object obj -> withResult (classInfo obj)  ++ " $" ++ nl ++ call
       String _ -> "withWStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
+      ByteString Lazy -> "withLazyByteStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
+      ByteString _ -> "withByteStringResult $ \\buffer -> " ++ nl ++ call ++ " buffer"    -- always last argument!
       Point CDouble -> "withPointDoubleResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Point _  -> "withPointResult $ \\px py -> " ++ nl ++ call ++ " px py"       -- always last argument!
       Vector CDouble -> "withVectorDoubleResult $ \\pdx pdy -> " ++ nl ++ call ++ " pdx pdy"       -- always last argument!
@@ -394,6 +398,12 @@ haskellToCArgIO methodName isSelf arg
   = case argType arg of
       String _    -> "withCWString " ++ haskellName (argName arg)
                       ++ " $ \\" ++ haskellCStringName (argName arg) ++ " -> " ++ nl
+      ByteString Lazy -> "withArray (LB.unpack " ++ haskellName (argName arg) ++ ") $ \\"
+                      ++ haskellByteStringName (argName arg)
+                      ++ " -> " ++ nl
+      ByteString _ -> "B.useAsCStringLen " ++ haskellName (argName arg) ++ " $ \\"
+                      ++ "(" ++ haskellByteStringName (argName arg) ++ ", " ++ haskellByteStringLenName (argName arg) ++ ") "
+                      ++ " -> " ++ nl
       {-
       Object obj  | isBuiltin obj
                   -> "withManaged" ++ haskellTypeName obj ++ " " ++ haskellName (argName arg)
@@ -438,6 +448,8 @@ haskellToCArg decl arg
       Fun f -> pparens ("toCFunPtr " ++ name)
 
       String _   -> haskellCStringName (argName arg)
+      ByteString Lazy -> haskellByteStringName name ++ " (fromIntegral $ LB.length " ++ haskellName name ++ ")"
+      ByteString _ -> haskellByteStringName name ++ " " ++ haskellByteStringLenName name
       {-
       Object obj | isBuiltin obj -> haskellCManagedName (argName arg)
       Object obj | obj == "wxTreeItemId" -> haskellCManagedName (argName arg)
@@ -468,6 +480,12 @@ haskellToCArg decl arg
 
 haskellCStringName name
   = "cstr_" ++ haskellName name
+
+haskellByteStringName name
+  = "bs_" ++ haskellName name
+
+haskellByteStringLenName name
+  = "bslen_" ++ haskellName name
 
 {-
 haskellCManagedName name
@@ -556,6 +574,8 @@ haskellType i tp
       Size _   -> "Size"
       ColorRGB _ -> "Color"
       String _ -> "String"
+      ByteString Lazy -> "LB.ByteString"
+      ByteString _ -> "B.ByteString"
       ArrayString _ -> "[String]"
       ArrayInt _    -> "[Int]"
       ArrayObject name _ -> "[" ++ haskellTypeName name ++ typeVar i ++ "]"
@@ -605,6 +625,7 @@ foreignResultType tp
       ArrayString _ -> "Ptr (Ptr CWchar) -> IO CInt"
       ArrayObject name _ -> "Ptr " ++ foreignTypePar 0 (Object name) ++ " -> IO CInt"
       String _ -> "Ptr CWchar -> IO CInt"
+      ByteString _ -> "Ptr CChar -> IO CInt"
       Point CDouble -> "Ptr CDouble -> Ptr CDouble -> IO ()"
       Point _  -> "Ptr CInt -> Ptr CInt -> IO ()"
       Vector CDouble -> "Ptr Double -> Ptr Double -> IO ()"
@@ -635,6 +656,8 @@ foreignType i tp
       Ptr t     -> "Ptr " ++ foreignTypePar i t
       -- special
       String _ -> "CWString"
+      ByteString Lazy -> "Ptr Word8 -> Int"
+      ByteString _ -> "Ptr CChar -> Int"
       Point CDouble  -> "CDouble -> CDouble"
       Point _  -> "CInt -> CInt"
       Vector CDouble  -> "CDouble -> CDouble"

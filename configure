@@ -673,6 +673,14 @@ fi
 basepkgversion=`ghc-pkg field base version | head -n 1 | sed 's/.* //'`
 haskell98pkgversion=`ghc-pkg field haskell98 version | sed 's/.* //'`
 
+# Test if we can include the bytestring package explicitly
+$hcpkg describe bytestring > /dev/null 2> /dev/null
+case $? in
+  0) bytestringpkgversion=`ghc-pkg field bytestring version | tail -n 1 | sed 's/.* //'`
+     pkgbytestring="-package bytestring-$bytestringpkgversion";;
+  *) pkgbytestring="";;
+esac
+
 # Test if we can include the containers package explicitly
 $hcpkg describe containers > /dev/null 2> /dev/null
 case $? in
@@ -935,6 +943,7 @@ ENABLE-SPLITOBJS=$enablesplitobjs
 HC-PROF-FLAGS=-hisuf p_hi $hcprof
 
 # Packages
+PKG-BYTESTRING=$pkgbytestring
 PKG-CONTAINERS=$pkgcontainers
 PKG-PARSEC=$pkgparsec
 PKG-TIME=$pkgtime
@@ -1044,7 +1053,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: ${wxcoredepends}, haskell98-$haskell98pkgversion, stm-$stmpkgversion
+depends: ${wxcoredepends}, haskell98-$haskell98pkgversion, bytestring-$bytestringpkgversion, stm-$stmpkgversion
 extra-ld-opts:$extraldopts
 EOF
 cp -f config/wxcore-partial.pkg config/wxcore.pkg

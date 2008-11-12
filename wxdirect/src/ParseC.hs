@@ -143,6 +143,10 @@ patomtype
   <|> do reserved "TStringOut"; return (StringOut CChar)
   <|> do reserved "TStringOutVoid"; return (StringOut CVoid)
   <|> do reserved "TStringLen"; return StringLen
+  <|> do reserved "TByteData"; return Char
+  <|> do reserved "TByteStringOut"; return (ByteStringOut Strict)
+  <|> do reserved "TByteStringLazyOut"; return (ByteStringOut Lazy)
+  <|> do reserved "TByteStringLen"; return ByteStringLen
   <|> do reserved "TArrayLen"; return ArrayLen
   <|> do reserved "TArrayStringOut"; return (ArrayStringOut CChar)
   <|> do reserved "TArrayStringOutVoid"; return (ArrayStringOut CVoid)
@@ -232,6 +236,8 @@ pargType2
   <|> do reserved "TVectorOutVoid"; return (VectorOut CVoid)
   <|> do reserved "TArrayString"; return (ArrayString CChar)
   <|> do reserved "TArrayInt"; return (ArrayInt CInt)
+  <|> do reserved "TByteString"; return (ByteString Strict)
+  <|> do reserved "TByteStringLazy"; return (ByteString Lazy)
 
 pargType3
   =   do reserved "TColorRGB"; return (ColorRGB CChar)
@@ -261,6 +267,7 @@ lexer
     , reservedNames = ["void","int","long","float","double","char","size_t","time_t","_stdcall","__cdecl"
                       ,"TChar","TBool"
                       ,"TClass","TSelf","TClassRef"
+                      ,"TByteData","TByteString","TByteStringOut","TByteStringLen"
                       ,"TString","TStringOut","TStringLen", "TStringVoid"
                       ,"TPoint","TSize","TVector","TRect"
                       ,"TPointOut","TSizeOut","TVectorOut","TRectOut"

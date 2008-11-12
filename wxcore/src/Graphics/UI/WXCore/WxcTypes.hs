@@ -59,7 +59,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , withVectorDoubleResult, toCDoubleVectorX, toCDoubleVectorY, fromCVectorDouble, withCVectorDouble
             , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
             , withRectDoubleResult, toCDoubleRectX, toCDoubleRectY, toCDoubleRectW, toCDoubleRectH, fromCRectDouble, withCRectDouble
-            , withArrayString, withArrayWString, withArrayInt, withArrayObject
+            , withArray, withArrayString, withArrayWString, withArrayInt, withArrayObject
             , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
 
             , colourFromColor, colorFromColour
@@ -94,8 +94,12 @@ module Graphics.UI.WXCore.WxcTypes(
             -- *** CString
             , CString, withCString, withStringResult
             , CWString, withCWString, withWStringResult
+            -- *** ByteString
+            , withByteStringResult, withLazyByteStringResult
             -- *** CInt
             , CInt, toCInt, fromCInt, withIntResult
+            -- *** 8 bit Word
+            , Word8
             -- *** 64 bit Integer
             , Int64
             -- *** CDouble
@@ -125,10 +129,16 @@ import Data.Array.MArray (MArray)
 import Data.Array.Unboxed (IArray, UArray)
 import Data.Bits( shiftL, shiftR, (.&.), (.|.) )
 
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.ByteString.Char8 as BC (pack)
+import qualified Data.ByteString.Lazy.Char8 as LBC (pack)
+
 {- note: this is just for instances for the WX library and not necessary for WXCore -}
 import Data.Dynamic
 
 import Data.Int
+import Data.Word
 import Debug.Trace (putTraceMsg)
 
 import Graphics.UI.WXCore.WxcObject
@@ -644,6 +654,24 @@ withWStringResult f
              do f cstr
                 peekCWString cstr
 
+{-----------------------------------------------------------------------------------------
+  ByteString
+-----------------------------------------------------------------------------------------}
+-- TODO: replace this by more efficient implementation.
+-- e.g. use mmap when bytestring support mmap interface.
+withByteStringResult :: (Ptr CChar -> IO CInt) -> IO B.ByteString
+withByteStringResult f
+  = do len <- f nullPtr
+       if (len<=0)
+        then return $ BC.pack ""
+        else withCString (replicate (fromCInt len) ' ') $ \cstr ->
+             do f cstr
+                B.packCString cstr
+
+withLazyByteStringResult :: (Ptr CChar -> IO CInt) -> IO LB.ByteString
+withLazyByteStringResult f
+  = do str <- withStringResult f
+       return $ LBC.pack str
 
 {-----------------------------------------------------------------------------------------
   Arrays

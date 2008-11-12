@@ -393,6 +393,9 @@ deriveOutTypes decl
       -- string
       (StringLen,Arg name (StringOut ctp) :args)
           -> decl{ declRet = String ctp, declArgs = reverse args }
+      -- bytestring
+      (ByteStringLen,Arg name (ByteStringOut ctp) :args)
+          -> decl{ declRet = ByteString ctp, declArgs = reverse args }
       -- int array
       (ArrayLen,Arg name (ArrayIntOut ctp) :args)
           -> decl{ declRet = ArrayInt ctp, declArgs = reverse args }

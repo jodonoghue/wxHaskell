@@ -15,9 +15,9 @@ Flag splitBase
 Library
     if flag(splitBase)
         build-depends: base >= 3, array, containers, directory,
-                       parsec, old-time, time, stm
+                       bytestring, parsec, old-time, time, stm
     else
-        build-depends: base <  3, parsec, time, stm
+        build-depends: base <  3, bytestring, parsec, time, stm
  Exposed-Modules:
   Graphics.UI.WXCore
   Graphics.UI.WXCore.WxcObject

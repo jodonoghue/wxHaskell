@@ -44,6 +44,7 @@ typedef int intptr_t;
 #include "wx/sashwin.h"
 #include "wx/laywin.h"
 #include "wx/minifram.h"
+#include "wx/mstream.h"
 #include "wx/wizard.h"
 
 

@@ -12,7 +12,7 @@
 -----------------------------------------------------------------------------------------
 module Types( trace, traceIgnore, traceWarning, traceError
             , errorMsg, errorMsgDecl
-            , Decl(..), Arg(..), Type(..), CBaseType(..), argName
+            , Decl(..), Arg(..), Type(..), Strategy(..), CBaseType(..), argName
             , Def(..), DefType(..)
             ) where
 
@@ -85,6 +85,9 @@ data Type = Int CBaseType
           | Double
           | Float
           | Ptr Type
+          | ByteString Strategy
+          | ByteStringOut Strategy
+          | ByteStringLen
           -- typedefs
           | EventId
           | Id
@@ -115,6 +118,8 @@ data Type = Int CBaseType
           | ColorRGB CBaseType
           deriving (Eq,Show)
 
+data Strategy   = Lazy | Strict
+                deriving (Eq,Show)
 
 data CBaseType  = CVoid | CInt | CLong | CDouble | CChar | TimeT | SizeT | CObject
                 deriving (Eq,Show)
