@@ -22,7 +22,7 @@ module Classes( isClassName, isBuiltin, haskellClassDefs
               , managedClasses
               ) where
 
-import System( getEnv )
+import System.Environment ( getEnv )
 import Data.Char( isUpper )
 import Data.List( sort, sortBy )
 import qualified Data.Set as Set

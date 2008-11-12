@@ -19,7 +19,7 @@ import Text.ParserCombinators.Parsec.Language
 
 import Types
 
-import System( getEnv )
+import System.Environment ( getEnv )
 
 {-----------------------------------------------------------------------------------------
    Testing

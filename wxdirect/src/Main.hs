@@ -19,8 +19,7 @@ module Main where
 
 import Data.List( isPrefixOf )
 
-import System( getEnv )
-import System.Environment( getArgs )
+import System.Environment( getArgs, getEnv )
 import System.Console.GetOpt
 
 import CompileClasses   ( compileClasses)
