@@ -13,6 +13,34 @@ EWXWEXPORT(void*, wxImage_CreateSized)(int width, int height)
 	return (void*) new wxImage(width, height);
 }
 
+EWXWEXPORT(void*, wxImage_CreateFromByteString) (const char* data, size_t length,int type)
+{
+	wxMemoryInputStream in(data,length);
+	return (void*) new wxImage(in, type);
+}
+
+EWXWEXPORT(void*, wxImage_CreateFromLazyByteString) (const char* data, size_t length,int type)
+{
+	wxMemoryInputStream in(data,length);
+	return (void*) new wxImage(in, type);
+}
+
+EWXWEXPORT(size_t, wxImage_ConvertToByteString) (wxImage* _obj, int type, char* data )
+{
+	wxMemoryOutputStream out;
+	_obj->SaveFile(out, type);
+	size_t len = out.GetLength();
+        return out.CopyTo(data, len);
+}
+
+EWXWEXPORT(size_t, wxImage_ConvertToLazyByteString) (wxImage* _obj, int type, char* data )
+{
+	wxMemoryOutputStream out;
+	_obj->SaveFile(out, type);
+	size_t len = out.GetLength();
+        return out.CopyTo(data, len);
+}
+
 EWXWEXPORT(void*, wxImage_CreateFromData)(int width, int height, void* data)
 {
 	return (void*) new wxImage(width, height, (unsigned char*)data, true);

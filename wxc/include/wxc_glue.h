@@ -2688,9 +2688,13 @@ void       wxIdleEvent_RequestMore( TSelf(wxIdleEvent) _obj, TBool needMore );
 TClassDefExtend(wxImage,wxObject)
 TBool      wxImage_CanRead( TStringVoid name );
 void       wxImage_ConvertToBitmap( TSelf(wxImage) _obj, TClassRef(wxBitmap) bitmap );
+TByteStringLen wxImage_ConvertToByteString( TSelf(wxImage) _obj, int type, TByteStringOut data  );
+TByteStringLen wxImage_ConvertToLazyByteString( TSelf(wxImage) _obj, int type, TByteStringLazyOut data );
 int        wxImage_CountColours( TSelf(wxImage) _obj, int stopafter );
 TClass(wxImage) wxImage_CreateDefault(  );
 TClass(wxImage) wxImage_CreateFromBitmap( TClass(wxBitmap) bitmap );
+TClass(wxImage) wxImage_CreateFromByteString( TByteString(data,length), int type );
+TClass(wxImage) wxImage_CreateFromLazyByteString( TByteStringLazy(data,length), int type );
 TClass(wxImage) wxImage_CreateFromData( TSize(width,height), void* data );
 TClass(wxImage) wxImage_CreateFromFile( TStringVoid name );
 TClass(wxImage) wxImage_CreateSized( TSize(width,height) );
