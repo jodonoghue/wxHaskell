@@ -23,3 +23,4 @@ Executable      wxdirect
                        time   >= 1.0.0 && < 1.1,
                        parsec >= 2.1 && < 4
     Main-is: Main.hs
+    Hs-Source-Dirs: src
