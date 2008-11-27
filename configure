@@ -32,6 +32,7 @@ hcflags=""
 hcpkg="ghc-pkg"
 hcopt=""
 hcprof="-prof"
+hcpkgopt=""
 hcpkglocal=""
 hdoc="haddock"
 
@@ -286,6 +287,7 @@ process_args ()
           echo " --hcprof=<flags>       enable profiling (using flags [$hcprof])"
 	  echo " --fvia-C               use -fvia-C option"
 	  echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
+	  echo " --user                 use current user's local package database"
 	  echo " --version=<version>    library version [$version]"
 	  echo " --release=<version>    library release version [$release]"
 	  echo " --cache                expands into previous configure options"
@@ -342,6 +344,15 @@ process_args ()
 	  enableprof="yes";;
       -package-conf=*|--package-conf=*)
 	  hcpkglocal="$arg";;
+      -user|--user)
+	  hcpkgopt="--user";;
+          # I don't know why macosx-app doesn't work when use .cabal location.
+          # if test -d "$HOME/.cabal"; then
+          #   prefix="$HOME/.cabal/lib/wxhaskell"
+          #   execprefix="$prefix"
+          #   libprefix="$prefix"
+          #   sharedprefix="$prefix/share"
+          # fi;;
       -version=*|--version=*)
 	  version="$arg";;
       -release=*|--release=*)
@@ -937,6 +948,7 @@ HCNAME=$hcname
 HCBASENAME=$hcbasename
 HCFLAGS=$hcflags
 HCPKG=$hcpkg
+HCPKGOPT=$hcpkgopt
 GHCOLD=$ghcold
 ENABLE-PROF=$enableprof
 ENABLE-SPLITOBJS=$enablesplitobjs
