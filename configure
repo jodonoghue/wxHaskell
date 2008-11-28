@@ -345,14 +345,15 @@ process_args ()
       -package-conf=*|--package-conf=*)
 	  hcpkglocal="$arg";;
       -user|--user)
-	  hcpkgopt="--user";;
-          # I don't know why macosx-app doesn't work when use .cabal location.
-          # if test -d "$HOME/.cabal"; then
-          #   prefix="$HOME/.cabal/lib/wxhaskell"
-          #   execprefix="$prefix"
-          #   libprefix="$prefix"
-          #   sharedprefix="$prefix/share"
-          # fi;;
+	  hcpkgopt="--user"
+          if test -d "$HOME/.cabal"; then
+            prefix="$HOME/.cabal/lib/wxhaskell-$version"
+            execprefix="$prefix"
+            libprefix="$prefix"
+            # TODO: sharedprefix means shared library's directory currently. This is confusing point.
+            # sharedprefix="$prefix/share"
+            sharedprefix="$prefix/lib"
+          fi;;
       -version=*|--version=*)
 	  version="$arg";;
       -release=*|--release=*)
