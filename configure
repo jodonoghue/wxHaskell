@@ -688,40 +688,40 @@ haskell98pkgversion=`ghc-pkg field haskell98 version | sed 's/.* //'`
 # Test if we can include the bytestring package explicitly
 $hcpkg describe bytestring > /dev/null 2> /dev/null
 case $? in
-  0) bytestringpkgversion=`ghc-pkg field bytestring version | tail -n 1 | sed 's/.* //'`
-     pkgbytestring="-package bytestring-$bytestringpkgversion";;
+  0) bytestringpkgversion=`ghc-pkg latest bytestring`
+     pkgbytestring="-package $bytestringpkgversion";;
   *) pkgbytestring="";;
 esac
 
 # Test if we can include the containers package explicitly
 $hcpkg describe containers > /dev/null 2> /dev/null
 case $? in
-  0) containerspkgversion=`ghc-pkg field containers version | tail -n 1 | sed 's/.* //'`
-     pkgcontainers="-package containers-$containerspkgversion";;
+  0) containerspkgversion=`ghc-pkg latest containers`
+     pkgcontainers="-package $containerspkgversion";;
   *) pkgcontainers="";;
 esac
 
 # Test if we can include the parsec package explicitly
 $hcpkg describe parsec > /dev/null 2> /dev/null
 case $? in
-  0) pkgversion=`ghc-pkg field parsec version | tail -n 1 | sed 's/.* //'`
-     pkgparsec="-package parsec-$pkgversion";;
+  0) pkgversion=`ghc-pkg latest parsec`
+     pkgparsec="-package $pkgversion";;
   *) pkgparsec="";;
 esac
 
 # Test if we can include the time package explicitly
 $hcpkg describe time > /dev/null 2> /dev/null
 case $? in
-  0) pkgversion=`ghc-pkg field time version | tail -n 1 | sed 's/.* //'`
-     pkgtime="-package time-$pkgversion";;
+  0) pkgversion=`ghc-pkg latest time`
+     pkgtime="-package $pkgversion";;
   *) pkgtime="";;
 esac
 
 # Test if we can include the stm package explicitly
 $hcpkg describe stm > /dev/null 2> /dev/null
 case $? in
-  0) stmpkgversion=`ghc-pkg field stm version | tail -n 1 | sed 's/.* //'`
-     pkgstm="-package stm-$stmpkgversion";;
+  0) stmpkgversion=`ghc-pkg latest stm`
+     pkgstm="-package $stmpkgversion";;
   *) pkgstm="";;
 esac
 
@@ -1025,7 +1025,7 @@ binversion="${wxtoolkit}${wxversion}-${version}"
 
 # behave like Cabal's configuration.
 if test "$pkgcontainers"; then
-  wxcoredepends="base-$basepkgversion, containers-$containerspkgversion"
+  wxcoredepends="base-$basepkgversion, $containerspkgversion"
 else
   wxcoredepends="base-$basepkgversion"
 fi
@@ -1066,7 +1066,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: ${wxcoredepends}, haskell98-$haskell98pkgversion, bytestring-$bytestringpkgversion, stm-$stmpkgversion
+depends: ${wxcoredepends}, haskell98-$haskell98pkgversion, $bytestringpkgversion, $stmpkgversion
 extra-ld-opts:$extraldopts
 EOF
 cp -f config/wxcore-partial.pkg config/wxcore.pkg
