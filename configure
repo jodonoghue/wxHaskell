@@ -1069,7 +1069,8 @@ extra-libraries:${wxclibname}-${binversion}
 depends: ${wxcoredepends}, $haskell98pkgversion, $bytestringpkgversion, $stmpkgversion
 extra-ld-opts:$extraldopts
 EOF
-cp -f config/wxcore-partial.pkg config/wxcore.pkg
+tr -d \\r < config/wxcore-partial.pkg > config/wxcore.pkg
+cp -f config/wxcore.pkg config/wxcore-partial.pkg
 echo "import-dirs:\${wxhlibdir}/imports" >> config/wxcore.pkg
 echo "library-dirs:\${wxhlibdir}"	 >> config/wxcore.pkg
 
@@ -1102,7 +1103,8 @@ exposed-modules: Graphics.UI.WX,
 hs-libraries:wx
 depends: wxcore-${version}, $stmpkgversion
 EOF
-cp -f config/wx-partial.pkg config/wx.pkg
+tr -d \\r < config/wx-partial.pkg > config/wx.pkg
+cp -f config/wx.pkg config/wx-partial.pkg
 echo "import-dirs:\${wxhlibdir}/imports" >> config/wx.pkg
 echo "library-dirs:\${wxhlibdir}"	 >> config/wx.pkg
 
