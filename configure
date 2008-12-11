@@ -682,8 +682,8 @@ if test "$hcpkglocal"; then
 fi
 
 # Get package's version
-basepkgversion=`ghc-pkg field base version | head -n 1 | sed 's/.* //'`
-haskell98pkgversion=`ghc-pkg field haskell98 version | sed 's/.* //'`
+basepkgversion=`ghc-pkg latest base`
+haskell98pkgversion=`ghc-pkg latest haskell98`
 
 # Test if we can include the bytestring package explicitly
 $hcpkg describe bytestring > /dev/null 2> /dev/null
@@ -1025,9 +1025,9 @@ binversion="${wxtoolkit}${wxversion}-${version}"
 
 # behave like Cabal's configuration.
 if test "$pkgcontainers"; then
-  wxcoredepends="base-$basepkgversion, $containerspkgversion"
+  wxcoredepends="$basepkgversion, $containerspkgversion"
 else
-  wxcoredepends="base-$basepkgversion"
+  wxcoredepends="$basepkgversion"
 fi
 
 #echo " package descriptions"
@@ -1066,7 +1066,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: ${wxcoredepends}, haskell98-$haskell98pkgversion, $bytestringpkgversion, $stmpkgversion
+depends: ${wxcoredepends}, $haskell98pkgversion, $bytestringpkgversion, $stmpkgversion
 extra-ld-opts:$extraldopts
 EOF
 cp -f config/wxcore-partial.pkg config/wxcore.pkg
@@ -1100,7 +1100,7 @@ exposed-modules: Graphics.UI.WX,
 	Graphics.UI.WX.Controls,
 	Graphics.UI.WX.Dialogs
 hs-libraries:wx
-depends: wxcore-${version}, stm-$stmpkgversion
+depends: wxcore-${version}, $stmpkgversion
 EOF
 cp -f config/wx-partial.pkg config/wx.pkg
 echo "import-dirs:\${wxhlibdir}/imports" >> config/wx.pkg
