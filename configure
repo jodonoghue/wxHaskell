@@ -288,6 +288,7 @@ process_args ()
 	  echo " --fvia-C               use -fvia-C option"
 	  echo " --package-conf=<file>  optional local package configuration [$hcpkglocal]"
 	  echo " --user                 use current user's local package database"
+	  echo " --global               use global package database"
 	  echo " --version=<version>    library version [$version]"
 	  echo " --release=<version>    library release version [$release]"
 	  echo " --cache                expands into previous configure options"
@@ -354,6 +355,7 @@ process_args ()
             # sharedprefix="$prefix/share"
             sharedprefix="$prefix/lib"
           fi;;
+      -global|--global) ;;       # just for cabal
       -version=*|--version=*)
 	  version="$arg";;
       -release=*|--release=*)
