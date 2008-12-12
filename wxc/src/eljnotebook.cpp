@@ -73,7 +73,37 @@ EWXWEXPORT(void, wxNotebook_SetPadding)(void* _obj, int _w, int _h)
 {
 	((wxNotebook*)_obj)->SetPadding(wxSize(_w, _h));
 }
-	
+
+EWXWEXPORT(int, wxNotebook_HitTest)(wxNotebook* _obj, int x, int y, long *flags)
+{
+	return _obj->HitTest(wxPoint(x, y), flags);
+}
+
+EWXWEXPORT(int,expBK_HITTEST_NOWHERE)()
+{
+    return (int)wxBK_HITTEST_NOWHERE;
+}
+
+EWXWEXPORT(int,expBK_HITTEST_ONICON)()
+{
+    return (int)wxBK_HITTEST_ONICON;
+}
+
+EWXWEXPORT(int,expBK_HITTEST_ONLABEL)()
+{
+    return (int)wxBK_HITTEST_ONLABEL;
+}
+
+EWXWEXPORT(int,expBK_HITTEST_ONITEM)()
+{
+    return (int)wxBK_HITTEST_ONITEM;
+}
+
+EWXWEXPORT(int,expBK_HITTEST_ONPAGE)()
+{
+    return (int)wxBK_HITTEST_ONPAGE;
+}
+
 EWXWEXPORT(int, wxNotebook_DeletePage)(void* _obj, int nPage)
 {
 	return (int)((wxNotebook*)_obj)->DeletePage(nPage);

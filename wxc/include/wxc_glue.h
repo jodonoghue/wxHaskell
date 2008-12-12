@@ -3428,6 +3428,7 @@ int        wxNotebook_GetPageImage( TSelf(wxNotebook) _obj, int nPage );
 TStringLen wxNotebook_GetPageText( TSelf(wxNotebook) _obj, int nPage, TStringOutVoid _buf );
 int        wxNotebook_GetRowCount( TSelf(wxNotebook) _obj );
 int        wxNotebook_GetSelection( TSelf(wxNotebook) _obj );
+int        wxNotebook_HitTest( TSelf(wxNotebook) _obj, TPoint(x,y), long* flags );
 int        wxNotebook_InsertPage( TSelf(wxNotebook) _obj, int nPage, TClass(wxWindow) pPage, TStringVoid strText, TBoolInt bSelect, int imageId );
 int        wxNotebook_RemovePage( TSelf(wxNotebook) _obj, int nPage );
 void       wxNotebook_SetImageList( TSelf(wxNotebook) _obj, TClass(wxImageList) imageList );
@@ -3436,6 +3437,12 @@ int        wxNotebook_SetPageImage( TSelf(wxNotebook) _obj, int nPage, int nImag
 void       wxNotebook_SetPageSize( TSelf(wxNotebook) _obj, TSize(_w,_h) );
 int        wxNotebook_SetPageText( TSelf(wxNotebook) _obj, int nPage, TStringVoid strText );
 int        wxNotebook_SetSelection( TSelf(wxNotebook) _obj, int nPage );
+
+int        expBK_HITTEST_NOWHERE(  );
+int        expBK_HITTEST_ONICON(  );
+int        expBK_HITTEST_ONLABEL(  );
+int        expBK_HITTEST_ONITEM(  );
+int        expBK_HITTEST_ONPAGE(  );
 
 /* wxNotebookEvent */
 TClassDefExtend(wxNotebookEvent,wxNotifyEvent)
