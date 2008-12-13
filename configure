@@ -327,6 +327,9 @@ process_args ()
 	  echo " Ignoring --cache option; this option must be the first (and only) option."
 	  echo "";;
 
+      --with-compiler=*)
+	  hc="$arg";;
+      # This option is deprecated. Use --with-compiler instead.
       --with-hc=*)
 	  hc="$arg";;
       -hc=*|--hc=*)
