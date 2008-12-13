@@ -77,8 +77,13 @@ EWXWEXPORT(int,wxFileHistory_GetMenus)(void* _obj, void* _ref)
 	wxList lst = ((wxFileHistory*)_obj)->GetMenus();
 	if (_ref)
 	{
-		for (unsigned int i = 0; i < lst.GetCount(); i++)
-			((void**)_ref)[i] = (void*)lst.Item(i);
+		int i = 0;
+		wxList::compatibility_iterator node = lst.GetFirst();
+		while (node)
+		{
+			((void**)_ref)[i] = node->GetData();
+			++i;
+		}
 	}
 	
 	return lst.GetCount();
