@@ -82,6 +82,7 @@ EWXWEXPORT(int,wxFileHistory_GetMenus)(void* _obj, void* _ref)
 		while (node)
 		{
 			((void**)_ref)[i] = node->GetData();
+			node = node->GetNext();
 			++i;
 		}
 	}

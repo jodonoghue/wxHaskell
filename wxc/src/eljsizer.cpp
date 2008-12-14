@@ -344,21 +344,13 @@ EWXWEXPORT(int, wxSizer_GetChildren)(void* _obj, void* _res, int _cnt)
 	if (_res && (unsigned int)_cnt == ((wxSizer*)_obj)->GetChildren().GetCount())
 	{
 		int i = 0;
-#if (wxVERSION_NUMBER < 2600)
-		wxNode* node = NULL;
-		wxList list = ((wxSizer*)_obj)->GetChildren();
-	
-		
-		while ((node = list.Item(i++)))
-			((void**)_res)[i] = (void*)node->GetData();
-#else
 		wxSizerItemList::compatibility_iterator node = ((wxSizer*)_obj)->GetChildren().GetFirst();
 		while (node)
 		{
 			((void**)_res)[i] = node->GetData();
+			node = node->GetNext();
 			++i;
 		}
-#endif
 		return i;
 	}
 	else
