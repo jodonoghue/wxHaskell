@@ -194,7 +194,7 @@ wxObject *wxSplitterWindowXmlHandler::DoCreateResource()
 	frame->SetSplitMode(GetLong (wxT("splitmode"), wxSPLIT_VERTICAL));
 	long sashpos = GetLong (wxT("sashposition"), 100);
 	
-	wxWindowList::Node* node = frame->GetChildren().GetFirst();
+	wxWindowList::compatibility_iterator node = frame->GetChildren().GetFirst();
 	wxWindow* wnd1 = node->GetData();
 	wxWindow* wnd2 = node->GetNext()->GetData();
 
