@@ -235,7 +235,8 @@ EWXWEXPORT(int, wxWindow_GetChildren)(void* _obj, void* _res, int _cnt)
 	if (_res && (unsigned int)_cnt == ((wxWindow*)_obj)->GetChildren().GetCount())
 	{
 		unsigned int i = 0;
-		wxWindowListNode* node = ((wxWindow*)_obj)->GetChildren().GetFirst();
+    wxWindowList::compatibility_iterator node = 
+      ((wxWindow*)_obj)->GetChildren().GetFirst();
 	
 		while (node)
 		{
