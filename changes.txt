@@ -8,20 +8,34 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
-Version 0.10.6
+Version 0.10.6 (0.11.0)
 --------------
+Non backward compatible changes:
+- Added "--global" argument to configure script
+- Added "--user" argument to configure script
 
-Backward compatible additions
+Backward compatible additions:
 - Added support for using XRC resource files to load most controls
   and menus attached to frames.
 - Added sample file showing how to use XRC support to attach command
   handlers to menu items
 - Added sample file showing how to use properties with many controls.
+- Added "--enable-optimization" argument to configure script
+- Added "--O*" argument to configure script
+- Added "--enable-library-profiling" argument to configure script
+- Added "--p" argument to configure script
+- Added "-fvia-C" argument to configure script. And moved this  compilation
+  flag to configure script
+- Added Image / ByteString conversion functions
+
+Bugfixes:
+- Applied DEPRECATED pragma to old deprecated functions. Just documented
+  in Haddock before.
 
 Version 0.10.4
 -------------
 Non backward compatible changes:
-- Changed wxhaskell official web page to Haskell wiki
+- Changed wxhaskell official web page to Haskell wiki at
   http://haskell.org/haskellwiki/WxHaskell
 - Changed official darcs repository to code.haskell.org
 - Adapted the wxHaskell C-layer to work with wxWidgets 2.8
@@ -90,12 +104,4 @@ Version 0.9.4-1
 Bugfixes:
 - Compile the wx library with -fvia-C. This prevents crashes in   
    GHCi-6.4.(Fix is found by Sigbjorn Finne)
-
-Version 0.9.4
--------------
-Backward compatible additions:
-- Adapted the configuration, make files, and install scripts to work 
-  with GHC 6.4.
-- Adapted the wxHaskell C-layer to work with wxWidgets 2.6.0
-- Made "Object" an instance of Ord
 
