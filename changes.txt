@@ -8,7 +8,7 @@
   See license.txt for details.
 ----------------------------------------------------------------------
 
-Version 0.10.6 (0.11.0)
+Version 0.11.0
 --------------
 Non backward compatible changes:
 - Added "--global" argument to configure script
