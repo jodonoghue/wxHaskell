@@ -3438,6 +3438,11 @@ void       wxNotebook_SetPageSize( TSelf(wxNotebook) _obj, TSize(_w,_h) );
 int        wxNotebook_SetPageText( TSelf(wxNotebook) _obj, int nPage, TStringVoid strText );
 int        wxNotebook_SetSelection( TSelf(wxNotebook) _obj, int nPage );
 
+int        expNB_TOP(  );
+int        expNB_BOTTOM(  );
+int        expNB_LEFT(  );
+int        expNB_RIGHT(  );
+
 int        expBK_HITTEST_NOWHERE(  );
 int        expBK_HITTEST_ONICON(  );
 int        expBK_HITTEST_ONLABEL(  );

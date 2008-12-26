@@ -72,7 +72,6 @@ wxSTREAM_EOF         : INTEGER is 1
 wxSTREAM_WRITE_ERROR : INTEGER is 2 
 wxSTREAM_READ_ERROR  : INTEGER is 3 
 
-wxNB_TOP             : INTEGER is 0 
 wxNB_MULTILINE       : INTEGER is 256
 
 wxLC_VRULES          : INTEGER is 1

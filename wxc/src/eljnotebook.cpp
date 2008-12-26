@@ -3,6 +3,26 @@
 extern "C"
 {
 
+EWXWEXPORT(int,expNB_TOP)()
+{
+    return (int)wxNB_TOP;
+}
+
+EWXWEXPORT(int,expNB_BOTTOM)()
+{
+    return (int)wxNB_BOTTOM;
+}
+
+EWXWEXPORT(int,expNB_LEFT)()
+{
+    return (int)wxNB_LEFT;
+}
+
+EWXWEXPORT(int,expNB_RIGHT)()
+{
+    return (int)wxNB_RIGHT;
+}
+
 EWXWEXPORT(void*, wxNotebook_Create) (void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, int _stl)
 {
 	return (void*) new wxNotebook ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl);
