@@ -38,7 +38,7 @@ module Graphics.UI.WX.Menu
     , menuItemOnCommandRes, menuLine, menuSub, menuRadioItem
     -- * Tool bar
     , ToolBar, toolBar, toolBarEx
-    , ToolBarItem, toolMenu, toolItem, toolControl, tool
+    , ToolBarItem, toolMenu, toolMenuFromBitmap, toolItem, toolControl, tool
     -- * Status bar
     , StatusField, statusBar, statusField, statusWidth
     -- * Deprecated
@@ -534,19 +534,25 @@ tool (ToolBarItem toolbar id isToggle)
 -- corresponding menu item.
 toolMenu :: ToolBar a -> MenuItem a -> String -> FilePath -> [Prop ToolBarItem] -> IO ToolBarItem
 toolMenu toolbar menuitem label bitmapPath props
+  = withBitmapFromFile bitmapPath $ \bitmap ->
+      toolMenuFromBitmap toolbar menuitem label bitmap props
+
+-- | This is a generalized version of 'toolMenu' function. You can specify 'Bitmap' that is
+-- loaded from any other place instead of using 'FilePath' directly.
+toolMenuFromBitmap :: ToolBar a -> MenuItem a -> String -> Bitmap b -> [Prop ToolBarItem] -> IO ToolBarItem
+toolMenuFromBitmap toolbar menuitem label bitmap props
   = do isToggle <- get menuitem checkable
        id       <- get menuitem identity
        lhelp    <- get menuitem help
        shelp    <- get menuitem help
-       withBitmapFromFile bitmapPath $ \bitmap ->
-         do toolBarAddTool2 toolbar id label bitmap nullBitmap 
-                            (if isToggle then wxITEM_CHECK else wxITEM_NORMAL)
-                            shelp lhelp
-            let t = ToolBarItem (downcastToolBar toolbar) id isToggle
-            set t props
-            toolBarRealize toolbar
-            return t
-       
+       toolBarAddTool2 toolbar id label bitmap nullBitmap 
+                       (if isToggle then wxITEM_CHECK else wxITEM_NORMAL)
+                       shelp lhelp
+       let t = ToolBarItem (downcastToolBar toolbar) id isToggle
+       set t props
+       toolBarRealize toolbar
+       return t
+
 -- | Create an /orphan/ toolbar item that is unassociated with a menu. Takes a 
 -- label, a flag that is 'True' when the item is 'checkable' and a path to an image
 -- (bmp,png,gif,ico,etc.) as arguments.

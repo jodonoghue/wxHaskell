@@ -660,7 +660,7 @@ EWXWEXPORT(void, wxMetafile_Delete) (void* _obj)
 #endif
 }
 
-#if (wxVERSION_NUMBER >= 2800)
+#if wxCHECK_VERSION (2,8,0)
 EWXWEXPORT(void, wxDC_DrawLabel)(void* _obj, void *str, int x, int y, int w, int h, int align, int indexAccel)
 {
   wxRect rect(x, y, w, h);
