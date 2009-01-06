@@ -98,6 +98,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , withByteStringResult, withLazyByteStringResult
             -- *** CInt
             , CInt, toCInt, fromCInt, withIntResult
+            -- *** Word
+            , Word
             -- *** 8 bit Word
             , Word8
             -- *** 64 bit Integer

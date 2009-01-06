@@ -76,6 +76,9 @@
 /* 64 bit integer */
 #define TInt64            int64_t
 
+/* unsigned integer */
+#define TUInt             uint32_t
+
 /* 8 bit unsigned integer */
 #define TUInt8            uint8_t
 
