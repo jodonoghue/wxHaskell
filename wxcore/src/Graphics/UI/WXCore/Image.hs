@@ -215,7 +215,7 @@ imageTypeFromExtension ext
   Direct image manipulation
 -----------------------------------------------------------------------------------------}
 -- | An abstract pixel buffer (= array of RGB values)
-data PixelBuffer   = PixelBuffer Bool Size (Ptr CChar)
+data PixelBuffer   = PixelBuffer Bool Size (Ptr Word8)
 
 -- | Create a pixel buffer. (To be deleted with 'pixelBufferDelete').
 pixelBufferCreate   :: Size -> IO PixelBuffer
@@ -237,18 +237,18 @@ pixelBufferGetSize (PixelBuffer owned size buffer)
 pixelBufferGetPixels :: PixelBuffer -> IO [Color]
 pixelBufferGetPixels (PixelBuffer owned (Size w h) buffer)
   = do let count = w*h
-       rgbs <- peekCStringLen (buffer,3*count)                 -- peekArray seems buggy in ghc 6.2.1
+       rgbs <- peekArray (3*count) buffer
        return (convert rgbs)
   where
-    convert :: [Char] -> [Color]
-    convert (r:g:b:xs)  = colorRGB (intFromCChar r) (intFromCChar g) (intFromCChar b): convert xs
+    convert :: [Word8] -> [Color]
+    convert (r:g:b:xs)  = colorRGB (intFromWord8 r) (intFromWord8 g) (intFromWord8 b): convert xs
     convert []          = []
 
-intFromCChar :: Char -> Int                                          
-intFromCChar c  = fromEnum c
+intFromWord8 :: Word8 -> Int                                          
+intFromWord8 c  = fromIntegral c
 
-intToCChar :: Int -> CChar
-intToCChar i    = fromIntegral i
+intToWord8 :: Int -> Word8
+intToWord8 i    = fromIntegral i
 
 -- | Set all the pixels of a pixel buffer.
 pixelBufferSetPixels :: PixelBuffer -> [Color] -> IO ()
@@ -256,8 +256,8 @@ pixelBufferSetPixels (PixelBuffer owned (Size w h) buffer) colors
   = do let count = w*h
        pokeArray buffer (convert (take count colors))
   where
-    convert :: [Color] -> [CChar]
-    convert (c:cs) = intToCChar (colorRed c) : intToCChar (colorGreen c) : intToCChar (colorBlue c) : convert cs
+    convert :: [Color] -> [Word8]
+    convert (c:cs) = intToWord8 (colorRed c) : intToWord8 (colorGreen c) : intToWord8 (colorBlue c) : convert cs
     convert []     = []
 
 -- | Initialize the pixel buffer with a grey color. The second argument
@@ -271,9 +271,9 @@ pixelBufferSetPixel :: PixelBuffer -> Point -> Color -> IO ()
 pixelBufferSetPixel (PixelBuffer owned size buffer) point color
   = {-
     do let idx = 3*(y*w + x)
-           r   = intToCChar (colorRed color)
-           g   = intToCChar (colorGreen color)
-           b   = intToCChar (colorBlue color)
+           r   = intToWord8 (colorRed color)
+           g   = intToWord8 (colorGreen color)
+           b   = intToWord8 (colorBlue color)
        pokeByteOff buffer idx r
        pokeByteOff buffer (idx+1) g
        pokeByteOff buffer (idx+2) b
@@ -289,7 +289,7 @@ pixelBufferGetPixel (PixelBuffer owned size buffer) point
        r   <- peekByteOff buffer idx
        g   <- peekByteOff buffer (idx+1)
        b   <- peekByteOff buffer (idx+2)
-       return (colorRGB (intFromCChar r) (intFromCChar g) (intFromCChar b))
+       return (colorRGB (intFromWord8 r) (intFromWord8 g) (intFromWord8 b))
     -}
     do rgb <- wxcGetPixelRGB buffer (sizeW size) point
        return (colorFromInt rgb)

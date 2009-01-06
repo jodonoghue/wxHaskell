@@ -64,7 +64,7 @@ module Graphics.UI.WXCore.WxcTypes(
 
             , colourFromColor, colorFromColour
             , colourCreate, colourSafeDelete -- , colourCreateRGB, colourRed, colourGreen, colourBlue
-            , toCCharColorRed, toCCharColorGreen, toCCharColorBlue
+            , toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue
 
   
             -- ** Managed object types
@@ -1215,13 +1215,10 @@ colorOk (Color rgb)
 
 
 -- marshalling 1
-toCCharColorRed, toCCharColorGreen, toCCharColorBlue :: Color -> CChar
-toCCharColorRed c    = toCCharInt (colorRed c)
-toCCharColorGreen c  = toCCharInt (colorGreen c)
-toCCharColorBlue c   = toCCharInt (colorBlue c)
-
-toCCharInt :: Int -> CChar
-toCCharInt i         = fromIntegral i
+toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue :: Color -> Word8
+toWord8ColorRed c    = fromIntegral (colorRed c)
+toWord8ColorGreen c  = fromIntegral (colorGreen c)
+toWord8ColorBlue c   = fromIntegral (colorBlue c)
 
 -- marshalling 2
 {-
@@ -1238,7 +1235,7 @@ withRefColour f
 withManagedColourResult :: IO (Ptr (TColour a)) -> IO Color
 withManagedColourResult io
   = do pcolour <- io
-       color <- do ok <- colourOk pcolour
+       color <- do ok <- colourIsOk pcolour
                    if (ok==0)
                     then return colorNull
                     else do rgb <- colourGetInt pcolour
@@ -1272,7 +1269,7 @@ colourFromColor c
 colorFromColour :: Colour a -> IO Color
 colorFromColour c
   = withObjectRef "colorFromColour" c $ \pcolour ->
-    do ok <- colourOk pcolour
+    do ok <- colourIsOk pcolour
        if (ok==0)
         then return colorNull
         else do rgb <- colourGetInt pcolour
@@ -1284,6 +1281,6 @@ foreign import ccall "wxColour_CreateFromInt" colourCreateFromInt :: CInt -> IO 
 foreign import ccall "wxColour_GetInt" colourGetInt               :: Ptr (TColour a) -> IO CInt
 foreign import ccall "wxColour_SafeDelete" colourSafeDelete   :: Ptr (TColour a) -> IO ()
 foreign import ccall "wxColour_IsStatic" colourIsStatic   :: Ptr (TColour a) -> Bool
-foreign import ccall "wxColour_Ok"    colourOk   :: Ptr (TColour a) -> IO CInt
+foreign import ccall "wxColour_IsOk"    colourIsOk   :: Ptr (TColour a) -> IO CInt
 foreign import ccall "Null_Colour"    colourNull :: IO (Ptr (TColour a))
 foreign import ccall wxManagedPtr_CreateFromColour :: Ptr (TColour a) -> IO (ManagedPtr (TColour a))

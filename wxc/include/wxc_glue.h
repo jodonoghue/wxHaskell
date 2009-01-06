@@ -1223,21 +1223,22 @@ TClassDefExtend(wxClosure,wxObject)
 
 /* wxColour */
 TClassDefExtend(wxColour,wxObject)
+TUInt8     wxColour_Alpha( TSelf(wxColour) _obj );
 void       wxColour_Assign( TSelf(wxColour) _obj, void* other );
-TChar      wxColour_Blue( TSelf(wxColour) _obj );
+TUInt8     wxColour_Blue( TSelf(wxColour) _obj );
 void       wxColour_Copy( TSelf(wxColour) _obj, void* _other );
-void*      wxColour_CreateByName( TStringVoid _name );
+TClass(wxColour) wxColour_CreateByName( TClass(wxString) _name );
 TClass(wxColour) wxColour_CreateEmpty(  );
 TClass(wxColour) wxColour_CreateFromStock( int id );
-void*      wxColour_CreateRGB( TChar _red, TChar _green, TChar _blue );
+TClass(wxColour) wxColour_CreateRGB( TUInt8 _red, TUInt8 _green, TUInt8 _blue, TUInt8 _alpha );
 void       wxColour_Delete( TSelf(wxColour) _obj );
 //WXCOLORREF wxColour_GetPixel( TSelf(wxColour) _obj );
-TChar      wxColour_Green( TSelf(wxColour) _obj );
-TBool      wxColour_Ok( TSelf(wxColour) _obj );
-TChar      wxColour_Red( TSelf(wxColour) _obj );
-void       wxColour_Set( TSelf(wxColour) _obj, TChar _red, TChar _green, TChar _blue );
-void       wxColour_SetByName( TSelf(wxColour) _obj, TStringVoid _name );
-TBoolInt   wxColour_ValidName( TStringVoid _name );
+TUInt8     wxColour_Green( TSelf(wxColour) _obj );
+TBool      wxColour_IsOk( TSelf(wxColour) _obj );
+TUInt8     wxColour_Red( TSelf(wxColour) _obj );
+void       wxColour_Set( TSelf(wxColour) _obj, TUInt8 _red, TUInt8 _green, TUInt8 _blue, TUInt8 _alpha );
+void       wxColour_SetByName( TSelf(wxColour) _obj, TClass(wxString) _name );
+TBool      wxColour_ValidName( TStringVoid _name );
 
 /* wxColourData */
 TClassDefExtend(wxColourData,wxObject)

@@ -7,31 +7,31 @@ extern "C"
 {
 
 /* bitmap/image helpers */
-EWXWEXPORT(wxBitmap*, wxBitmap_CreateFromImage)( wxImage* image, int depth )
+EWXWEXPORT(wxBitmap*,wxBitmap_CreateFromImage)(wxImage* image,int depth)
 {
   return new wxBitmap(*image,depth);
 }
 
 
-EWXWEXPORT(wxImage*, wxImage_CreateFromDataEx)(int width, int height, void* data, int isStaticData)
+EWXWEXPORT(wxImage*,wxImage_CreateFromDataEx)(int width,int height,wxUint8* data,bool isStaticData)
 {
-  return new wxImage(width, height, (unsigned char*)data, isStaticData != 0);
+  return new wxImage(width, height, data, isStaticData);
 }
 
 
-EWXWEXPORT(void, wxImage_Delete)( wxImage* image )
+EWXWEXPORT(void,wxImage_Delete)(wxImage* image)
 {
   delete image;
 }
 
 
 /* colours */
-EWXWEXPORT(void*, wxColour_CreateFromInt) (int rgb)
+EWXWEXPORT(void*,wxColour_CreateFromInt)(int rgb)
 {
   return (void*) new wxColour((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
 }
 
-EWXWEXPORT(int, wxColour_GetInt) (wxColour* colour)
+EWXWEXPORT(int,wxColour_GetInt)(wxColour* colour)
 {
   int r = colour->Red();
   int g = colour->Green();
@@ -40,7 +40,7 @@ EWXWEXPORT(int, wxColour_GetInt) (wxColour* colour)
 }
 
 /* basic pixel manipulation */
-EWXWEXPORT(void, wxcSetPixelRGB)( unsigned char* buffer, int width, int x, int y, int rgb )
+EWXWEXPORT(void,wxcSetPixelRGB)(wxUint8* buffer,int width,int x,int y,int rgb)
 {
   int indexR = 3*(width*y + x);
   buffer[indexR]   = rgb >> 16;
@@ -48,7 +48,7 @@ EWXWEXPORT(void, wxcSetPixelRGB)( unsigned char* buffer, int width, int x, int y
   buffer[indexR+2] = rgb;
 }
 
-EWXWEXPORT(int, wxcGetPixelRGB)( unsigned char* buffer, int width, int x, int y )
+EWXWEXPORT(int,wxcGetPixelRGB)(wxUint8* buffer,int width,int x,int y)
 {
   int indexR = 3*(width*y + x);
   int r,g,b;
@@ -58,7 +58,7 @@ EWXWEXPORT(int, wxcGetPixelRGB)( unsigned char* buffer, int width, int x, int y 
   return ((r << 16) | (g << 8) | b);
 }
 
-EWXWEXPORT(void, wxcSetPixelRowRGB)( unsigned char* buffer, int width, int x, int y, int rgb0, int rgb1, int count )
+EWXWEXPORT(void,wxcSetPixelRowRGB)(wxUint8* buffer,int width,int x,int y,int rgb0,int rgb1,int count)
 {
   int r0  = ((rgb0 >> 16) && 0xFF);
   int g0  = ((rgb0 >>  8) && 0xFF);
@@ -99,12 +99,12 @@ EWXWEXPORT(void, wxcSetPixelRowRGB)( unsigned char* buffer, int width, int x, in
   }
 }
 
-EWXWEXPORT(void, wxcInitPixelsRGB)( unsigned char* buffer, int width, int height, int rgb )
+EWXWEXPORT(void,wxcInitPixelsRGB)(wxUint8* buffer,int width,int height,int rgb)
 {
   int count        = width*height*3;
-  unsigned char r  = ((rgb >> 16) && 0xFF);
-  unsigned char g  = ((rgb >>  8) && 0xFF);
-  unsigned char b  = rgb && 0xFF;
+  wxUint8 r  = ((rgb >> 16) && 0xFF);
+  wxUint8 g  = ((rgb >>  8) && 0xFF);
+  wxUint8 b  = rgb && 0xFF;
   int i;
 
   if (r==g && g==b) {

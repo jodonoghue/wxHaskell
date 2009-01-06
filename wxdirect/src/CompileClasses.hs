@@ -465,9 +465,9 @@ haskellToCArg decl arg
                    ++ pparens ("toCDoubleRectW " ++ name) ++ " " ++ pparens( "toCDoubleRectH " ++ name)
       Rect _   -> pparens ("toCIntRectX " ++ name) ++ " " ++ pparens( "toCIntRectY " ++ name)
                   ++ pparens ("toCIntRectW " ++ name) ++ " " ++ pparens( "toCIntRectH " ++ name)
-      ColorRGB _ ->    pparens ("toCCharColorRed " ++ name) ++ " " 
-                    ++ pparens ("toCCharColorGreen " ++ name) ++ " "
-                    ++ pparens ("toCCharColorBlue " ++ name) 
+      ColorRGB _ ->    pparens ("toWord8ColorRed " ++ name) ++ " " 
+                    ++ pparens ("toWord8ColorGreen " ++ name) ++ " "
+                    ++ pparens ("toWord8ColorBlue " ++ name) 
 
       ArrayString _     -> haskellArrayLenName name ++ " " ++ haskellArrayName name
       ArrayObject tp _  -> haskellArrayLenName name ++ " " ++ haskellArrayName name
@@ -668,7 +668,7 @@ foreignType i tp
       Vector _ -> "CInt -> CInt"
       Size CDouble  -> "CDouble -> CDouble"
       Size _   -> "CInt -> CInt"
-      ColorRGB _ -> "CChar -> CChar -> CChar"
+      ColorRGB _ -> "Word8 -> Word8 -> Word8"
       Rect CDouble -> "CDouble -> CDouble -> CDouble -> CDouble"
       Rect _   -> "CInt -> CInt -> CInt -> CInt"
       Fun f    -> "Ptr " ++ pparens f

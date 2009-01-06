@@ -13,6 +13,7 @@
 #undef TClassDef
 #undef TClassDefExtend
 #undef TChar
+#undef TUInt8
 #undef TInt64
 #undef TBool
 #undef TBoolInt
@@ -112,7 +113,7 @@
 #define TSizeOut(w,h)     int* w, int* h
 #define TRect(x,y,w,h)    int x,  int y,  int w,  int h
 #define TRectOut(x,y,w,h) int* x, int* y, int* w, int* h
-#define TColorRGB(r,g,b)  char r, char g, char b
+#define TColorRGB(r,g,b)  TUInt8 r, TUInt8 g, TUInt8 b
 
 /* arrays */
 #define TArrayLen               int

@@ -3,22 +3,22 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxColour_CreateEmpty) ()
+EWXWEXPORT(wxColour*,wxColour_CreateEmpty)()
 {
-	return (void*) new wxColour();
+	return  new wxColour();
 }
 
-EWXWEXPORT(void*, wxColour_CreateRGB) (char _red, char _green, char _blue)
+EWXWEXPORT(wxColour*,wxColour_CreateRGB)(wxUint8 _red,wxUint8 _green,wxUint8 _blue,wxUint8 _alpha)
 {
-	return (void*) new wxColour(_red, _green, _blue);
+	return new wxColour(_red, _green, _blue,_alpha);
 }
 
-EWXWEXPORT(void*, wxColour_CreateByName) (void* _name)
+EWXWEXPORT(wxColour*,wxColour_CreateByName)(wxString* _name)
 {
-	return (void*) new wxColour((wxChar*)_name);
+	return new wxColour(*_name);
 }
 
-EWXWEXPORT(void*, wxColour_CreateFromStock) (int _id)
+EWXWEXPORT(void*,wxColour_CreateFromStock)(int _id)
 {
 	switch (_id)
 	{
@@ -41,39 +41,44 @@ EWXWEXPORT(void*, wxColour_CreateFromStock) (int _id)
 	return NULL;
 }
 
-EWXWEXPORT(void, wxColour_Delete)(void* _obj)
+EWXWEXPORT(void,wxColour_Delete)(wxColour* _obj)
 {
-	delete (wxColour*)_obj;
+	delete _obj;
 }
 
-EWXWEXPORT(void, wxColour_Set)(void* _obj, char _red, char _green, char _blue)
+EWXWEXPORT(void,wxColour_Set)(wxColour* _obj,wxUint8 _red,wxUint8 _green,wxUint8 _blue,wxUint8 _alpha)
 {
-	((wxColour*)_obj)->Set(_red, _green, _blue);
+	_obj->Set(_red, _green, _blue);
 }
 	
-EWXWEXPORT(void, wxColour_Assign)(void* _obj, void* other)
+EWXWEXPORT(void,wxColour_Assign)(wxColour* _obj,wxColour* other)
 {
-	*((wxColour*)_obj) = *((wxColour*)other);
+	*_obj = *other;
 }
 	
-EWXWEXPORT(int, wxColour_Ok)(void* _obj)
+EWXWEXPORT(bool,wxColour_IsOk)(wxColour* _obj)
 {
-	return (int)((wxColour*)_obj)->Ok();
+	return _obj->IsOk();
 }
 	
-EWXWEXPORT(char, wxColour_Red)(void* _obj)
+EWXWEXPORT(wxUint8,wxColour_Red)(wxColour* _obj)
 {
-	return ((wxColour*)_obj)->Red();
+	return _obj->Red();
 }
 	
-EWXWEXPORT(char, wxColour_Green)(void* _obj)
+EWXWEXPORT(wxUint8,wxColour_Green)(wxColour* _obj)
 {
-	return ((wxColour*)_obj)->Green();
+	return _obj->Green();
 }
 	
-EWXWEXPORT(char, wxColour_Blue)(void* _obj)
+EWXWEXPORT(wxUint8,wxColour_Blue)(wxColour* _obj)
 {
-	return ((wxColour*)_obj)->Blue();
+	return _obj->Blue();
+}
+
+EWXWEXPORT(wxUint8,wxColour_Alpha)(wxColour* _obj)
+{
+	return _obj->Alpha();
 }
 
 // FIXME: the return type on this is platform dependent
@@ -84,27 +89,27 @@ EWXWEXPORT(char, wxColour_Blue)(void* _obj)
 //   GTK     - int
 //   X11     - long
 //   Mac     - (WXCOLORREF&)
-// EWXWEXPORT(WXCOLORREF, wxColour_GetPixel)(void* _obj)
+// EWXWEXPORT(WXCOLORREF,wxColour_GetPixel)(wxColour* _obj)
 // {
-// 	return ((wxColour*)_obj)->GetPixel();
+// 	return _obj->GetPixel();
 // }
 
-EWXWEXPORT(void, wxColour_Copy)(void* _obj, void* _other)
+EWXWEXPORT(void,wxColour_Copy)(wxColour* _obj,wxColour* _other)
 {
-	(*((wxColour*)_obj)) = (*((wxColour*)_other));
+	*_obj = *_other;
 }
 
-EWXWEXPORT(void, wxColour_SetByName)(void* _obj, void* _name)
+EWXWEXPORT(void,wxColour_SetByName)(wxColour* _obj,wxString* _name)
 {
-	(*((wxColour*)_obj)) = (wxChar*)_name;
+	*_obj = *_name;
 }
 
-EWXWEXPORT(int, wxColour_ValidName)(wxChar* _name)
+EWXWEXPORT(bool,wxColour_ValidName)(wxString* _name)
 {
 #if (wxVERSION_NUMBER < 2600)
-  return (wxTheColourDatabase->FindColour (wxString(_name))) != NULL;
+  return (wxTheColourDatabase->FindColour (*_name)) != NULL;
 #else
-  return wxTheColourDatabase->Find(wxString(_name)).Ok();
+  return wxTheColourDatabase->Find(*_name).IsOk();
 #endif
 }
 
