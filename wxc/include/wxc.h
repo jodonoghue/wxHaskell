@@ -377,16 +377,24 @@ void wxImage_Delete( TSelf(wxImage) image );
 TClass(wxColour) wxColour_CreateFromInt(int rgb);
 /** Return colors as an rgb int. */
 int wxColour_GetInt( TSelf(wxColour) colour);
+/** Create from rgba unsigned int. */
+TClass(wxColour) wxColour_CreateFromUnsignedInt(TUInt rgba);
+/** Return colors as an rgba unsigned int. */
+TUInt wxColour_GetUnsignedInt( TSelf(wxColour) colour);
 
 /** Create from system colour. */
 TClass(wxColour) wxcSystemSettingsGetColour( int systemColour );
 
 
 /* basic pixel manipulation */
-void wxcSetPixelRGB( void* buffer, int width, TPoint(x,y), int rgb  );
-int  wxcGetPixelRGB( void* buffer, int width, TPoint(x,y) );
-void wxcSetPixelRowRGB( void* buffer, int width, TPoint(x,y), int rgbStart, int rgbEnd, int count );
-void wxcInitPixelsRGB( void* buffer, TSize(width,height), int rgb );
+void wxcSetPixelRGB( TUInt8* buffer, int width, TPoint(x,y), int rgb  );
+int  wxcGetPixelRGB( TUInt8* buffer, int width, TPoint(x,y) );
+void wxcSetPixelRowRGB( TUInt8* buffer, int width, TPoint(x,y), int rgbStart, int rgbEnd, int count );
+void wxcInitPixelsRGB( TUInt8* buffer, TSize(width,height), int rgba );
+void wxcSetPixelRGBA( TUInt8* buffer, int width, TPoint(x,y), TUInt rgba  );
+int  wxcGetPixelRGBA( TUInt8* buffer, int width, TPoint(x,y) );
+void wxcSetPixelRowRGBA( TUInt8* buffer, int width, TPoint(x,y), int rgbaStart, int rgbEnd, TUInt count );
+void wxcInitPixelsRGBA( TUInt8* buffer, TSize(width,height), TUInt rgba );
 
 /* malloc/free */
 void* wxcMalloc(int size );

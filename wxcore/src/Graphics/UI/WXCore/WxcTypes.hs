@@ -47,7 +47,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , rect, rectBetween, rectFromSize, rectZero, rectNull, rectSize, rectIsEmpty
 
             -- ** Color
-            , Color(..), rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk
+            , Color(..), rgb, colorRGB, rgba, colorRGBA, colorRed, colorGreen, colorBlue, colorAlpha
+            , intFromColor, colorFromInt, wordFromColor, colorFromWord, colorOk
 
             -- * Marshalling
             -- ** Basic types
@@ -63,8 +64,8 @@ module Graphics.UI.WXCore.WxcTypes(
             , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
 
             , colourFromColor, colorFromColour
-            , colourCreate, colourSafeDelete -- , colourCreateRGB, colourRed, colourGreen, colourBlue
-            , toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue
+            , colourCreate, colourSafeDelete -- , colourCreateRGB, colourRed, colourGreen, colourBlue colourAlpha
+            , toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue, toWord8ColorAlpha
 
   
             -- ** Managed object types
@@ -1162,47 +1163,77 @@ foreign import ccall "wxString_GetString" wxString_GetString :: Ptr (TWxString a
 --   We can't derive 'MArray' class's unboxed array instance this way. This is a bad point
 --   of current 'MArray' class definition.
 --
-newtype Color = Color Int 
+newtype Color = Color Word 
               deriving (Eq, Typeable) -- , IArray UArray) 
 
 instance Show Color where
   showsPrec d c
-    = showParen (d > 0) (showString "rgb(" . shows (colorRed   c) .
-                          showChar   ','   . shows (colorGreen c) .
-                          showChar   ','   . shows (colorBlue  c) .
+    = showParen (d > 0) (showString "rgba(" . shows (colorRed   c) .
+                          showChar   ','    . shows (colorGreen c) .
+                          showChar   ','    . shows (colorBlue  c) .
+                          showChar   ','    . shows (colorAlpha c) .
                           showChar   ')' )
 
 -- | Create a color from a red\/green\/blue triple.
 colorRGB :: Int -> Int -> Int -> Color
-colorRGB r g b = Color (shiftL r 16 .|. shiftL g 8 .|. b)
+colorRGB r g b = Color (shiftL (fromIntegral r) 24 .|. shiftL (fromIntegral g) 16 .|. shiftL (fromIntegral b) 8 .|. 255)
 
 -- | Create a color from a red\/green\/blue triple.
 rgb :: Int -> Int -> Int -> Color
 rgb r g b = colorRGB r g b
 
+-- | Create a color from a red\/green\/blue\/alpha quadruple.
+colorRGBA :: Int -> Int -> Int -> Int -> Color
+colorRGBA r g b a = Color (shiftL (fromIntegral r) 24 .|. shiftL (fromIntegral g) 16 .|. shiftL (fromIntegral b) 8 .|. (fromIntegral a))
+
+-- | Create a color from a red\/green\/blue\/alpha quadruple.
+rgba :: Int -> Int -> Int -> Int -> Color
+rgba r g b a = colorRGBA r g b a
+
 
 -- | Return an 'Int' where the three least significant bytes contain
 -- the red, green, and blue component of a color.
 intFromColor :: Color -> Int
-intFromColor (Color rgb)
-  = rgb
+intFromColor rgb
+  = let r = colorRed rgb
+        g = colorGreen rgb
+        b = colorBlue rgb
+    in (shiftL (fromIntegral r) 16 .|. shiftL (fromIntegral g) 8 .|. b)
 
 -- | Set the color according to an rgb integer. (see 'rgbIntFromColor').
 colorFromInt :: Int -> Color
 colorFromInt rgb
+  = let r = (shiftR rgb 16) .&. 0xFF
+        g = (shiftR rgb 8) .&. 0xFF
+        b = rgb .&. 0xFF
+    in colorRGB r g b
+
+-- | Return an 'Int' where the three least significant bytes contain
+-- the red, green, and blue component of a color.
+wordFromColor :: Color -> Word
+wordFromColor (Color rgb)
+  = rgb
+
+-- | Set the color according to an rgba unsigned integer. (see 'rgbaIntFromColor').
+colorFromWord :: Word -> Color
+colorFromWord rgb
   = Color rgb
 
 -- | Returns a red color component
 colorRed   :: Color -> Int
-colorRed   (Color rgb) = (shiftR rgb 16) .&. 0xFF
+colorRed   (Color rgba) = fromIntegral ((shiftR rgba 24) .&. 0xFF)
 
 -- | Returns a green color component
 colorGreen :: Color -> Int
-colorGreen (Color rgb) = (shiftR rgb 8) .&. 0xFF
+colorGreen (Color rgba) = fromIntegral ((shiftR rgba 16) .&. 0xFF)
 
 -- | Returns a blue color component
 colorBlue  :: Color -> Int
-colorBlue  (Color rgb) = rgb .&. 0xFF
+colorBlue  (Color rgba) = fromIntegral ((shiftR rgba 8) .&. 0xFF)
+
+-- | Returns a alpha channel component
+colorAlpha  :: Color -> Int
+colorAlpha  (Color rgba) = fromIntegral (rgba .&. 0xFF)
 
 
 -- | This is an illegal color, corresponding to @nullColour@.
@@ -1217,10 +1248,11 @@ colorOk (Color rgb)
 
 
 -- marshalling 1
-toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue :: Color -> Word8
+toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue, toWord8ColorAlpha :: Color -> Word8
 toWord8ColorRed c    = fromIntegral (colorRed c)
 toWord8ColorGreen c  = fromIntegral (colorGreen c)
 toWord8ColorBlue c   = fromIntegral (colorBlue c)
+toWord8ColorAlpha c  = fromIntegral (colorAlpha c)
 
 -- marshalling 2
 {-
@@ -1240,8 +1272,8 @@ withManagedColourResult io
        color <- do ok <- colourIsOk pcolour
                    if (ok==0)
                     then return colorNull
-                    else do rgb <- colourGetInt pcolour
-                            return (colorFromInt (fromCInt rgb))
+                    else do rgba <- colourGetUnsignedInt pcolour
+                            return (colorFromWord rgba)
        colourSafeDelete pcolour
        return color
 
@@ -1252,7 +1284,7 @@ withColourRef msg c f
 
 withColourPtr :: Color -> (Ptr (TColour a) -> IO b) -> IO b
 withColourPtr c f
-  = do pcolour <- colourCreateFromInt (toCInt (intFromColor c))
+  = do pcolour <- colourCreateFromUnsignedInt (wordFromColor c)
        x <- f pcolour
        colourSafeDelete pcolour
        return x
@@ -1260,7 +1292,7 @@ withColourPtr c f
 colourFromColor :: Color -> IO (Colour ())
 colourFromColor c
   = if (colorOk c)
-     then do p <- colourCreateFromInt (toCInt (intFromColor c))
+     then do p <- colourCreateFromUnsignedInt (wordFromColor c)
              if (colourIsStatic p)
               then return (objectFromPtr p)
               else do mp <- wxManagedPtr_CreateFromColour p
@@ -1274,13 +1306,15 @@ colorFromColour c
     do ok <- colourIsOk pcolour
        if (ok==0)
         then return colorNull
-        else do rgb <- colourGetInt pcolour
-                return (colorFromInt (fromCInt rgb))
+        else do rgba <- colourGetUnsignedInt pcolour
+                return (colorFromWord rgba)
 
 
 foreign import ccall "wxColour_CreateEmpty" colourCreate    :: IO (Ptr (TColour a))
 foreign import ccall "wxColour_CreateFromInt" colourCreateFromInt :: CInt -> IO (Ptr (TColour a))
 foreign import ccall "wxColour_GetInt" colourGetInt               :: Ptr (TColour a) -> IO CInt
+foreign import ccall "wxColour_CreateFromUnsignedInt" colourCreateFromUnsignedInt :: Word -> IO (Ptr (TColour a))
+foreign import ccall "wxColour_GetUnsignedInt" colourGetUnsignedInt       :: Ptr (TColour a) -> IO Word
 foreign import ccall "wxColour_SafeDelete" colourSafeDelete   :: Ptr (TColour a) -> IO ()
 foreign import ccall "wxColour_IsStatic" colourIsStatic   :: Ptr (TColour a) -> Bool
 foreign import ccall "wxColour_IsOk"    colourIsOk   :: Ptr (TColour a) -> IO CInt
