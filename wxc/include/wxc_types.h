@@ -75,6 +75,12 @@
 /* 64 bit integer */
 #define TInt64            int64_t
 
+/* 8 bit unsigned integer */
+#define TUInt8            uint8_t
+
+/* 32 bit unsigned integer */
+#define TUInt32           uint32_t
+
 /* boolean as int */
 #define TBoolInt          int
 

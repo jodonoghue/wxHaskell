@@ -135,6 +135,8 @@ patomtype
   <|> do reserved "size_t"; return (Int SizeT)
   <|> do reserved "time_t"; return (Int TimeT)
   <|> do reserved "TInt64"; return Int64
+  <|> do reserved "TUInt8"; return Word8
+  <|> do reserved "TUInt32"; return Word32
   <|> do reserved "TBool";   return Bool
   <|> do reserved "TBoolInt"; return Bool
   <|> do reserved "TChar";   return Char

@@ -80,6 +80,8 @@ argName arg
 
 data Type = Int CBaseType
           | Int64
+          | Word8
+          | Word32
           | Void
           | Char
           | Double
