@@ -392,7 +392,7 @@ int  wxcGetPixelRGB( TUInt8* buffer, int width, TPoint(x,y) );
 void wxcSetPixelRowRGB( TUInt8* buffer, int width, TPoint(x,y), int rgbStart, int rgbEnd, int count );
 void wxcInitPixelsRGB( TUInt8* buffer, TSize(width,height), int rgba );
 void wxcSetPixelRGBA( TUInt8* buffer, int width, TPoint(x,y), TUInt rgba  );
-int  wxcGetPixelRGBA( TUInt8* buffer, int width, TPoint(x,y) );
+TUInt  wxcGetPixelRGBA( TUInt8* buffer, int width, TPoint(x,y) );
 void wxcSetPixelRowRGBA( TUInt8* buffer, int width, TPoint(x,y), int rgbaStart, int rgbEnd, TUInt count );
 void wxcInitPixelsRGBA( TUInt8* buffer, TSize(width,height), TUInt rgba );
 

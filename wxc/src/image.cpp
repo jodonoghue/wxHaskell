@@ -26,9 +26,9 @@ EWXWEXPORT(void,wxImage_Delete)(wxImage* image)
 
 
 /* colours */
-EWXWEXPORT(void*,wxColour_CreateFromInt)(int rgb)
+EWXWEXPORT(wxColour*,wxColour_CreateFromInt)(int rgb)
 {
-  return (void*) new wxColour((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+  return new wxColour((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
 }
 
 EWXWEXPORT(int,wxColour_GetInt)(wxColour* colour)
@@ -121,9 +121,9 @@ EWXWEXPORT(void,wxcInitPixelsRGB)(wxUint8* buffer,int width,int height,int rgb)
   }
 }
 
-EWXWEXPORT(void*,wxColour_CreateFromUnsignedInt)(unsigned int rgba)
+EWXWEXPORT(wxColour*,wxColour_CreateFromUnsignedInt)(unsigned int rgba)
 {
-  return (void*) new wxColour((rgba >> 24) & 0xFF, (rgba >> 16) & 0xFF, (rgba >> 8) & 0xFF, rgba & 0xFF);
+  return new wxColour((rgba >> 24) & 0xFF, (rgba >> 16) & 0xFF, (rgba >> 8) & 0xFF, rgba & 0xFF);
 }
 
 EWXWEXPORT(unsigned int,wxColour_GetUnsignedInt)(wxColour* colour)
@@ -136,7 +136,7 @@ EWXWEXPORT(unsigned int,wxColour_GetUnsignedInt)(wxColour* colour)
 }
 
 /* basic pixel manipulation */
-EWXWEXPORT(void,wxcSetPixelRGBA)(wxUint8* buffer,int width,int x,int y,int rgba)
+EWXWEXPORT(void,wxcSetPixelRGBA)(wxUint8* buffer,int width,int x,int y,unsigned int rgba)
 {
   unsigned int indexR = 4*(width*y + x);
   buffer[indexR]   = rgba >> 24;
