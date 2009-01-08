@@ -97,6 +97,7 @@ TClass(wxString) wxString_Create( TString buffer );
 TClass(wxString) wxString_CreateLen( TString buffer, int len );
 void             wxString_Delete( TSelf(wxString) s );
 TStringLen       wxString_GetString( TSelf(wxString) s, TStringOut buffer );
+size_t           wxString_Length( TSelf(wxString) s );
 
 
 /* menu */

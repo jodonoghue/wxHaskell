@@ -1478,26 +1478,55 @@ EWXWEXPORT(void,wxObject_Delete)(wxObject* _obj)
 /*-----------------------------------------------------------------------------
   String
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxString*, wxString_Create)( wxChar* buffer )
+typedef char utf8char;
+
+EWXWEXPORT(wxString*,wxString_Create)(wxChar* buffer)
 {
   return new wxString(buffer);
 }
 
-EWXWEXPORT(wxString*, wxString_CreateLen)( wxChar* buffer, int len )
+EWXWEXPORT(wxString*,wxString_CreateUTF8)(utf8char* buffer)
+{
+  return new wxString (buffer,wxConvUTF8);
+}
+
+EWXWEXPORT(wxString*,wxString_CreateLen)(wxChar* buffer,int len)
 {
   return new wxString(buffer,len);
 }
 
-EWXWEXPORT(void,wxString_Delete)( wxString* s )
+EWXWEXPORT(void,wxString_Delete)(wxString* s)
 {
   delete s;
 }
 
-EWXWEXPORT(int,wxString_GetString)( wxString* s, wxChar* buffer )
+EWXWEXPORT(int,wxString_GetString)(wxString* s,wxChar* buffer)
 {
   if (buffer) memcpy (buffer, s->c_str(), s->Length() * sizeof(wxChar));
   return s->Length();
-}  
+}
+
+EWXWEXPORT(size_t,wxString_Length)(wxString* s)
+{
+  return s->length();
+}
+
+EWXWEXPORT(wxCharBuffer*,wxString_GetUtf8)(wxString* s)
+{
+  wxCharBuffer *cb = new wxCharBuffer;
+  *cb = s->utf8_str();
+  return cb;
+}
+
+EWXWEXPORT(utf8char*,wxCharBuffer_DataUtf8)(wxCharBuffer* cb)
+{
+  return (utf8char*)cb->data();
+}
+
+EWXWEXPORT(void,wxCharBuffer_Delete)(wxCharBuffer* cb)
+{
+  delete cb;
+}
 
 /*-----------------------------------------------------------------------------
   classinfo

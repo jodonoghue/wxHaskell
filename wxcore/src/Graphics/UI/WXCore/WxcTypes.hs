@@ -1135,15 +1135,21 @@ withStringPtr s f
 withManagedStringResult :: IO (Ptr (TWxString a)) -> IO String
 withManagedStringResult io
   = do wxs <- io
-       s   <- withWStringResult (wxString_GetString wxs)
+       len <- wxString_Length wxs
+       s   <- if (len<=0)
+                then return ""
+                else withCWString (replicate (fromCInt len) ' ') $ \cstr ->
+                     do wxString_GetString wxs cstr
+                        peekCWStringLen (cstr, fromCInt len)
        wxString_Delete wxs
        return s
 
 
-foreign import ccall "wxString_Create"    wxString_Create    :: Ptr CWchar -> IO (Ptr (TWxString a))
-foreign import ccall "wxString_CreateLen" wxString_CreateLen :: Ptr CWchar -> CInt -> IO (Ptr (TWxString a))
-foreign import ccall "wxString_Delete"    wxString_Delete    :: Ptr (TWxString a) -> IO ()
-foreign import ccall "wxString_GetString" wxString_GetString :: Ptr (TWxString a) -> Ptr CWchar -> IO CInt
+foreign import ccall wxString_Create    :: Ptr CWchar -> IO (Ptr (TWxString a))
+foreign import ccall wxString_CreateLen :: Ptr CWchar -> CInt -> IO (Ptr (TWxString a))
+foreign import ccall wxString_Delete    :: Ptr (TWxString a) -> IO ()
+foreign import ccall wxString_GetString :: Ptr (TWxString a) -> Ptr CWchar -> IO CInt
+foreign import ccall wxString_Length    :: Ptr (TWxString a) -> IO CInt
 
 
 {-----------------------------------------------------------------------------------------
