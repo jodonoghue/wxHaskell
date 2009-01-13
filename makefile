@@ -164,9 +164,6 @@ WXC-EWXW= \
 	toolbar validator window wizard \
 	findrepldlg artprov tipwnd icnbndl ctxhelp singleinst
 
-# unused:
-# treectrl
-
 WXC-SOURCES = \
 	$(WXC-CORE) $(patsubst %,elj%,$(WXC-EWXW))
 
