@@ -17,7 +17,7 @@ void       wxPrintout_GetPPIPrinter( TSelf(wxPrintout) _obj, TPointOutVoid(_x,_y
 void       wxPrintout_GetPPIScreen( TSelf(wxPrintout) _obj, TPointOutVoid(_x,_y) );
 void       wxPrintout_GetPageSizeMM( TSelf(wxPrintout) _obj, TSizeOutVoid(_w,_h) );
 void       wxPrintout_GetPageSizePixels( TSelf(wxPrintout) _obj, TSizeOutVoid(_w,_h) );
-TStringLen wxPrintout_GetTitle( TSelf(wxPrintout) _obj, TStringOutVoid _buf );
+TClass(wxString) wxPrintout_GetTitle( TSelf(wxPrintout) _obj );
 TBool      wxPrintout_IsPreview( TSelf(wxPrintout) _obj );
 void       wxPrintout_SetDC( TSelf(wxPrintout) _obj, TClass(wxDC) dc );
 void       wxPrintout_SetIsPreview( TSelf(wxPrintout) _obj, TBoolInt p );

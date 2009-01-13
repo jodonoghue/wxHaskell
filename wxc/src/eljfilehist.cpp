@@ -14,12 +14,12 @@ EWXWEXPORT(void,wxFileHistory_Delete)(void* _obj)
 	delete (wxFileHistory*)_obj;
 }
 	
-EWXWEXPORT(void,wxFileHistory_AddFileToHistory)(void* _obj, void* file)
+EWXWEXPORT(void,wxFileHistory_AddFileToHistory)(void* _obj,wxString* file)
 {
-	((wxFileHistory*)_obj)->AddFileToHistory((const wxChar*)file);
+	((wxFileHistory*)_obj)->AddFileToHistory(*file);
 }
 	
-EWXWEXPORT(void,wxFileHistory_RemoveFileFromHistory)(void* _obj, int i)
+EWXWEXPORT(void,wxFileHistory_RemoveFileFromHistory)(void* _obj,int i)
 {
 	((wxFileHistory*)_obj)->RemoveFileFromHistory(i);
 }
@@ -29,27 +29,27 @@ EWXWEXPORT(int,wxFileHistory_GetMaxFiles)(void* _obj)
 	return ((wxFileHistory*)_obj)->GetMaxFiles();
 }
 	
-EWXWEXPORT(void,wxFileHistory_UseMenu)(void* _obj, void* menu)
+EWXWEXPORT(void,wxFileHistory_UseMenu)(void* _obj,void* menu)
 {
 	((wxFileHistory*)_obj)->UseMenu((wxMenu*)menu);
 }
 	
-EWXWEXPORT(void,wxFileHistory_RemoveMenu)(void* _obj, void* menu)
+EWXWEXPORT(void,wxFileHistory_RemoveMenu)(void* _obj,void* menu)
 {
 	((wxFileHistory*)_obj)->RemoveMenu((wxMenu*)menu);
 }
 	
-EWXWEXPORT(void,wxFileHistory_Load)(void* _obj, void* config)
+EWXWEXPORT(void,wxFileHistory_Load)(void* _obj,void* config)
 {
 	((wxFileHistory*)_obj)->Load(*((wxConfigBase*)config));
 }
 	
-EWXWEXPORT(void,wxFileHistory_Save)(void* _obj, void* config)
+EWXWEXPORT(void,wxFileHistory_Save)(void* _obj,void* config)
 {
 	((wxFileHistory*)_obj)->Save(*((wxConfigBase*)config));
 }
 	
-EWXWEXPORT(void,wxFileHistory_AddFilesToMenu)(void* _obj, void* menu)
+EWXWEXPORT(void,wxFileHistory_AddFilesToMenu)(void* _obj,void* menu)
 {
 	if (menu)
 		((wxFileHistory*)_obj)->AddFilesToMenu((wxMenu*)menu);
@@ -57,10 +57,11 @@ EWXWEXPORT(void,wxFileHistory_AddFilesToMenu)(void* _obj, void* menu)
 		((wxFileHistory*)_obj)->AddFilesToMenu();
 }
 	
-EWXWEXPORT(int,wxFileHistory_GetHistoryFile)(void* _obj, int i, void* _buf)
+EWXWEXPORT(wxString*,wxFileHistory_GetHistoryFile)(void* _obj,int i)
 {
-	wxString tmp = ((wxFileHistory*)_obj)->GetHistoryFile(i);
-	return copyStrToBuf(_buf, tmp);
+  wxString *result = new wxString();
+  *result = ((wxFileHistory*)_obj)->GetHistoryFile(i);
+  return result;
 }
 	
 EWXWEXPORT(int,wxFileHistory_GetCount)(void* _obj)

@@ -283,7 +283,7 @@ bool wxGridXmlHandler::CanHandle(wxXmlNode *node)
 extern "C"
 {
 
-EWXWEXPORT(bool,wxXmlResource_Load)(wxXmlResource* _obj, wxString* filemask)
+EWXWEXPORT(bool,wxXmlResource_Load)(wxXmlResource* _obj,wxString* filemask)
 {
 	wxGetApp().InitZipFileSystem();
 	return _obj->Load(*filemask);
@@ -301,7 +301,7 @@ EWXWEXPORT(void,wxXmlResource_InitAllHandlers)(wxXmlResource* _obj)
 	_obj->AddHandler(new wxGridXmlHandler());
 }
 	
-EWXWEXPORT(wxXmlResource*, wxXmlResource_Create)(int flags)
+EWXWEXPORT(wxXmlResource*,wxXmlResource_Create)(int flags)
 {
 	wxXmlResource* _obj = wxXmlResource::Get();
 
@@ -312,7 +312,7 @@ EWXWEXPORT(wxXmlResource*, wxXmlResource_Create)(int flags)
 	return _obj;
 }
 	
-EWXWEXPORT(wxXmlResource*, wxXmlResource_CreateFromFile)(wxString* filemask, int flags)
+EWXWEXPORT(wxXmlResource*,wxXmlResource_CreateFromFile)(wxString* filemask,int flags)
 {
 	wxXmlResource* _obj = wxXmlResource_Create(flags);
     if (_obj->Load(*filemask)) {
@@ -324,12 +324,12 @@ EWXWEXPORT(wxXmlResource*, wxXmlResource_CreateFromFile)(wxString* filemask, int
 	}
 }
 	
-EWXWEXPORT(void,wxXmlResource_AddHandler)(wxXmlResource* _obj, wxXmlResourceHandler* handler)
+EWXWEXPORT(void,wxXmlResource_AddHandler)(wxXmlResource* _obj,wxXmlResourceHandler* handler)
 {
 	_obj->AddHandler(handler);
 }
 	
-EWXWEXPORT(void,wxXmlResource_InsertHandler)(wxXmlResource* _obj, wxXmlResourceHandler* handler)
+EWXWEXPORT(void,wxXmlResource_InsertHandler)(wxXmlResource* _obj,wxXmlResourceHandler* handler)
 {
 	_obj->InsertHandler(handler);
 }
@@ -339,27 +339,27 @@ EWXWEXPORT(void,wxXmlResource_ClearHandlers)(wxXmlResource* _obj)
 	_obj->ClearHandlers();
 }
 	
-EWXWEXPORT(void,wxXmlResource_AddSubclassFactory)(wxXmlResource* _obj, wxXmlSubclassFactory* factory)
+EWXWEXPORT(void,wxXmlResource_AddSubclassFactory)(wxXmlResource* _obj,wxXmlSubclassFactory* factory)
 {
 	_obj->AddSubclassFactory(factory);
 }
 
-EWXWEXPORT(wxMenu*,wxXmlResource_LoadMenu)(wxXmlResource* _obj, wxString* name)
+EWXWEXPORT(wxMenu*,wxXmlResource_LoadMenu)(wxXmlResource* _obj,wxString* name)
 {
 	return _obj->LoadMenu(*name);
 }
 	
-EWXWEXPORT(wxMenuBar*,wxXmlResource_LoadMenuBar)(wxXmlResource* _obj, wxWindow* parent, wxString* name)
+EWXWEXPORT(wxMenuBar*,wxXmlResource_LoadMenuBar)(wxXmlResource* _obj,wxWindow* parent,wxString* name)
 {
 	return _obj->LoadMenuBar(parent, *name);
 }
 	
-EWXWEXPORT(wxToolBar*,wxXmlResource_LoadToolBar)(wxXmlResource* _obj, wxWindow* parent, wxString* name)
+EWXWEXPORT(wxToolBar*,wxXmlResource_LoadToolBar)(wxXmlResource* _obj,wxWindow* parent,wxString* name)
 {
 	return _obj->LoadToolBar(parent, *name);
 }
 	
-EWXWEXPORT(wxDialog*,wxXmlResource_LoadDialog)(wxXmlResource* _obj, wxWindow* parent, wxString* name)
+EWXWEXPORT(wxDialog*,wxXmlResource_LoadDialog)(wxXmlResource* _obj,wxWindow* parent,wxString* name)
 {
     wxDialog* dlg = new wxDialog;
     if (!_obj->LoadDialog(dlg, parent, *name)) {
@@ -370,12 +370,12 @@ EWXWEXPORT(wxDialog*,wxXmlResource_LoadDialog)(wxXmlResource* _obj, wxWindow* pa
     }
 }
 	
-EWXWEXPORT(wxPanel*,wxXmlResource_LoadPanel)(wxXmlResource* _obj, wxWindow* parent, wxString* name)
+EWXWEXPORT(wxPanel*,wxXmlResource_LoadPanel)(wxXmlResource* _obj,wxWindow* parent,wxString* name)
 {
 	return _obj->LoadPanel(parent, *name);
 }
 	
-EWXWEXPORT(wxFrame*,wxXmlResource_LoadFrame)(wxXmlResource* _obj, wxWindow* parent, wxString* name)
+EWXWEXPORT(wxFrame*,wxXmlResource_LoadFrame)(wxXmlResource* _obj,wxWindow* parent,wxString* name)
 {
     wxFrame* frame = new wxFrame;
     if (!_obj->LoadFrame(frame, parent, *name)) {
@@ -386,27 +386,27 @@ EWXWEXPORT(wxFrame*,wxXmlResource_LoadFrame)(wxXmlResource* _obj, wxWindow* pare
     }
 }
 	
-EWXWEXPORT(void,wxXmlResource_LoadBitmap)(wxXmlResource* _obj, wxString* name, void* _ref)
+EWXWEXPORT(void,wxXmlResource_LoadBitmap)(wxXmlResource* _obj,wxString* name,void* _ref)
 {
 	*((wxBitmap*)_ref) = _obj->LoadBitmap(*name);
 }
 	
-EWXWEXPORT(void,wxXmlResource_LoadIcon)(wxXmlResource* _obj, wxString* name, void* _ref)
+EWXWEXPORT(void,wxXmlResource_LoadIcon)(wxXmlResource* _obj,wxString* name,void* _ref)
 {
 	*((wxIcon*)_ref) = _obj->LoadIcon(*name);
 }
 	
-EWXWEXPORT(bool,wxXmlResource_Unload)(wxXmlResource* _obj, wxString* name)
+EWXWEXPORT(bool,wxXmlResource_Unload)(wxXmlResource* _obj,wxString* name)
 {
 	return _obj->Unload(*name);
 }
 	
-EWXWEXPORT(bool,wxXmlResource_AttachUnknownControl)(wxXmlResource* _obj, wxString* name, wxWindow* control, wxWindow* parent)
+EWXWEXPORT(bool,wxXmlResource_AttachUnknownControl)(wxXmlResource* _obj,wxString* name,wxWindow* control,wxWindow* parent)
 {
 	return _obj->AttachUnknownControl(*name, control, parent);
 }
 	
-EWXWEXPORT(int,wxXmlResource_GetXRCID)(wxXmlResource* _obj, wxString* str_id)
+EWXWEXPORT(int,wxXmlResource_GetXRCID)(wxXmlResource* _obj,wxString* str_id)
 {
 	return _obj->GetXRCID(*str_id);
 }
@@ -416,7 +416,7 @@ EWXWEXPORT(long,wxXmlResource_GetVersion)(wxXmlResource* _obj)
 	return _obj->GetVersion();
 }
 	
-EWXWEXPORT(int,wxXmlResource_CompareVersion)(wxXmlResource* _obj, int major, int minor, int release, int revision)
+EWXWEXPORT(int,wxXmlResource_CompareVersion)(wxXmlResource* _obj,int major,int minor,int release,int revision)
 {
 	return _obj->CompareVersion(major, minor, release, revision);
 }
@@ -481,18 +481,19 @@ BUILD_XRCGETCTRL_FN(StaticText)
 BUILD_XRCGETCTRL_FN(TextCtrl)
 BUILD_XRCGETCTRL_FN(TreeCtrl)
 	
-EWXWEXPORT(wxXmlResource*,wxXmlResource_Set)(wxXmlResource* _obj, wxXmlResource* res)
+EWXWEXPORT(wxXmlResource*,wxXmlResource_Set)(wxXmlResource* _obj,wxXmlResource* res)
 {
 	return _obj->Set(res);
 }
 
-EWXWEXPORT(int,wxXmlResource_GetDomain)(wxXmlResource* _obj, wxChar* buf)
+EWXWEXPORT(wxString*,wxXmlResource_GetDomain)(wxXmlResource* _obj)
 {
-	buf = _obj->GetDomain();
-	return wxStrlen(buf);
+	wxString* buf = new wxString();
+	*buf = _obj->GetDomain();
+	return buf;
 }
 
-EWXWEXPORT(void,wxXmlResource_SetDomain)(wxXmlResource* _obj, wxString* domain)
+EWXWEXPORT(void,wxXmlResource_SetDomain)(wxXmlResource* _obj,wxString* domain)
 {
 	_obj->SetDomain(*domain);
 }
@@ -502,7 +503,7 @@ EWXWEXPORT(int,wxXmlResource_GetFlags)(wxXmlResource* _obj)
 	return _obj->GetFlags();
 }
 	
-EWXWEXPORT(void,wxXmlResource_SetFlags)(wxXmlResource* _obj, int flags)
+EWXWEXPORT(void,wxXmlResource_SetFlags)(wxXmlResource* _obj,int flags)
 {
 	_obj->SetFlags(flags);
 }

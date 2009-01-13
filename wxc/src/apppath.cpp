@@ -4,7 +4,7 @@
 #elif defined(__WXMAC__)
 # ifdef __DARWIN__
 #  include <mach-o/dyld.h>
-   typedef int (*NSGetExecutablePathProcPtr)(char *buf, size_t *bufsize);
+   typedef int (*NSGetExecutablePathProcPtr)(char* buf, size_t* bufsize);
 # else
 #  include <Types.h>
 #  include <Files.h>
@@ -101,17 +101,17 @@ wxString GetApplicationDir()
 
 extern "C" 
 {
-EWXWEXPORT(int, wxGetApplicationDir)(char* buffer)
+EWXWEXPORT(wxString*,wxGetApplicationDir)()
 {
-  wxString result = GetApplicationDir();
-  if (buffer) memcpy(buffer, result.mb_str(), result.Length());
-  return result.Length(); 
+  wxString *result = new wxString();
+  *result = GetApplicationDir();
+  return result;
 }
 
-EWXWEXPORT(int, wxGetApplicationPath)(char* buffer)
+EWXWEXPORT(wxString*,wxGetApplicationPath)()
 {
-  wxString result = GetApplicationPath();
-  if (buffer) memcpy(buffer, result.mb_str(), result.Length());
-  return result.Length(); 
+  wxString *result = new wxString();
+  *result = GetApplicationPath();
+  return result;
 }
 }

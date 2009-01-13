@@ -158,7 +158,7 @@ fontDialog parent fontStyle
   = withFontStyle fontStyle $ \font ->
     bracket (getFontFromUser parent font)
             (fontDelete)
-            (\f -> do ok <- fontOk f
+            (\f -> do ok <- fontIsOk f
                       if ok
                        then do info <- fontGetFontStyle f
                                return (Just info)

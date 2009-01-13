@@ -1,8 +1,8 @@
-void wxStyledTextCtrl_AddText(TSelf(wxStyledTextCtrl) _obj, TString text);
+void wxStyledTextCtrl_AddText(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 void wxStyledTextCtrl_AddStyledText(TSelf(wxStyledTextCtrl) _obj, TClass(wxMemoryBuffer) data);
 
-void wxStyledTextCtrl_InsertText(TSelf(wxStyledTextCtrl) _obj, int pos, TString text);
+void wxStyledTextCtrl_InsertText(TSelf(wxStyledTextCtrl) _obj, int pos, TClass(wxString) text);
 
 void wxStyledTextCtrl_ClearAll(TSelf(wxStyledTextCtrl) _obj);
 
@@ -118,7 +118,7 @@ void wxStyledTextCtrl_StyleSetItalic(TSelf(wxStyledTextCtrl) _obj, int style, TB
 
 void wxStyledTextCtrl_StyleSetSize(TSelf(wxStyledTextCtrl) _obj, int style, int sizePoints);
 
-void wxStyledTextCtrl_StyleSetFaceName(TSelf(wxStyledTextCtrl) _obj, int style, TString fontName);
+void wxStyledTextCtrl_StyleSetFaceName(TSelf(wxStyledTextCtrl) _obj, int style, TClass(wxString) fontName);
 
 void wxStyledTextCtrl_StyleSetEOLFilled(TSelf(wxStyledTextCtrl) _obj, int style, TBool filled);
 
@@ -144,7 +144,7 @@ void wxStyledTextCtrl_CmdKeyClear(TSelf(wxStyledTextCtrl) _obj, int key, int mod
 
 void wxStyledTextCtrl_CmdKeyClearAll(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_SetStyleBytes(TSelf(wxStyledTextCtrl) _obj, int length, TString styleBytes);
+void wxStyledTextCtrl_SetStyleBytes(TSelf(wxStyledTextCtrl) _obj, int length, char* styleBytes);
 
 void wxStyledTextCtrl_StyleSetVisible(TSelf(wxStyledTextCtrl) _obj, int style, TBool visible);
 
@@ -152,7 +152,7 @@ int wxStyledTextCtrl_GetCaretPeriod(TSelf(wxStyledTextCtrl) _obj);
 
 void wxStyledTextCtrl_SetCaretPeriod(TSelf(wxStyledTextCtrl) _obj, int periodMilliseconds);
 
-void wxStyledTextCtrl_SetWordChars(TSelf(wxStyledTextCtrl) _obj, TString characters);
+void wxStyledTextCtrl_SetWordChars(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) characters);
 
 void wxStyledTextCtrl_BeginUndoAction(TSelf(wxStyledTextCtrl) _obj);
 
@@ -184,7 +184,7 @@ void wxStyledTextCtrl_SetCaretLineVisible(TSelf(wxStyledTextCtrl) _obj, TBool sh
 
 void wxStyledTextCtrl_StyleSetChangeable(TSelf(wxStyledTextCtrl) _obj, int style, TBool changeable);
 
-void wxStyledTextCtrl_AutoCompShow(TSelf(wxStyledTextCtrl) _obj, int lenEntered, TString itemList);
+void wxStyledTextCtrl_AutoCompShow(TSelf(wxStyledTextCtrl) _obj, int lenEntered, TClass(wxString) itemList);
 
 void wxStyledTextCtrl_AutoCompCancel(TSelf(wxStyledTextCtrl) _obj);
 
@@ -194,19 +194,19 @@ int wxStyledTextCtrl_AutoCompPosStart(TSelf(wxStyledTextCtrl) _obj);
 
 void wxStyledTextCtrl_AutoCompComplete(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_AutoCompStops(TSelf(wxStyledTextCtrl) _obj, TString characterSet);
+void wxStyledTextCtrl_AutoCompStops(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) characterSet);
 
 void wxStyledTextCtrl_AutoCompSetSeparator(TSelf(wxStyledTextCtrl) _obj, int separatorCharacter);
 
 int wxStyledTextCtrl_AutoCompGetSeparator(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_AutoCompSelect(TSelf(wxStyledTextCtrl) _obj, TString text);
+void wxStyledTextCtrl_AutoCompSelect(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 void wxStyledTextCtrl_AutoCompSetCancelAtStart(TSelf(wxStyledTextCtrl) _obj, TBool cancel);
 
 TBool wxStyledTextCtrl_AutoCompGetCancelAtStart(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_AutoCompSetFillUps(TSelf(wxStyledTextCtrl) _obj, TString characterSet);
+void wxStyledTextCtrl_AutoCompSetFillUps(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) characterSet);
 
 void wxStyledTextCtrl_AutoCompSetChooseSingle(TSelf(wxStyledTextCtrl) _obj, TBool chooseSingle);
 
@@ -216,7 +216,7 @@ void wxStyledTextCtrl_AutoCompSetIgnoreCase(TSelf(wxStyledTextCtrl) _obj, TBool 
 
 TBool wxStyledTextCtrl_AutoCompGetIgnoreCase(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_UserListShow(TSelf(wxStyledTextCtrl) _obj, int listType, TString itemList);
+void wxStyledTextCtrl_UserListShow(TSelf(wxStyledTextCtrl) _obj, int listType, TClass(wxString) itemList);
 
 void wxStyledTextCtrl_AutoCompSetAutoHide(TSelf(wxStyledTextCtrl) _obj, TBool autoHide);
 
@@ -286,7 +286,7 @@ void wxStyledTextCtrl_SetPrintColourMode(TSelf(wxStyledTextCtrl) _obj, int mode)
 
 int wxStyledTextCtrl_GetPrintColourMode(TSelf(wxStyledTextCtrl) _obj);
 
-int wxStyledTextCtrl_FindText(TSelf(wxStyledTextCtrl) _obj, int minPos, int maxPos, TString text, int flags);
+int wxStyledTextCtrl_FindText(TSelf(wxStyledTextCtrl) _obj, int minPos, int maxPos, TClass(wxString) text, int flags);
 
 int wxStyledTextCtrl_FormatRange(TSelf(wxStyledTextCtrl) _obj, TBool doDraw, int startPos, int endPos, TClass(wxDC) draw, TClass(wxDC) target, TClass(wxRect) renderRect, TClass(wxRect) pageRect);
 
@@ -316,7 +316,7 @@ void wxStyledTextCtrl_LineScroll(TSelf(wxStyledTextCtrl) _obj, int columns, int 
 
 void wxStyledTextCtrl_EnsureCaretVisible(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_ReplaceSelection(TSelf(wxStyledTextCtrl) _obj, TString text);
+void wxStyledTextCtrl_ReplaceSelection(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 void wxStyledTextCtrl_SetReadOnly(TSelf(wxStyledTextCtrl) _obj, TBool readOnly);
 
@@ -336,7 +336,7 @@ void wxStyledTextCtrl_Paste(TSelf(wxStyledTextCtrl) _obj);
 
 void wxStyledTextCtrl_Clear(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_SetText(TSelf(wxStyledTextCtrl) _obj, TString text);
+void wxStyledTextCtrl_SetText(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 int wxStyledTextCtrl_GetTextLength(TSelf(wxStyledTextCtrl) _obj);
 
@@ -356,17 +356,17 @@ void wxStyledTextCtrl_SetTargetEnd(TSelf(wxStyledTextCtrl) _obj, int pos);
 
 int wxStyledTextCtrl_GetTargetEnd(TSelf(wxStyledTextCtrl) _obj);
 
-int wxStyledTextCtrl_ReplaceTarget(TSelf(wxStyledTextCtrl) _obj, TString text);
+int wxStyledTextCtrl_ReplaceTarget(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
-int wxStyledTextCtrl_ReplaceTargetRE(TSelf(wxStyledTextCtrl) _obj, TString text);
+int wxStyledTextCtrl_ReplaceTargetRE(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
-int wxStyledTextCtrl_SearchInTarget(TSelf(wxStyledTextCtrl) _obj, TString text);
+int wxStyledTextCtrl_SearchInTarget(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 void wxStyledTextCtrl_SetSearchFlags(TSelf(wxStyledTextCtrl) _obj, int flags);
 
 int wxStyledTextCtrl_GetSearchFlags(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_CallTipShow(TSelf(wxStyledTextCtrl) _obj, int pos, TString definition);
+void wxStyledTextCtrl_CallTipShow(TSelf(wxStyledTextCtrl) _obj, int pos, TClass(wxString) definition);
 
 void wxStyledTextCtrl_CallTipCancel(TSelf(wxStyledTextCtrl) _obj);
 
@@ -440,7 +440,7 @@ void wxStyledTextCtrl_SetScrollWidth(TSelf(wxStyledTextCtrl) _obj, int pixelWidt
 
 int wxStyledTextCtrl_GetScrollWidth(TSelf(wxStyledTextCtrl) _obj);
 
-int wxStyledTextCtrl_TextWidth(TSelf(wxStyledTextCtrl) _obj, int style, TString text);
+int wxStyledTextCtrl_TextWidth(TSelf(wxStyledTextCtrl) _obj, int style, TClass(wxString) text);
 
 void wxStyledTextCtrl_SetEndAtLastLine(TSelf(wxStyledTextCtrl) _obj, TBool endAtLastLine);
 
@@ -452,7 +452,7 @@ void wxStyledTextCtrl_SetUseVerticalScrollBar(TSelf(wxStyledTextCtrl) _obj, TBoo
 
 TBool wxStyledTextCtrl_GetUseVerticalScrollBar(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_AppendText(TSelf(wxStyledTextCtrl) _obj, TString text);
+void wxStyledTextCtrl_AppendText(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) text);
 
 TBool wxStyledTextCtrl_GetTwoPhaseDraw(TSelf(wxStyledTextCtrl) _obj);
 
@@ -510,9 +510,9 @@ void wxStyledTextCtrl_SetEdgeColour(TSelf(wxStyledTextCtrl) _obj, TColorRGB(edge
 
 void wxStyledTextCtrl_SearchAnchor(TSelf(wxStyledTextCtrl) _obj);
 
-int wxStyledTextCtrl_SearchNext(TSelf(wxStyledTextCtrl) _obj, int flags, TString text);
+int wxStyledTextCtrl_SearchNext(TSelf(wxStyledTextCtrl) _obj, int flags, TClass(wxString) text);
 
-int wxStyledTextCtrl_SearchPrev(TSelf(wxStyledTextCtrl) _obj, int flags, TString text);
+int wxStyledTextCtrl_SearchPrev(TSelf(wxStyledTextCtrl) _obj, int flags, TClass(wxString) text);
 
 int wxStyledTextCtrl_LinesOnScreen(TSelf(wxStyledTextCtrl) _obj);
 
@@ -590,7 +590,7 @@ int wxStyledTextCtrl_PositionAfter(TSelf(wxStyledTextCtrl) _obj, int pos);
 
 void wxStyledTextCtrl_CopyRange(TSelf(wxStyledTextCtrl) _obj, int start, int end);
 
-void wxStyledTextCtrl_CopyText(TSelf(wxStyledTextCtrl) _obj, int length, TString text);
+void wxStyledTextCtrl_CopyText(TSelf(wxStyledTextCtrl) _obj, int length, TClass(wxString) text);
 
 void wxStyledTextCtrl_StartRecord(TSelf(wxStyledTextCtrl) _obj);
 
@@ -602,19 +602,19 @@ int wxStyledTextCtrl_GetLexer(TSelf(wxStyledTextCtrl) _obj);
 
 void wxStyledTextCtrl_Colourise(TSelf(wxStyledTextCtrl) _obj, int start, int end);
 
-void wxStyledTextCtrl_SetProperty(TSelf(wxStyledTextCtrl) _obj, TString key, TString value);
+void wxStyledTextCtrl_SetProperty(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) key, TClass(wxString) value);
 
-void wxStyledTextCtrl_SetKeyWords(TSelf(wxStyledTextCtrl) _obj, int keywordSet, TString keyWords);
+void wxStyledTextCtrl_SetKeyWords(TSelf(wxStyledTextCtrl) _obj, int keywordSet, TClass(wxString) keyWords);
 
-void wxStyledTextCtrl_SetLexerLanguage(TSelf(wxStyledTextCtrl) _obj, TString language);
+void wxStyledTextCtrl_SetLexerLanguage(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) language);
 
 int wxStyledTextCtrl_GetCurrentLine(TSelf(wxStyledTextCtrl) _obj);
 
-void wxStyledTextCtrl_StyleSetSpec(TSelf(wxStyledTextCtrl) _obj, int styleNum, TString spec);
+void wxStyledTextCtrl_StyleSetSpec(TSelf(wxStyledTextCtrl) _obj, int styleNum, TClass(wxString) spec);
 
 void wxStyledTextCtrl_StyleSetFont(TSelf(wxStyledTextCtrl) _obj, int styleNum, TClass(wxFont) font);
 
-void wxStyledTextCtrl_StyleSetFontAttr(TSelf(wxStyledTextCtrl) _obj, int styleNum, int size, TString faceName, TBool bold, TBool italic, TBool underline);
+void wxStyledTextCtrl_StyleSetFontAttr(TSelf(wxStyledTextCtrl) _obj, int styleNum, int size, TClass(wxString) faceName, TBool bold, TBool italic, TBool underline);
 
 void wxStyledTextCtrl_CmdKeyExecute(TSelf(wxStyledTextCtrl) _obj, int cmd);
 
@@ -634,6 +634,6 @@ TBool wxStyledTextCtrl_GetLastKeydownProcessed(TSelf(wxStyledTextCtrl) _obj);
 
 void wxStyledTextCtrl_SetLastKeydownProcessed(TSelf(wxStyledTextCtrl) _obj, TBool val);
 
-TBool wxStyledTextCtrl_SaveFile(TSelf(wxStyledTextCtrl) _obj, TString filename);
+TBool wxStyledTextCtrl_SaveFile(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) filename);
 
-TBool wxStyledTextCtrl_LoadFile(TSelf(wxStyledTextCtrl) _obj, TString filename);
+TBool wxStyledTextCtrl_LoadFile(TSelf(wxStyledTextCtrl) _obj, TClass(wxString) filename);

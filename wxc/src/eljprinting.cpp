@@ -20,317 +20,313 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxPrinter_Create)(void* data)
+EWXWEXPORT(void*,wxPrinter_Create)(void* data)
 {
 	return (void*) new wxPrinter((wxPrintDialogData*)data);
 }
 
-EWXWEXPORT(void, wxPrinter_Delete)(void* _obj)
+EWXWEXPORT(void,wxPrinter_Delete)(void* _obj)
 {
 	delete (wxPrinter*)_obj;
 }
 
-EWXWEXPORT(void*, wxPrinter_CreateAbortWindow)(void* _obj, void* parent, void* printout)
+EWXWEXPORT(void*,wxPrinter_CreateAbortWindow)(void* _obj,wxWindow* parent,void* printout)
 {
-	return (void*)((wxPrinter*)_obj)->CreateAbortWindow((wxWindow*)parent, (wxPrintout*)printout);
+	return (void*)((wxPrinter*)_obj)->CreateAbortWindow(parent, (wxPrintout*)printout);
 }
 	
-EWXWEXPORT(void, wxPrinter_ReportError)(void* _obj, void* parent, void* printout, void* message)
+EWXWEXPORT(void,wxPrinter_ReportError)(void* _obj,wxWindow* parent,void* printout,wxString* message)
 {
-	((wxPrinter*)_obj)->ReportError((wxWindow*)parent, (wxPrintout*)printout, (wxChar*)message);
+	((wxPrinter*)_obj)->ReportError(parent, (wxPrintout*)printout, *message);
 }
 	
-EWXWEXPORT(void, wxPrinter_GetPrintDialogData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPrinter_GetPrintDialogData)(void* _obj,void* _ref)
 {
 	*((wxPrintDialogData*)_ref) = ((wxPrinter*)_obj)->GetPrintDialogData();
 }
 	
-EWXWEXPORT(int, wxPrinter_GetAbort)(void* _obj)
+EWXWEXPORT(int,wxPrinter_GetAbort)(wxPrinter* _obj)
 {
-	return (int)((wxPrinter*)_obj)->GetAbort();
+	return (int)_obj->GetAbort();
 }
 	
-EWXWEXPORT(int, wxPrinter_GetLastError)(void* _obj)
+EWXWEXPORT(int,wxPrinter_GetLastError)(void* _obj)
 {
 	return ((wxPrinter*)_obj)->GetLastError();
 }
 	
-EWXWEXPORT(int, wxPrinter_Setup)(void* _obj, void* parent)
+EWXWEXPORT(int,wxPrinter_Setup)(wxPrinter* _obj,wxWindow* parent)
 {
-	return (int)((wxPrinter*)_obj)->Setup((wxWindow*)parent);
+	return (int)_obj->Setup(parent);
 }
 	
-EWXWEXPORT(int, wxPrinter_Print)(void* _obj, void* parent, void* printout, int prompt)
+EWXWEXPORT(int,wxPrinter_Print)(wxPrinter* _obj,wxWindow* parent,wxPrintout* printout,int prompt)
 {
-	return (int)((wxPrinter*)_obj)->Print((wxWindow*)parent, (wxPrintout*)printout, prompt != 0);
+	return (int)_obj->Print(parent, printout, prompt != 0);
 }
 	
-EWXWEXPORT(void*, wxPrinter_PrintDialog)(void* _obj, void* parent)
+EWXWEXPORT(void*,wxPrinter_PrintDialog)(void* _obj,wxWindow* parent)
 {
-	return (void*)((wxPrinter*)_obj)->PrintDialog((wxWindow*)parent);
+	return (void*)((wxPrinter*)_obj)->PrintDialog(parent);
 }
 	
-EWXWEXPORT(void*, ELJPrintout_Create)(void* title, void* _obj, void* _DoOnBeginDocument, void* _DoOnEndDocument, void* _DoOnBeginPrinting, void* _DoOnEndPrinting, void* _DoOnPreparePrinting, void* _DoOnPrintPage, void* _DoOnHasPage, void* DoOnPageInfo)
+EWXWEXPORT(void*,ELJPrintout_Create)(void* title,void* _obj,void* _DoOnBeginDocument,void* _DoOnEndDocument,void* _DoOnBeginPrinting,void* _DoOnEndPrinting,void* _DoOnPreparePrinting,void* _DoOnPrintPage,void* _DoOnHasPage,void* DoOnPageInfo)
 {
 	return (void*) new ELJPrintout( title, _obj, _DoOnBeginDocument, _DoOnEndDocument, _DoOnBeginPrinting, _DoOnEndPrinting, _DoOnPreparePrinting, _DoOnPrintPage, _DoOnHasPage, DoOnPageInfo);
 }
-EWXWEXPORT(void, ELJPrintout_Delete)(void* _obj)
+EWXWEXPORT(void,ELJPrintout_Delete)(void* _obj)
 {
 	delete (ELJPrintout*)_obj;
 }
 
-EWXWEXPORT(int, ELJPrintout_GetTitle)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,ELJPrintout_GetTitle)(void* _obj)
 {
-	wxString title = ((ELJPrintout*)_obj)->GetTitle();
-	if (_buf) wxStrncpy ((wxChar*)_buf, title.c_str(), title.Length());
-	return title.Length();
+	return new wxString(((ELJPrintout*)_obj)->GetTitle());
 }
 	
-EWXWEXPORT(void*, ELJPrintout_GetDC)(void* _obj)
+EWXWEXPORT(void*,ELJPrintout_GetDC)(void* _obj)
 {
 	return (void*)((ELJPrintout*)_obj)->GetDC();
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetDC)(void* _obj, void* dc)
+EWXWEXPORT(void,ELJPrintout_SetDC)(void* _obj,void* dc)
 {
 	((ELJPrintout*)_obj)->SetDC((wxDC*)dc);
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetPageSizePixels)(void* _obj, int w, int  h)
+EWXWEXPORT(void,ELJPrintout_SetPageSizePixels)(void* _obj,int w,int h)
 {
 	((ELJPrintout*)_obj)->SetPageSizePixels(w, h);
 }
 	
-EWXWEXPORT(void, ELJPrintout_GetPageSizePixels)(void* _obj, void* w, void* h)
+EWXWEXPORT(void,ELJPrintout_GetPageSizePixels)(void* _obj,int* w,int* h)
 {
-	((ELJPrintout*)_obj)->GetPageSizePixels((int*)w, (int*)h);
+	((ELJPrintout*)_obj)->GetPageSizePixels(w,h);
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetPageSizeMM)(void* _obj, int w, int  h)
+EWXWEXPORT(void,ELJPrintout_SetPageSizeMM)(void* _obj,int w,int h)
 {
 	((ELJPrintout*)_obj)->SetPageSizeMM(w, h);
 }
 	
-EWXWEXPORT(void, ELJPrintout_GetPageSizeMM)(void* _obj, void* w, void* h)
+EWXWEXPORT(void,ELJPrintout_GetPageSizeMM)(void* _obj,int* w,int* h)
 {
-	((ELJPrintout*)_obj)->GetPageSizeMM((int*)w, (int*)h);
+	((ELJPrintout*)_obj)->GetPageSizeMM(w,h);
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetPPIScreen)(void* _obj, int x, int y)
+EWXWEXPORT(void,ELJPrintout_SetPPIScreen)(void* _obj,int x,int y)
 {
 	((ELJPrintout*)_obj)->SetPPIScreen(x, y);
 }
 	
-EWXWEXPORT(void, ELJPrintout_GetPPIScreen)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,ELJPrintout_GetPPIScreen)(void* _obj,int* x,int* y)
 {
-	((ELJPrintout*)_obj)->GetPPIScreen((int*)x, (int*)y);
+	((ELJPrintout*)_obj)->GetPPIScreen(x,y);
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetPPIPrinter)(void* _obj, int x, int y)
+EWXWEXPORT(void,ELJPrintout_SetPPIPrinter)(void* _obj,int x,int y)
 {
 	((ELJPrintout*)_obj)->SetPPIPrinter(x, y);
 }
 	
-EWXWEXPORT(void, ELJPrintout_GetPPIPrinter)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,ELJPrintout_GetPPIPrinter)(void* _obj,int* x,int* y)
 {
-	((ELJPrintout*)_obj)->GetPPIPrinter((int*)x, (int*)y);
+	((ELJPrintout*)_obj)->GetPPIPrinter(x,y);
 }
 	
-EWXWEXPORT(int, ELJPrintout_IsPreview)(void* _obj)
+EWXWEXPORT(int,ELJPrintout_IsPreview)(ELJPrintout* _obj)
 {
-	return (int)((ELJPrintout*)_obj)->IsPreview();
+	return (int)_obj->IsPreview();
 }
 	
-EWXWEXPORT(void, ELJPrintout_SetIsPreview)(void* _obj, int p)
+EWXWEXPORT(void,ELJPrintout_SetIsPreview)(void* _obj,int p)
 {
 	((ELJPrintout*)_obj)->SetIsPreview(p != 0);
 }
 
-EWXWEXPORT(void*, wxPreviewCanvas_Create) (void* preview, void* parent, int x, int y, int w, int h, int style)
+EWXWEXPORT(void*,wxPreviewCanvas_Create)(void* preview,wxWindow* parent,int x,int y,int w,int h,int style)
 {
-	return (void*) new wxPreviewCanvas(	(wxPrintPreviewBase*)preview,
-										(wxWindow*)parent,
-                    					wxPoint(x, y),
-                    					wxSize(w, h),
+	return (void*) new wxPreviewCanvas(	(wxPrintPreviewBase*)preview,parent,
+                    				 wxPoint(x, y),wxSize(w, h),
                     					(long)style);
 }
 
-EWXWEXPORT(void*, ELJPreviewFrame_Create) (void* _obj, void* _init, void* _create_canvas, void* _create_toolbar, void* preview, void* parent, void* title,int x, int y,int w, int h, int style)
+EWXWEXPORT(void*,ELJPreviewFrame_Create)(void* _obj,void* _init,void* _create_canvas,void* _create_toolbar,void* preview,void* parent,void* title,int x,int y,int w,int h,int style)
 {
     return (void*) new ELJPreviewFrame(_obj, _init, _create_canvas, _create_toolbar, preview, parent, title, x, y, w, h, style);
 }
 
-EWXWEXPORT(void, ELJPreviewFrame_Initialize) (void* _obj)
+EWXWEXPORT(void,ELJPreviewFrame_Initialize)(void* _obj)
 {
 	((ELJPreviewFrame*)_obj)->Initialize();
 }
 	
-EWXWEXPORT(void, ELJPreviewFrame_SetPreviewCanvas) (void* _obj, void* obj)
+EWXWEXPORT(void,ELJPreviewFrame_SetPreviewCanvas)(void* _obj,void* obj)
 {
 	((ELJPreviewFrame*)_obj)->SetPreviewCanvas (obj);
 }
 	
-EWXWEXPORT(void, ELJPreviewFrame_SetControlBar) (void* _obj, void* obj)
+EWXWEXPORT(void,ELJPreviewFrame_SetControlBar)(void* _obj,void* obj)
 {
 	((ELJPreviewFrame*)_obj)->SetControlBar (obj);
 }
 	
-EWXWEXPORT(void, ELJPreviewFrame_SetPrintPreview) (void* _obj, void* obj)
+EWXWEXPORT(void,ELJPreviewFrame_SetPrintPreview)(void* _obj,void* obj)
 {
 	((ELJPreviewFrame*)_obj)->SetPrintPreview (obj);
 }
 	
-EWXWEXPORT(void*, ELJPreviewFrame_GetPreviewCanvas) (void* _obj)
+EWXWEXPORT(void*,ELJPreviewFrame_GetPreviewCanvas)(void* _obj)
 {
 	return (void*)((ELJPreviewFrame*)_obj)->GetPreviewCanvas ();
 }
 	
-EWXWEXPORT(void*, ELJPreviewFrame_GetControlBar) (void* _obj)
+EWXWEXPORT(void*,ELJPreviewFrame_GetControlBar)(void* _obj)
 {
 	return (void*)((ELJPreviewFrame*)_obj)->GetControlBar ();
 }
 	
-EWXWEXPORT(void*, ELJPreviewFrame_GetPrintPreview) (void* _obj)
+EWXWEXPORT(void*,ELJPreviewFrame_GetPrintPreview)(void* _obj)
 {
 	return (void*)((ELJPreviewFrame*)_obj)->GetPrintPreview ();
 }
 	
-EWXWEXPORT(void*, ELJPreviewControlBar_Create) (void* preview, int buttons, void* parent, void* title,int x, int y,int w, int h, int style)
+EWXWEXPORT(void*, ELJPreviewControlBar_Create)(void* preview,int buttons,wxWindow* parent,void* title,int x,int y,int w,int h,int style)
 {
-    return (void*) new wxPreviewControlBar((wxPrintPreviewBase*)preview, (long)buttons, (wxWindow*)parent, wxPoint(x, y), wxSize(w, h), (long)style);
+    return (void*) new wxPreviewControlBar((wxPrintPreviewBase*)preview, (long)buttons, parent, wxPoint(x, y), wxSize(w, h), (long)style);
 }
 
-EWXWEXPORT(void*, wxPrintPreview_CreateFromDialogData) (void* printout, void* printoutForPrinting, void* data)
+EWXWEXPORT(void*,wxPrintPreview_CreateFromDialogData)(void* printout,void* printoutForPrinting,void* data)
 {
     return (void*) new wxPrintPreview((wxPrintout*)printout, (wxPrintout*)printoutForPrinting, (wxPrintDialogData*)data);
 }
 
-EWXWEXPORT(void*, wxPrintPreview_CreateFromData) (void* printout, void* printoutForPrinting, void* data)
+EWXWEXPORT(void*,wxPrintPreview_CreateFromData)(void* printout,void* printoutForPrinting,void* data)
 {
     return (void*) new wxPrintPreview((wxPrintout*)printout, (wxPrintout*)printoutForPrinting, (wxPrintData*)data);
 }
 
-EWXWEXPORT(void, wxPrintPreview_Delete)(void* _obj)
+EWXWEXPORT(void,wxPrintPreview_Delete)(void* _obj)
 {
 	delete (wxPrintPreview*)_obj;
 }
 
-EWXWEXPORT(int, wxPrintPreview_SetCurrentPage)(void* _obj, int pageNum)
+EWXWEXPORT(void,wxPrintPreview_SetCurrentPage)(wxPrintPreview* _obj,int pageNum)
 {
-	return (int)((wxPrintPreview*)_obj)->SetCurrentPage(pageNum);
+	_obj->SetCurrentPage(pageNum);
 }
 	
-EWXWEXPORT(int, wxPrintPreview_GetCurrentPage)(void* _obj)
+EWXWEXPORT(int,wxPrintPreview_GetCurrentPage)(void* _obj)
 {
 	return ((wxPrintPreview*)_obj)->GetCurrentPage();
 }
 	
-EWXWEXPORT(void, wxPrintPreview_SetPrintout)(void* _obj, void* printout)
+EWXWEXPORT(void,wxPrintPreview_SetPrintout)(void* _obj,void* printout)
 {
 	((wxPrintPreview*)_obj)->SetPrintout((wxPrintout*)printout);
 }
 	
-EWXWEXPORT(void*, wxPrintPreview_GetPrintout)(void* _obj)
+EWXWEXPORT(void*,wxPrintPreview_GetPrintout)(void* _obj)
 {
 	return (void*)((wxPrintPreview*)_obj)->GetPrintout();
 }
 	
-EWXWEXPORT(void*, wxPrintPreview_GetPrintoutForPrinting)(void* _obj)
+EWXWEXPORT(void*,wxPrintPreview_GetPrintoutForPrinting)(void* _obj)
 {
 	return (void*)((wxPrintPreview*)_obj)->GetPrintoutForPrinting();
 }
 	
-EWXWEXPORT(void, wxPrintPreview_SetFrame)(void* _obj, void* frame)
+EWXWEXPORT(void,wxPrintPreview_SetFrame)(void* _obj,void* frame)
 {
 	((wxPrintPreview*)_obj)->SetFrame((wxFrame*)frame);
 }
 	
-EWXWEXPORT(void, wxPrintPreview_SetCanvas)(void* _obj, void* canvas)
+EWXWEXPORT(void,wxPrintPreview_SetCanvas)(void* _obj,void* canvas)
 {
 	((wxPrintPreview*)_obj)->SetCanvas((wxPreviewCanvas*)canvas);
 }
 	
-EWXWEXPORT(void*, wxPrintPreview_GetFrame)(void* _obj)
+EWXWEXPORT(void*,wxPrintPreview_GetFrame)(void* _obj)
 {
 	return (void*)((wxPrintPreview*)_obj)->GetFrame();
 }
 	
-EWXWEXPORT(void*, wxPrintPreview_GetCanvas)(void* _obj)
+EWXWEXPORT(void*,wxPrintPreview_GetCanvas)(void* _obj)
 {
 	return (void*)((wxPrintPreview*)_obj)->GetCanvas();
 }
 	
-EWXWEXPORT(int, wxPrintPreview_PaintPage)(void* _obj, void* canvas, void* dc)
+EWXWEXPORT(int,wxPrintPreview_PaintPage)(wxPrintPreview* _obj,wxPreviewCanvas* canvas,wxDC* dc)
 {
-	return (int)((wxPrintPreview*)_obj)->PaintPage((wxPreviewCanvas*)canvas, *((wxDC*)dc));
+	return (int)_obj->PaintPage(canvas, *dc);
 }
 	
-EWXWEXPORT(int, wxPrintPreview_DrawBlankPage)(void* _obj, void* canvas, void* dc)
+EWXWEXPORT(int,wxPrintPreview_DrawBlankPage)(wxPrintPreview* _obj,wxPreviewCanvas* canvas,wxDC* dc)
 {
-	return (int)((wxPrintPreview*)_obj)->DrawBlankPage((wxPreviewCanvas*)canvas, *((wxDC*)dc));
+	return (int)_obj->DrawBlankPage(canvas, *dc);
 }
 	
-EWXWEXPORT(int, wxPrintPreview_RenderPage)(void* _obj, int pageNum)
+EWXWEXPORT(int,wxPrintPreview_RenderPage)(wxPrintPreview* _obj,int pageNum)
 {
-	return (int)((wxPrintPreview*)_obj)->RenderPage(pageNum);
+	return (int)_obj->RenderPage(pageNum);
 }
 	
-EWXWEXPORT(void, wxPrintPreview_GetPrintDialogData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPrintPreview_GetPrintDialogData)(void* _obj,void* _ref)
 {
 	*((wxPrintDialogData*)_ref) = ((wxPrintPreview*)_obj)->GetPrintDialogData();
 }
 	
-EWXWEXPORT(void, wxPrintPreview_SetZoom)(void* _obj, int percent)
+EWXWEXPORT(void,wxPrintPreview_SetZoom)(void* _obj,int percent)
 {
 	((wxPrintPreview*)_obj)->SetZoom(percent);
 }
 	
-EWXWEXPORT(int, wxPrintPreview_GetZoom)(void* _obj)
+EWXWEXPORT(int,wxPrintPreview_GetZoom)(void* _obj)
 {
 	return ((wxPrintPreview*)_obj)->GetZoom();
 }
 	
-EWXWEXPORT(int, wxPrintPreview_GetMaxPage)(void* _obj)
+EWXWEXPORT(int,wxPrintPreview_GetMaxPage)(void* _obj)
 {
 	return ((wxPrintPreview*)_obj)->GetMaxPage();
 }
 	
-EWXWEXPORT(int, wxPrintPreview_GetMinPage)(void* _obj)
+EWXWEXPORT(int,wxPrintPreview_GetMinPage)(void* _obj)
 {
 	return ((wxPrintPreview*)_obj)->GetMinPage();
 }
 	
-EWXWEXPORT(int, wxPrintPreview_Ok)(void* _obj)
+EWXWEXPORT(int,wxPrintPreview_IsOk)(wxPrintPreview* _obj)
 {
-	return (int)((wxPrintPreview*)_obj)->Ok();
+	return (int)_obj->IsOk();
 }
 	
-EWXWEXPORT(void, wxPrintPreview_SetOk)(void* _obj, int ok)
+EWXWEXPORT(void,wxPrintPreview_SetOk)(void* _obj,int ok)
 {
 	((wxPrintPreview*)_obj)->SetOk(ok != 0);
 }
 	
-EWXWEXPORT(int, wxPrintPreview_Print)(void* _obj, int interactive)
+EWXWEXPORT(int,wxPrintPreview_Print)(wxPrintPreview* _obj,int interactive)
 {
-	return (int)((wxPrintPreview*)_obj)->Print(interactive != 0);
+	return (int)_obj->Print(interactive != 0);
 }
 	
-EWXWEXPORT(void, wxPrintPreview_DetermineScaling)(void* _obj)
+EWXWEXPORT(void,wxPrintPreview_DetermineScaling)(void* _obj)
 {
 	((wxPrintPreview*)_obj)->DetermineScaling();
 }
 	
-EWXWEXPORT(void*, wxPrintData_Create)()
+EWXWEXPORT(void*,wxPrintData_Create)()
 {
 	return (void*) new wxPrintData();
 }
 
-EWXWEXPORT(void, wxPrintData_Delete)(void* _obj)
+EWXWEXPORT(void,wxPrintData_Delete)(void* _obj)
 {
     delete (wxPrintData*)_obj;
 }
 
-EWXWEXPORT(void*, wxPostScriptPrintNativeData_Create)()
+EWXWEXPORT(void*,wxPostScriptPrintNativeData_Create)()
 {
 #ifdef wxUSE_POSTSCRIPT
 	return (void*) new wxPostScriptPrintNativeData();
@@ -339,48 +335,46 @@ EWXWEXPORT(void*, wxPostScriptPrintNativeData_Create)()
 #endif
 }
 
-EWXWEXPORT(void, wxPostScriptPrintNativeData_Delete)(void* _obj)
+EWXWEXPORT(void,wxPostScriptPrintNativeData_Delete)(void* _obj)
 {
 #ifdef wxUSE_POSTSCRIPT
     delete (wxPostScriptPrintNativeData*)_obj;
 #endif
 }
 
-EWXWEXPORT(int, wxPrintData_GetNoCopies)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetNoCopies)(void* _obj)
 {
 	return ((wxPrintData*)_obj)->GetNoCopies();
 }
 	
-EWXWEXPORT(int, wxPrintData_GetCollate)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetCollate)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetCollate();
+	return (int)_obj->GetCollate();
 }
 	
-EWXWEXPORT(int, wxPrintData_GetOrientation)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetOrientation)(void* _obj)
 {
 	return ((wxPrintData*)_obj)->GetOrientation();
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrinterName)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetPrinterName)(void* _obj)
 {
-	wxString tmp = ((wxPrintData*)_obj)->GetPrinterName();
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(((wxPrintData*)_obj)->GetPrinterName());
 }
 	
-EWXWEXPORT(int, wxPrintData_GetColour)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetColour)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetColour();
+	return (int)_obj->GetColour();
 }
 	
-EWXWEXPORT(int, wxPrintData_GetDuplex)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetDuplex)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetDuplex();
+	return (int)_obj->GetDuplex();
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPaperId)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetPaperId)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetPaperId();
+	return (int)_obj->GetPaperId();
 }
 	
 EWXWEXPORT(void, wxPrintData_GetPaperSize)(void* _obj, void* w, void* h)
@@ -390,57 +384,57 @@ EWXWEXPORT(void, wxPrintData_GetPaperSize)(void* _obj, void* w, void* h)
 	*((int*)h) = tmp.y;
 }
 	
-EWXWEXPORT(int, wxPrintData_GetQuality)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetQuality)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetQuality();
+	return (int)_obj->GetQuality();
 }
 	
-EWXWEXPORT(void, wxPrintData_SetNoCopies)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintData_SetNoCopies)(void* _obj,int v)
 {
 	((wxPrintData*)_obj)->SetNoCopies(v);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetCollate)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintData_SetCollate)(void* _obj,int flag)
 {
 	((wxPrintData*)_obj)->SetCollate(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetOrientation)(void* _obj, int orient)
+EWXWEXPORT(void,wxPrintData_SetOrientation)(void* _obj,int orient)
 {
 	((wxPrintData*)_obj)->SetOrientation(orient);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterName)(void* _obj, void* name)
+EWXWEXPORT(void,wxPrintData_SetPrinterName)(void* _obj,wxString* name)
 {
-	((wxPrintData*)_obj)->SetPrinterName((wxChar*)name);
+	((wxPrintData*)_obj)->SetPrinterName(*name);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetColour)(void* _obj, int colour)
+EWXWEXPORT(void,wxPrintData_SetColour)(void* _obj,int colour)
 {
 	((wxPrintData*)_obj)->SetColour(colour != 0);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetDuplex)(void* _obj, int duplex)
+EWXWEXPORT(void,wxPrintData_SetDuplex)(void* _obj,int duplex)
 {
 	((wxPrintData*)_obj)->SetDuplex((wxDuplexMode)duplex);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPaperId)(void* _obj, int sizeId)
+EWXWEXPORT(void,wxPrintData_SetPaperId)(void* _obj,int sizeId)
 {
 	((wxPrintData*)_obj)->SetPaperId((wxPaperSize)sizeId);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPaperSize)(void* _obj, int w, int h)
+EWXWEXPORT(void,wxPrintData_SetPaperSize)(void* _obj,int w,int h)
 {
 	((wxPrintData*)_obj)->SetPaperSize(wxSize(w, h));
 }
 	
-EWXWEXPORT(void, wxPrintData_SetQuality)(void* _obj, int quality)
+EWXWEXPORT(void,wxPrintData_SetQuality)(void* _obj,int quality)
 {
 	((wxPrintData*)_obj)->SetQuality((wxPrintQuality)quality);
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrinterCommand)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetPrinterCommand)(void* _obj)
 {
 #if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
 #ifdef wxUSE_POSTSCRIPT
@@ -448,14 +442,13 @@ EWXWEXPORT(int, wxPrintData_GetPrinterCommand)(void* _obj, void* _ref)
 #else
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterCommand();
 #endif
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(tmp);
 #else
 	return false;
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrinterOptions)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetPrinterOptions)(void* _obj)
 {
 #if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
 #ifdef wxUSE_POSTSCRIPT
@@ -463,14 +456,13 @@ EWXWEXPORT(int, wxPrintData_GetPrinterOptions)(void* _obj, void* _ref)
 #else
 	wxString tmp = ((wxPrintData*)_obj)->GetPrinterOptions();
 #endif
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(tmp);
 #else
 	return false;
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPreviewCommand)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetPreviewCommand)(void* _obj)
 {
 #if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
 #ifdef wxUSE_POSTSCRIPT
@@ -478,21 +470,19 @@ EWXWEXPORT(int, wxPrintData_GetPreviewCommand)(void* _obj, void* _ref)
 #else
 	wxString tmp = ((wxPrintData*)_obj)->GetPreviewCommand();
 #endif
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(tmp);
 #else
 	return false;
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetFilename)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetFilename)(void* _obj)
 {
 	wxString tmp = ((wxPrintData*)_obj)->GetFilename();
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(tmp);
 }
 	
-EWXWEXPORT(int, wxPrintData_GetFontMetricPath)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxPrintData_GetFontMetricPath)(void* _obj)
 {
 #if wxVERSION_NUMBER < 2600 || defined (wxUSE_POSTSCRIPT)
 #ifdef wxUSE_POSTSCRIPT
@@ -500,14 +490,13 @@ EWXWEXPORT(int, wxPrintData_GetFontMetricPath)(void* _obj, void* _ref)
 #else
 	wxString tmp = ((wxPrintData*)_obj)->GetFontMetricPath();
 #endif
-	if (_ref) wxStrncpy ((wxChar*)_ref, tmp.c_str(), tmp.Length());
-	return tmp.Length();
+	return new wxString(tmp);
 #else
 	return false;
 #endif
 }
 	
-EWXWEXPORT(double, wxPrintData_GetPrinterScaleX)(void* _obj)
+EWXWEXPORT(double,wxPrintData_GetPrinterScaleX)(void* _obj)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterScaleX();
@@ -518,7 +507,7 @@ EWXWEXPORT(double, wxPrintData_GetPrinterScaleX)(void* _obj)
 #endif
 }
 	
-EWXWEXPORT(double, wxPrintData_GetPrinterScaleY)(void* _obj)
+EWXWEXPORT(double,wxPrintData_GetPrinterScaleY)(void* _obj)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterScaleY();
@@ -529,7 +518,7 @@ EWXWEXPORT(double, wxPrintData_GetPrinterScaleY)(void* _obj)
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrinterTranslateX)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetPrinterTranslateX)(void* _obj)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterTranslateX();
@@ -540,7 +529,7 @@ EWXWEXPORT(int, wxPrintData_GetPrinterTranslateX)(void* _obj)
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrinterTranslateY)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetPrinterTranslateY)(void* _obj)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return ((wxPostScriptPrintNativeData*)_obj)->GetPrinterTranslateY();
@@ -551,53 +540,53 @@ EWXWEXPORT(int, wxPrintData_GetPrinterTranslateY)(void* _obj)
 #endif
 }
 	
-EWXWEXPORT(int, wxPrintData_GetPrintMode)(void* _obj)
+EWXWEXPORT(int,wxPrintData_GetPrintMode)(wxPrintData* _obj)
 {
-	return (int)((wxPrintData*)_obj)->GetPrintMode();
+	return (int)_obj->GetPrintMode();
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterCommand)(void* _obj, void* command)
+EWXWEXPORT(void,wxPrintData_SetPrinterCommand)(void* _obj,wxString* command)
 {
 #ifdef wxUSE_POSTSCRIPT
-	((wxPostScriptPrintNativeData*)_obj)->SetPrinterCommand((wxChar*)command);
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterCommand(*command);
 #elif wxVERSION_NUMBER < 2600
-	((wxPrintData*)_obj)->SetPrinterCommand((wxChar*)command);
+	((wxPrintData*)_obj)->SetPrinterCommand(*command);
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterOptions)(void* _obj, void* options)
+EWXWEXPORT(void,wxPrintData_SetPrinterOptions)(void* _obj,wxString* options)
 {
 #ifdef wxUSE_POSTSCRIPT
-	((wxPostScriptPrintNativeData*)_obj)->SetPrinterOptions((wxChar*)options);
+	((wxPostScriptPrintNativeData*)_obj)->SetPrinterOptions(*options);
 #elif wxVERSION_NUMBER < 2600
-	((wxPrintData*)_obj)->SetPrinterOptions((wxChar*)options);
+	((wxPrintData*)_obj)->SetPrinterOptions(*options);
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPreviewCommand)(void* _obj, void* command)
+EWXWEXPORT(void,wxPrintData_SetPreviewCommand)(void* _obj,wxString* command)
 {
 #ifdef wxUSE_POSTSCRIPT
-	((wxPostScriptPrintNativeData*)_obj)->SetPreviewCommand((wxChar*)command);
+	((wxPostScriptPrintNativeData*)_obj)->SetPreviewCommand(*command);
 #elif wxVERSION_NUMBER < 2600
-	((wxPrintData*)_obj)->SetPreviewCommand((wxChar*)command);
+	((wxPrintData*)_obj)->SetPreviewCommand(*command);
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetFilename)(void* _obj, void* filename)
+EWXWEXPORT(void,wxPrintData_SetFilename)(void* _obj,wxString* filename)
 {
-	((wxPrintData*)_obj)->SetFilename((wxChar*)filename);
+	((wxPrintData*)_obj)->SetFilename(*filename);
 }
 	
-EWXWEXPORT(void, wxPrintData_SetFontMetricPath)(void* _obj, void* path)
+EWXWEXPORT(void,wxPrintData_SetFontMetricPath)(void* _obj,wxString* path)
 {
 #ifdef wxUSE_POSTSCRIPT
-	((wxPostScriptPrintNativeData*)_obj)->SetFontMetricPath((wxChar*)path);
+	((wxPostScriptPrintNativeData*)_obj)->SetFontMetricPath(*path);
 #elif wxVERSION_NUMBER < 2600
-	((wxPrintData*)_obj)->SetFontMetricPath((wxChar*)path);
+	((wxPrintData*)_obj)->SetFontMetricPath(*path);
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterScaleX)(void* _obj, double x)
+EWXWEXPORT(void,wxPrintData_SetPrinterScaleX)(void* _obj,double x)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaleX(x);
@@ -606,7 +595,7 @@ EWXWEXPORT(void, wxPrintData_SetPrinterScaleX)(void* _obj, double x)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterScaleY)(void* _obj, double y)
+EWXWEXPORT(void,wxPrintData_SetPrinterScaleY)(void* _obj,double y)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaleY(y);
@@ -615,7 +604,7 @@ EWXWEXPORT(void, wxPrintData_SetPrinterScaleY)(void* _obj, double y)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterScaling)(void* _obj, double x, double y)
+EWXWEXPORT(void,wxPrintData_SetPrinterScaling)(void* _obj,double x,double y)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterScaling(x, y);
@@ -624,7 +613,7 @@ EWXWEXPORT(void, wxPrintData_SetPrinterScaling)(void* _obj, double x, double y)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterTranslateX)(void* _obj, int x)
+EWXWEXPORT(void,wxPrintData_SetPrinterTranslateX)(void* _obj,int x)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslateX((int)x);
@@ -633,7 +622,7 @@ EWXWEXPORT(void, wxPrintData_SetPrinterTranslateX)(void* _obj, int x)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterTranslateY)(void* _obj, int y)
+EWXWEXPORT(void,wxPrintData_SetPrinterTranslateY)(void* _obj,int y)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslateY((int)y);
@@ -642,7 +631,7 @@ EWXWEXPORT(void, wxPrintData_SetPrinterTranslateY)(void* _obj, int y)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrinterTranslation)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxPrintData_SetPrinterTranslation)(void* _obj,int x,int y)
 {
 #ifdef wxUSE_POSTSCRIPT
 	((wxPostScriptPrintNativeData*)_obj)->SetPrinterTranslation((long)x, (long)y);
@@ -651,182 +640,182 @@ EWXWEXPORT(void, wxPrintData_SetPrinterTranslation)(void* _obj, int x, int y)
 #endif
 }
 	
-EWXWEXPORT(void, wxPrintData_SetPrintMode)(void* _obj, int printMode)
+EWXWEXPORT(void,wxPrintData_SetPrintMode)(void* _obj,int printMode)
 {
 	((wxPrintData*)_obj)->SetPrintMode((wxPrintMode)printMode);
 }
 	
-EWXWEXPORT(void, wxPrintData_Assign)(void* _obj, void* data)
+EWXWEXPORT(void,wxPrintData_Assign)(void* _obj,void* data)
 {
 	*((wxPrintData*)_obj) = *((wxPrintData*)data);
 }
 	
-EWXWEXPORT(void*, wxPrintDialogData_CreateDefault)()
+EWXWEXPORT(void*,wxPrintDialogData_CreateDefault)()
 {
 	return (void*) new wxPrintDialogData();
 }
 
-EWXWEXPORT(void*, wxPrintDialogData_CreateFromData)(void* printData)
+EWXWEXPORT(void*,wxPrintDialogData_CreateFromData)(void* printData)
 {
 	return (void*) new wxPrintDialogData(*((wxPrintData*)printData));
 }
 
-EWXWEXPORT(void, wxPrintDialogData_Delete) (void* _obj)
+EWXWEXPORT(void,wxPrintDialogData_Delete)(void* _obj)
 {
 	delete (wxPrintDialogData*)_obj;
 }
 
-EWXWEXPORT(int, wxPrintDialogData_GetFromPage)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetFromPage)(void* _obj)
 {
 	return ((wxPrintDialogData*)_obj)->GetFromPage();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetToPage)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetToPage)(void* _obj)
 {
 	return ((wxPrintDialogData*)_obj)->GetToPage();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetMinPage)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetMinPage)(void* _obj)
 {
 	return ((wxPrintDialogData*)_obj)->GetMinPage();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetMaxPage)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetMaxPage)(void* _obj)
 {
 	return ((wxPrintDialogData*)_obj)->GetMaxPage();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetNoCopies)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetNoCopies)(void* _obj)
 {
 	return ((wxPrintDialogData*)_obj)->GetNoCopies();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetAllPages)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetAllPages)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetAllPages();
+	return (int)_obj->GetAllPages();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetSelection)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetSelection)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetSelection();
+	return (int)_obj->GetSelection();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetCollate)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetCollate)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetCollate();
+	return (int)_obj->GetCollate();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetPrintToFile)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetPrintToFile)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetPrintToFile();
+	return (int)_obj->GetPrintToFile();
 }
 
-EWXWEXPORT(void, wxPrintDialogData_SetFromPage)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintDialogData_SetFromPage)(void* _obj,int v)
 {
 	((wxPrintDialogData*)_obj)->SetFromPage(v);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetToPage)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintDialogData_SetToPage)(void* _obj,int v)
 {
 	((wxPrintDialogData*)_obj)->SetToPage(v);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetMinPage)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintDialogData_SetMinPage)(void* _obj,int v)
 {
 	((wxPrintDialogData*)_obj)->SetMinPage(v);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetMaxPage)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintDialogData_SetMaxPage)(void* _obj,int v)
 {
 	((wxPrintDialogData*)_obj)->SetMaxPage(v);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetNoCopies)(void* _obj, int v)
+EWXWEXPORT(void,wxPrintDialogData_SetNoCopies)(void* _obj,int v)
 {
 	((wxPrintDialogData*)_obj)->SetNoCopies(v);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetAllPages)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_SetAllPages)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->SetAllPages(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetSelection)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_SetSelection)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->SetSelection(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetCollate)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_SetCollate)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->SetCollate(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetPrintToFile)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_SetPrintToFile)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->SetPrintToFile(flag != 0);
 }
 
-EWXWEXPORT(void, wxPrintDialogData_EnablePrintToFile)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_EnablePrintToFile)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->EnablePrintToFile(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_EnableSelection)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_EnableSelection)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->EnableSelection(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_EnablePageNumbers)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_EnablePageNumbers)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->EnablePageNumbers(flag != 0);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_EnableHelp)(void* _obj, int flag)
+EWXWEXPORT(void,wxPrintDialogData_EnableHelp)(void* _obj,int flag)
 {
 	((wxPrintDialogData*)_obj)->EnableHelp(flag != 0);
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetEnablePrintToFile)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetEnablePrintToFile)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetEnablePrintToFile();
+	return (int)_obj->GetEnablePrintToFile();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetEnableSelection)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetEnableSelection)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetEnableSelection();
+	return (int)_obj->GetEnableSelection();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetEnablePageNumbers)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetEnablePageNumbers)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetEnablePageNumbers();
+	return (int)_obj->GetEnablePageNumbers();
 }
 	
-EWXWEXPORT(int, wxPrintDialogData_GetEnableHelp)(void* _obj)
+EWXWEXPORT(int,wxPrintDialogData_GetEnableHelp)(wxPrintDialogData* _obj)
 {
-	return (int)((wxPrintDialogData*)_obj)->GetEnableHelp();
+	return (int)_obj->GetEnableHelp();
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_GetPrintData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPrintDialogData_GetPrintData)(void* _obj,void* _ref)
 {
 	*((wxPrintData*)_ref) = ((wxPrintDialogData*)_obj)->GetPrintData();
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_SetPrintData)(void* _obj, void* printData)
+EWXWEXPORT(void,wxPrintDialogData_SetPrintData)(void* _obj,void* printData)
 {
 	((wxPrintDialogData*)_obj)->SetPrintData(*((wxPrintData*)printData));
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_Assign)(void* _obj, void* data)
+EWXWEXPORT(void,wxPrintDialogData_Assign)(void* _obj,void* data)
 {
 	*((wxPrintDialogData*)_obj) = *((wxPrintDialogData*)data);
 }
 	
-EWXWEXPORT(void, wxPrintDialogData_AssignData)(void* _obj, void* data)
+EWXWEXPORT(void,wxPrintDialogData_AssignData)(void* _obj,void* data)
 {
 	*((wxPrintDialogData*)_obj) = *((wxPrintData*)data);
 }
 	
-EWXWEXPORT(wxPostScriptDC*, wxPostScriptDC_Create) (const wxPrintData* printData)
+EWXWEXPORT(wxPostScriptDC*,wxPostScriptDC_Create)(wxPrintData* printData)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return new wxPostScriptDC(*printData);
@@ -835,21 +824,21 @@ EWXWEXPORT(wxPostScriptDC*, wxPostScriptDC_Create) (const wxPrintData* printData
 #endif
 }
 
-EWXWEXPORT(void, wxPostScriptDC_Delete) (wxPostScriptDC* self)
+EWXWEXPORT(void,wxPostScriptDC_Delete)(wxPostScriptDC* self)
 {
 #ifdef wxUSE_POSTSCRIPT
 	if (self) delete self;
 #endif
 }
 
-EWXWEXPORT(void, wxPostScriptDC_SetResolution)(wxPostScriptDC* self, int ppi )
+EWXWEXPORT(void,wxPostScriptDC_SetResolution)(wxPostScriptDC* self,int ppi)
 {
 #ifdef wxUSE_POSTSCRIPT
 	self->SetResolution(ppi);
 #endif
 }
 
-EWXWEXPORT(int, wxPostScriptDC_GetResolution)(wxPostScriptDC* self, int ppi )
+EWXWEXPORT(int,wxPostScriptDC_GetResolution)(wxPostScriptDC* self,int ppi)
 {
 #ifdef wxUSE_POSTSCRIPT
 	return self->GetResolution();
@@ -858,7 +847,7 @@ EWXWEXPORT(int, wxPostScriptDC_GetResolution)(wxPostScriptDC* self, int ppi )
 #endif
 }
 
-EWXWEXPORT(void*,wxPrinterDC_Create)(const wxPrintData* printData)
+EWXWEXPORT(void*,wxPrinterDC_Create)(wxPrintData* printData)
 {
 #if defined(__WXGTK__) 
 	return NULL;
@@ -867,7 +856,7 @@ EWXWEXPORT(void*,wxPrinterDC_Create)(const wxPrintData* printData)
 #endif
 }
 
-EWXWEXPORT(void, wxPrinterDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxPrinterDC_Delete)(void* _obj)
 {
 #if !defined(__WXGTK__)
 	delete (wxPrinterDC*)_obj;

@@ -284,7 +284,7 @@ fontGetFontStyle :: Font () -> IO FontStyle
 fontGetFontStyle font
   = if (objectIsNull font)
      then return fontDefault
-     else do ok <- fontOk font
+     else do ok <- fontIsOk font
              if not ok
                then return fontDefault
                else do size    <- fontGetPointSize font

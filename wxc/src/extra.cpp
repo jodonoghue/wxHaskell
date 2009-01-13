@@ -1243,12 +1243,17 @@ extern "C"
 /*-----------------------------------------------------------------------------
   pre-processor
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxVersionNumber)()
+EWXWEXPORT(int,wxVersionNumber)()
 {
   return wxVERSION_NUMBER;
 }
 
-EWXWEXPORT(int, wxIsDefined)( wxChar* s )
+EWXWEXPORT(wxString*,wxVersionString)()
+{
+  return new wxString(wxVERSION_STRING);
+}
+
+EWXWEXPORT(int,wxIsDefined)(wxChar* s)
 {
   int i;
   if (s==NULL) return 0;
@@ -1273,24 +1278,24 @@ EWXWEXPORT(int, wxIsDefined)( wxChar* s )
   return 0;
 }
 
-EWXWEXPORT(void*, wxcMalloc)(int size )
+EWXWEXPORT(void*,wxcMalloc)(int size)
 {
   return malloc(size);
 }
 
-EWXWEXPORT(void, wxcFree)( void* p )
+EWXWEXPORT(void,wxcFree)(void* p)
 {
   if (p!=NULL) free(p);
 }
 
-EWXWEXPORT(wxColour*, wxcSystemSettingsGetColour)( int systemColour )
+EWXWEXPORT(wxColour*,wxcSystemSettingsGetColour)(int systemColour)
 {
    wxColour* colour = new wxColour();
    *colour = wxSystemSettings::GetColour( (wxSystemColour)systemColour );
    return colour;
 }
 
-EWXWEXPORT( void, wxcWakeUpIdle)(void)
+EWXWEXPORT(void,wxcWakeUpIdle)(void)
 {
   wxWakeUpIdle();
 }
@@ -1298,53 +1303,53 @@ EWXWEXPORT( void, wxcWakeUpIdle)(void)
 /*-----------------------------------------------------------------------------
   delete
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void, wxCursor_Delete) (void* _obj)
+EWXWEXPORT(void,wxCursor_Delete)(wxCursor* _obj)
 {
-  delete ((wxCursor*)_obj);
+  delete _obj;
 }
 
-EWXWEXPORT(void, wxDateTime_Delete) (void* _obj)
+EWXWEXPORT(void,wxDateTime_Delete)(wxDateTime* _obj)
 {
-  delete ((wxDateTime*)_obj);
+  delete _obj;
 }
-
 
 /*-----------------------------------------------------------------------------
   frame
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxFrame_GetTitle) (void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxFrame_GetTitle)(wxFrame* _obj)
 {
-  wxString result = ((wxFrame*)_obj)->GetTitle();
-  return copyStrToBuf(_buf, result);
+  wxString *result = new wxString();
+  *result = _obj->GetTitle();
+  return result;
 }
 
-EWXWEXPORT(void, wxFrame_SetTitle) (void* _obj, wxChar* _txt)
+EWXWEXPORT(void,wxFrame_SetTitle)(wxFrame* _obj,wxString* _txt)
 {
-  ((wxFrame*)_obj)->SetTitle(_txt);
+  _obj->SetTitle(*_txt);
 }
 
-EWXWEXPORT(bool, wxFrame_SetShape)( wxFrame* self, wxRegion* region)
+EWXWEXPORT(int,wxFrame_SetShape)(wxFrame* self,wxRegion* region)
 {
-  return self->SetShape( *region );
+  return (int) self->SetShape( *region );
 }
 
-EWXWEXPORT(bool, wxFrame_ShowFullScreen)( wxFrame* self, bool show, int style)
+EWXWEXPORT(int,wxFrame_ShowFullScreen)(wxFrame* self,int show,int style)
 {
-  return self->ShowFullScreen( show, style );
+  return (int) self->ShowFullScreen( show != 0, style );
 }
 
-EWXWEXPORT(bool, wxFrame_IsFullScreen)( wxFrame* self )
+EWXWEXPORT(int,wxFrame_IsFullScreen)(wxFrame* self)
 {
-  return self->IsFullScreen();
+  return (int) self->IsFullScreen();
 }
 
-EWXWEXPORT(void, wxFrame_Centre)( wxFrame* self, int orientation )
+EWXWEXPORT(void,wxFrame_Centre)(wxFrame* self,int orientation)
 {
   self->Centre();
 }
 
 
-EWXWEXPORT(void, wxNotebook_AssignImageList)( wxNotebook* _obj, wxImageList* imageList )
+EWXWEXPORT(void,wxNotebook_AssignImageList)(wxNotebook* _obj,wxImageList* imageList)
 {
   _obj->AssignImageList(imageList);
 }
@@ -1363,39 +1368,39 @@ EWXWEXPORT(wxFrame*,wxMenuBar_GetFrame)(wxMenuBar* _obj)
   return _obj->GetFrame();
 }
 
-EWXWEXPORT(void,wxToolBar_AddTool2)( wxToolBar* _obj, int toolId, wxChar* label, wxBitmap* bmp, wxBitmap* bmpDisabled, int itemKind, wxChar* shortHelp, wxChar* longHelp )
+EWXWEXPORT(void,wxToolBar_AddTool2)(wxToolBar* _obj,int toolId,wxString* label,wxBitmap* bmp,wxBitmap* bmpDisabled,int itemKind,wxString* shortHelp,wxString* longHelp)
 {
-  _obj->AddTool(toolId,label,*bmp,*bmpDisabled,(wxItemKind)itemKind,shortHelp,longHelp,NULL);
+  _obj->AddTool(toolId,*label,*bmp,*bmpDisabled,(wxItemKind)itemKind,*shortHelp,*longHelp,NULL);
 }
 
 /*-----------------------------------------------------------------------------
   listctrl
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxListEvent_GetCacheFrom)(wxListEvent* _obj)
+EWXWEXPORT(int,wxListEvent_GetCacheFrom)(wxListEvent* _obj)
 {
   return _obj->GetCacheFrom();
 }
 
-EWXWEXPORT(int, wxListEvent_GetCacheTo)(wxListEvent* _obj)
+EWXWEXPORT(int,wxListEvent_GetCacheTo)(wxListEvent* _obj)
 {
   return _obj->GetCacheTo();
 }
 
 
-EWXWEXPORT(void, wxListCtrl_AssignImageList)(wxListCtrl* _obj, wxImageList* images, int which )
+EWXWEXPORT(void,wxListCtrl_AssignImageList)(wxListCtrl* _obj,wxImageList* images,int which)
 {
   _obj->AssignImageList(images,which);
 }
 
 
 
-EWXWEXPORT(void, wxListCtrl_GetColumn2)(wxListCtrl* _obj, int col, wxListItem* item)
+EWXWEXPORT(void,wxListCtrl_GetColumn2)(wxListCtrl* _obj,int col,wxListItem* item)
 {
   bool success = _obj->GetColumn(col, *item);
   if (!success) item->SetId(-1);
 }
 
-EWXWEXPORT(void, wxListCtrl_GetItem2)(wxListCtrl* _obj, wxListItem* info)
+EWXWEXPORT(void,wxListCtrl_GetItem2)(wxListCtrl* _obj,wxListItem* info)
 {
   bool success = _obj->GetItem(*info);
   if (!success) info->SetId(-1);
@@ -1433,7 +1438,7 @@ int wxCALLBACK sortCallBack( long item1, long item2, long data )
   return event.GetInt();
 }
 
-EWXWEXPORT(int, wxListCtrl_SortItems2)(wxListCtrl* _obj, wxClosure* closure )
+EWXWEXPORT(int,wxListCtrl_SortItems2)(wxListCtrl* _obj,wxClosure* closure)
 {
   SortData sortData = { _obj->GetId(), closure };
   return (int)_obj->SortItems( sortCallBack, (long)&sortData );
@@ -1444,7 +1449,7 @@ EWXWEXPORT(int, wxListCtrl_SortItems2)(wxListCtrl* _obj, wxClosure* closure )
 /*-----------------------------------------------------------------------------
   DC
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void, wxDC_GetPixel2)(wxDC* _obj, int x, int y, wxColour* col)
+EWXWEXPORT(void,wxDC_GetPixel2)(wxDC* _obj,int x,int y,wxColour* col)
 {
   bool success = _obj->GetPixel((wxCoord)x, (wxCoord)y, col);
   if (!success) *col = wxNullColour;
@@ -1454,20 +1459,20 @@ EWXWEXPORT(void, wxDC_GetPixel2)(wxDC* _obj, int x, int y, wxColour* col)
 /*-----------------------------------------------------------------------------
   Object & static ClassInfo
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(int,wxObject_IsKindOf)(void* _obj, void* classInfo )
+EWXWEXPORT(int,wxObject_IsKindOf)(wxObject* _obj,wxClassInfo* classInfo)
 {
-  return (int)(((wxObject*)_obj)->IsKindOf((wxClassInfo*)classInfo) );
+  return (int) _obj->IsKindOf(classInfo);
 }
 
-EWXWEXPORT(void*,wxObject_GetClassInfo)(void* _obj )
+EWXWEXPORT(void*,wxObject_GetClassInfo)(wxObject* _obj)
 {
-  return ((wxObject*)_obj)->GetClassInfo();
+  return _obj->GetClassInfo();
 }
 
 /* optimize */
-EWXWEXPORT(int,wxObject_IsScrolledWindow)(void* _obj)
+EWXWEXPORT(int,wxObject_IsScrolledWindow)(wxObject* _obj)
 {
-  return (int)(((wxObject*)_obj)->IsKindOf(CLASSINFO(wxScrolledWindow)));
+  return (int) _obj->IsKindOf(CLASSINFO(wxScrolledWindow));
 }
 
 EWXWEXPORT(void,wxObject_Delete)(wxObject* _obj)
@@ -1531,32 +1536,35 @@ EWXWEXPORT(void,wxCharBuffer_Delete)(wxCharBuffer* cb)
 /*-----------------------------------------------------------------------------
   classinfo
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void*,wxClassInfo_FindClass)(wxChar* _txt)
+EWXWEXPORT(void*,wxClassInfo_FindClass)(wxString* _txt)
 {
-  return wxClassInfo::FindClass(_txt);
+  return wxClassInfo::FindClass(*_txt);
 }
 
-EWXWEXPORT(int,wxClassInfo_GetClassNameEx)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxClassInfo_GetClassNameEx)(wxClassInfo* _obj)
 {
-  wxString result = ((wxClassInfo*)_obj)->GetClassName();
-  return copyStrToBuf(_buf, result);
+  wxString *result = new wxString();
+  *result = _obj->GetClassName();
+  return result;
 }
 
-EWXWEXPORT(int,wxClassInfo_GetBaseClassName1)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxClassInfo_GetBaseClassName1)(void* _obj)
 {
-  wxString result = ((wxClassInfo*)_obj)->GetBaseClassName1();
-  return copyStrToBuf(_buf, result);
+  wxString *result = new wxString();
+  *result = ((wxClassInfo*)_obj)->GetBaseClassName1();
+  return result;
 }
 
-EWXWEXPORT(int,wxClassInfo_GetBaseClassName2)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxClassInfo_GetBaseClassName2)(void* _obj)
 {
-  wxString result = ((wxClassInfo*)_obj)->GetBaseClassName2();
-  return copyStrToBuf(_buf, result);
+  wxString *result = new wxString();
+  *result = ((wxClassInfo*)_obj)->GetBaseClassName2();
+  return result;
 }
 
-EWXWEXPORT(int,wxClassInfo_IsKindOfEx)(void* _obj, void* classInfo)
+EWXWEXPORT(int,wxClassInfo_IsKindOfEx)(wxClassInfo* _obj,wxClassInfo* classInfo)
 {
-  return (int)((wxClassInfo*)_obj)->IsKindOf((wxClassInfo*)classInfo);
+  return (int) _obj->IsKindOf(classInfo);
 }
 
 EWXWEXPORT(int,wxClassInfo_GetSize)(void* _obj)
@@ -1582,9 +1590,9 @@ EWXWEXPORT(void, wxWindow_ConvertDialogToPixelsEx)(void* _obj, int x, int y, int
 }
 
 
-EWXWEXPORT(void, wxWindow_SetClientObject)(void* _obj, void * obj )
+EWXWEXPORT(void,wxWindow_SetClientObject)(wxWindow* _obj,void* obj)
 {
-    ((wxWindow*)_obj)->SetClientObject( (wxClientData*)obj );
+    (_obj)->SetClientObject( (wxClientData*)obj );
 }
 
 
@@ -1607,7 +1615,7 @@ EWXWEXPORT(void, wxcGetMousePosition)( int* x, int* y )
 /*-----------------------------------------------------------------------------
   scrolledwindow
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void, wxScrolledWindow_SetScrollRate)( wxScrolledWindow* _obj, int xstep, int ystep )
+EWXWEXPORT(void,wxScrolledWindow_SetScrollRate)(wxScrolledWindow* _obj,int xstep,int ystep)
 {
   _obj->SetScrollRate(xstep,ystep);
 }
@@ -1615,17 +1623,17 @@ EWXWEXPORT(void, wxScrolledWindow_SetScrollRate)( wxScrolledWindow* _obj, int xs
 /*-----------------------------------------------------------------------------
   mouse
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxMouseEvent_GetWheelDelta) (void* _obj)
+EWXWEXPORT(int,wxMouseEvent_GetWheelDelta)(void* _obj)
 {
   return ((wxMouseEvent*)_obj)->GetWheelDelta();
 }
 
-EWXWEXPORT(int, wxMouseEvent_GetWheelRotation) (void* _obj)
+EWXWEXPORT(int,wxMouseEvent_GetWheelRotation)(void* _obj)
 {
   return ((wxMouseEvent*)_obj)->GetWheelRotation();
 }
 
-EWXWEXPORT(int, wxMouseEvent_GetButton) (void* _obj)
+EWXWEXPORT(int,wxMouseEvent_GetButton)(void* _obj)
 {
   return ((wxMouseEvent*)_obj)->GetButton();
 }
@@ -1639,7 +1647,7 @@ EWXWEXPORT(int,expEVT_MOUSEWHEEL)()
 /*-----------------------------------------------------------------------------
   DC
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(double, wxDC_GetUserScaleX)( wxDC* dc )
+EWXWEXPORT(double,wxDC_GetUserScaleX)(wxDC* dc)
 {
   double x = 1.0;
   double y = 1.0;
@@ -1648,7 +1656,7 @@ EWXWEXPORT(double, wxDC_GetUserScaleX)( wxDC* dc )
 }
 
 
-EWXWEXPORT(double, wxDC_GetUserScaleY)( wxDC* dc )
+EWXWEXPORT(double,wxDC_GetUserScaleY)(wxDC* dc)
 {
   double x = 1.0;
   double y = 1.0;
@@ -1660,17 +1668,17 @@ EWXWEXPORT(double, wxDC_GetUserScaleY)( wxDC* dc )
 /*-----------------------------------------------------------------------------
   timers
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void*, wxTimerEx_Create)()
+EWXWEXPORT(void*,wxTimerEx_Create)()
 {
   return new wxTimerEx();
 }
 
-EWXWEXPORT(void, wxTimerEx_Connect)(void* _obj, void* _closure )
+EWXWEXPORT(void,wxTimerEx_Connect)(void* _obj,void* _closure)
 {
   ((wxTimerEx*)_obj)->Connect((wxClosure*)_closure);
 }
 
-EWXWEXPORT(void*, wxTimerEx_GetClosure)(void* _obj)
+EWXWEXPORT(void*,wxTimerEx_GetClosure)(void* _obj)
 {
   return (void*)(((wxTimerEx*)_obj)->GetClosure());
 }
@@ -1679,24 +1687,24 @@ EWXWEXPORT(void*, wxTimerEx_GetClosure)(void* _obj)
 /*-----------------------------------------------------------------------------
   menu items
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void*, wxMenuItem_CreateSeparator)()
+EWXWEXPORT(void*,wxMenuItem_CreateSeparator)()
 {
   return (void*) new wxMenuItem( NULL, wxID_SEPARATOR, wxT(""), wxT(""), wxITEM_SEPARATOR, NULL );
 }
 
 
-EWXWEXPORT(void*, wxMenuItem_CreateEx)(int id, wxChar* text, wxChar* helpstr, int itemkind, void* submenu)
+EWXWEXPORT(void*,wxMenuItem_CreateEx)(int id,wxString* text,wxString* helpstr,int itemkind,void* submenu)
 {
-  return (void*) new wxMenuItem( NULL, id, text, helpstr, (wxItemKind)itemkind, (wxMenu*)submenu );
+  return (void*) new wxMenuItem( NULL, id, *text, *helpstr, (wxItemKind)itemkind, (wxMenu*)submenu );
 }
 
 
-EWXWEXPORT(void, wxMenu_AppendRadioItem)(wxMenu* self, int id, wxChar* text, wxChar* help)
+EWXWEXPORT(void,wxMenu_AppendRadioItem)(wxMenu* self,int id,wxString* text,wxString* help)
 {
 #ifdef wxHAS_RADIO_MENU_ITEMS
-  self->AppendRadioItem(id, text, help);
+  self->AppendRadioItem(id, *text, *help);
 #else
-  self->AppendCheckItem(id, text, help);
+  self->AppendCheckItem(id, *text, *help);
 #endif
 }
 
@@ -1704,27 +1712,27 @@ EWXWEXPORT(void, wxMenu_AppendRadioItem)(wxMenu* self, int id, wxChar* text, wxC
 /*------------------------------------------------------------------------------
   process
 ------------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxProcess_IsErrorAvailable)(void* _obj)
+EWXWEXPORT(int,wxProcess_IsErrorAvailable)(wxProcess* _obj)
 {
-    return ((wxProcess*)_obj)->IsErrorAvailable();
+    return (int) _obj->IsErrorAvailable();
 }
 
-EWXWEXPORT(int, wxProcess_IsInputAvailable)(void* _obj)
+EWXWEXPORT(int,wxProcess_IsInputAvailable)(wxProcess* _obj)
 {
-    return ((wxProcess*)_obj)->IsInputAvailable();
+    return (int) _obj->IsInputAvailable();
 }
 
-EWXWEXPORT(int, wxProcess_IsInputOpened)(void* _obj)
+EWXWEXPORT(int,wxProcess_IsInputOpened)(wxProcess* _obj)
 {
-    return ((wxProcess*)_obj)->IsInputOpened();
+    return (int) _obj->IsInputOpened();
 }
 
-EWXWEXPORT(wxProcess*, wxProcess_Open)( wxChar* cmd, int flags )
+EWXWEXPORT(wxProcess*,wxProcess_Open)(wxString* cmd,int flags)
 {
-    return wxProcess::Open( cmd, ((flags | wxEXEC_ASYNC) & ~wxEXEC_SYNC) );
+    return wxProcess::Open( *cmd, ((flags | wxEXEC_ASYNC) & ~wxEXEC_SYNC) );
 }
 
-EWXWEXPORT(wxKillError, wxKill)( int pid, wxSignal signal )
+EWXWEXPORT(wxKillError,wxKill)(int pid,wxSignal signal)
 {
   return wxProcess::Kill(pid,signal);
 }
@@ -1737,119 +1745,121 @@ EWXWEXPORT(void,wxStreamBase_Delete)(wxStreamBase* stream)
 /*------------------------------------------------------------------------------
   TextCtrl
 ------------------------------------------------------------------------------*/
-EWXWEXPORT(int, wxTextCtrl_EmulateKeyPress)(void * _obj, void *keyevent)
+EWXWEXPORT(int,wxTextCtrl_EmulateKeyPress)(void* _obj,void* keyevent)
 {
     return ((wxTextCtrl*)_obj)->EmulateKeyPress( * ((wxKeyEvent *) keyevent));
 }
 
 
-EWXWEXPORT( void *, wxTextCtrl_GetDefaultStyle)(void * _obj)
+EWXWEXPORT(void*,wxTextCtrl_GetDefaultStyle)(void* _obj)
 {
     return (void *) & ((wxTextCtrl*)_obj)->GetDefaultStyle();
 }
 
-EWXWEXPORT( int, wxTextCtrl_GetRange)(void * _obj, long from, long to, void *_buf)
+EWXWEXPORT(wxString*,wxTextCtrl_GetRange)(void* _obj,long from,long to)
 {
-    wxString result = ((wxTextCtrl*)_obj)->GetRange(from, to);
-    return copyStrToBuf(_buf, result);
+    wxString *result = new wxString();
+    *result = ((wxTextCtrl*)_obj)->GetRange(from, to);
+    return result;
 }
 
-EWXWEXPORT( int, wxTextCtrl_GetStringSelection)(void * _obj, void *_buf)
+EWXWEXPORT(wxString*,wxTextCtrl_GetStringSelection)(void* _obj)
 {
-    wxString result = ((wxTextCtrl*)_obj)->GetStringSelection();
-    return copyStrToBuf(_buf, result);
+    wxString *result = new wxString();
+    *result = ((wxTextCtrl*)_obj)->GetStringSelection();
+    return result;
 }
 
-EWXWEXPORT( int, wxTextCtrl_IsMultiLine)(void * _obj)
+EWXWEXPORT(int,wxTextCtrl_IsMultiLine)(wxTextCtrl* _obj)
 {
-    return (int) ((wxTextCtrl*)_obj)->IsMultiLine();
+    return (int)  _obj->IsMultiLine();
 }
 
-EWXWEXPORT( int, wxTextCtrl_IsSingleLine)(void * _obj)
+EWXWEXPORT(int,wxTextCtrl_IsSingleLine)(wxTextCtrl* _obj)
 {
-    return (int) ((wxTextCtrl*)_obj)->IsSingleLine(   );
+    return (int) _obj->IsSingleLine(   );
 }
 
 
-EWXWEXPORT(int, wxTextCtrl_SetDefaultStyle)(void * _obj, void *style)
+EWXWEXPORT(int,wxTextCtrl_SetDefaultStyle)(wxTextCtrl* _obj,wxTextAttr* style)
 {
-    return (int) ((wxTextCtrl*)_obj)->SetDefaultStyle( * (wxTextAttr *) style  );
+    return (int) _obj->SetDefaultStyle(*style);
 }
 
-EWXWEXPORT(void, wxTextCtrl_SetMaxLength)(void * _obj, long len)
+EWXWEXPORT(void,wxTextCtrl_SetMaxLength)(void* _obj,long len)
 {
     ((wxTextCtrl*)_obj)->SetMaxLength( len  );
 }
 
-EWXWEXPORT(int, wxTextCtrl_SetStyle)(void * _obj, long start, long end, void * style)
+EWXWEXPORT(int,wxTextCtrl_SetStyle)(wxTextCtrl* _obj,long start,long end,wxTextAttr* style)
 {
-    return (int) ((wxTextCtrl*)_obj)->SetStyle(start, end, * (wxTextAttr *) style);
+    return (int) _obj->SetStyle(start, end, *style);
 }
 
 /*------------------------------------------------------------------------------
   TextAttr
 ------------------------------------------------------------------------------*/
-EWXWEXPORT( wxTextAttr*, wxTextAttr_CreateDefault)()
+EWXWEXPORT(wxTextAttr*,wxTextAttr_CreateDefault)()
 {
   return new wxTextAttr();
 }
 
-EWXWEXPORT( void *, wxTextAttr_Create)(void * colText, void * colBack, void *font)
+EWXWEXPORT(void*,wxTextAttr_Create)(void* colText,void* colBack,void* font)
 {
     return (void *) new wxTextAttr( * (wxColour *) colText, * (wxColour *) colBack, * (wxFont *) font );
 }
 
-EWXWEXPORT( void, wxTextAttr_Delete)(void * _obj)
+EWXWEXPORT(void,wxTextAttr_Delete)(void* _obj)
 {
     delete ((wxTextAttr*)_obj);
 }
 
-EWXWEXPORT(void, wxTextAttr_GetBackgroundColour)(wxTextAttr* _obj, wxColour* colour )
+EWXWEXPORT(void,wxTextAttr_GetBackgroundColour)(wxTextAttr* _obj,wxColour* colour)
 {
     *colour = _obj->GetBackgroundColour();
 }
 
-EWXWEXPORT(void, wxTextAttr_GetFont)(wxTextAttr* _obj, wxFont* font )
+EWXWEXPORT(void,wxTextAttr_GetFont)(wxTextAttr* _obj,wxFont* font)
 {
     *font = _obj->GetFont();
 }
 
-EWXWEXPORT(void, wxTextAttr_GetTextColour)(wxTextAttr* _obj, wxColour* colour )
+EWXWEXPORT(void,wxTextAttr_GetTextColour)(wxTextAttr* _obj,wxColour* colour)
 {
     *colour = _obj->GetTextColour();
 }
 
-EWXWEXPORT(int, wxTextAttr_HasBackgroundColour)(void * _obj)
+EWXWEXPORT(int,wxTextAttr_HasBackgroundColour)(wxTextAttr* _obj)
 {
-    return (int) ((wxTextAttr*)_obj)->HasBackgroundColour();
+    return (int) _obj->HasBackgroundColour();
 }
 
-EWXWEXPORT(int, wxTextAttr_HasFont)(void * _obj)
+EWXWEXPORT(int,wxTextAttr_HasFont)(wxTextAttr* _obj)
 {
-    return (int) ((wxTextAttr*)_obj)->HasFont();
+    return (int) _obj->HasFont();
 }
 
-EWXWEXPORT(int, wxTextAttr_HasTextColour)(void * _obj)
+EWXWEXPORT(int,wxTextAttr_HasTextColour)(wxTextAttr* _obj)
 {
-    return (int) ((wxTextAttr*)_obj)->HasTextColour(   );
+    return (int) _obj->HasTextColour();
 }
 
-EWXWEXPORT(int, wxTextAttr_IsDefault)(void * _obj)
+EWXWEXPORT(int,wxTextAttr_IsDefault)(wxTextAttr* _obj)
 {
-    return (int) ((wxTextAttr*)_obj)->IsDefault(   );
+    return (int) _obj->IsDefault(   );
 }
 
-EWXWEXPORT( void, wxTextAttr_SetTextColour)(wxTextAttr* _obj, wxColour* colour )
+EWXWEXPORT(void,wxTextAttr_SetTextColour)(wxTextAttr* _obj,wxColour* colour)
 {
    _obj->SetTextColour(*colour);
 }
 
-EWXWEXPORT( void, wxTextAttr_SetBackgroundColour)(wxTextAttr* _obj, wxColour* colour )
+EWXWEXPORT(void,wxTextAttr_SetBackgroundColour)(wxTextAttr* _obj,wxColour* colour)
 {
    _obj->SetBackgroundColour(*colour);
 }
 
-EWXWEXPORT( void, wxTextAttr_SetFont)(wxTextAttr* _obj, wxFont* font )
+EWXWEXPORT(void,wxTextAttr_SetFont)(wxTextAttr* _obj,wxFont* font)
 {
    _obj->SetFont(*font);
 }
@@ -1857,22 +1867,22 @@ EWXWEXPORT( void, wxTextAttr_SetFont)(wxTextAttr* _obj, wxFont* font )
 /*------------------------------------------------------------------------------
   progress dialog
 ------------------------------------------------------------------------------*/
-EWXWEXPORT(wxProgressDialog*, wxProgressDialog_Create)( wxChar* title, wxChar* message, int max, wxWindow* parent, int style )
+EWXWEXPORT(wxProgressDialog*,wxProgressDialog_Create)(wxString* title,wxString* message,int max,wxWindow* parent,int style)
 {
-  return new wxProgressDialog( title, message, max, parent, style );
+  return new wxProgressDialog( *title, *message, max, parent, style );
 }
 
-EWXWEXPORT(int, wxProgressDialog_Update)(wxProgressDialog* obj, int value )
+EWXWEXPORT(int,wxProgressDialog_Update)(wxProgressDialog* obj,int value)
 {
   return (obj->Update(value) ? 1 : 0);
 }
 
-EWXWEXPORT(int, wxProgressDialog_UpdateWithMessage)(wxProgressDialog* obj, int value, wxChar* message )
+EWXWEXPORT(int,wxProgressDialog_UpdateWithMessage)(wxProgressDialog* obj,int value,wxString* message)
 {
-  return (obj->Update(value,message) ? 1 : 0);
+  return (obj->Update(value,*message) ? 1 : 0);
 }
 
-EWXWEXPORT(void, wxProgressDialog_Resume)(wxProgressDialog* obj )
+EWXWEXPORT(void,wxProgressDialog_Resume)(wxProgressDialog* obj)
 {
   obj->Resume();
 }
@@ -1881,12 +1891,12 @@ EWXWEXPORT(void, wxProgressDialog_Resume)(wxProgressDialog* obj )
 /*------------------------------------------------------------------------------
   standard dialogs
 ------------------------------------------------------------------------------*/
-EWXWEXPORT(void, wxGetColourFromUser)(wxWindow *parent, wxColour* colInit, wxColour* colour)
+EWXWEXPORT(void,wxGetColourFromUser)(wxWindow* parent,wxColour* colInit,wxColour* colour)
 {
   *colour = wxGetColourFromUser(parent, *colInit);
 }
 
-EWXWEXPORT(void, wxGetFontFromUser)(wxWindow *parent, wxFont* fontInit, wxFont* font )
+EWXWEXPORT(void,wxGetFontFromUser)(wxWindow* parent,wxFont* fontInit,wxFont* font)
 {
   *font = wxGetFontFromUser(parent, *fontInit);
 }
@@ -1947,27 +1957,27 @@ EWXWEXPORT(int, wxGetTextFromUser)(wxChar* message, wxChar* caption, wxChar* def
   }
 }
 
-EWXWEXPORT(long,wxGetNumberFromUser)( wxChar* message, wxChar* prompt, wxChar* caption, long value, long min, long max, wxWindow* parent, int x, int y )
+EWXWEXPORT(long,wxGetNumberFromUser)(wxString* message,wxString* prompt,wxString* caption,long value,long min,long max,wxWindow* parent,int x,int y)
 {
-  return wxGetNumberFromUser(wxString(message), wxString(prompt), wxString(caption), value, min, max, parent, wxPoint(x, y) );
+  return wxGetNumberFromUser(*message, *prompt, *caption, value, min, max, parent, wxPoint(x, y) );
 }
 
-EWXWEXPORT(void, wxcBell)(void)
+EWXWEXPORT(void,wxcBell)(void)
 {
   wxBell();
 }
 
-EWXWEXPORT(void, wxcBeginBusyCursor)(void)
+EWXWEXPORT(void,wxcBeginBusyCursor)(void)
 {
   wxBeginBusyCursor();
 }
 
-EWXWEXPORT(int, wxcIsBusy)(void)
+EWXWEXPORT(int,wxcIsBusy)(void)
 {
-  return (wxIsBusy() != 0);
+  return (wxIsBusy());
 }
 
-EWXWEXPORT(void, wxcEndBusyCursor)(void)
+EWXWEXPORT(void,wxcEndBusyCursor)(void)
 {
   wxEndBusyCursor();
 }
@@ -1975,33 +1985,33 @@ EWXWEXPORT(void, wxcEndBusyCursor)(void)
 /*-----------------------------------------------------------------------------
   wxInputSink
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxInputSink*, wxInputSink_Create)( wxInputStream* input, wxEvtHandler* evtHandler, int bufferLen )
+EWXWEXPORT(wxInputSink*,wxInputSink_Create)(wxInputStream* input,wxEvtHandler* evtHandler,int bufferLen)
 {
   return new wxInputSink(input,evtHandler,bufferLen);
 }
 
-EWXWEXPORT(int, wxInputSink_GetId)( wxInputSink* obj )
+EWXWEXPORT(int,wxInputSink_GetId)(wxInputSink* obj)
 {
   return obj->GetId();
 }
 
-EWXWEXPORT(void, wxInputSink_Start)( wxInputSink* obj )
+EWXWEXPORT(void,wxInputSink_Start)(wxInputSink* obj)
 {
   obj->Start();
 }
 
 
-EWXWEXPORT(int, wxInputSinkEvent_LastError)( wxInputSinkEvent* obj )
+EWXWEXPORT(int,wxInputSinkEvent_LastError)(wxInputSinkEvent* obj)
 {
   return obj->LastError();
 }
 
-EWXWEXPORT(int, wxInputSinkEvent_LastRead)( wxInputSinkEvent* obj )
+EWXWEXPORT(int,wxInputSinkEvent_LastRead)(wxInputSinkEvent* obj)
 {
   return obj->LastRead();
 }
 
-EWXWEXPORT(char*, wxInputSinkEvent_LastInput)( wxInputSinkEvent* obj )
+EWXWEXPORT(char*,wxInputSinkEvent_LastInput)(wxInputSinkEvent* obj)
 {
   return obj->LastInput();
 }
@@ -2047,42 +2057,42 @@ EWXWEXPORT(void,wxcHtmlEvent_GetLogicalPosition)( wxcHtmlEvent* _obj, int* x, in
 /*-----------------------------------------------------------------------------
   html window
 -----------------------------------------------------------------------------*/
-EWXWEXPORT( void*, wxHtmlWindow_Create)(void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, long _stl, wxChar* _txt)
+EWXWEXPORT(void*,wxHtmlWindow_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,long _stl, wxString* _txt)
 {
-    return (void *) (wxHtmlWindow*) new wxHtmlWindow((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, _txt );
+    return (void *) (wxHtmlWindow*) new wxHtmlWindow(_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, *_txt );
 }
 
-EWXWEXPORT( void*, wxcHtmlWindow_Create)(void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, long _stl, wxChar* _txt)
+EWXWEXPORT( void*, wxcHtmlWindow_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,long _stl, wxString* _txt)
 {
-    return (void *) (wxcHtmlWindow*) new wxcHtmlWindow((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, _txt );
+    return (void *) (wxcHtmlWindow*) new wxcHtmlWindow(_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, *_txt );
 }
 
 
-EWXWEXPORT( int, wxHtmlWindow_AppendToPage)(void * _obj, wxChar * source)
+EWXWEXPORT(int,wxHtmlWindow_AppendToPage)(wxHtmlWindow* _obj,wxString* source)
 {
-    return (int) ((wxHtmlWindow*)_obj)->AppendToPage( source  );
+    return (int) _obj->AppendToPage(*source);
 }
 
-EWXWEXPORT( void *, wxHtmlWindow_GetInternalRepresentation)(void * _obj)
+EWXWEXPORT(void*,wxHtmlWindow_GetInternalRepresentation)(void* _obj)
 {
     return (void *) ((wxHtmlWindow*)_obj)->GetInternalRepresentation(   );
 }
 
-EWXWEXPORT( int, wxHtmlWindow_GetOpenedAnchor)(void * _obj, void *_buf)
+EWXWEXPORT(int,wxHtmlWindow_GetOpenedAnchor)(void* _obj,void* _buf)
 {
     wxString result = ((wxHtmlWindow*)_obj)->GetOpenedAnchor();
     if (_buf) memcpy (_buf, result.c_str(), result.Length());
     return result.Length();
 }
 
-EWXWEXPORT( int, wxHtmlWindow_GetOpenedPage)(void * _obj, void *_buf)
+EWXWEXPORT(int,wxHtmlWindow_GetOpenedPage)(void* _obj,void* _buf)
 {
     wxString result = ((wxHtmlWindow*)_obj)->GetOpenedPage();
     if (_buf) memcpy (_buf, result.c_str(), result.Length());
     return result.Length();
 }
 
-EWXWEXPORT( int, wxHtmlWindow_GetOpenedPageTitle)(void * _obj, void *_buf)
+EWXWEXPORT(int,wxHtmlWindow_GetOpenedPageTitle)(void* _obj,void* _buf)
 {
     wxString result = ((wxHtmlWindow*)_obj)->GetOpenedPageTitle();
     if (_buf) memcpy (_buf, result.c_str(), result.Length());
@@ -2090,106 +2100,106 @@ EWXWEXPORT( int, wxHtmlWindow_GetOpenedPageTitle)(void * _obj, void *_buf)
 }
 
 
-EWXWEXPORT( void *, wxHtmlWindow_GetRelatedFrame)(void * _obj)
+EWXWEXPORT(void*,wxHtmlWindow_GetRelatedFrame)(void* _obj)
 {
     return (void *) ((wxHtmlWindow*)_obj)->GetRelatedFrame(   );
 }
 
-EWXWEXPORT( int, wxHtmlWindow_HistoryBack)(void * _obj)
+EWXWEXPORT(int,wxHtmlWindow_HistoryBack)(wxHtmlWindow* _obj)
 {
-    return (int) ((wxHtmlWindow*)_obj)->HistoryBack(   );
+    return (int) _obj->HistoryBack();
 }
 
-EWXWEXPORT( int, wxHtmlWindow_HistoryCanBack)(void * _obj)
+EWXWEXPORT(int,wxHtmlWindow_HistoryCanBack)(wxHtmlWindow* _obj)
 {
-    return (int) ((wxHtmlWindow*)_obj)->HistoryCanBack(   );
+    return (int) _obj->HistoryCanBack();
 }
 
-EWXWEXPORT( int, wxHtmlWindow_HistoryCanForward)(void * _obj)
+EWXWEXPORT(int,wxHtmlWindow_HistoryCanForward)(wxHtmlWindow* _obj)
 {
-    return (int) ((wxHtmlWindow*)_obj)->HistoryCanForward(   );
+    return (int) _obj->HistoryCanForward();
 }
 
-EWXWEXPORT( void, wxHtmlWindow_HistoryClear)(void * _obj)
+EWXWEXPORT(void,wxHtmlWindow_HistoryClear)(void* _obj)
 {
     ((wxHtmlWindow*)_obj)->HistoryClear(   );
 }
 
-EWXWEXPORT( int, wxHtmlWindow_HistoryForward)(void * _obj)
+EWXWEXPORT(int,wxHtmlWindow_HistoryForward)(wxHtmlWindow* _obj)
 {
-    return (int) ((wxHtmlWindow*)_obj)->HistoryForward(   );
+    return (int) _obj->HistoryForward();
 }
 
-EWXWEXPORT( int, wxHtmlWindow_LoadPage)(void * _obj, wxChar *location)
+EWXWEXPORT(int,wxHtmlWindow_LoadPage)(wxHtmlWindow* _obj,wxString* location)
 {
-    return (int) ((wxHtmlWindow*)_obj)->LoadPage(location );
+    return (int) _obj->LoadPage(*location );
 }
 
 
-EWXWEXPORT( void, wxHtmlWindow_ReadCustomization)(void * _obj, void * cfg, wxChar * path)
+EWXWEXPORT(void,wxHtmlWindow_ReadCustomization)(void* _obj,void* cfg,wxString* path)
 {
-    ((wxHtmlWindow*)_obj)->ReadCustomization( ((wxConfigBase *) cfg), path );
+    ((wxHtmlWindow*)_obj)->ReadCustomization( ((wxConfigBase *) cfg), *path );
 }
 
-EWXWEXPORT(  void, wxHtmlWindow_SetBorders)(void * _obj, int b)
+EWXWEXPORT(void,wxHtmlWindow_SetBorders)(void* _obj,int b)
 {
     ((wxHtmlWindow*)_obj)->SetBorders( b );
 }
 
-EWXWEXPORT( void, wxHtmlWindow_SetFonts)(void * _obj, wxChar * normal_face, wxChar * fixed_face, int *sizes)
+EWXWEXPORT(void,wxHtmlWindow_SetFonts)(void* _obj,wxString* normal_face,wxString* fixed_face,int* sizes)
 {
-    ((wxHtmlWindow*)_obj)->SetFonts(normal_face, fixed_face, sizes );
+    ((wxHtmlWindow*)_obj)->SetFonts(*normal_face, *fixed_face, sizes );
 }
 
-EWXWEXPORT( int, wxHtmlWindow_SetPage)(void * _obj, wxChar * source)
+EWXWEXPORT(int,wxHtmlWindow_SetPage)(void* _obj,wxString* source)
 {
-    return ((wxHtmlWindow*)_obj)->SetPage( source );
+    return ((wxHtmlWindow*)_obj)->SetPage( *source );
 }
 
-EWXWEXPORT( void, wxHtmlWindow_SetRelatedFrame)(void * _obj, void * frame, wxChar * format)
+EWXWEXPORT(void,wxHtmlWindow_SetRelatedFrame)(void* _obj,void* frame,wxString* format)
 {
-    ((wxHtmlWindow*)_obj)->SetRelatedFrame(  ((wxFrame *) frame), format);
+    ((wxHtmlWindow*)_obj)->SetRelatedFrame(  ((wxFrame *) frame), *format);
 }
 
-EWXWEXPORT( void, wxHtmlWindow_SetRelatedStatusBar)(void * _obj, int bar)
+EWXWEXPORT(void,wxHtmlWindow_SetRelatedStatusBar)(void* _obj,int bar)
 {
     ((wxHtmlWindow*)_obj)->SetRelatedStatusBar(bar);
 }
 
-EWXWEXPORT( void, wxHtmlWindow_WriteCustomization)(void * _obj, void *cfg, wxChar * path)
+EWXWEXPORT(void,wxHtmlWindow_WriteCustomization)(void* _obj,void* cfg,wxString* path)
 {
-    ((wxHtmlWindow*)_obj)->WriteCustomization( ((wxConfigBase *) cfg), path );
+    ((wxHtmlWindow*)_obj)->WriteCustomization( ((wxConfigBase *) cfg), *path );
 }
 
 /*-----------------------------------------------------------------------------
   LOGGER
 -----------------------------------------------------------------------------*/
-EWXWEXPORT( wxLogStderr*, wxLogStderr_Create)()
+EWXWEXPORT(wxLogStderr*,wxLogStderr_Create)()
 {
   return new wxLogStderr();
 }
 
-EWXWEXPORT( wxLogStderr*, wxLogStderr_CreateStdOut)()
+EWXWEXPORT(wxLogStderr*,wxLogStderr_CreateStdOut)()
 {
   return new wxLogStderr(stdout);
 }
 
-EWXWEXPORT( wxLogNull*, wxLogNull_Create)()
+EWXWEXPORT(wxLogNull*,wxLogNull_Create)()
 {
   return new wxLogNull();
 }
 
-EWXWEXPORT( wxLogTextCtrl*, wxLogTextCtrl_Create)( wxTextCtrl* text )
+EWXWEXPORT(wxLogTextCtrl*,wxLogTextCtrl_Create)(wxTextCtrl* text)
 {
   return new wxLogTextCtrl(text);
 }
 
-EWXWEXPORT( wxLogWindow*, wxLogWindow_Create)( wxFrame* parent, wxChar* title, int showit, int passthrough )
+EWXWEXPORT(wxLogWindow*,wxLogWindow_Create)(wxFrame* parent,wxString* title,int showit,int passthrough)
 {
-  return new wxLogWindow(parent,title,showit,passthrough);
+  return new wxLogWindow(parent,*title,showit,passthrough);
 }
 
-EWXWEXPORT( wxFrame*, wxLogWindow_GetFrame)( wxLogWindow* obj )
+EWXWEXPORT(wxFrame*,wxLogWindow_GetFrame)(wxLogWindow* obj)
 {
   return obj->GetFrame();
 }
@@ -2199,7 +2209,7 @@ EWXWEXPORT(void,wxLog_Delete)(void* _obj)
         delete (wxLog*)_obj;
 }
 
-EWXWEXPORT(void,wxLog_OnLog)(void* _obj, int level, void* szString, int t)
+EWXWEXPORT(void,wxLog_OnLog)(void* _obj,int level,void* szString,int t)
 {
         ((wxLog*)_obj)->OnLog((wxLogLevel)level, (const wxChar*)szString, (time_t)t);
 }
@@ -2209,9 +2219,9 @@ EWXWEXPORT(void,wxLog_Flush)(void* _obj)
         ((wxLog*)_obj)->Flush();
 }
 
-EWXWEXPORT(int,wxLog_HasPendingMessages)(void* _obj)
+EWXWEXPORT(int,wxLog_HasPendingMessages)(wxLog* _obj)
 {
-        return (int)((wxLog*)_obj)->HasPendingMessages();
+        return (int)_obj->HasPendingMessages();
 }
 
 EWXWEXPORT(void,wxLog_FlushActive)(void* _obj)
@@ -2239,7 +2249,7 @@ EWXWEXPORT(void,wxLog_Resume)(void* _obj)
         ((wxLog*)_obj)->Resume();
 }
 
-EWXWEXPORT(void,wxLog_SetVerbose)(void* _obj, int bVerbose)
+EWXWEXPORT(void,wxLog_SetVerbose)(void* _obj,int bVerbose)
 {
         ((wxLog*)_obj)->SetVerbose(bVerbose != 0);
 }
@@ -2249,29 +2259,29 @@ EWXWEXPORT(void,wxLog_DontCreateOnDemand)(void* _obj)
         ((wxLog*)_obj)->DontCreateOnDemand();
 }
 
-EWXWEXPORT(void,wxLog_SetTraceMask)(void* _obj, int ulMask)
+EWXWEXPORT(void,wxLog_SetTraceMask)(void* _obj,int ulMask)
 {
         ((wxLog*)_obj)->SetTraceMask((wxTraceMask)ulMask);
 }
 
-EWXWEXPORT(void,wxLog_AddTraceMask)(void* _obj, void* str)
+EWXWEXPORT(void,wxLog_AddTraceMask)(void* _obj,wxString* str)
 {
-        ((wxLog*)_obj)->AddTraceMask((const wxChar*)str);
+        ((wxLog*)_obj)->AddTraceMask(*str);
 }
 
-EWXWEXPORT(void,wxLog_RemoveTraceMask)(void* _obj, void* str)
+EWXWEXPORT(void,wxLog_RemoveTraceMask)(void* _obj,wxString* str)
 {
-        ((wxLog*)_obj)->RemoveTraceMask((const wxChar*)str);
+        ((wxLog*)_obj)->RemoveTraceMask(*str);
 }
 
-EWXWEXPORT(void,wxLog_SetTimestamp)(void* _obj, void* ts)
+EWXWEXPORT(void,wxLog_SetTimestamp)(void* _obj,void* ts)
 {
         ((wxLog*)_obj)->SetTimestamp((const wxChar*)ts);
 }
 
-EWXWEXPORT(int,wxLog_GetVerbose)(void* _obj)
+EWXWEXPORT(int,wxLog_GetVerbose)(wxLog* _obj)
 {
-        return (int)((wxLog*)_obj)->GetVerbose();
+        return (int) _obj->GetVerbose();
 }
 
 EWXWEXPORT(int,wxLog_GetTraceMask)(void* _obj)
@@ -2279,9 +2289,9 @@ EWXWEXPORT(int,wxLog_GetTraceMask)(void* _obj)
         return (int)((wxLog*)_obj)->GetTraceMask();
 }
 
-EWXWEXPORT(int,wxLog_IsAllowedTraceMask)(void* _obj, void* mask)
+EWXWEXPORT(int,wxLog_IsAllowedTraceMask)(wxLog* _obj,void* mask)
 {
-        return (int)((wxLog*)_obj)->IsAllowedTraceMask((const wxChar*)mask);
+        return (int) _obj->IsAllowedTraceMask((const wxChar*)mask);
 }
 
 EWXWEXPORT(void*,wxLog_GetTimestamp)(void* _obj)
@@ -2290,49 +2300,49 @@ EWXWEXPORT(void*,wxLog_GetTimestamp)(void* _obj)
 }
 
 
-EWXWEXPORT(void,LogError)(void* _msg)
+EWXWEXPORT(void,LogError)(wxString* _msg)
 {
-        wxLogError((wxChar*)_msg);
+        wxLogError(*_msg);
 }
 
-EWXWEXPORT(void,LogFatalError)(void* _msg)
+EWXWEXPORT(void,LogFatalError)(wxString* _msg)
 {
-        wxLogFatalError((wxChar*)_msg);
+        wxLogFatalError(*_msg);
 }
 
-EWXWEXPORT(void,LogWarning)(void* _msg)
+EWXWEXPORT(void,LogWarning)(wxString* _msg)
 {
-        wxLogWarning((wxChar*)_msg);
+        wxLogWarning(*_msg);
 }
 
-EWXWEXPORT(void,LogMessage)(void* _msg)
+EWXWEXPORT(void,LogMessage)(wxString* _msg)
 {
-        wxLogMessage((wxChar*)_msg);
+        wxLogMessage(*_msg);
 }
 
-EWXWEXPORT(void,LogVerbose)(void* _msg)
+EWXWEXPORT(void,LogVerbose)(wxString* _msg)
 {
-        wxLogVerbose((wxChar*)_msg);
+        wxLogVerbose(*_msg);
 }
 
-EWXWEXPORT(void,LogStatus)(void* _msg)
+EWXWEXPORT(void,LogStatus)(wxString* _msg)
 {
-        wxLogStatus((wxChar*)_msg);
+        wxLogStatus(*_msg);
 }
 
-EWXWEXPORT(void,LogSysError)(void* _msg)
+EWXWEXPORT(void,LogSysError)(wxString* _msg)
 {
-        wxLogSysError((wxChar*)_msg);
+        wxLogSysError(*_msg);
 }
 
-EWXWEXPORT(void,LogDebug)(void* _msg)
+EWXWEXPORT(void,LogDebug)(wxString* _msg)
 {
-        wxLogDebug((wxChar*)_msg);
+        wxLogDebug(*_msg);
 }
 
-EWXWEXPORT(void,LogTrace)(void* mask, void* _msg)
+EWXWEXPORT(void,LogTrace)(wxString* mask,wxString* _msg)
 {
-        wxLogTrace((wxChar*) mask, (wxChar*)_msg);
+        wxLogTrace(* mask, *_msg);
 }
 
 /*-----------------------------------------------------------------------------
@@ -2346,17 +2356,17 @@ EWXWEXPORT(wxGridCellTextEnterEditor*,wxGridCellTextEnterEditor_Ctor)()
 /*-----------------------------------------------------------------------------
   ConfigBase
 -----------------------------------------------------------------------------*/
-EWXWEXPORT( wxConfigBase*, wxConfigBase_Get)()
+EWXWEXPORT(wxConfigBase*,wxConfigBase_Get)()
 {
   return wxConfigBase::Get();
 }
 
-EWXWEXPORT( void, wxConfigBase_Set)( wxConfigBase* self )
+EWXWEXPORT(void,wxConfigBase_Set)(wxConfigBase* self)
 {
   wxConfigBase::Set( self );
 }
 
-EWXWEXPORT( wxFileConfig*, wxFileConfig_Create)( wxInputStream* inp )
+EWXWEXPORT(wxFileConfig*,wxFileConfig_Create)(wxInputStream* inp)
 {
   return new wxFileConfig( *inp );
 }

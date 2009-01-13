@@ -10,14 +10,14 @@ EWXWEXPORT(void*,wxSingleInstanceChecker_CreateDefault)()
 	return (void*)new wxSingleInstanceChecker();
 }
 	
-EWXWEXPORT(int,wxSingleInstanceChecker_Create)(void* _obj, void* name, void* path)
+EWXWEXPORT(bool,wxSingleInstanceChecker_Create)(wxSingleInstanceChecker* _obj,wxString* name,wxString* path)
 {
-	return (int)((wxSingleInstanceChecker*)_obj)->Create((wxChar*)name, (wxChar*)path);
+	return _obj->Create(*name, *path);
 }
 	
-EWXWEXPORT(int,wxSingleInstanceChecker_IsAnotherRunning)(void* _obj)
+EWXWEXPORT(bool,wxSingleInstanceChecker_IsAnotherRunning)(wxSingleInstanceChecker* _obj)
 {
-	return (int)((wxSingleInstanceChecker*)_obj)->IsAnotherRunning();
+	return _obj->IsAnotherRunning();
 }
 	
 EWXWEXPORT(void,wxSingleInstanceChecker_Delete)(void* _obj)

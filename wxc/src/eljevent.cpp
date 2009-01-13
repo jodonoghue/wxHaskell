@@ -126,15 +126,16 @@ EWXWEXPORT(int, wxCommandEvent_GetSelection)(void* _obj)
         return ((wxCommandEvent*)_obj)->GetSelection();
 }
 
-EWXWEXPORT(void, wxCommandEvent_SetString)(void* _obj, wxChar* s)
+EWXWEXPORT(void,wxCommandEvent_SetString)(void* _obj,wxString* s)
 {
-        ((wxCommandEvent*)_obj)->SetString(s);
+        ((wxCommandEvent*)_obj)->SetString(*s);
 }
 
-EWXWEXPORT(int, wxCommandEvent_GetString)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxCommandEvent_GetString)(void* _obj)
 {
-        wxString result = ((wxCommandEvent*)_obj)->GetString();
-        return copyStrToBuf(_buf, result);
+        wxString *result = new wxString();
+        *result = ((wxCommandEvent*)_obj)->GetString();
+        return result;
 }
 
 EWXWEXPORT(int, wxCommandEvent_IsChecked)(void* _obj)
@@ -674,10 +675,11 @@ EWXWEXPORT(int, wxUpdateUIEvent_GetEnabled)(void* _obj)
         return (int)((wxUpdateUIEvent*)_obj)->GetEnabled();
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetText)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxUpdateUIEvent_GetText)(void* _obj)
 {
-        wxString result =((wxUpdateUIEvent*)_obj)->GetText();
-        return copyStrToBuf(_buf, result); 
+        wxString *result = new wxString();
+        *result = ((wxUpdateUIEvent*)_obj)->GetText();
+        return result;
 }
 
 EWXWEXPORT(int, wxUpdateUIEvent_GetSetText)(void* _obj)
@@ -705,9 +707,9 @@ EWXWEXPORT(void, wxUpdateUIEvent_Enable)(void* _obj, int enable)
         ((wxUpdateUIEvent*)_obj)->Enable(enable != 0);
 }
 
-EWXWEXPORT(void, wxUpdateUIEvent_SetText)(void* _obj, wxChar* text)
+EWXWEXPORT(void,wxUpdateUIEvent_SetText)(void* _obj,wxString* text)
 {
-        ((wxUpdateUIEvent*)_obj)->SetText(text);
+        ((wxUpdateUIEvent*)_obj)->SetText(*text);
 }
 
 EWXWEXPORT(void, wxUpdateUIEvent_CopyObject)(void* _obj, void* obj)
@@ -847,16 +849,18 @@ EWXWEXPORT(void, wxListEvent_GetPoint)(void* _obj, void* x, void* y)
         *((int*)y) = pos.y;
 }
 
-EWXWEXPORT(int, wxListEvent_GetLabel)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxListEvent_GetLabel)(void* _obj)
 {
-        wxString result = ((wxListEvent*)_obj)->GetLabel();
-        return copyStrToBuf(_buf, result);
+        wxString *result = new wxString();
+        *result = ((wxListEvent*)_obj)->GetLabel();
+        return result;
 }
 
-EWXWEXPORT(int, wxListEvent_GetText)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxListEvent_GetText)(void* _obj)
 {
-        wxString result = ((wxListEvent*)_obj)->GetText();
-        return copyStrToBuf(_buf, result);
+        wxString *result = new wxString();
+        *result = ((wxListEvent*)_obj)->GetText();
+        return result;
 }
 
 EWXWEXPORT(int, wxListEvent_GetImage)(void* _obj)
@@ -906,10 +910,11 @@ EWXWEXPORT(int, wxTreeEvent_GetCode)(void* _obj)
         return ((wxTreeEvent*)_obj)->GetKeyCode();
 }
 
-EWXWEXPORT(int, wxTreeEvent_GetLabel)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxTreeEvent_GetLabel)(void* _obj)
 {
-        wxString result = ((wxTreeEvent*)_obj)->GetLabel();
-        return copyStrToBuf(_buf, result);
+        wxString *result = new wxString();
+        *result = ((wxTreeEvent*)_obj)->GetLabel();
+        return result;
 }
 
 EWXWEXPORT(int, wxSpinEvent_GetPosition)(void* _obj)
@@ -960,26 +965,28 @@ EWXWEXPORT(void,wxHelpEvent_SetPosition)(void* _obj, int x, int y)
         ((wxHelpEvent*)_obj)->SetPosition(wxPoint(x, y));
 }
 
-EWXWEXPORT(int,wxHelpEvent_GetLink)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxHelpEvent_GetLink)(void* _obj)
 {
-        wxString tmp =((wxHelpEvent*)_obj)->GetLink();
-        return copyStrToBuf(_ref, tmp);
+        wxString *result = new wxString();
+        *result = ((wxHelpEvent*)_obj)->GetLink();
+        return result;
 }
 
-EWXWEXPORT(void,wxHelpEvent_SetLink)(void* _obj, void* link)
+EWXWEXPORT(void,wxHelpEvent_SetLink)(void* _obj,wxString* link)
 {
-        ((wxHelpEvent*)_obj)->SetLink((wxChar*)link);
+        ((wxHelpEvent*)_obj)->SetLink(*link);
 }
 
-EWXWEXPORT(int,wxHelpEvent_GetTarget)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxHelpEvent_GetTarget)(void* _obj)
 {
-        wxString tmp =((wxHelpEvent*)_obj)->GetTarget();
-        return copyStrToBuf(_ref, tmp);
+        wxString *result = new wxString();
+        *result = ((wxHelpEvent*)_obj)->GetTarget();
+        return result;
 }
 
-EWXWEXPORT(void,wxHelpEvent_SetTarget)(void* _obj, void* target)
+EWXWEXPORT(void,wxHelpEvent_SetTarget)(void* _obj,wxString* target)
 {
-        ((wxHelpEvent*)_obj)->SetTarget((wxChar*)target);
+        ((wxHelpEvent*)_obj)->SetTarget(*target);
 }
 
 EWXWEXPORT(int,expEVT_COMMAND_BUTTON_CLICKED)()

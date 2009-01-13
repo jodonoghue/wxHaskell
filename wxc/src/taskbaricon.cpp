@@ -5,12 +5,12 @@ extern "C" {
 /*-----------------------------------------------------------------------------
   TaskBarIcon
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxTaskBarIcon*,wxTaskBarIcon_Create)( )
+EWXWEXPORT(wxTaskBarIcon*,wxTaskBarIcon_Create)()
 {
   return new wxTaskBarIcon();
 }
 
-EWXWEXPORT(void,wxTaskBarIcon_Delete)(wxTaskBarIcon* self)  
+EWXWEXPORT(void,wxTaskBarIcon_Delete)(wxTaskBarIcon* self)
 {
   if (self) delete self;
 }
@@ -36,7 +36,7 @@ EWXWEXPORT(bool,wxTaskBarIcon_IsOk)(wxTaskBarIcon* self)
 #endif
 }
 
-EWXWEXPORT(bool,wxTaskBarIcon_PopupMenu)( wxTaskBarIcon* self, wxMenu* menu)
+EWXWEXPORT(bool,wxTaskBarIcon_PopupMenu)(wxTaskBarIcon* self,wxMenu* menu)
 {
   return self->PopupMenu(menu);
 }
@@ -46,9 +46,9 @@ EWXWEXPORT(bool,wxTaskBarIcon_RemoveIcon)(wxTaskBarIcon* self)
   return self->RemoveIcon();
 }
 
-EWXWEXPORT(bool,wxTaskBarIcon_SetIcon)( wxTaskBarIcon* self, const wxIcon& icon, const wxChar* tooltip)
+EWXWEXPORT(bool,wxTaskBarIcon_SetIcon)(wxTaskBarIcon* self,wxIcon* icon,wxString* tooltip)
 {
-  return self->SetIcon(icon, (tooltip ? wxString(tooltip) : *wxEmptyString));
+  return self->SetIcon(*icon, (tooltip ? *tooltip : *wxEmptyString));
 }
 
 EWXWEXPORT(int,expEVT_TASKBAR_MOVE)()

@@ -16,9 +16,10 @@ class ELJLog : public wxLog
 		
     protected:
 		virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t)
-		{
-			func (EiffelObject, (int)level, (void*)szString, (int)t);
-		}
+                  {
+                    wxString s(szString);
+                    func (EiffelObject, (int)level, (void*)&s , (int)t);
+                  }
 
 	public:
 		ELJLog (void* _obj, void* _fnc) : wxLog()
@@ -31,7 +32,7 @@ class ELJLog : public wxLog
 extern "C"
 {
 
-EWXWEXPORT(void*,ELJLog_Create)(void* _obj, void* _fnc)
+EWXWEXPORT(void*,ELJLog_Create)(void* _obj,void* _fnc)
 {
 	return (void*) new ELJLog(_obj, _fnc);
 }
@@ -41,17 +42,17 @@ EWXWEXPORT(void,ELJLog_Delete)(void* _obj)
 	delete (ELJLog*)_obj;
 }
 
-EWXWEXPORT(int,ELJLog_IsEnabled)(void* _obj)
+EWXWEXPORT(int,ELJLog_IsEnabled)(ELJLog* _obj)
 {
-	return (int)((ELJLog*)_obj)->IsEnabled();
+	return (int)_obj->IsEnabled();
 }
 	
-EWXWEXPORT(int,ELJLog_EnableLogging)(void* _obj, int doIt)
+EWXWEXPORT(int,ELJLog_EnableLogging)(void* _obj,int doIt)
 {
 	return (int)((ELJLog*)_obj)->EnableLogging(doIt != 0);
 }
 	
-EWXWEXPORT(void,ELJLog_OnLog)(void* _obj, int level, void* szString, int t)
+EWXWEXPORT(void,ELJLog_OnLog)(void* _obj,int level,void* szString,int t)
 {
 	((ELJLog*)_obj)->OnLog((wxLogLevel)level, (const wxChar*)szString, (time_t)t);
 }
@@ -61,9 +62,9 @@ EWXWEXPORT(void,ELJLog_Flush)(void* _obj)
 	((ELJLog*)_obj)->Flush();
 }
 	
-EWXWEXPORT(int,ELJLog_HasPendingMessages)(void* _obj)
+EWXWEXPORT(int,ELJLog_HasPendingMessages)(ELJLog* _obj)
 {
-	return (int)((ELJLog*)_obj)->HasPendingMessages();
+	return (int)_obj->HasPendingMessages();
 }
 	
 EWXWEXPORT(void,ELJLog_FlushActive)(void* _obj)
@@ -91,7 +92,7 @@ EWXWEXPORT(void,ELJLog_Resume)(void* _obj)
 	((ELJLog*)_obj)->Resume();
 }
 	
-EWXWEXPORT(void,ELJLog_SetVerbose)(void* _obj, int bVerbose)
+EWXWEXPORT(void,ELJLog_SetVerbose)(void* _obj,int bVerbose)
 {
 	((ELJLog*)_obj)->SetVerbose(bVerbose != 0);
 }
@@ -101,39 +102,39 @@ EWXWEXPORT(void,ELJLog_DontCreateOnDemand)(void* _obj)
 	((ELJLog*)_obj)->DontCreateOnDemand();
 }
 	
-EWXWEXPORT(void,ELJLog_SetTraceMask)(void* _obj, int ulMask)
+EWXWEXPORT(void,ELJLog_SetTraceMask)(void* _obj,int ulMask)
 {
 	((ELJLog*)_obj)->SetTraceMask((wxTraceMask)ulMask);
 }
 	
-EWXWEXPORT(void,ELJLog_AddTraceMask)(void* _obj, void* str)
+EWXWEXPORT(void,ELJLog_AddTraceMask)(void* _obj,void* str)
 {
 	((ELJLog*)_obj)->AddTraceMask((const wxChar*)str);
 }
 	
-EWXWEXPORT(void,ELJLog_RemoveTraceMask)(void* _obj, void* str)
+EWXWEXPORT(void,ELJLog_RemoveTraceMask)(void* _obj,void* str)
 {
 	((ELJLog*)_obj)->RemoveTraceMask((const wxChar*)str);
 }
 	
-EWXWEXPORT(void,ELJLog_SetTimestamp)(void* _obj, void* ts)
+EWXWEXPORT(void,ELJLog_SetTimestamp)(void* _obj,void* ts)
 {
 	((ELJLog*)_obj)->SetTimestamp((const wxChar*)ts);
 }
 	
-EWXWEXPORT(int,ELJLog_GetVerbose)(void* _obj)
+EWXWEXPORT(int,ELJLog_GetVerbose)(ELJLog* _obj)
 {
-	return (int)((ELJLog*)_obj)->GetVerbose();
+	return (int)_obj->GetVerbose();
 }
 	
-EWXWEXPORT(int,ELJLog_GetTraceMask)(void* _obj)
+EWXWEXPORT(int,ELJLog_GetTraceMask)(ELJLog* _obj)
 {
-	return (int)((ELJLog*)_obj)->GetTraceMask();
+	return (int)_obj->GetTraceMask();
 }
 	
-EWXWEXPORT(int,ELJLog_IsAllowedTraceMask)(void* _obj, void* mask)
+EWXWEXPORT(int,ELJLog_IsAllowedTraceMask)(ELJLog* _obj,void* mask)
 {
-	return (int)((ELJLog*)_obj)->IsAllowedTraceMask((const wxChar*)mask);
+	return (int)_obj->IsAllowedTraceMask((const wxChar*)mask);
 }
 	
 EWXWEXPORT(void*,ELJLog_GetTimestamp)(void* _obj)
@@ -151,24 +152,24 @@ EWXWEXPORT(void*,ELJSysErrorMsg)(int nErrCode)
 	return (void*)wxSysErrorMsg((unsigned long)nErrCode);
 }
 
-EWXWEXPORT(void,LogErrorMsg)(void* _msg)
+EWXWEXPORT(void,LogErrorMsg)(wxString* _msg)
 {
-	wxLogError((wxChar*)_msg);
+	wxLogError(*_msg);
 }
 
-EWXWEXPORT(void,LogFatalErrorMsg)(void* _msg)
+EWXWEXPORT(void,LogFatalErrorMsg)(wxString* _msg)
 {
-	wxLogFatalError((wxChar*)_msg);
+	wxLogFatalError(*_msg);
 }
 
-EWXWEXPORT(void,LogWarningMsg)(void* _msg)
+EWXWEXPORT(void,LogWarningMsg)(wxString* _msg)
 {
-	wxLogWarning((wxChar*)_msg);
+	wxLogWarning(*_msg);
 }
 
-EWXWEXPORT(void,LogMessageMsg)(void* _msg)
+EWXWEXPORT(void,LogMessageMsg)(wxString* _msg)
 {
-	wxLogMessage((wxChar*)_msg);
+	wxLogMessage(*_msg);
 }
 
 
@@ -182,24 +183,24 @@ EWXWEXPORT(void,wxLogChain_Delete)(void* _obj)
 	delete (wxLogChain*)_obj;
 }
 
-EWXWEXPORT(void,wxLogChain_SetLog)(void* _obj, void* logger)
+EWXWEXPORT(void,wxLogChain_SetLog)(void* _obj,void* logger)
 {
 	((wxLogChain*)_obj)->SetLog((wxLog*)logger);
 }
 	
-EWXWEXPORT(void,wxLogChain_PassMessages)(void* _obj, int bDoPass)
+EWXWEXPORT(void,wxLogChain_PassMessages)(void* _obj,int bDoPass)
 {
 	((wxLogChain*)_obj)->PassMessages(bDoPass != 0);
 }
 	
-EWXWEXPORT(int,wxLogChain_IsPassingMessages)(void* _obj)
+EWXWEXPORT(int,wxLogChain_IsPassingMessages)(wxLogChain* _obj)
 {
-	return (int)((wxLogChain*)_obj)->IsPassingMessages();
+	return (int)_obj->IsPassingMessages();
 }
 	
-EWXWEXPORT(void*,wxLogChain_GetOldLog)(void* _obj)
+EWXWEXPORT(void*,wxLogChain_GetOldLog)(wxLogChain* _obj)
 {
-	return (void*)((wxLogChain*)_obj)->GetOldLog();
+	return (void*)_obj->GetOldLog();
 }
 	
 

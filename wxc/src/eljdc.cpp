@@ -121,14 +121,14 @@ EWXWEXPORT(void, wxDC_DrawBitmap)(void* _obj, void* bmp, int x, int y, int useMa
 	((wxDC*)_obj)->DrawBitmap(*((wxBitmap*)bmp), (wxCoord)x, (wxCoord)y, useMask != 0);
 }
 	
-EWXWEXPORT(void, wxDC_DrawText)(void* _obj, void* text, int x, int y)
+EWXWEXPORT(void,wxDC_DrawText)(void* _obj,wxString* text,int x,int y)
 {
-	((wxDC*)_obj)->DrawText((wxChar*)text, (wxCoord)x, (wxCoord)y);
+	((wxDC*)_obj)->DrawText(*text, (wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_DrawRotatedText)(void* _obj, void* text, int x, int y, double angle)
+EWXWEXPORT(void,wxDC_DrawRotatedText)(void* _obj,wxString* text,int x,int y,double angle)
 {
-	((wxDC*)_obj)->DrawRotatedText((wxChar*)text, (wxCoord)x, (wxCoord)y, angle);
+	((wxDC*)_obj)->DrawRotatedText(*text, (wxCoord)x, (wxCoord)y, angle);
 }
 	
 EWXWEXPORT(int, wxDC_Blit)(void* _obj, int xdest, int ydest, int width, int height, void* source, int xsrc, int ysrc, int rop, int useMask)
@@ -146,9 +146,9 @@ EWXWEXPORT(void, wxDC_ComputeScaleAndOrigin) (wxDC* dc)
 	dc->ComputeScaleAndOrigin();
 }
 	
-EWXWEXPORT(int, wxDC_StartDoc)(void* _obj, void* msg)
+EWXWEXPORT(int,wxDC_StartDoc)(wxDC* _obj,wxString* msg)
 {
-	return (int)((wxDC*)_obj)->StartDoc((wxChar*)msg);
+	return (int)_obj->StartDoc(*msg);
 }
 	
 EWXWEXPORT(void, wxDC_EndDoc)(void* _obj)
@@ -226,14 +226,14 @@ EWXWEXPORT(int, wxDC_GetCharWidth)(void* _obj)
 	return (int)((wxDC*)_obj)->GetCharWidth();
 }
 	
-EWXWEXPORT(void, wxDC_GetTextExtent)(wxDC* self, wxChar* string, void* w, void* h, void* descent, void* externalLeading, void* theFont)
+EWXWEXPORT(void,wxDC_GetTextExtent)(wxDC* self,wxString* string,void* w,void* h,void* descent,void* externalLeading,void* theFont)
 {
-	self->GetTextExtent(string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
+	self->GetTextExtent(*string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
 }
 	
-EWXWEXPORT(void, wxDC_GetMultiLineTextExtent)(wxDC* self, wxChar* string, void* w, void* h, void* heightLine, void* theFont)
+EWXWEXPORT(void,wxDC_GetMultiLineTextExtent)(wxDC* self,wxString* string,void* w,void* h,void* heightLine,void* theFont)
 {
-	self->GetMultiLineTextExtent(string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)heightLine, (wxFont*)theFont);
+	self->GetMultiLineTextExtent(*string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)heightLine, (wxFont*)theFont);
 }
 
 EWXWEXPORT(void, wxDC_GetSize)(void* _obj, void* width, void* height)
@@ -508,9 +508,9 @@ EWXWEXPORT(void, wxMemoryDC_SelectObject)(void* _obj, void* bitmap)
 	((wxMemoryDC*)_obj)->SelectObject(*((wxBitmap*)bitmap));
 }
 
-EWXWEXPORT(wxMirrorDC*, wxMirrorDC_Create) (wxDC* dc, bool mirror)
+EWXWEXPORT(wxMirrorDC*, wxMirrorDC_Create) (wxDC* dc, int mirror)
 {
-	return new wxMirrorDC(*dc, mirror);
+	return new wxMirrorDC(*dc, mirror != 0);
 }
 
 EWXWEXPORT(void, wxMirrorDC_Delete) (wxMirrorDC* self)
@@ -584,16 +584,16 @@ EWXWEXPORT(void, wxAutoBufferedPaintDC_Delete) (wxAutoBufferedPaintDC* self)
 	if (self) delete self;
 }
 
-EWXWEXPORT(void*,wxMetafileDC_Create)(void* _file)
+EWXWEXPORT(void*,wxMetafileDC_Create)(wxString* _file)
 {
-#if defined(__WXGTK__) || defined(__WXMAC__) 
+#if defined(__WXGTK__)
 	return NULL;
 #else
 	wxString file;
 	
 	if (_file) file = (wxChar*)_file;
 
-    return (void*)new wxMetafileDC(file);
+	return (void*)new wxMetafileDC(file);
 #endif
 }
 
@@ -613,7 +613,7 @@ EWXWEXPORT(void, wxMetafileDC_Delete) (void* _obj)
 #endif
 }
 
-EWXWEXPORT(void*,wxMetafile_Create)(void* _file)
+EWXWEXPORT(void*,wxMetafile_Create)(wxString* _file)
 {
 #if defined(__WXGTK__)
 	return NULL;
@@ -622,7 +622,7 @@ EWXWEXPORT(void*,wxMetafile_Create)(void* _file)
 	
 	if (_file) file = (wxChar*)_file;
 
-    return (void*)new wxMetafile(file);
+	return (void*)new wxMetafile(file);
 #endif
 }
 
@@ -661,17 +661,17 @@ EWXWEXPORT(void, wxMetafile_Delete) (void* _obj)
 }
 
 #if wxCHECK_VERSION (2,8,0)
-EWXWEXPORT(void, wxDC_DrawLabel)(void* _obj, void *str, int x, int y, int w, int h, int align, int indexAccel)
+EWXWEXPORT(void,wxDC_DrawLabel)(void* _obj,wxString* str,int x,int y,int w,int h,int align,int indexAccel)
 {
   wxRect rect(x, y, w, h);
-  ((wxDC*)_obj)->DrawLabel((wxChar *)str, rect, align, indexAccel);
+  ((wxDC*)_obj)->DrawLabel(*str, rect, align, indexAccel);
 }
 
-EWXWEXPORT(void, wxDC_DrawLabelBitmap)(void* _obj, void *str, void *bmp, int x, int y, int w, int h, int align, int indexAccel, int *_x, int *_y, int *_w, int *_h)
+EWXWEXPORT(void, wxDC_DrawLabelBitmap)(void* _obj, wxString* str, void *bmp, int x, int y, int w, int h, int align, int indexAccel, int *_x, int *_y, int *_w, int *_h)
 {
   wxRect rect(x, y, w, h);
   wxRect bound;
-  ((wxDC*)_obj)->DrawLabel((wxChar *)str, *((wxBitmap *)bmp), rect, align, indexAccel, &bound);
+  ((wxDC*)_obj)->DrawLabel(*str, *((wxBitmap *)bmp), rect, align, indexAccel, &bound);
   *_x = bound.GetX();
   *_y = bound.GetY();
   *_w = bound.GetWidth();

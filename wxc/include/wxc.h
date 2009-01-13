@@ -63,8 +63,8 @@ TClassDefExtend(wxSliderMSW,wxSlider)
 void wxObject_Delete( TSelf(wxObject) obj );
 
 /* Frame */
-TStringLen  wxFrame_GetTitle( TSelf(wxFrame) _obj, TStringOutVoid _buf );
-void        wxFrame_SetTitle( TSelf(wxFrame) _frame, TString _txt );
+TClass(wxString) wxFrame_GetTitle( TSelf(wxFrame) _obj );
+void        wxFrame_SetTitle( TSelf(wxFrame) _frame, TClass(wxString) _txt );
 TBool       wxFrame_SetShape( TSelf(wxFrame) self, TClass(wxRegion) region);
 TBool       wxFrame_ShowFullScreen( TSelf(wxFrame) self, TBool show, int style);
 TBool       wxFrame_IsFullScreen( TSelf(wxFrame) self );
@@ -142,8 +142,8 @@ int    wxTreeEvent_IsEditCancelled( TSelf(wxTreeEvent) _obj);
 void   wxTreeEvent_Allow( TSelf(wxTreeEvent) _obj);
 
 TClass(wxTreeCtrl) wxTreeCtrl_Create2( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
-void   wxTreeCtrl_InsertItem2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
-void   wxTreeCtrl_InsertItemByIndex2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TStringVoid text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
+void   wxTreeCtrl_InsertItem2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, TClass(wxTreeItemId) idPrevious, TClass(wxString) text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
+void   wxTreeCtrl_InsertItemByIndex2( TSelf(wxTreeCtrl) _obj, TClass(wxWindow) parent, int index, TClass(wxString) text, int image, int selectedImage, TClass(wxClosure) closure, TClassRef(wxTreeItemId) _item );
 TClass(wxClosure)  wxTreeCtrl_GetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item );
 void   wxTreeCtrl_SetItemClientClosure( TSelf(wxTreeCtrl) _obj, TClass(wxTreeItemId) item, TClass(wxClosure) closure );
 void   wxTreeCtrl_AssignImageList(TSelf(wxTreeCtrl) _obj, TClass(wxImageList) imageList );
@@ -168,10 +168,10 @@ TBool       wxObject_IsScrolledWindow( TSelf(wxObject) _obj );
 
 /* wxClassInfo */
 TClassDef(wxClassInfo)
-TClass(wxClassInfo)  wxClassInfo_FindClass( TString _txt );
-TStringLen  wxClassInfo_GetBaseClassName1( TSelf(wxClassInfo) _obj, TStringOutVoid _buf );
-TStringLen  wxClassInfo_GetBaseClassName2( TSelf(wxClassInfo) _obj, TStringOutVoid _buf );
-TStringLen  wxClassInfo_GetClassNameEx( TSelf(wxClassInfo) _obj, TStringOutVoid _buf );
+TClass(wxClassInfo)  wxClassInfo_FindClass( TClass(wxString) _txt );
+TClass(wxString) wxClassInfo_GetBaseClassName1( TSelf(wxClassInfo) _obj );
+TClass(wxString) wxClassInfo_GetBaseClassName2( TSelf(wxClassInfo) _obj );
+TClass(wxString) wxClassInfo_GetClassNameEx( TSelf(wxClassInfo) _obj );
 int         wxClassInfo_GetSize( TSelf(wxClassInfo) _obj );
 TBool       wxClassInfo_IsKindOfEx( TSelf(wxClassInfo) _obj, TClass(wxClassInfo) classInfo );
 
@@ -185,20 +185,20 @@ TClass(wxTimerEx)  wxTimerEx_Create(  );
 TClass(wxClosure)  wxTimerEx_GetClosure( TSelf(wxTimerEx) _obj );
 
 /* Menu */
-void  wxMenu_AppendRadioItem( TSelf(wxMenu) self, int id, TString text, TString help);
+void  wxMenu_AppendRadioItem( TSelf(wxMenu) self, int id, TClass(wxString) text, TClass(wxString) help);
 
 
 /* Menu Item */
 TClass(wxMenuItem)  wxMenuItem_CreateSeparator();
-TClass(wxMenuItem)  wxMenuItem_CreateEx(int id, TString label, TString help, int itemkind, TClass(wxMenu) submenu);
+TClass(wxMenuItem)  wxMenuItem_CreateEx(int id, TClass(wxString) label, TClass(wxString) help, int itemkind, TClass(wxMenu) submenu);
 
 /* Toolbar */
-void wxToolBar_AddTool2( TSelf(wxToolBar) _obj, int toolId, TString label, TClass(wxBitmap) bmp, TClass(wxBitmap) bmpDisabled, int itemKind, TString shortHelp, TString longHelp );
+void wxToolBar_AddTool2( TSelf(wxToolBar) _obj, int toolId, TClass(wxString) label, TClass(wxBitmap) bmp, TClass(wxBitmap) bmpDisabled, int itemKind, TClass(wxString) shortHelp, TClass(wxString) longHelp );
 
 /* Progress dialog */
-TClass(wxProgressDialog) wxProgressDialog_Create( TString title, TString message, int max, TClass(wxWindow) parent, int style );
+TClass(wxProgressDialog) wxProgressDialog_Create( TClass(wxString) title, TClass(wxString) message, int max, TClass(wxWindow) parent, int style );
 int  wxProgressDialog_Update(TSelf(wxProgressDialog) obj, int value );
-int  wxProgressDialog_UpdateWithMessage( TSelf(wxProgressDialog) obj, int value, TString message );
+int  wxProgressDialog_UpdateWithMessage( TSelf(wxProgressDialog) obj, int value, TClass(wxString) message );
 void wxProgressDialog_Resume( TSelf(wxProgressDialog) obj );
 
 /** Get the version number of wxWindows as a number composed of the major version times 1000, minor version times 100, and the release number. For example, release 2.1.15 becomes 2115. */
@@ -250,10 +250,10 @@ void                 wxcHtmlEvent_GetLogicalPosition( TSelf(wxcHtmlEvent) self, 
 
 /* html window */
 TClassDefExtend(wxcHtmlWindow,wxHtmlWindow)
-TClass(wxcHtmlWindow) wxcHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl, TString _txt );
+TClass(wxcHtmlWindow) wxcHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl, TClass(wxString) _txt );
 
-TClass(wxHtmlWindow) wxHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl, TString _txt );
-TBool                wxHtmlWindow_AppendToPage( TSelf(wxHtmlWindow) _obj, TString source );
+TClass(wxHtmlWindow) wxHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl, TClass(wxString) _txt );
+TBool                wxHtmlWindow_AppendToPage( TSelf(wxHtmlWindow) _obj, TClass(wxString) source );
 TClass(wxHtmlContainerCell) wxHtmlWindow_GetInternalRepresentation( TSelf(wxHtmlWindow) _obj );
 TStringLen           wxHtmlWindow_GetOpenedAnchor( TSelf(wxHtmlWindow) _obj, TStringOutVoid _buf ) ;
 TStringLen           wxHtmlWindow_GetOpenedPage( TSelf(wxHtmlWindow) _obj, TStringOutVoid _buf );
@@ -264,14 +264,14 @@ TBool                wxHtmlWindow_HistoryCanBack( TSelf(wxHtmlWindow) _obj );
 TBool                wxHtmlWindow_HistoryCanForward( TSelf(wxHtmlWindow) _obj );
 void                 wxHtmlWindow_HistoryClear( TSelf(wxHtmlWindow) _obj);
 TBool                wxHtmlWindow_HistoryForward( TSelf(wxHtmlWindow) _obj );
-TBool                wxHtmlWindow_LoadPage( TSelf(wxHtmlWindow) _obj, TString location );
-void                 wxHtmlWindow_ReadCustomization( TSelf(wxHtmlWindow) _obj, TClass(wxConfigBase) cfg, TString path);
+TBool                wxHtmlWindow_LoadPage( TSelf(wxHtmlWindow) _obj, TClass(wxString) location );
+void                 wxHtmlWindow_ReadCustomization( TSelf(wxHtmlWindow) _obj, TClass(wxConfigBase) cfg, TClass(wxString) path);
 void                 wxHtmlWindow_SetBorders( TSelf(wxHtmlWindow) _obj, int b );
-void                 wxHtmlWindow_SetFonts( TSelf(wxHtmlWindow) _obj, TString normal_face, TString fixed_face, int * sizes );
-void                 wxHtmlWindow_SetPage( TSelf(wxHtmlWindow) _obj, TString source );
-void                 wxHtmlWindow_SetRelatedFrame( TSelf(wxHtmlWindow) _obj , TClass(wxFrame) frame, TString format );
+void                 wxHtmlWindow_SetFonts( TSelf(wxHtmlWindow) _obj, TClass(wxString) normal_face, TClass(wxString) fixed_face, int * sizes );
+void                 wxHtmlWindow_SetPage( TSelf(wxHtmlWindow) _obj, TClass(wxString) source );
+void                 wxHtmlWindow_SetRelatedFrame( TSelf(wxHtmlWindow) _obj , TClass(wxFrame) frame, TClass(wxString) format );
 void                 wxHtmlWindow_SetRelatedStatusBar( TSelf(wxHtmlWindow) _obj, int bar);
-void                 wxHtmlWindow_WriteCustomization( TSelf(wxHtmlWindow) _obj, TClass(wxConfigBase) cfg, TString path );
+void                 wxHtmlWindow_WriteCustomization( TSelf(wxHtmlWindow) _obj, TClass(wxConfigBase) cfg, TClass(wxString) path );
 
 /* wxGridCellTextEnterEditor */
 TClassDefExtend(wxGridCellTextEnterEditor,wxGridCellTextEditor)
@@ -285,17 +285,17 @@ TClass(wxLogTextCtrl) wxLogTextCtrl_Create( TClass(wxTextCtrl) text );
 TClass(wxLogWindow)   wxLogWindow_Create( TClass(wxWindow) parent, TString title, TBoolInt showit, TBoolInt passthrough );
 TClass(wxFrame)       wxLogWindow_GetFrame( TSelf(wxLogWindow) obj );
 
-void   LogError(TStringVoid _msg);
-void   LogFatalError(TStringVoid _msg);
-void   LogWarning(TStringVoid _msg);
-void   LogMessage(TStringVoid _msg);
-void   LogVerbose(TStringVoid _msg);
-void   LogStatus(TStringVoid _msg);
-void   LogSysError(TStringVoid _msg);
-void   LogDebug(TStringVoid _msg);
-void   LogTrace(TStringVoid mask, TStringVoid _msg);
+void   LogError(TClass(wxString) _msg);
+void   LogFatalError(TClass(wxString) _msg);
+void   LogWarning(TClass(wxString) _msg);
+void   LogMessage(TClass(wxString) _msg);
+void   LogVerbose(TClass(wxString) _msg);
+void   LogStatus(TClass(wxString) _msg);
+void   LogSysError(TClass(wxString) _msg);
+void   LogDebug(TClass(wxString) _msg);
+void   LogTrace(TClass(wxString) mask, TClass(wxString) _msg);
 
-void       wxLog_AddTraceMask( TSelf(wxLog) _obj, TStringVoid str );
+void       wxLog_AddTraceMask( TSelf(wxLog) _obj, TClass(wxString) str );
 void       wxLog_Delete( TSelf(wxLog) _obj );
 void       wxLog_DontCreateOnDemand( TSelf(wxLog) _obj );
 void       wxLog_Flush( TSelf(wxLog) _obj );
@@ -307,7 +307,7 @@ int        wxLog_GetVerbose( TSelf(wxLog) _obj );
 TBool      wxLog_HasPendingMessages( TSelf(wxLog) _obj );
 TBool      wxLog_IsAllowedTraceMask( TSelf(wxLog) _obj, TClass(wxMask) mask );
 void       wxLog_OnLog( TSelf(wxLog) _obj, int level, TStringVoid szString, int t );
-void       wxLog_RemoveTraceMask( TSelf(wxLog) _obj, TStringVoid str );
+void       wxLog_RemoveTraceMask( TSelf(wxLog) _obj, TClass(wxString) str );
 void       wxLog_Resume( TSelf(wxLog) _obj );
 TClass(wxLog)  wxLog_SetActiveTarget( TSelf(wxLog) pLogger );
 void       wxLog_SetTimestamp( TSelf(wxLog) _obj, TStringVoid ts );
@@ -317,7 +317,7 @@ void       wxLog_Suspend( TSelf(wxLog) _obj );
 
 
 /* process */
-TClass(wxProcess) wxProcess_Open( TString cmd, int flags );
+TClass(wxProcess) wxProcess_Open( TClass(wxString) cmd, int flags );
 TBool      wxProcess_IsErrorAvailable( TSelf(wxProcess) _obj );
 TBool      wxProcess_IsInputAvailable( TSelf(wxProcess) _obj );
 TBool      wxProcess_IsInputOpened( TSelf(wxProcess) _obj );
@@ -330,7 +330,7 @@ void        wxGetColourFromUser(TClass(wxWindow) parent, TClass(wxColour) colIni
 void        wxGetFontFromUser(TClass(wxWindow) parent, TClass(wxFont) fontInit, TClassRef(wxFont) font );
 TStringLen  wxGetPasswordFromUser(TString message, TString caption, TString defaultText, TClass(wxWindow) parent, TStringOut _buf );
 TStringLen  wxGetTextFromUser(TString message, TString caption, TString defaultText, TClass(wxWindow) parent, TPoint(x,y), TBool center, TStringOut _buf );
-long        wxGetNumberFromUser( TString message, TString prompt, TString caption, long value, long min, long max, TClass(wxWindow) parent, TPoint(x,y) );
+long        wxGetNumberFromUser( TClass(wxString) message, TClass(wxString) prompt, TClass(wxString) caption, long value, long min, long max, TClass(wxWindow) parent, TPoint(x,y) );
 void        wxcBell();
 void        wxcBeginBusyCursor();
 void        wxcEndBusyCursor();
@@ -339,8 +339,8 @@ void        wxcIsBusy();
 /* text ctrl */
 TBool               wxTextCtrl_EmulateKeyPress( TSelf(wxTextCtrl) _obj, TClass(wxKeyEvent) keyevent);
 TClass (wxTextAttr) wxTextCtrl_GetDefaultStyle( TSelf(wxTextCtrl) _obj );
-TStringLen          wxTextCtrl_GetRange( TSelf(wxTextCtrl) _obj, long from, long to, TStringOutVoid _buf );
-TStringLen          wxTextCtrl_GetStringSelection( TSelf(wxTextCtrl) _obj, TStringOutVoid _buf );
+TClass(wxString)    wxTextCtrl_GetRange( TSelf(wxTextCtrl) _obj, long from, long to );
+TClass(wxString)    wxTextCtrl_GetStringSelection( TSelf(wxTextCtrl) _obj );
 TBool               wxTextCtrl_IsMultiLine( TSelf(wxTextCtrl) _obj );
 TBool               wxTextCtrl_IsSingleLine( TSelf(wxTextCtrl) _obj );
 TBool               wxTextCtrl_SetDefaultStyle( TSelf(wxTextCtrl) _obj, TClass(wxTextAttr) style);
@@ -406,9 +406,9 @@ void wxcWakeUpIdle();
 
 /* application directory */
 /** Return the directory of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. Therefore, the APPDIR environment variable is returned first if it is defined. */
-TStringLen wxGetApplicationDir( TStringOut buffer);
+TClass(wxString) wxGetApplicationDir();
 /** Return the full path of the application. On unix systems (except MacOS X), it is not always possible to determine this correctly. */
-TStringLen wxGetApplicationPath( TStringOut buffer);
+TClass(wxString) wxGetApplicationPath();
 
 /* ELJApp */
 void  ELJApp_InitializeC( TClass(wxClosure) closure, int _argc, TChar** _argv );

@@ -206,7 +206,7 @@ drawBitmap :: DC a -> Bitmap () -> Point -> Bool -> [Prop (DC a)] -> IO ()
 drawBitmap dc bitmap point transparent props
   = if bitmap == nullBitmap || objectIsNull bitmap 
      then return ()
-     else do ok <- bitmapOk bitmap
+     else do ok <- bitmapIsOk bitmap
              if not ok 
               then return ()
               else dcWith dc props (dcDrawBitmap dc bitmap point transparent)

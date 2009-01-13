@@ -3,7 +3,7 @@
 
 /* wxStyledTextCtrl */
 TClassDefExtend(wxStyledTextCtrl,wxControl)
-TClass(wxStyledTextCtrl) wxStyledTextCtrl_Create( TClass(wxWindow) _prt, int _id, TString _txt, TRect(_lft,_top,_wdt,_hgt), int style );
+TClass(wxStyledTextCtrl) wxStyledTextCtrl_Create( TClass(wxWindow) _prt, int _id, TClass(wxString) _txt, TRect(_lft,_top,_wdt,_hgt), int style );
 
 
 /* tricky handwritten functions */

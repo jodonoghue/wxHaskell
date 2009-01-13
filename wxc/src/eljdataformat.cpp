@@ -3,43 +3,44 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxDataFormat_CreateFromId) (void* name)
+EWXWEXPORT(void*,wxDataFormat_CreateFromId)(wxString* name)
 {
-	return (void*) new wxDataFormat ((wxChar*)name);
+	return (void*) new wxDataFormat (*name);
 }
 
-EWXWEXPORT(void*, wxDataFormat_CreateFromType) (int typ)
+EWXWEXPORT(void*,wxDataFormat_CreateFromType)(int typ)
 {
 	return (void*) new wxDataFormat ((wxDataFormat::NativeFormat)typ);
 }
 
-EWXWEXPORT(void, wxDataFormat_Delete) (void* _obj)
+EWXWEXPORT(void,wxDataFormat_Delete)(void* _obj)
 {
 	delete (wxDataFormat*)_obj;
 }
 
-EWXWEXPORT(int, wxDataFormat_IsEqual) (void* _obj, void* other)
+EWXWEXPORT(bool,wxDataFormat_IsEqual)(wxDataFormat* _obj,wxDataFormat* other)
 {
-	return (int) (*(wxDataFormat*)_obj == *(wxDataFormat*)other);
+	return  *_obj == *other;
 }
 
-EWXWEXPORT(int, wxDataFormat_GetId) (void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxDataFormat_GetId)(void* _obj)
 {
-        wxString result = ((wxDataFormat*)_obj)->GetId();
-        return copyStrToBuf(_buf, result);
+	wxString *result = new wxString();
+	*result = ((wxDataFormat*)_obj)->GetId();
+	return result;
 }
 
-EWXWEXPORT(int, wxDataFormat_GetType) (void* _obj)
+EWXWEXPORT(int,wxDataFormat_GetType)(void* _obj)
 {
 	return (int)((wxDataFormat*)_obj)->GetType();
 }
 
-EWXWEXPORT(void, wxDataFormat_SetId) (void* _obj, void* id)
+EWXWEXPORT(void,wxDataFormat_SetId)(void* _obj,wxString* id)
 {
-	((wxDataFormat*)_obj)->SetId((wxChar*) id);
+	((wxDataFormat*)_obj)->SetId(* id);
 }
 
-EWXWEXPORT(void, wxDataFormat_SetType) (void* _obj, int typ)
+EWXWEXPORT(void,wxDataFormat_SetType)(void* _obj,int typ)
 {
 #ifdef __WIN32__
 	((wxDataFormat*)_obj)->SetType((wxDataFormat::NativeFormat)typ);

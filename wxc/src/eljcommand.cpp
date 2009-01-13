@@ -1,6 +1,6 @@
 #include "wrapper.h"
 #include "wx/docview.h"
-
+#include "wx/cmdproc.h"
 extern "C"
 {
 
@@ -31,24 +31,26 @@ class ELJCommand : public wxCommand
 extern "C"
 {
 
-EWXWEXPORT(void*,ELJCommand_Create)(int _und, void* _nme, void* _obj, void* _clb)
+EWXWEXPORT(void*,ELJCommand_Create)(int _und,wxString* _nme,void* _obj,void* _clb)
 {
-	return (void*)new ELJCommand(_und != 0, (const char*)_nme, _obj, _clb);
+	return (void*)new ELJCommand(_und != 0, *_nme, _obj, _clb);
 }
 
-EWXWEXPORT(void,ELJCommand_Delete)(void* _obj)
+EWXWEXPORT(void,ELJCommand_Delete)(ELJCommand* _obj)
 {
-	delete (ELJCommand*)_obj;
+	delete _obj;
 }
 
-EWXWEXPORT(int,ELJCommand_GetName)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,ELJCommand_GetName)(void* _obj)
 {
-	return copyStrToBuf(_buf, ((ELJCommand*)_obj)->GetName());
+	wxString *result = new wxString();
+	*result = ((ELJCommand*)_obj)->GetName();
+	return result;
 }
 
-EWXWEXPORT(int,ELJCommand_CanUndo)(void* _obj)
+EWXWEXPORT(int,ELJCommand_CanUndo)(ELJCommand* _obj)
 {
-	return (int)((ELJCommand*)_obj)->CanUndo();
+	return (int)_obj->CanUndo();
 }
 	
 
@@ -62,32 +64,32 @@ EWXWEXPORT(void,wxCommandProcessor_Delete)(void* _obj)
 	delete (wxCommandProcessor*)_obj;
 }
 
-EWXWEXPORT(int,wxCommandProcessor_Submit)(void* _obj, void* command, int storeIt)
+EWXWEXPORT(int,wxCommandProcessor_Submit)(wxCommandProcessor* _obj,wxCommand* command,int storeIt)
 {
-	return (int)((wxCommandProcessor*)_obj)->Submit((wxCommand*)command, storeIt != 0);
+	return (int)_obj->Submit(command, storeIt != 0);
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_Undo)(void* _obj)
+EWXWEXPORT(int,wxCommandProcessor_Undo)(wxCommandProcessor* _obj)
 {
-	return (int)((wxCommandProcessor*)_obj)->Undo();
+	return (int)_obj->Undo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_Redo)(void* _obj)
+EWXWEXPORT(int,wxCommandProcessor_Redo)(wxCommandProcessor* _obj)
 {
-	return (int)((wxCommandProcessor*)_obj)->Redo();
+	return (int)_obj->Redo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_CanUndo)(void* _obj)
+EWXWEXPORT(int,wxCommandProcessor_CanUndo)(wxCommandProcessor* _obj)
 {
-	return (int)((wxCommandProcessor*)_obj)->CanUndo();
+	return (int)_obj->CanUndo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_CanRedo)(void* _obj)
+EWXWEXPORT(int,wxCommandProcessor_CanRedo)(wxCommandProcessor* _obj)
 {
-	return (int)((wxCommandProcessor*)_obj)->CanRedo();
+	return (int)_obj->CanRedo();
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_SetEditMenu)(void* _obj, void* menu)
+EWXWEXPORT(void,wxCommandProcessor_SetEditMenu)(void* _obj,void* menu)
 {
 	((wxCommandProcessor*)_obj)->SetEditMenu((wxMenu*)menu);
 }
@@ -107,7 +109,7 @@ EWXWEXPORT(void,wxCommandProcessor_Initialize)(void* _obj)
 	((wxCommandProcessor*)_obj)->Initialize();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_GetCommands)(void* _obj, void* _ref)
+EWXWEXPORT(int,wxCommandProcessor_GetCommands)(void* _obj,void* _ref)
 {
 	wxList lst = ((wxCommandProcessor*)_obj)->GetCommands();
 	if (_ref)

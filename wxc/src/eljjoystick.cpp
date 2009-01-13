@@ -63,14 +63,14 @@ EWXWEXPORT(int,wxJoystick_GetMovementThreshold)(void* _obj)
 	return ((wxJoystick*)_obj)->GetMovementThreshold();
 }
 	
-EWXWEXPORT(void,wxJoystick_SetMovementThreshold)(void* _obj, int threshold)
+EWXWEXPORT(void,wxJoystick_SetMovementThreshold)(void* _obj,int threshold)
 {
 	((wxJoystick*)_obj)->SetMovementThreshold(threshold);
 }
 	
-EWXWEXPORT(int,wxJoystick_IsOk)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_IsOk)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->IsOk();
+	return _obj->IsOk();
 }
 	
 EWXWEXPORT(int,wxJoystick_GetNumberJoysticks)(void* _obj)
@@ -88,10 +88,11 @@ EWXWEXPORT(int,wxJoystick_GetProductId)(void* _obj)
 	return ((wxJoystick*)_obj)->GetProductId();
 }
 	
-EWXWEXPORT(int,wxJoystick_GetProductName)(void* _obj, void* _buf)
+EWXWEXPORT(wxString*,wxJoystick_GetProductName)(void* _obj)
 {
-	wxString res = ((wxJoystick*)_obj)->GetProductName();
-	return copyStrToBuf(_buf, result);
+	wxString *result = new wxString();
+	*result = ((wxJoystick*)_obj)->GetProductName();
+	return result;
 }
 	
 EWXWEXPORT(int,wxJoystick_GetXMin)(void* _obj)
@@ -184,49 +185,49 @@ EWXWEXPORT(int,wxJoystick_GetVMax)(void* _obj)
 	return ((wxJoystick*)_obj)->GetVMax();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasRudder)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasRudder)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasRudder();
+	return _obj->HasRudder();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasZ)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasZ)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasZ();
+	return _obj->HasZ();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasU)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasU)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasU();
+	return _obj->HasU();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasV)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasV)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasV();
+	return _obj->HasV();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasPOV)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasPOV)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasPOV();
+	return _obj->HasPOV();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasPOV4Dir)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasPOV4Dir)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasPOV4Dir();
+	return _obj->HasPOV4Dir();
 }
 	
-EWXWEXPORT(int,wxJoystick_HasPOVCTS)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_HasPOVCTS)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->HasPOVCTS();
+	return _obj->HasPOVCTS();
 }
 	
-EWXWEXPORT(int,wxJoystick_SetCapture)(void* _obj, void* win, int pollingFreq)
+EWXWEXPORT(bool,wxJoystick_SetCapture)(wxJoystick* _obj,wxWindow* win,int pollingFreq)
 {
-	return (int)((wxJoystick*)_obj)->SetCapture((wxWindow*)win, pollingFreq);
+	return _obj->SetCapture(win, pollingFreq);
 }
 	
-EWXWEXPORT(int,wxJoystick_ReleaseCapture)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_ReleaseCapture)(wxJoystick* _obj)
 {
-	return (int)((wxJoystick*)_obj)->ReleaseCapture();
+	return _obj->ReleaseCapture();
 }
 
 #else
@@ -240,7 +241,7 @@ EWXWEXPORT(void,wxJoystick_Delete)(void* _obj)
 {
 }
 
-EWXWEXPORT(void,wxJoystick_GetPosition)(void* _obj, void* _x, void* _y)
+EWXWEXPORT(void,wxJoystick_GetPosition)(void* _obj,void* _x,void* _y)
 {
 }
 	
@@ -284,13 +285,13 @@ EWXWEXPORT(int,wxJoystick_GetMovementThreshold)(void* _obj)
 	return 0;
 }
 	
-EWXWEXPORT(void,wxJoystick_SetMovementThreshold)(void* _obj, int threshold)
+EWXWEXPORT(void,wxJoystick_SetMovementThreshold)(void* _obj,int threshold)
 {
 }
 	
-EWXWEXPORT(int,wxJoystick_IsOk)(void* _obj)
+EWXWEXPORT(bool,wxJoystick_IsOk)(wxJoystick* _obj)
 {
-	return 0;
+	return _obj->isOk();
 }
 	
 EWXWEXPORT(int,wxJoystick_GetNumberJoysticks)(void* _obj)
@@ -308,7 +309,7 @@ EWXWEXPORT(int,wxJoystick_GetProductId)(void* _obj)
 	return 0;
 }
 	
-EWXWEXPORT(int,wxJoystick_GetProductName)(void* _obj, void* _buf)
+EWXWEXPORT(int,wxJoystick_GetProductName)(void* _obj,void* _buf)
 {
 	return 0;
 }
@@ -438,7 +439,7 @@ EWXWEXPORT(int,wxJoystick_HasPOVCTS)(void* _obj)
 	return 0;
 }
 	
-EWXWEXPORT(int,wxJoystick_SetCapture)(void* _obj, void* win, int pollingFreq)
+EWXWEXPORT(int,wxJoystick_SetCapture)(void* _obj,void* win,int pollingFreq)
 {
 	return 0;
 }

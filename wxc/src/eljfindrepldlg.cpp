@@ -20,16 +20,18 @@ EWXWEXPORT(void,wxFindReplaceData_Delete)(void* _obj)
 	delete (wxFindReplaceData*)_obj;
 }
 	
-EWXWEXPORT(int,wxFindReplaceData_GetFindString)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxFindReplaceData_GetFindString)(void* _obj)
 {
-	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-        return copyStrToBuf(_ref, tmp);
+	wxString *result = new wxString();
+	*result = ((wxFindReplaceData*)_obj)->GetFindString();
+	return result;
 }
 	
-EWXWEXPORT(int,wxFindReplaceData_GetReplaceString)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxFindReplaceData_GetReplaceString)(void* _obj)
 {
-	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-        return copyStrToBuf(_ref, tmp);
+	wxString *result = new wxString();
+	*result = ((wxFindReplaceData*)_obj)->GetFindString();
+	return result;
 }
 	
 EWXWEXPORT(int,wxFindReplaceData_GetFlags)(void* _obj)
@@ -37,19 +39,19 @@ EWXWEXPORT(int,wxFindReplaceData_GetFlags)(void* _obj)
 	return ((wxFindReplaceData*)_obj)->GetFlags();
 }
 	
-EWXWEXPORT(void,wxFindReplaceData_SetFlags)(void* _obj, int flags)
+EWXWEXPORT(void,wxFindReplaceData_SetFlags)(void* _obj,int flags)
 {
 	((wxFindReplaceData*)_obj)->SetFlags((wxUint32)flags);
 }
 	
-EWXWEXPORT(void,wxFindReplaceData_SetFindString)(void* _obj, void* str)
+EWXWEXPORT(void,wxFindReplaceData_SetFindString)(void* _obj,wxString* str)
 {
-	((wxFindReplaceData*)_obj)->SetFindString((wxChar*)str);
+	((wxFindReplaceData*)_obj)->SetFindString(*str);
 }
 	
-EWXWEXPORT(void,wxFindReplaceData_SetReplaceString)(void* _obj, void* str)
+EWXWEXPORT(void,wxFindReplaceData_SetReplaceString)(void* _obj,wxString* str)
 {
-	((wxFindReplaceData*)_obj)->SetReplaceString((wxChar*)str);
+	((wxFindReplaceData*)_obj)->SetReplaceString(*str);
 }
 	
 
@@ -58,22 +60,24 @@ EWXWEXPORT(int,wxFindDialogEvent_GetFlags)(void* _obj)
 	return ((wxFindDialogEvent*)_obj)->GetFlags();
 }
 	
-EWXWEXPORT(int,wxFindDialogEvent_GetFindString)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxFindDialogEvent_GetFindString)(void* _obj)
 {
-	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-        return copyStrToBuf(_ref, tmp);
+	wxString *result = new wxString();
+	*result = ((wxFindReplaceData*)_obj)->GetFindString();
+	return result;
 }
 	
-EWXWEXPORT(int,wxFindDialogEvent_GetReplaceString)(void* _obj, void* _ref)
+EWXWEXPORT(wxString*,wxFindDialogEvent_GetReplaceString)(void* _obj)
 {
-	wxString tmp = ((wxFindReplaceData*)_obj)->GetFindString();
-        return copyStrToBuf(_ref, tmp);
+	wxString *result = new wxString();
+	*result = ((wxFindReplaceData*)_obj)->GetFindString();
+	return result;
 }
 	
 
-EWXWEXPORT(void*,wxFindReplaceDialog_Create)(void* parent, void* data, void* title, int style)
+EWXWEXPORT(void*,wxFindReplaceDialog_Create)(wxWindow* parent,void* data,wxString* title,int style)
 {
-	return (void*)new wxFindReplaceDialog((wxWindow*)parent, (wxFindReplaceData*)data, (wxChar*)title, style);
+	return (void*)new wxFindReplaceDialog(parent, (wxFindReplaceData*)data, *title, style);
 }
 	
 EWXWEXPORT(void*,wxFindReplaceDialog_GetData)(void* _obj)
@@ -81,7 +85,7 @@ EWXWEXPORT(void*,wxFindReplaceDialog_GetData)(void* _obj)
 	return (void*)((wxFindReplaceDialog*)_obj)->GetData();
 }
 	
-EWXWEXPORT(void,wxFindReplaceDialog_SetData)(void* _obj, void* data)
+EWXWEXPORT(void,wxFindReplaceDialog_SetData)(void* _obj,void* data)
 {
 	((wxFindReplaceDialog*)_obj)->SetData((wxFindReplaceData*)data);
 }
