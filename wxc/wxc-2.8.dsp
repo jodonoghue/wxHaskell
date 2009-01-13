@@ -252,6 +252,10 @@ SOURCE=.\src\sound.cpp
 
 SOURCE=.\src\wrapper.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\src\std.cpp
+# End Source File
 # End Group
 # Begin Group "ewxw"
 

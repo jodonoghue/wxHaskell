@@ -146,7 +146,8 @@ WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
 	treectrl image apppath db dragimage glcanvas graphicscontext sound managed \
-	mediactrl printout previewframe taskbaricon textstream stc
+	mediactrl printout previewframe taskbaricon textstream stc \
+	std
 
 WXC-EWXW= \
 	accelerator bitmap brush busyinfo button calendarctrl \
