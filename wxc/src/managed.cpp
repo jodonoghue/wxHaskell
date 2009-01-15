@@ -54,34 +54,34 @@ extern "C" {
 /*-----------------------------------------------------------------------------
   Operations
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(void*,wxManagedPtr_GetPtr)( wxManagedPtr* self )
+EWXWEXPORT(void*,wxManagedPtr_GetPtr)(wxManagedPtr* self)
 {
   if (self!=NULL) return self->GetPtr();
              else return NULL;
 }
 
-EWXWEXPORT(void,wxManagedPtr_NoFinalize)( wxManagedPtr* self )
+EWXWEXPORT(void,wxManagedPtr_NoFinalize)(wxManagedPtr* self)
 {
   if (self!=NULL) {
     self->NoFinalize();
   }
 }
 
-EWXWEXPORT(void,wxManagedPtr_Finalize)( wxManagedPtr* self )
+EWXWEXPORT(void,wxManagedPtr_Finalize)(wxManagedPtr* self)
 {
   if (self!=NULL) {
     self->Finalize();
   }
 }
 
-EWXWEXPORT(void,wxManagedPtr_Delete)( wxManagedPtr* self )
+EWXWEXPORT(void,wxManagedPtr_Delete)(wxManagedPtr* self)
 {
   if (self!=NULL) {
     delete self;
   }
 }
 
-static void _cdecl deleteManagedPtr( wxManagedPtr* mp )
+static void _cdecl deleteManagedPtr(wxManagedPtr* mp)
 {
   if (mp!=NULL) {
     delete mp;
@@ -362,7 +362,8 @@ EWXWEXPORT(wxManagedPtr*,wxManagedPtr_CreateFromColour)(wxColour* ptr)
 /*-----------------------------------------------------------------------------
   Finalize wxCursor
 -----------------------------------------------------------------------------*/
-
+wxCursor*** staticsCursor(void)
+{
 #if (wxVERSION_NUMBER < 2800)
 static wxCursor* wxNULL_CURSOR = &wxNullCursor;
 
@@ -387,10 +388,12 @@ static wxCursor** staticsCursor[] =
     ,NULL
     };
 #endif
+  return staticsCursor;
+}
 
 EWXWEXPORT(bool,wxCursor_IsStatic)(wxCursor* obj)
 {
-  IsStatic(obj,staticsCursor);  
+  IsStatic(obj,staticsCursor());  
 }
 
 static void _cdecl deleteCursor( wxCursor* obj )
