@@ -9,98 +9,98 @@ EWXWEXPORT(void*,wxWindow_Create)(wxWindow* _prt,int _id,int _x,int _y,int _w,in
 	return (void*)new wxWindow(_prt, (wxWindowID)_id, wxPoint(_x, _y), wxSize(_w, _h), (long)_stl);
 }
 	
-EWXWEXPORT(int,wxWindow_Close)(wxWindow* _obj,int _force)
+EWXWEXPORT(bool,wxWindow_Close)(wxWindow* self,bool _force)
 {
-	return (int)_obj->Close(_force != 0);
+	return self->Close(_force);
 }
 	
-EWXWEXPORT(int,wxWindow_Destroy)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Destroy)(wxWindow* self)
 {
-	return (int)_obj->Destroy();
+	return self->Destroy();
 }
 	
-EWXWEXPORT(void,wxWindow_ClearBackground)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_ClearBackground)(wxWindow* self)
 {
-  _obj->ClearBackground();
+	self->ClearBackground();
 }
 	
-EWXWEXPORT(void,wxWindow_Fit)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_Fit)(wxWindow* self)
 {
-	_obj->Fit();
+	self->Fit();
 }
 	
-EWXWEXPORT(void,wxWindow_DestroyChildren)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_DestroyChildren)(wxWindow* self)
 {
-	_obj->DestroyChildren();
+	self->DestroyChildren();
 }
 	
-EWXWEXPORT(int,wxWindow_IsBeingDeleted)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_IsBeingDeleted)(wxWindow* self)
 {
-	return (int)_obj->IsBeingDeleted();
+	return self->IsBeingDeleted();
 }
 	
-EWXWEXPORT(void,wxWindow_SetLabel)(wxWindow* _obj,wxString* _title)
+EWXWEXPORT(void,wxWindow_SetLabel)(wxWindow* self,wxString* _title)
 {
-	_obj->SetLabel(*_title);
+	self->SetLabel(*_title);
 }
 	
-EWXWEXPORT(wxString*,wxWindow_GetLabel)(wxWindow* _obj)
+EWXWEXPORT(wxString*,wxWindow_GetLabel)(wxWindow* self)
 {
 	wxString *result = new wxString();
-	*result = _obj->GetLabel();
+	*result = self->GetLabel();
 	return result;
 }
 	
-EWXWEXPORT(int,wxWindow_GetLabelEmpty)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_GetLabelEmpty)(wxWindow* self)
 {
-	return (int)_obj->GetLabel().IsEmpty();
+	return self->GetLabel().IsEmpty();
 }
 	
-EWXWEXPORT(void,wxWindow_SetName)(wxWindow* _obj,wxString* _name)
+EWXWEXPORT(void,wxWindow_SetName)(wxWindow* self,wxString* _name)
 {
-	_obj->SetName(*_name);
+	self->SetName(*_name);
 }
 	
-EWXWEXPORT(wxString*,wxWindow_GetName)(wxWindow* _obj)
+EWXWEXPORT(wxString*,wxWindow_GetName)(wxWindow* self)
 {
 	wxString *result = new wxString();
-	*result = _obj->GetName();
+	*result = self->GetName();
 	return result;
 }
 	
-EWXWEXPORT(void,wxWindow_SetId)(wxWindow* _obj,int _id)
+EWXWEXPORT(void,wxWindow_SetId)(wxWindow* self,int _id)
 {
-	_obj->SetId(_id);
+	self->SetId(_id);
 }
 	
-EWXWEXPORT(int,wxWindow_GetId)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetId)(wxWindow* self)
 {
-	return _obj->GetId();
+	return self->GetId();
 }
 	
-EWXWEXPORT(void,wxWindow_SetSize)(wxWindow* _obj,int x,int y,int width,int height,int sizeFlags)
+EWXWEXPORT(void,wxWindow_SetSize)(wxWindow* self,int x,int y,int width,int height,int sizeFlags)
 {
-	_obj->SetSize(x, y, width, height, sizeFlags);
+	self->SetSize(x, y, width, height, sizeFlags);
 }
 	
-EWXWEXPORT(void,wxWindow_Move)(wxWindow* _obj,int x,int y)
+EWXWEXPORT(void,wxWindow_Move)(wxWindow* self,int x,int y)
 {
-	_obj->Move( x, y );
+	self->Move( x, y );
 }
 	
-EWXWEXPORT(void,wxWindow_Raise)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_Raise)(wxWindow* self)
 {
-	_obj->Raise();
+	self->Raise();
 }
 	
-EWXWEXPORT(void,wxWindow_Lower)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_Lower)(wxWindow* self)
 {
-	_obj->Lower();
+	self->Lower();
 }
 	
-EWXWEXPORT(void,wxWindow_SetClientSize)(wxWindow* _obj,int width,int height)
+EWXWEXPORT(void,wxWindow_SetClientSize)(wxWindow* self,int width,int height)
 {
-	_obj->SetClientSize( width, height );
+	self->SetClientSize( width, height );
 }
 	
 EWXWEXPORT(void, wxWindow_GetPosition)(void* _obj, void* _x, void* _y)
@@ -132,112 +132,112 @@ EWXWEXPORT(void, wxWindow_GetBestSize)(void* _obj, void* _w, void* _h)
 	((wxWindow*)_obj)->GetBestSize((int*)_w, (int*)_h);
 }
 	
-EWXWEXPORT(void,wxWindow_Center)(wxWindow* _obj,int direction)
+EWXWEXPORT(void,wxWindow_Center)(wxWindow* self,int direction)
 {
-	_obj->Center( direction );
+	self->Center( direction );
 }
 	
-EWXWEXPORT(void,wxWindow_CenterOnParent)(wxWindow* _obj,int dir)
+EWXWEXPORT(void,wxWindow_CenterOnParent)(wxWindow* self,int dir)
 {
-	_obj->CenterOnParent(dir);
+	self->CenterOnParent(dir);
 }
 	
-EWXWEXPORT(void,wxWindow_SetSizeHints)(wxWindow* _obj,int minW,int minH,int maxW,int maxH,int incW,int incH)
+EWXWEXPORT(void,wxWindow_SetSizeHints)(wxWindow* self,int minW,int minH,int maxW,int maxH,int incW,int incH)
 {
-	_obj->SetSizeHints( minW, minH, maxW, maxH, incW, incH );
+	self->SetSizeHints( minW, minH, maxW, maxH, incW, incH );
 }
 	
-EWXWEXPORT(int,wxWindow_GetMinWidth)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetMinWidth)(wxWindow* self)
 {
-	return _obj->GetMinWidth();
+	return self->GetMinWidth();
 }
 	
-EWXWEXPORT(int,wxWindow_GetMinHeight)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetMinHeight)(wxWindow* self)
 {
-	return _obj->GetMinHeight();
+	return self->GetMinHeight();
 }
 	
-EWXWEXPORT(int,wxWindow_GetMaxWidth)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetMaxWidth)(wxWindow* self)
 {
-	return _obj->GetMaxWidth();
+	return self->GetMaxWidth();
 }
 
-EWXWEXPORT(int,wxWindow_GetMaxHeight)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetMaxHeight)(wxWindow* self)
 {
-	return _obj->GetMaxHeight();
+	return self->GetMaxHeight();
 }
 	
-EWXWEXPORT(int,wxWindow_Show)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Show)(wxWindow* self)
 {
-	return _obj->Show();
+	return self->Show();
 }
 	
-EWXWEXPORT(int,wxWindow_Hide)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Hide)(wxWindow* self)
 {
-	return (int)_obj->Hide();
+	return self->Hide();
 }
 	
-EWXWEXPORT(int,wxWindow_Enable)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Enable)(wxWindow* self)
 {
-	return (int)_obj->Enable();
+	return self->Enable();
 }
 
-EWXWEXPORT(int,wxWindow_Disable)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Disable)(wxWindow* self)
 {
-	return (int)_obj->Disable();
+	return self->Disable();
 }
 	
-EWXWEXPORT(int,wxWindow_IsShown)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_IsShown)(wxWindow* self)
 {
-	return (int)_obj->IsShown();
+	return self->IsShown();
 }
 	
-EWXWEXPORT(int,wxWindow_IsEnabled)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_IsEnabled)(wxWindow* self)
 {
-	return (int)_obj->IsEnabled();
+	return self->IsEnabled();
 }
 	
-EWXWEXPORT(void,wxWindow_SetWindowStyleFlag)(wxWindow* _obj,long style)
+EWXWEXPORT(void,wxWindow_SetWindowStyleFlag)(wxWindow* self,long style)
 {
-	_obj->SetWindowStyleFlag( style );
+	self->SetWindowStyleFlag( style );
 }
 	
-EWXWEXPORT(int,wxWindow_GetWindowStyleFlag)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetWindowStyleFlag)(wxWindow* self)
 {
-	return (int)_obj->GetWindowStyleFlag();
+	return (int)self->GetWindowStyleFlag();
 }
 	
-EWXWEXPORT(int,wxWindow_HasFlag)(wxWindow* _obj,int flag)
+EWXWEXPORT(bool,wxWindow_HasFlag)(wxWindow* self,int flag)
 {
-	return (int)_obj->HasFlag(flag);
+	return self->HasFlag(flag);
 }
 	
-EWXWEXPORT(void,wxWindow_SetExtraStyle)(wxWindow* _obj,long exStyle)
+EWXWEXPORT(void,wxWindow_SetExtraStyle)(wxWindow* self,long exStyle)
 {
-	_obj->SetExtraStyle(exStyle);
+	self->SetExtraStyle(exStyle);
 }
 	
-EWXWEXPORT(void,wxWindow_MakeModal)(wxWindow* _obj,int modal)
+EWXWEXPORT(void,wxWindow_MakeModal)(wxWindow* self,bool modal)
 {
-	_obj->MakeModal(modal != 0);
+	self->MakeModal(modal);
 }
 	
-EWXWEXPORT(void,wxWindow_SetFocus)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_SetFocus)(wxWindow* self)
 {
-	_obj->SetFocus();
+	self->SetFocus();
 }
 	
-EWXWEXPORT(void*,wxWindow_FindFocus)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_FindFocus)(wxWindow* self)
 {
-	return (void*)_obj->FindFocus();
+	return (void*)self->FindFocus();
 }
 	
-EWXWEXPORT(int,wxWindow_GetChildren)(wxWindow* _obj,void* _res,int _cnt)
+EWXWEXPORT(int,wxWindow_GetChildren)(wxWindow* self,void* _res,int _cnt)
 {
-	if (_res && (unsigned int)_cnt == _obj->GetChildren().GetCount())
+	if (_res && (unsigned int)_cnt == self->GetChildren().GetCount())
 	{
 		unsigned int i = 0;
-		wxWindowList::compatibility_iterator node = _obj->GetChildren().GetFirst();;
+		wxWindowList::compatibility_iterator node = self->GetChildren().GetFirst();
 		while (node)
 		{
 			((void**)_res)[i++] = (void*)(node->GetData());
@@ -247,92 +247,92 @@ EWXWEXPORT(int,wxWindow_GetChildren)(wxWindow* _obj,void* _res,int _cnt)
 		return i;
 	}
 	else
-		return _obj->GetChildren().GetCount();
+		return self->GetChildren().GetCount();
 }
 	
-EWXWEXPORT(void*,wxWindow_GetParent)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetParent)(wxWindow* self)
 {
-	return (void*)_obj->GetParent();
+	return (void*)self->GetParent();
 }
 	
-EWXWEXPORT(int,wxWindow_IsTopLevel)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_IsTopLevel)(wxWindow* self)
 {
-	return (int)_obj->IsTopLevel();
+	return self->IsTopLevel();
 }
 	
-EWXWEXPORT(void*,wxWindow_FindWindow)(wxWindow* _obj,wxString* name)
+EWXWEXPORT(void*,wxWindow_FindWindow)(wxWindow* self,wxString* name)
 {
-	return (void*)_obj->FindWindow( *name );
+	return (void*)self->FindWindow( *name );
 }
 	
-EWXWEXPORT(void,wxWindow_AddChild)(wxWindow* _obj,void* child)
+EWXWEXPORT(void,wxWindow_AddChild)(wxWindow* self,wxWindowBase* child)
 {
-	_obj->AddChild( (wxWindowBase*) child );
+	self->AddChild(  child );
 }
 	
-EWXWEXPORT(void,wxWindow_RemoveChild)(wxWindow* _obj,void* child)
+EWXWEXPORT(void,wxWindow_RemoveChild)(wxWindow* self,wxWindowBase* child)
 {
-	_obj->RemoveChild( (wxWindowBase*) child );
+	self->RemoveChild(  child );
 }
 	
-EWXWEXPORT(void*,wxWindow_GetEventHandler)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetEventHandler)(wxWindow* self)
 {
-	return (void*)_obj->GetEventHandler();
+	return (void*)self->GetEventHandler();
 }
 	
-EWXWEXPORT(void,wxWindow_PushEventHandler)(wxWindow* _obj,void* handler)
+EWXWEXPORT(void,wxWindow_PushEventHandler)(wxWindow* self,wxEvtHandler* handler)
 {
-	_obj->PushEventHandler( (wxEvtHandler*) handler );
+	self->PushEventHandler( handler );
 }
 	
-EWXWEXPORT(void*,wxWindow_PopEventHandler)(wxWindow* _obj,int deleteHandler)
+EWXWEXPORT(void*,wxWindow_PopEventHandler)(wxWindow* self,bool deleteHandler)
 {
-	return (void*)_obj->PopEventHandler(deleteHandler != 0);
+	return (void*)self->PopEventHandler(deleteHandler);
 }
 	
-EWXWEXPORT(void,wxWindow_SetValidator)(wxWindow* _obj,void* validator)
+EWXWEXPORT(void,wxWindow_SetValidator)(wxWindow* self,void* validator)
 {
-	_obj->SetValidator(*((wxValidator*)validator));
+	self->SetValidator(*((wxValidator*)validator));
 }
 	
-EWXWEXPORT(void*,wxWindow_GetValidator)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetValidator)(wxWindow* self)
 {
-	return (void*)_obj->GetValidator();
+	return (void*)self->GetValidator();
 }
 	
-EWXWEXPORT(void,wxWindow_SetClientData)(wxWindow* _obj,void* data)
+EWXWEXPORT(void,wxWindow_SetClientData)(wxWindow* self,void* data)
 {
-	_obj->SetClientData( data );
+	self->SetClientData( data );
 }
 	
-EWXWEXPORT(void*,wxWindow_GetClientData)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetClientData)(wxWindow* self)
 {
-	return (void*) _obj->GetClientData();
+	return (void*)self->GetClientData();
 }
 	
-EWXWEXPORT(int,wxWindow_Validate)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_Validate)(wxWindow* self)
 {
-	return (int)_obj->Validate();
+	return self->Validate();
 }
 	
-EWXWEXPORT(int,wxWindow_TransferDataToWindow)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_TransferDataToWindow)(wxWindow* self)
 {
-	return (int)_obj->TransferDataToWindow();
+	return self->TransferDataToWindow();
 }
 	
-EWXWEXPORT(int,wxWindow_TransferDataFromWindow)(wxWindow* _obj)
+EWXWEXPORT(bool,wxWindow_TransferDataFromWindow)(wxWindow* self)
 {
-	return (int)_obj->TransferDataFromWindow();
+	return self->TransferDataFromWindow();
 }
 	
-EWXWEXPORT(void,wxWindow_InitDialog)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_InitDialog)(wxWindow* self)
 {
-	_obj->InitDialog();
+	self->InitDialog();
 }
 	
-EWXWEXPORT(void,wxWindow_SetAcceleratorTable)(wxWindow* _obj,void* accel)
+EWXWEXPORT(void,wxWindow_SetAcceleratorTable)(wxWindow* self,void* accel)
 {
-	_obj->SetAcceleratorTable(*((wxAcceleratorTable*) accel));
+	self->SetAcceleratorTable(*((wxAcceleratorTable*)accel));
 }
 	
 EWXWEXPORT(void, wxWindow_ConvertPixelsToDialog)(void* _obj, int* x, int* y)
@@ -349,308 +349,309 @@ EWXWEXPORT(void, wxWindow_ConvertDialogToPixels)(void* _obj, int* x, int* y)
 	*y = pt.y;
 }
 	
-EWXWEXPORT(void,wxWindow_WarpPointer)(wxWindow* _obj,int x,int y)
+EWXWEXPORT(void,wxWindow_WarpPointer)(wxWindow* self,int x,int y)
 {
-	_obj->WarpPointer(x, y);
+	self->WarpPointer(x, y);
 }
 	
-EWXWEXPORT(void,wxWindow_CaptureMouse)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_CaptureMouse)(wxWindow* self)
 {
-	_obj->CaptureMouse();
+	self->CaptureMouse();
 }
 	
-EWXWEXPORT(void,wxWindow_ReleaseMouse)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_ReleaseMouse)(wxWindow* self)
 {
-	_obj->ReleaseMouse();
+	self->ReleaseMouse();
 }
 	
-EWXWEXPORT(void,wxWindow_Refresh)(wxWindow* _obj,int eraseBackground)
+EWXWEXPORT(void,wxWindow_Refresh)(wxWindow* self,bool eraseBackground)
 {
-	_obj->Refresh(eraseBackground != 0, (const wxRect*) NULL);
+	self->Refresh(eraseBackground, (const wxRect*)NULL);
 }
 	
-EWXWEXPORT(void,wxWindow_RefreshRect)(wxWindow* _obj,int eraseBackground,int x,int y,int w,int h)
+EWXWEXPORT(void,wxWindow_RefreshRect)(wxWindow* self,bool eraseBackground,int x,int y,int w,int h)
 {
 	const wxRect rect(x, y, w, h);
-	_obj->Refresh(eraseBackground != 0, &rect);
+	self->Refresh(eraseBackground, &rect);
 }
 	
-EWXWEXPORT(void,wxWindow_PrepareDC)(wxWindow* _obj,void* dc)
+EWXWEXPORT(void,wxWindow_PrepareDC)(wxWindow* self,wxDC* dc)
 {
-	_obj->PrepareDC(*((wxDC*)dc));
+	self->PrepareDC(*dc);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetUpdateRegion)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetUpdateRegion)(wxWindow* self)
 {
-	return (void*) (&_obj->GetUpdateRegion());
+	return (void*)(&self->GetUpdateRegion());
 }
 	
-EWXWEXPORT(int,wxWindow_IsExposed)(wxWindow* _obj,int x,int y,int w,int h)
+EWXWEXPORT(bool,wxWindow_IsExposed)(wxWindow* self,int x,int y,int w,int h)
 {
-	return (int)_obj->IsExposed( x, y, w, h );
+	return self->IsExposed( x, y, w, h );
 }
 	
-EWXWEXPORT(int,wxWindow_SetBackgroundColour)(wxWindow* _obj,wxColour* colour)
+EWXWEXPORT(bool,wxWindow_SetBackgroundColour)(wxWindow* self,wxColour* colour)
 {
-	return (int)_obj->SetBackgroundColour(*colour);
+	return self->SetBackgroundColour(*colour);
 }
 	
-EWXWEXPORT(void,wxWindow_SetForegroundColour)(wxWindow* _obj,wxColour* colour)
+EWXWEXPORT(void,wxWindow_SetForegroundColour)(wxWindow* self,wxColour* colour)
 {
-	_obj->SetForegroundColour(*colour);
+	self->SetForegroundColour(*colour);
 }
 	
-EWXWEXPORT(void,wxWindow_GetBackgroundColour)(wxWindow* _obj,wxColour* colour)
+EWXWEXPORT(void,wxWindow_GetBackgroundColour)(wxWindow* self,wxColour* colour)
 {
-	*colour = _obj->GetBackgroundColour();
+	*colour = self->GetBackgroundColour();
 }
 	
-EWXWEXPORT(void,wxWindow_GetForegroundColour)(wxWindow* _obj,wxColour* colour)
+EWXWEXPORT(void,wxWindow_GetForegroundColour)(wxWindow* self,wxColour* colour)
 {
-	*colour = _obj->GetForegroundColour();
+	*colour = self->GetForegroundColour();
 }
 	
-EWXWEXPORT(void,wxWindow_SetCursor)(wxWindow* _obj,wxCursor* cursor)
+EWXWEXPORT(void,wxWindow_SetCursor)(wxWindow* self,wxCursor* cursor)
 {
-	_obj->SetCursor(*cursor);
+	self->SetCursor(*cursor);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetCursor)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetCursor)(wxWindow* self)
 {
-	return (void*) (&_obj->GetCursor());
+	return (void*)(&self->GetCursor());
 }
 	
-EWXWEXPORT(void,wxWindow_SetFont)(wxWindow* _obj,wxFont* font)
+EWXWEXPORT(void,wxWindow_SetFont)(wxWindow* self,wxFont* font)
 {
-	_obj->SetFont(*font);
+	self->SetFont(*font);
 }
 	
-EWXWEXPORT(void,wxWindow_GetFont)(wxWindow* _obj,void* _font)
+EWXWEXPORT(void,wxWindow_GetFont)(wxWindow* self,void* _font)
 {
-	(*(wxFont*)_font) = _obj->GetFont();
+	(*(wxFont*)_font) = self->GetFont();
 }
 	
-EWXWEXPORT(void,wxWindow_SetCaret)(wxWindow* _obj,void* caret)
+EWXWEXPORT(void,wxWindow_SetCaret)(wxWindow* self,void* caret)
 {
-	_obj->SetCaret((wxCaret*)caret);
+	self->SetCaret((wxCaret*)caret);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetCaret)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetCaret)(wxWindow* self)
 {
-	return (void*)_obj->GetCaret();
+	return (void*)self->GetCaret();
 }
 	
-EWXWEXPORT(int,wxWindow_GetCharHeight)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetCharHeight)(wxWindow* self)
 {
-	return _obj->GetCharHeight();
+	return self->GetCharHeight();
 }
 	
-EWXWEXPORT(int,wxWindow_GetCharWidth)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetCharWidth)(wxWindow* self)
 {
-	return _obj->GetCharWidth();
+	return self->GetCharWidth();
 }
 	
-EWXWEXPORT(void,wxWindow_GetTextExtent)(wxWindow* _obj,wxString* string,int* x,int* y,int* descent,int* externalLeading,void* theFont)
+EWXWEXPORT(void,wxWindow_GetTextExtent)(wxWindow* self,wxString* string,int* x,int* y,int* descent,int* externalLeading,void* theFont)
 {
-	_obj->GetTextExtent(*string, x,  y, descent, externalLeading, (const wxFont*) theFont );
+	self->GetTextExtent(*string, x,  y, descent, externalLeading, (const wxFont*)theFont );
 }
 	
-EWXWEXPORT(void, wxWindow_ScreenToClient)(void* _obj, int *x, int *y)
+EWXWEXPORT(wxPoint*,wxWindow_ScreenToClient)(wxWindow* self,int x,int y)
 {
-	((wxWindow*)_obj)->ScreenToClient(x, y);
+  return new wxPoint(self->ScreenToClient(wxPoint(x, y)));
 }
 	
-EWXWEXPORT(void,wxWindow_UpdateWindowUI)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_UpdateWindowUI)(wxWindow* self)
 {
-	_obj->UpdateWindowUI();
+	self->UpdateWindowUI();
 }
 	
-EWXWEXPORT(int,wxWindow_PopupMenu)(wxWindow* _obj,wxMenu* menu,int x,int y)
+EWXWEXPORT(bool,wxWindow_PopupMenu)(wxWindow* self,wxMenu* menu,int x,int y)
 {
-	return (int)_obj->PopupMenu(menu, x, y );
+	return self->PopupMenu(menu, x, y );
 }
 	
-EWXWEXPORT(void,wxWindow_SetScrollPos)(wxWindow* _obj,int orient,int pos,int refresh)
+EWXWEXPORT(void,wxWindow_SetScrollPos)(wxWindow* self,int orient,int pos,bool refresh)
 {
-	_obj->SetScrollPos( orient, pos, refresh != 0);
+	self->SetScrollPos( orient, pos, refresh);
 }
 	
-EWXWEXPORT(int,wxWindow_GetScrollPos)(wxWindow* _obj,int orient)
+EWXWEXPORT(int,wxWindow_GetScrollPos)(wxWindow* self,int orient)
 {
-	return _obj->GetScrollPos( orient );
+	return self->GetScrollPos( orient );
 }
 	
-EWXWEXPORT(int,wxWindow_GetScrollThumb)(wxWindow* _obj,int orient)
+EWXWEXPORT(int,wxWindow_GetScrollThumb)(wxWindow* self,int orient)
 {
-	return _obj->GetScrollThumb( orient );
+	return self->GetScrollThumb( orient );
 }
 	
-EWXWEXPORT(int,wxWindow_GetScrollRange)(wxWindow* _obj,int orient)
+EWXWEXPORT(int,wxWindow_GetScrollRange)(wxWindow* self,int orient)
 {
-	return _obj->GetScrollRange( orient );
+	return self->GetScrollRange( orient );
 }
 	
-EWXWEXPORT(void,wxWindow_ScrollWindow)(wxWindow* _obj,int dx,int dy)
+EWXWEXPORT(void,wxWindow_ScrollWindow)(wxWindow* self,int dx,int dy)
 {
-	_obj->ScrollWindow(dx, dy, (const wxRect*) NULL);
+	self->ScrollWindow(dx, dy, (const wxRect*)NULL);
 }
 	
-EWXWEXPORT(void,wxWindow_ScrollWindowRect)(wxWindow* _obj,int dx,int dy,int x,int y,int w,int h)
+EWXWEXPORT(void,wxWindow_ScrollWindowRect)(wxWindow* self,int dx,int dy,int x,int y,int w,int h)
 {
 	const wxRect rect(x, y, w, h);
-	_obj->ScrollWindow(dx, dy, &rect);
+	self->ScrollWindow(dx, dy, &rect);
 }
 	
-EWXWEXPORT(void,wxWindow_SetToolTip)(wxWindow* _obj,wxString* tip)
+EWXWEXPORT(void,wxWindow_SetToolTip)(wxWindow* self,wxString* tip)
 {
-	_obj->SetToolTip( *tip );
+	self->SetToolTip( *tip );
 }
 	
-EWXWEXPORT(int,wxWindow_GetToolTip)(wxWindow* _obj,void* _buf)
+EWXWEXPORT(wxString*,wxWindow_GetToolTip)(wxWindow* self)
 {
-	wxToolTip* tip = _obj->GetToolTip();
+	wxToolTip* tip = self->GetToolTip();
 
 	if (tip)
 	{
-                wxString res = tip->GetTip();
-		return copyStrToBuf(_buf, res);
+		wxString *result = new wxString();
+		*result = tip->GetTip();
+		return result;
 	}
-	return 0;
+	return NULL;
 }
 	
-EWXWEXPORT(void,wxWindow_SetDropTarget)(wxWindow* _obj,void* dropTarget)
+EWXWEXPORT(void,wxWindow_SetDropTarget)(wxWindow* self,void* dropTarget)
 {
-	_obj->SetDropTarget((wxDropTarget*) dropTarget);
+	self->SetDropTarget((wxDropTarget*)dropTarget);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetDropTarget)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetDropTarget)(wxWindow* self)
 {
-	return (void*)_obj->GetDropTarget();
+	return (void*)self->GetDropTarget();
 }
 	
-EWXWEXPORT(void,wxWindow_SetConstraints)(wxWindow* _obj,void* constraints)
+EWXWEXPORT(void,wxWindow_SetConstraints)(wxWindow* self,void* constraints)
 {
-	_obj->SetConstraints((wxLayoutConstraints*) constraints);
+	self->SetConstraints((wxLayoutConstraints*)constraints);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetConstraints)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetConstraints)(wxWindow* self)
 {
-	return (void*)_obj->GetConstraints();
+	return (void*)self->GetConstraints();
 }
 	
-EWXWEXPORT(void,wxWindow_SetAutoLayout)(wxWindow* _obj,int autoLayout)
+EWXWEXPORT(void,wxWindow_SetAutoLayout)(wxWindow* self,bool autoLayout)
 {
-	_obj->SetAutoLayout( autoLayout != 0 );
+	self->SetAutoLayout( autoLayout );
 }
 	
-EWXWEXPORT(int,wxWindow_GetAutoLayout)(wxWindow* _obj)
+EWXWEXPORT(int,wxWindow_GetAutoLayout)(wxWindow* self)
 {
-	return (int)_obj->GetAutoLayout();
+	return (int)self->GetAutoLayout();
 }
 	
-EWXWEXPORT(void,wxWindow_Layout)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_Layout)(wxWindow* self)
 {
-	_obj->Layout();
+	self->Layout();
 }
 	
-EWXWEXPORT(void,wxWindow_UnsetConstraints)(wxWindow* _obj,void* c)
+EWXWEXPORT(void,wxWindow_UnsetConstraints)(wxWindow* self,void* c)
 {
-	_obj->UnsetConstraints((wxLayoutConstraints*) c);
+	self->UnsetConstraints((wxLayoutConstraints*)c);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetConstraintsInvolvedIn)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetConstraintsInvolvedIn)(wxWindow* self)
 {
-	return (void*)_obj->GetConstraintsInvolvedIn();
+	return (void*)self->GetConstraintsInvolvedIn();
 }
 	
-EWXWEXPORT(void,wxWindow_AddConstraintReference)(wxWindow* _obj,void* otherWin)
+EWXWEXPORT(void,wxWindow_AddConstraintReference)(wxWindow* self,wxWindowBase* otherWin)
 {
-	_obj->AddConstraintReference((wxWindowBase*) otherWin);
+	self->AddConstraintReference( otherWin);
 }
 	
-EWXWEXPORT(void,wxWindow_RemoveConstraintReference)(wxWindow* _obj,void* otherWin)
+EWXWEXPORT(void,wxWindow_RemoveConstraintReference)(wxWindow* self,wxWindowBase* otherWin)
 {
-	_obj->RemoveConstraintReference((wxWindowBase*) otherWin);
+	self->RemoveConstraintReference( otherWin);
 }
 	
-EWXWEXPORT(void,wxWindow_DeleteRelatedConstraints)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_DeleteRelatedConstraints)(wxWindow* self)
 {
-	_obj->DeleteRelatedConstraints();
+	self->DeleteRelatedConstraints();
 }
 	
-EWXWEXPORT(void,wxWindow_ResetConstraints)(wxWindow* _obj)
+EWXWEXPORT(void,wxWindow_ResetConstraints)(wxWindow* self)
 {
-	_obj->ResetConstraints();
+	self->ResetConstraints();
 }
 	
-EWXWEXPORT(void,wxWindow_SetConstraintSizes)(wxWindow* _obj,int recurse)
+EWXWEXPORT(void,wxWindow_SetConstraintSizes)(wxWindow* self,bool recurse)
 {
-	_obj->SetConstraintSizes(recurse != 0);
+	self->SetConstraintSizes(recurse);
 }
 	
-EWXWEXPORT(int,wxWindow_LayoutPhase1)(wxWindow* _obj,int* noChanges)
+EWXWEXPORT(int,wxWindow_LayoutPhase1)(wxWindow* self,int* noChanges)
 {
-	return (int)_obj->LayoutPhase1(noChanges);
+	return (int)self->LayoutPhase1(noChanges);
 }
 	
-EWXWEXPORT(int,wxWindow_LayoutPhase2)(wxWindow* _obj,int* noChanges)
+EWXWEXPORT(int,wxWindow_LayoutPhase2)(wxWindow* self,int* noChanges)
 {
-	return (int)_obj->LayoutPhase2(noChanges);
+	return (int)self->LayoutPhase2(noChanges);
 }
 	
-EWXWEXPORT(int,wxWindow_DoPhase)(wxWindow* _obj,int phase)
+EWXWEXPORT(int,wxWindow_DoPhase)(wxWindow* self,int phase)
 {
-	return (int)_obj->DoPhase(phase);
+	return (int)self->DoPhase(phase);
 }
 	
-EWXWEXPORT(void,wxWindow_SetSizeConstraint)(wxWindow* _obj,int x,int y,int w,int h)
+EWXWEXPORT(void,wxWindow_SetSizeConstraint)(wxWindow* self,int x,int y,int w,int h)
 {
-	_obj->SetSizeConstraint(x, y, w, h);
+	self->SetSizeConstraint(x, y, w, h);
 }
 	
-EWXWEXPORT(void,wxWindow_MoveConstraint)(wxWindow* _obj,int x,int y)
+EWXWEXPORT(void,wxWindow_MoveConstraint)(wxWindow* self,int x,int y)
 {
-	_obj->MoveConstraint(x, y);
+	self->MoveConstraint(x, y);
 }
 	
-EWXWEXPORT(void,wxWindow_GetSizeConstraint)(wxWindow* _obj,int* w,int* h)
+EWXWEXPORT(void,wxWindow_GetSizeConstraint)(wxWindow* self,int* w,int* h)
 {
-	_obj->GetSizeConstraint(w, h);
+	self->GetSizeConstraint(w, h);
 }
 	
-EWXWEXPORT(void,wxWindow_GetClientSizeConstraint)(wxWindow* _obj,int* w,int* h)
+EWXWEXPORT(void,wxWindow_GetClientSizeConstraint)(wxWindow* self,int* w,int* h)
 {
-	_obj->GetClientSizeConstraint(w, h);
+	self->GetClientSizeConstraint(w, h);
 }
 	
-EWXWEXPORT(void,wxWindow_GetPositionConstraint)(wxWindow* _obj,int* x,int* y)
+EWXWEXPORT(void,wxWindow_GetPositionConstraint)(wxWindow* self,int* x,int* y)
 {
-	_obj->GetPositionConstraint(x, y);
+	self->GetPositionConstraint(x, y);
 }
 	
-EWXWEXPORT(void,wxWindow_SetSizer)(wxWindow* _obj,void* sizer)
+EWXWEXPORT(void,wxWindow_SetSizer)(wxWindow* self,wxSizer* sizer)
 {
-	_obj->SetSizer( (wxSizer*) sizer );
+	self->SetSizer(sizer);
 }
 	
-EWXWEXPORT(void*,wxWindow_GetSizer)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetSizer)(wxWindow* self)
 {
-	return (void*)_obj->GetSizer();
+	return (void*)self->GetSizer();
 }
 	
-EWXWEXPORT(void*,wxWindow_GetHandle)(wxWindow* _obj)
+EWXWEXPORT(void*,wxWindow_GetHandle)(wxWindow* self)
 {
-	return (void*)_obj->GetHandle();
+	return (void*)self->GetHandle();
 }
 	
-EWXWEXPORT(void,wxWindow_SetScrollbar)(wxWindow* _obj,int orient,int pos,int thumbVisible,int range,int refresh)
+EWXWEXPORT(void,wxWindow_SetScrollbar)(wxWindow* self,int orient,int pos,int thumbVisible,int range,bool refresh)
 {
-	_obj->SetScrollbar(orient, pos, thumbVisible, range, refresh != 0);
+    self->SetScrollbar(orient, pos, thumbVisible, range, refresh);
 }
 
-EWXWEXPORT(int,wxWindow_Reparent)(wxWindow* _obj,wxWindow* _par)
+EWXWEXPORT(bool,wxWindow_Reparent)(wxWindow* self,wxWindow* _par)
 {
-	return (int)_obj->Reparent(_par);
+	return self->Reparent(_par);
 }
 
 #if (wxVERSION_NUMBER < 2800)

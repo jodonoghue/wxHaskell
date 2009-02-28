@@ -3,64 +3,64 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxClipboard_Create)()
+EWXWEXPORT(wxClipboard*,wxClipboard_Create)()
 {
 	return wxTheClipboard;
 }
 
-EWXWEXPORT(void, wxClipboard_Delete)(void* _obj)
+EWXWEXPORT(void,wxClipboard_Delete)(wxClipboard* self)
 {
-	// delete (wxClipboard*)_obj;
+	// delete _obj;
 }
 
-EWXWEXPORT(int, wxClipboard_Open)(void* _obj)
+EWXWEXPORT(bool,wxClipboard_Open)(wxClipboard* self)
 {
-	return (int)((wxClipboard*)_obj)->Open();
+	return self->Open();
 }
 
-EWXWEXPORT(void, wxClipboard_Close)(void* _obj)
+EWXWEXPORT(void,wxClipboard_Close)(wxClipboard* self)
 {
-	((wxClipboard*)_obj)->Close();
+	self->Close();
 }
 
-EWXWEXPORT(int, wxClipboard_IsOpened)(void* _obj)
+EWXWEXPORT(bool,wxClipboard_IsOpened)(wxClipboard* self)
 {
-	return (int)((wxClipboard*)_obj)->IsOpened();
+	return self->IsOpened();
 }
 
-EWXWEXPORT(int, wxClipboard_SetData)(void* _obj, wxDataObject* data)
+EWXWEXPORT(bool,wxClipboard_SetData)(wxClipboard* self,wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->SetData(data);
+	return self->SetData(data);
 }
 
-EWXWEXPORT(int, wxClipboard_AddData)(void* _obj, wxDataObject* data)
+EWXWEXPORT(bool,wxClipboard_AddData)(wxClipboard* self,wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->AddData(data);
+	return self->AddData(data);
 }
 
-EWXWEXPORT(int, wxClipboard_IsSupported)(void* _obj, wxDataFormat* format)
+EWXWEXPORT(bool,wxClipboard_IsSupported)(wxClipboard* self,wxDataFormat* format)
 {
-	return (int)((wxClipboard*)_obj)->IsSupported(*format);
+	return self->IsSupported(*format);
 }
 
-EWXWEXPORT(int, wxClipboard_GetData)(void* _obj, wxDataObject* data)
+EWXWEXPORT(bool,wxClipboard_GetData)(wxClipboard* self,wxDataObject* data)
 {
-	return (int)((wxClipboard*)_obj)->GetData(*data);
+	return self->GetData(*data);
 }
 
-EWXWEXPORT(void, wxClipboard_Clear)(void* _obj)
+EWXWEXPORT(void,wxClipboard_Clear)(wxClipboard* self)
 {
-	((wxClipboard*)_obj)->Clear();
+	self->Clear();
 }
 
-EWXWEXPORT(int, wxClipboard_Flush)(void* _obj)
+EWXWEXPORT(bool,wxClipboard_Flush)(wxClipboard* self)
 {
-	return (int)((wxClipboard*)_obj)->Flush();
+	return self->Flush();
 }
 
-EWXWEXPORT(void, wxClipboard_UsePrimarySelection)(void* _obj, int primary)
+EWXWEXPORT(void,wxClipboard_UsePrimarySelection)(wxClipboard* self,bool primary)
 {
-	((wxClipboard*)_obj)->UsePrimarySelection (primary != 0);
+	self->UsePrimarySelection (primary);
 }
 
 }

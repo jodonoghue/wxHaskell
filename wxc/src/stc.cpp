@@ -14,7 +14,7 @@ extern "C"
 EWXWEXPORT(void*,wxStyledTextCtrl_Create)(wxWindow* _prt,int _id, wxString* _txt,int _lft,int _top,int _wdt,int _hgt,int _stl)
 {
 #ifdef wxUSE_STC
-  return (void*) new wxStyledTextCtrl((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, *_txt);
+  return (void*) new wxStyledTextCtrl(_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, *_txt);
 #else
   return false;
 #endif

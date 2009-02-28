@@ -3,21 +3,21 @@
 extern "C"
 {
 
-EWXWEXPORT(void,wxControl_SetLabel)(void* _obj,wxString* text)
+EWXWEXPORT(void,wxControl_SetLabel)(wxControl* self,wxString* text)
 {
-	((wxControl*)_obj)->SetLabel(*text);
+	self->SetLabel(*text);
 }
 	
-EWXWEXPORT(wxString*,wxControl_GetLabel)(void* _obj)
+EWXWEXPORT(wxString*,wxControl_GetLabel)(wxControl* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxControl*)_obj)->GetLabel();
+	*result = self->GetLabel();
 	return result;
 }
 
-EWXWEXPORT(void,wxControl_Command)(void* _obj,void* event)
+EWXWEXPORT(void,wxControl_Command)(wxControl* self,wxCommandEvent* event)
 {
-	((wxControl*)_obj)->Command(*((wxCommandEvent*) event));
+	self->Command(*event);
 }
 
 }

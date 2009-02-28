@@ -5,41 +5,41 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxContextHelp_Create)(wxWindow* win,bool beginHelp)
+EWXWEXPORT(wxContextHelp*,wxContextHelp_Create)(wxWindow* win,bool beginHelp)
 {
-	return (void*)new wxContextHelp(win, beginHelp);
+	return new wxContextHelp(win, beginHelp);
 }
 	
-EWXWEXPORT(void,wxContextHelp_Delete)(void* _obj)
+EWXWEXPORT(void,wxContextHelp_Delete)(wxContextHelp* self)
 {
-	delete (wxContextHelp*)_obj;
+	delete self;
 }
 	
-EWXWEXPORT(int,wxContextHelp_BeginContextHelp)(void* _obj,wxWindow* win)
+EWXWEXPORT(bool,wxContextHelp_BeginContextHelp)(wxContextHelp* self,wxWindow* win)
 {
-	return (int)((wxContextHelp*)_obj)->BeginContextHelp(win);
+	return self->BeginContextHelp(win);
 }
 	
-EWXWEXPORT(int,wxContextHelp_EndContextHelp)(void* _obj)
+EWXWEXPORT(bool,wxContextHelp_EndContextHelp)(wxContextHelp* self)
 {
-	return (int)((wxContextHelp*)_obj)->EndContextHelp();
-}
-	
-
-EWXWEXPORT(void*,wxContextHelpButton_Create)(wxWindow* parent,int id,int x,int y,int w,int h,long style)
-{
-	return (void*)new wxContextHelpButton(parent, (wxWindowID)id,wxPoint(x, y), wxSize(w, h), style);
+	return self->EndContextHelp();
 }
 
 
-EWXWEXPORT(void*,wxHelpProvider_Get)()
+EWXWEXPORT(wxContextHelpButton*,wxContextHelpButton_Create)(wxWindow* parent,int id,int x,int y,int w,int h,long style)
 {
-	return (void*)wxHelpProvider::Get();
+	return new wxContextHelpButton(parent, (wxWindowID)id,wxPoint(x, y), wxSize(w, h), style);
+}
+
+
+EWXWEXPORT(wxHelpProvider*,wxHelpProvider_Get)()
+{
+	return wxHelpProvider::Get();
 }
 	
-EWXWEXPORT(void*,wxHelpProvider_Set)(void* helpProvider)
+EWXWEXPORT(wxHelpProvider*,wxHelpProvider_Set)(wxHelpProvider* helpProvider)
 {
-	return (void*)wxHelpProvider::Set((wxHelpProvider*)helpProvider);
+	return wxHelpProvider::Set(helpProvider);
 }
 	
 EWXWEXPORT(wxString*,wxHelpProvider_GetHelp)(void* _obj,void* window)
@@ -49,51 +49,51 @@ EWXWEXPORT(wxString*,wxHelpProvider_GetHelp)(void* _obj,void* window)
 	return result;
 }
 	
-EWXWEXPORT(int,wxHelpProvider_ShowHelp)(void* _obj,void* window)
+EWXWEXPORT(bool,wxHelpProvider_ShowHelp)(wxHelpProvider* self,wxWindowBase* window)
 {
-	return (int)((wxHelpProvider*)_obj)->ShowHelp((wxWindowBase*)window);
+	return self->ShowHelp(window);
 }
 	
-EWXWEXPORT(void,wxHelpProvider_AddHelp)(void* _obj,void* window,wxString* text)
+EWXWEXPORT(void,wxHelpProvider_AddHelp)(wxHelpProvider* self,wxWindowBase* window,wxString* text)
 {
-	((wxHelpProvider*)_obj)->AddHelp((wxWindowBase*)window, *text);
+	self->AddHelp(window,*text);
 }
 	
-EWXWEXPORT(void,wxHelpProvider_AddHelpById)(void* _obj,int id,wxString* text)
+EWXWEXPORT(void,wxHelpProvider_AddHelpById)(wxHelpProvider* self,int id,wxString* text)
 {
-	((wxHelpProvider*)_obj)->AddHelp((wxWindowID)id, *text);
+	self->AddHelp((wxWindowID)id,*text);
 }
 	
-EWXWEXPORT(void,wxHelpProvider_RemoveHelp)(void* _obj,void* window)
+EWXWEXPORT(void,wxHelpProvider_RemoveHelp)(wxHelpProvider* self,wxWindowBase* window)
 {
-	((wxHelpProvider*)_obj)->RemoveHelp((wxWindowBase*)window);
+	self->RemoveHelp(window);
 }
 	
-EWXWEXPORT(void,wxHelpProvider_Delete)(void* _obj)
+EWXWEXPORT(void,wxHelpProvider_Delete)(wxHelpProvider* self)
 {
-	delete (wxHelpProvider*)_obj;
+	delete self;
 }
 
 
-EWXWEXPORT(void*,wxSimpleHelpProvider_Create)()
+EWXWEXPORT(wxSimpleHelpProvider*,wxSimpleHelpProvider_Create)()
 {
-	return (void*)new wxSimpleHelpProvider();
+	return new wxSimpleHelpProvider();
 }
 	
 
-EWXWEXPORT(void*,wxHelpControllerHelpProvider_Create)(void* ctr)
+EWXWEXPORT(wxHelpControllerHelpProvider*,wxHelpControllerHelpProvider_Create)(wxHelpControllerBase* ctr)
 {
-	return (void*)new wxHelpControllerHelpProvider((wxHelpControllerBase*)ctr);
+	return new wxHelpControllerHelpProvider(ctr);
 }
 	
-EWXWEXPORT(void,wxHelpControllerHelpProvider_SetHelpController)(void* _obj,void* hc)
+EWXWEXPORT(void,wxHelpControllerHelpProvider_SetHelpController)(wxHelpControllerHelpProvider* self,wxHelpControllerBase* hc)
 {
-	((wxHelpControllerHelpProvider*)_obj)->SetHelpController((wxHelpControllerBase*)hc);
+	self->SetHelpController(hc);
 }
 	
-EWXWEXPORT(void*,wxHelpControllerHelpProvider_GetHelpController)(void* _obj)
+EWXWEXPORT(wxHelpControllerBase*,wxHelpControllerHelpProvider_GetHelpController)(wxHelpControllerHelpProvider* self)
 {
-	return (void*)((wxHelpControllerHelpProvider*)_obj)->GetHelpController();
+	return self->GetHelpController();
 }
 	
 }

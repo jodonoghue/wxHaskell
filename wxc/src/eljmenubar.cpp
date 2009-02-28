@@ -8,97 +8,97 @@ EWXWEXPORT(void*,wxMenuBar_Create)(int _style)
 	return new wxMenuBar(_style);
 }
 	
-EWXWEXPORT(void,wxMenuBar_DeletePointer)(void* _obj)
+EWXWEXPORT(void,wxMenuBar_DeletePointer)(wxMenuBar* self)
 {
-	delete (wxMenuBar*)_obj;
+	delete self;
 }
 	
-EWXWEXPORT(int,wxMenuBar_Append)(wxMenuBar* _obj,wxMenu* menu,wxString* title)
+EWXWEXPORT(bool,wxMenuBar_Append)(wxMenuBar* self,wxMenu* menu,wxString* title)
 {
-	return (int)_obj->Append( menu, *title);
+	return self->Append(menu,*title);
 }
 	
-EWXWEXPORT(int,wxMenuBar_Insert)(wxMenuBar* _obj,int pos,wxMenu* menu,wxString* title)
+EWXWEXPORT(bool,wxMenuBar_Insert)(wxMenuBar* self,int pos,wxMenu* menu,wxString* title)
 {
-	return (int)_obj->Insert((size_t) pos,  menu, *title);
+	return self->Insert((size_t)pos,menu,*title);
 }
 	
-EWXWEXPORT(int,wxMenuBar_GetMenuCount)(wxMenuBar* _obj)
+EWXWEXPORT(int,wxMenuBar_GetMenuCount)(wxMenuBar* self)
 {
-	return (int)_obj->GetMenuCount();
+	return self->GetMenuCount();
 }
 	
-EWXWEXPORT(void*,wxMenuBar_GetMenu)(void* _obj,int pos)
+EWXWEXPORT(wxMenu*,wxMenuBar_GetMenu)(wxMenuBar* self,size_t pos)
 {
-	return (void*)((wxMenuBar*)_obj)->GetMenu((size_t) pos);
+	return self->GetMenu(pos);
 }
 	
-EWXWEXPORT(void*,wxMenuBar_Replace)(void* _obj,int pos,void* menu,wxString* title)
+EWXWEXPORT(void*,wxMenuBar_Replace)(wxMenuBar* self,int pos,wxMenu* menu,wxString* title)
 {
-	return (void*)((wxMenuBar*)_obj)->Replace((size_t) pos, (wxMenu*) menu, *title);
+	return (void*)self->Replace((size_t) pos, menu,*title);
 }
 	
-EWXWEXPORT(void*,wxMenuBar_Remove)(void* _obj,int pos)
+EWXWEXPORT(void*,wxMenuBar_Remove)(wxMenuBar* self,int pos)
 {
-	return (void*)((wxMenuBar*)_obj)->Remove((size_t) pos);
+	return (void*)self->Remove((size_t) pos);
 }
 	
-EWXWEXPORT(void,wxMenuBar_EnableTop)(void* _obj,int pos,int enable)
+EWXWEXPORT(void,wxMenuBar_EnableTop)(wxMenuBar* self,int pos,bool enable)
 {
-	((wxMenuBar*)_obj)->EnableTop((size_t) pos, enable != 0);
+	self->EnableTop((size_t) pos, enable);
 }
 	
-EWXWEXPORT(void,wxMenuBar_SetLabelTop)(void* _obj,int pos,wxString* label)
+EWXWEXPORT(void,wxMenuBar_SetLabelTop)(wxMenuBar* self,int pos,wxString* label)
 {
-	((wxMenuBar*)_obj)->SetLabelTop((size_t) pos, *label);
+	self->SetLabelTop((size_t) pos,*label);
 }
 	
-EWXWEXPORT(wxString*,wxMenuBar_GetLabelTop)(void* _obj,int pos)
+EWXWEXPORT(wxString*,wxMenuBar_GetLabelTop)(wxMenuBar* self,int pos)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenuBar*)_obj)->GetLabelTop((size_t) pos);
+	*result = self->GetLabelTop((size_t) pos);
 	return result;
 }
 	
-EWXWEXPORT(int,wxMenuBar_FindMenuItem)(void* _obj,wxString* menuString,wxString* itemString)
+EWXWEXPORT(int,wxMenuBar_FindMenuItem)(wxMenuBar* self,wxString* menuString,wxString* itemString)
 {
-	return ((wxMenuBar*)_obj)->FindMenuItem(*menuString, *itemString);
+	return self->FindMenuItem(*menuString,*itemString);
 }
 	
-EWXWEXPORT(void*,wxMenuBar_FindItem)(void* _obj,int id)
+EWXWEXPORT(void*,wxMenuBar_FindItem)(wxMenuBar* self,int id)
 {
 	wxMenu* _foo = new wxMenu;
-	return (void*)((wxMenuBar*)_obj)->FindItem(id, &_foo);
+	return (void*)self->FindItem(id, &_foo);
 }
 	
-EWXWEXPORT(int,wxMenuBar_FindMenu)(void* _obj,wxString* title)
+EWXWEXPORT(int,wxMenuBar_FindMenu)(wxMenuBar* self,wxString* title)
 {
-	return ((wxMenuBar*)_obj)->FindMenu(*title);
+	return self->FindMenu(*title);
 }
 	
-EWXWEXPORT(void,wxMenuBar_EnableItem)(void* _obj,int id,int enable)
+EWXWEXPORT(void,wxMenuBar_EnableItem)(wxMenuBar* self,int id,bool enable)
 {
-	((wxMenuBar*)_obj)->Enable(id, enable != 0);
+	self->Enable(id, enable);
 }
 	
-EWXWEXPORT(void,wxMenuBar_Check)(void* _obj,int id,int check)
+EWXWEXPORT(void,wxMenuBar_Check)(wxMenuBar* self,int id,bool check)
 {
-	((wxMenuBar*)_obj)->Check(id, check != 0);
+	self->Check(id, check);
 }
 	
-EWXWEXPORT(int,wxMenuBar_IsChecked)(wxMenuBar* _obj,int id)
+EWXWEXPORT(bool,wxMenuBar_IsChecked)(wxMenuBar* self,int id)
 {
-	return (int)_obj->IsChecked(id);
+	return self->IsChecked(id);
 }
 	
-EWXWEXPORT(int,wxMenuBar_IsEnabled)(wxMenuBar* _obj,int id)
+EWXWEXPORT(bool,wxMenuBar_IsEnabled)(wxMenuBar* self,int id)
 {
-	return (int)_obj->IsEnabled(id);
+	return self->IsEnabled(id);
 }
 	
-EWXWEXPORT(void,wxMenuBar_SetItemLabel)(void* _obj,int id,wxString* label)
+EWXWEXPORT(void,wxMenuBar_SetItemLabel)(wxMenuBar* self,int id,wxString* label)
 {
-	((wxMenuBar*)_obj)->SetLabel(id, *label);
+	self->SetLabel(id,*label);
 }
 	
 EWXWEXPORT(wxString*,wxMenuBar_GetLabel)(void* _obj,int id)
@@ -108,9 +108,9 @@ EWXWEXPORT(wxString*,wxMenuBar_GetLabel)(void* _obj,int id)
 	return result;
 }
 	
-EWXWEXPORT(void,wxMenuBar_SetHelpString)(void* _obj,int id,wxString* helpString)
+EWXWEXPORT(void,wxMenuBar_SetHelpString)(wxMenuBar* self,int id,wxString* helpString)
 {
-	((wxMenuBar*)_obj)->SetHelpString(id, *helpString);
+	self->SetHelpString(id,*helpString);
 }
 	
 EWXWEXPORT(wxString*,wxMenuBar_GetHelpString)(void* _obj,int id)
@@ -120,14 +120,14 @@ EWXWEXPORT(wxString*,wxMenuBar_GetHelpString)(void* _obj,int id)
 	return result;
 }
 	
-EWXWEXPORT(void,wxMenuBar_Enable)(wxMenuBar* _obj,int enable)
+EWXWEXPORT(void,wxMenuBar_Enable)(wxMenuBar* self,bool enable)
 {
-	_obj->Enable(enable != 0);
+	self->Enable(enable);
 }
 	
-EWXWEXPORT(void,wxMenuBar_SetLabel)(void* _obj,wxString* s)
+EWXWEXPORT(void,wxMenuBar_SetLabel)(wxMenuBar* self,wxString* s)
 {
-	((wxMenuBar*)_obj)->SetLabel(*s);
+	self->SetLabel(*s);
 }
 	
 }

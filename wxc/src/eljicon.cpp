@@ -5,97 +5,97 @@ extern "C"
 
 EWXWEXPORT(void*,wxIcon_CreateDefault)()
 {
-	return (void*) new wxIcon();
+	return (void*)new wxIcon();
 }
 
-EWXWEXPORT(void,wxIcon_Delete)(void* _obj)
+EWXWEXPORT(void,wxIcon_Delete)(wxIcon* self)
 {
-	delete (wxIcon*)_obj;
+	delete self;
 }
 
 EWXWEXPORT(void*,wxIcon_FromRaw)(void* data,int width,int height)
 {
 #ifdef __WIN32__
-	return (void*) new wxIcon((const wxChar*) data, wxBITMAP_TYPE_ICO, width, height);
+	return (void*)new wxIcon((const wxChar*)data, wxBITMAP_TYPE_ICO, width, height);
 #else
-	return (void*) new wxIcon((const wxChar*) data, wxBITMAP_TYPE_ANY, width, height);
+	return (void*)new wxIcon((const wxChar*)data, wxBITMAP_TYPE_ANY, width, height);
 #endif
 }
 
 EWXWEXPORT(void*,wxIcon_FromXPM)(void* data)
 {
-	return (void*) new wxIcon((const wxChar*) data);
+	return (void*)new wxIcon((const wxChar*)data);
 }
 
 EWXWEXPORT(void*,wxIcon_CreateLoad)(wxString* name,long type,int width,int height)
 {
-	return (void*) new wxIcon(*name, (wxBitmapType)type, width, height);
+	return (void*)new wxIcon(*name, (wxBitmapType)type, width, height);
 }
 
-EWXWEXPORT(bool,wxIcon_Load)(wxIcon* _obj,wxString* name,long type,int width,int height)
+EWXWEXPORT(bool,wxIcon_Load)(wxIcon* self,wxString* name,long type,int width,int height)
 {
 #ifdef __WIN32__
-	return _obj->LoadFile(*name, (wxBitmapType)type, width, height);
+	return self->LoadFile(*name, (wxBitmapType)type, width, height);
 #else
-	return _obj->LoadFile(*name, (wxBitmapType)type);
+	return self->LoadFile(*name, (wxBitmapType)type);
 #endif
 }
 
-EWXWEXPORT(void,wxIcon_CopyFromBitmap)(void* _obj,void* bmp)
+EWXWEXPORT(void,wxIcon_CopyFromBitmap)(wxIcon* self,wxBitmap* bmp)
 {
 #ifdef __WIN32__
-	((wxIcon*)_obj)->CopyFromBitmap(*((wxBitmap*)bmp));
+	self->CopyFromBitmap(*bmp);
 #endif
 }
 
-EWXWEXPORT(bool,wxIcon_IsOk)(wxIcon* _obj)
+EWXWEXPORT(bool,wxIcon_IsOk)(wxIcon* self)
 {
-	return _obj->IsOk();
+	return self->IsOk();
 }
 
-EWXWEXPORT(int,wxIcon_GetDepth)(wxIcon* _obj)
+EWXWEXPORT(int,wxIcon_GetDepth)(wxIcon* self)
 {
-	return _obj->GetDepth();
+	return self->GetDepth();
 }
 
-EWXWEXPORT(int,wxIcon_GetWidth)(wxIcon* _obj)
+EWXWEXPORT(int,wxIcon_GetWidth)(wxIcon* self)
 {
-	return _obj->GetWidth();
+	return self->GetWidth();
 }
 
-EWXWEXPORT(int,wxIcon_GetHeight)(wxIcon* _obj)
+EWXWEXPORT(int,wxIcon_GetHeight)(wxIcon* self)
 {
-	return _obj->GetHeight();
+	return self->GetHeight();
 }
 
 #if (wxVERSION_NUMBER >= 2800)
-EWXWEXPORT(void,wxIcon_SetDepth)(void* _obj,int depth)
+EWXWEXPORT(void,wxIcon_SetDepth)(wxIcon* self,int depth)
 {
-	((wxIcon*)_obj)->SetDepth(depth);
+	self->SetDepth(depth);
 }
 
-EWXWEXPORT(void,wxIcon_SetWidth)(void* _obj,int width)
+EWXWEXPORT(void,wxIcon_SetWidth)(wxIcon* self,int width)
 {
-	((wxIcon*)_obj)->SetWidth(width);
+	self->SetWidth(width);
 }
 
-EWXWEXPORT(void,wxIcon_SetHeight)(void* _obj,int height)
+EWXWEXPORT(void,wxIcon_SetHeight)(wxIcon* self,int height)
 {
-	((wxIcon*)_obj)->SetHeight(height);
+	self->SetHeight(height);
 }
 #endif
 
-EWXWEXPORT(void,wxIcon_Assign)(void* _obj,void* other)
+EWXWEXPORT(void,wxIcon_Assign)(wxIcon* self,void* other)
 {
-	*((wxIcon*)_obj) = *((wxIcon*)other);
+	*self = *((wxIcon*)other);
 }
 
-EWXWEXPORT(bool,wxIcon_IsEqual)(wxIcon* _obj,wxIcon* other)
+EWXWEXPORT(bool,wxIcon_IsEqual)(wxIcon* self,wxIcon* other)
 {
 #if (wxVERSION_NUMBER <= 2800)
-	return *_obj == *other;
+	return *self == *other;
 #else
-	wxIcon* icon1 = _obj;
+	wxIcon* icon1 = self;
 	wxIcon* icon2 = other;
 	wxBitmap bmp1;
 	wxBitmap bmp2;

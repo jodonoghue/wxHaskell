@@ -6,234 +6,234 @@
 extern "C"
 {
 
-EWXWEXPORT(void, wxDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxDC_Delete)(wxDC* self)
 {
-	delete (wxDC*) _obj;
+	delete  self;
 }
 
   // deprecated
-EWXWEXPORT(void, wxDC_BeginDrawing)(void* _obj)
+EWXWEXPORT(void,wxDC_BeginDrawing)(wxDC* self)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	((wxDC*)_obj)->BeginDrawing();
+	self->BeginDrawing();
 #endif
 }
 	
   // deprecated
-EWXWEXPORT(void, wxDC_EndDrawing)(void* _obj)
+EWXWEXPORT(void,wxDC_EndDrawing)(wxDC* self)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	((wxDC*)_obj)->EndDrawing();
+	self->EndDrawing();
 #endif
 }
 	
-EWXWEXPORT(void, wxDC_FloodFill)(void* _obj, int x, int y, void* col, int style)
+EWXWEXPORT(void,wxDC_FloodFill)(wxDC* self,int x,int y,wxColour* col,int style)
 {
-	((wxDC*)_obj)->FloodFill((wxCoord)x, (wxCoord)y, *((wxColour*)col), style);
+	self->FloodFill((wxCoord)x, (wxCoord)y,*col, style);
 }
 	
-EWXWEXPORT(int, wxDC_GetPixel)(void* _obj, int x, int y, void* col)
+EWXWEXPORT(int,wxDC_GetPixel)(wxDC* self,int x,int y,wxColour* col)
 {
-	return ((wxDC*)_obj)->GetPixel((wxCoord)x, (wxCoord)y, (wxColour*)col);
+	return self->GetPixel((wxCoord)x, (wxCoord)y, col);
 }
 	
-EWXWEXPORT(void, wxDC_DrawLine)(void* _obj, int x1, int y1, int x2, int y2)
+EWXWEXPORT(void,wxDC_DrawLine)(wxDC* self,int x1,int y1,int x2,int y2)
 {
-	((wxDC*)_obj)->DrawLine((wxCoord)x1, (wxCoord)y1, (wxCoord)x2, (wxCoord)y2);
+	self->DrawLine((wxCoord)x1, (wxCoord)y1, (wxCoord)x2, (wxCoord)y2);
 }
 	
-EWXWEXPORT(void, wxDC_CrossHair)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxDC_CrossHair)(wxDC* self,int x,int y)
 {
-	((wxDC*)_obj)->CrossHair((wxCoord)x, (wxCoord)y);
+	self->CrossHair((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_DrawArc)(void* _obj, int x1, int y1, int x2, int y2, int xc, int yc)
+EWXWEXPORT(void,wxDC_DrawArc)(wxDC* self,int x1,int y1,int x2,int y2,int xc,int yc)
 {
-	((wxDC*)_obj)->DrawArc((wxCoord)x1, (wxCoord)y1, (wxCoord)x2, (wxCoord)y2, (wxCoord)xc, (wxCoord)yc);
+	self->DrawArc((wxCoord)x1, (wxCoord)y1, (wxCoord)x2, (wxCoord)y2, (wxCoord)xc, (wxCoord)yc);
 }
 	
-EWXWEXPORT(void, wxDC_DrawCheckMark)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(void,wxDC_DrawCheckMark)(wxDC* self,int x,int y,int width,int height)
 {
-	((wxDC*)_obj)->DrawCheckMark((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	self->DrawCheckMark((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(void, wxDC_DrawEllipticArc)(void* _obj, int x, int y, int w, int h, double sa, double ea)
+EWXWEXPORT(void,wxDC_DrawEllipticArc)(wxDC* self,int x,int y,int w,int h,double sa,double ea)
 {
-	((wxDC*)_obj)->DrawEllipticArc((wxCoord)x, (wxCoord)y, (wxCoord)w, (wxCoord)h, sa, ea);
+	self->DrawEllipticArc((wxCoord)x, (wxCoord)y, (wxCoord)w, (wxCoord)h, sa, ea);
 }
 	
-EWXWEXPORT(void, wxDC_DrawPoint)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxDC_DrawPoint)(wxDC* self,int x,int y)
 {
-	((wxDC*)_obj)->DrawPoint((wxCoord)x, (wxCoord)y);
+	self->DrawPoint((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_DrawLines)(void* _obj, int n, void* x, void* y, int xoffset, int yoffset)
+EWXWEXPORT(void,wxDC_DrawLines)(wxDC* self,int n,void* x,void* y,int xoffset,int yoffset)
 {
 	wxPoint* lst = (wxPoint*)malloc (n * sizeof(wxPoint));
 	
 	for (int i = 0; i < n; i++)
 		lst[i] = wxPoint((int)((intptr_t*)x)[i], (int)((intptr_t*)y)[i]);
 	
-	((wxDC*)_obj)->DrawLines(n, lst, (wxCoord)xoffset, (wxCoord)yoffset);
+	self->DrawLines(n, lst, (wxCoord)xoffset, (wxCoord)yoffset);
 	
 	free (lst);
 }
 	
-EWXWEXPORT(void, wxDC_DrawPolygon)(void* _obj, int n, void* x, void* y, int xoffset, int yoffset, int fillStyle)
+EWXWEXPORT(void,wxDC_DrawPolygon)(wxDC* self,int n,void* x,void* y,int xoffset,int yoffset,int fillStyle)
 {
 	wxPoint* lst = (wxPoint*)malloc (n * sizeof(wxPoint));
 	
 	for (int i = 0; i < n; i++)
 		lst[i] = wxPoint(((intptr_t*)x)[i], ((intptr_t*)y)[i]);
 	
-	((wxDC*)_obj)->DrawPolygon(n, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
+	self->DrawPolygon(n, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
 	
 	free (lst);
 }
 	
-EWXWEXPORT(void, wxDC_DrawRectangle)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(void,wxDC_DrawRectangle)(wxDC* self,int x,int y,int width,int height)
 {
-	((wxDC*)_obj)->DrawRectangle((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	self->DrawRectangle((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(void, wxDC_DrawRoundedRectangle)(void* _obj, int x, int y, int width, int height, double radius)
+EWXWEXPORT(void,wxDC_DrawRoundedRectangle)(wxDC* self,int x,int y,int width,int height,double radius)
 {
-	((wxDC*)_obj)->DrawRoundedRectangle((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height, radius);
+	self->DrawRoundedRectangle((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height, radius);
 }
 	
-EWXWEXPORT(void, wxDC_DrawCircle)(void* _obj, int x, int y, int radius)
+EWXWEXPORT(void,wxDC_DrawCircle)(wxDC* self,int x,int y,int radius)
 {
-	((wxDC*)_obj)->DrawCircle((wxCoord)x, (wxCoord)y, (wxCoord)radius);
+	self->DrawCircle((wxCoord)x, (wxCoord)y, (wxCoord)radius);
 }
 	
-EWXWEXPORT(void, wxDC_DrawEllipse)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(void,wxDC_DrawEllipse)(wxDC* self,int x,int y,int width,int height)
 {
-	((wxDC*)_obj)->DrawEllipse((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	self->DrawEllipse((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(void, wxDC_DrawIcon)(void* _obj, void* icon, int x, int y)
+EWXWEXPORT(void,wxDC_DrawIcon)(wxDC* self,wxIcon* icon,int x,int y)
 {
-	((wxDC*)_obj)->DrawIcon(*((wxIcon*)icon), (wxCoord)x, (wxCoord)y);
+	self->DrawIcon(*icon, (wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_DrawBitmap)(void* _obj, void* bmp, int x, int y, int useMask)
+EWXWEXPORT(void,wxDC_DrawBitmap)(wxDC* self,wxBitmap* bmp,int x,int y,bool useMask)
 {
-	((wxDC*)_obj)->DrawBitmap(*((wxBitmap*)bmp), (wxCoord)x, (wxCoord)y, useMask != 0);
+	self->DrawBitmap(*bmp, (wxCoord)x, (wxCoord)y, useMask);
 }
 	
-EWXWEXPORT(void,wxDC_DrawText)(void* _obj,wxString* text,int x,int y)
+EWXWEXPORT(void,wxDC_DrawText)(wxDC* self,wxString* text,int x,int y)
 {
-	((wxDC*)_obj)->DrawText(*text, (wxCoord)x, (wxCoord)y);
+	self->DrawText(*text, (wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void,wxDC_DrawRotatedText)(void* _obj,wxString* text,int x,int y,double angle)
+EWXWEXPORT(void,wxDC_DrawRotatedText)(wxDC* self,wxString* text,int x,int y,double angle)
 {
-	((wxDC*)_obj)->DrawRotatedText(*text, (wxCoord)x, (wxCoord)y, angle);
+	self->DrawRotatedText(*text, (wxCoord)x, (wxCoord)y, angle);
 }
 	
-EWXWEXPORT(int, wxDC_Blit)(void* _obj, int xdest, int ydest, int width, int height, void* source, int xsrc, int ysrc, int rop, int useMask)
+EWXWEXPORT(bool,wxDC_Blit)(wxDC* self,int xdest,int ydest,int width,int height,wxDC* source,int xsrc,int ysrc,int rop,bool useMask)
 {
-	return (int)((wxDC*)_obj)->Blit((wxCoord)xdest, (wxCoord)ydest, (wxCoord)width, (wxCoord)height, (wxDC*)source, (wxCoord)xsrc, (wxCoord)ysrc, rop, useMask != 0);
+	return self->Blit((wxCoord)xdest, (wxCoord)ydest, (wxCoord)width, (wxCoord)height, source, (wxCoord)xsrc, (wxCoord)ysrc, rop, useMask);
 }
 	
-EWXWEXPORT(void, wxDC_Clear)(void* _obj)
+EWXWEXPORT(void,wxDC_Clear)(wxDC* self)
 {
-	((wxDC*)_obj)->Clear();
+	self->Clear();
 }
 	
-EWXWEXPORT(void, wxDC_ComputeScaleAndOrigin) (wxDC* dc)
+EWXWEXPORT(void,wxDC_ComputeScaleAndOrigin)(wxDC* dc)
 {
 	dc->ComputeScaleAndOrigin();
 }
 	
-EWXWEXPORT(int,wxDC_StartDoc)(wxDC* _obj,wxString* msg)
+EWXWEXPORT(bool,wxDC_StartDoc)(wxDC* self,wxString* msg)
 {
-	return (int)_obj->StartDoc(*msg);
+	return self->StartDoc(*msg);
 }
 	
-EWXWEXPORT(void, wxDC_EndDoc)(void* _obj)
+EWXWEXPORT(void,wxDC_EndDoc)(wxDC* self)
 {
-	((wxDC*)_obj)->EndDoc();
+	self->EndDoc();
 }
 	
-EWXWEXPORT(void, wxDC_StartPage)(void* _obj)
+EWXWEXPORT(void,wxDC_StartPage)(wxDC* self)
 {
-	((wxDC*)_obj)->StartPage();
+	self->StartPage();
 }
 	
-EWXWEXPORT(void, wxDC_EndPage)(void* _obj)
+EWXWEXPORT(void,wxDC_EndPage)(wxDC* self)
 {
-	((wxDC*)_obj)->EndPage();
+	self->EndPage();
 }
 	
-EWXWEXPORT(void, wxDC_SetFont)(void* _obj, void* font)
+EWXWEXPORT(void,wxDC_SetFont)(wxDC* self,wxFont* font)
 {
-	((wxDC*)_obj)->SetFont(*((wxFont*)font));
+	self->SetFont(*font);
 }
 	
-EWXWEXPORT(void, wxDC_SetPen)(void* _obj, void* pen)
+EWXWEXPORT(void,wxDC_SetPen)(wxDC* self,wxPen* pen)
 {
-	((wxDC*)_obj)->SetPen(*((wxPen*)pen));
+	self->SetPen(*pen);
 }
 	
-EWXWEXPORT(void, wxDC_SetBrush)(void* _obj, void* brush)
+EWXWEXPORT(void,wxDC_SetBrush)(wxDC* self,wxBrush* brush)
 {
-	((wxDC*)_obj)->SetBrush(*((wxBrush*)brush));
+	self->SetBrush(*brush);
 }
 	
-EWXWEXPORT(void, wxDC_SetBackground)(void* _obj, void* brush)
+EWXWEXPORT(void,wxDC_SetBackground)(wxDC* self,wxBrush* brush)
 {
-	((wxDC*)_obj)->SetBackground(*((wxBrush*)brush));
+	self->SetBackground(*brush);
 }
 	
-EWXWEXPORT(void, wxDC_SetBackgroundMode)(void* _obj, int mode)
+EWXWEXPORT(void,wxDC_SetBackgroundMode)(wxDC* self,int mode)
 {
-	((wxDC*)_obj)->SetBackgroundMode(mode);
+	self->SetBackgroundMode(mode);
 }
 	
-EWXWEXPORT(void, wxDC_SetPalette)(void* _obj, void* palette)
+EWXWEXPORT(void,wxDC_SetPalette)(wxDC* self,wxPalette* palette)
 {
-	((wxDC*)_obj)->SetPalette(*((wxPalette*)palette));
+	self->SetPalette(*palette);
 }
 	
-EWXWEXPORT(void, wxDC_SetClippingRegion)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(void,wxDC_SetClippingRegion)(wxDC* self,int x,int y,int width,int height)
 {
-	((wxDC*)_obj)->SetClippingRegion((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	self->SetClippingRegion((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(void, wxDC_SetClippingRegionFromRegion)(void* _obj, void* region)
+EWXWEXPORT(void,wxDC_SetClippingRegionFromRegion)(wxDC* self,wxRegion* region)
 {
-	((wxDC*)_obj)->SetClippingRegion(*((wxRegion*)region));
+	self->SetClippingRegion(*region);
 }
 	
-EWXWEXPORT(void, wxDC_DestroyClippingRegion)(void* _obj)
+EWXWEXPORT(void,wxDC_DestroyClippingRegion)(wxDC* self)
 {
-	((wxDC*)_obj)->DestroyClippingRegion();
+	self->DestroyClippingRegion();
 }
 	
-EWXWEXPORT(void, wxDC_GetClippingBox)(void* _obj, void* x, void* y, void* w, void* h)
+EWXWEXPORT(void,wxDC_GetClippingBox)(wxDC* self,wxCoord* x,wxCoord* y,wxCoord* w,wxCoord* h)
 {
-	((wxDC*)_obj)->GetClippingBox((wxCoord*)x, (wxCoord*)y, (wxCoord*)w, (wxCoord*)h);
+	self->GetClippingBox(x,y,w,h);
 }
 	
-EWXWEXPORT(int, wxDC_GetCharHeight)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_GetCharHeight)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->GetCharHeight();
+	return self->GetCharHeight();
 }
 	
-EWXWEXPORT(int, wxDC_GetCharWidth)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_GetCharWidth)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->GetCharWidth();
+	return self->GetCharWidth();
 }
 	
-EWXWEXPORT(void,wxDC_GetTextExtent)(wxDC* self,wxString* string,void* w,void* h,void* descent,void* externalLeading,void* theFont)
+EWXWEXPORT(void,wxDC_GetTextExtent)(wxDC* self,wxString* string,wxCoord* w,wxCoord* h,wxCoord* descent,wxCoord* externalLeading,wxFont* theFont)
 {
-	self->GetTextExtent(*string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)descent, (wxCoord*)externalLeading, (wxFont*)theFont);
+	self->GetTextExtent(*string,w,h,descent,externalLeading,theFont);
 }
 	
-EWXWEXPORT(void,wxDC_GetMultiLineTextExtent)(wxDC* self,wxString* string,void* w,void* h,void* heightLine,void* theFont)
+EWXWEXPORT(void,wxDC_GetMultiLineTextExtent)(wxDC* self,wxString* string,wxCoord* w,wxCoord* h,wxCoord* heightLine,wxFont* theFont)
 {
-	self->GetMultiLineTextExtent(*string, (wxCoord*)w, (wxCoord*)h, (wxCoord*)heightLine, (wxFont*)theFont);
+	self->GetMultiLineTextExtent(*string, w, h, heightLine, theFont);
 }
 
 EWXWEXPORT(void, wxDC_GetSize)(void* _obj, void* width, void* height)
@@ -246,59 +246,59 @@ EWXWEXPORT(void, wxDC_GetSizeMM)(void* _obj, void* width, void* height)
 	((wxDC*)_obj)->GetSizeMM((int*)width, (int*)height);
 }
 	
-EWXWEXPORT(int, wxDC_DeviceToLogicalX)(void* _obj, int x)
+EWXWEXPORT(wxCoord,wxDC_DeviceToLogicalX)(wxDC* self,wxCoord x)
 {
-	return (int)((wxDC*)_obj)->DeviceToLogicalX((wxCoord)x);
+	return self->DeviceToLogicalX(x);
 }
 	
-EWXWEXPORT(int, wxDC_DeviceToLogicalY)(void* _obj, int y)
+EWXWEXPORT(wxCoord,wxDC_DeviceToLogicalY)(wxDC* self,wxCoord y)
 {
-	return (int)((wxDC*)_obj)->DeviceToLogicalY((wxCoord)y);
+	return self->DeviceToLogicalY(y);
 }
 	
-EWXWEXPORT(int, wxDC_DeviceToLogicalXRel)(void* _obj, int x)
+EWXWEXPORT(wxCoord,wxDC_DeviceToLogicalXRel)(wxDC* self,wxCoord x)
 {
-	return (int)((wxDC*)_obj)->DeviceToLogicalXRel((wxCoord)x);
+	return self->DeviceToLogicalXRel(x);
 }
 	
-EWXWEXPORT(int, wxDC_DeviceToLogicalYRel)(void* _obj, int y)
+EWXWEXPORT(wxCoord,wxDC_DeviceToLogicalYRel)(wxDC* self,int y)
 {
-	return (int)((wxDC*)_obj)->DeviceToLogicalYRel((wxCoord)y);
+	return self->DeviceToLogicalYRel((wxCoord)y);
 }
 	
-EWXWEXPORT(int, wxDC_LogicalToDeviceX)(void* _obj, int x)
+EWXWEXPORT(wxCoord,wxDC_LogicalToDeviceX)(wxDC* self,int x)
 {
-	return (int)((wxDC*)_obj)->LogicalToDeviceX((wxCoord)x);
+	return self->LogicalToDeviceX((wxCoord)x);
 }
 	
-EWXWEXPORT(int, wxDC_LogicalToDeviceY)(void* _obj, int y)
+EWXWEXPORT(wxCoord,wxDC_LogicalToDeviceY)(wxDC* self,int y)
 {
-	return (int)((wxDC*)_obj)->LogicalToDeviceY((wxCoord)y);
+	return self->LogicalToDeviceY((wxCoord)y);
 }
 	
-EWXWEXPORT(int, wxDC_LogicalToDeviceXRel)(void* _obj, int x)
+EWXWEXPORT(wxCoord,wxDC_LogicalToDeviceXRel)(wxDC* self,int x)
 {
-	return (int)((wxDC*)_obj)->LogicalToDeviceXRel((wxCoord)x);
+	return self->LogicalToDeviceXRel((wxCoord)x);
 }
 	
-EWXWEXPORT(int, wxDC_LogicalToDeviceYRel)(void* _obj, int y)
+EWXWEXPORT(wxCoord,wxDC_LogicalToDeviceYRel)(wxDC* self,int y)
 {
-	return (int)((wxDC*)_obj)->LogicalToDeviceYRel((wxCoord)y);
+	return self->LogicalToDeviceYRel((wxCoord)y);
 }
 	
-EWXWEXPORT(int, wxDC_CanDrawBitmap)(void* _obj)
+EWXWEXPORT(bool,wxDC_CanDrawBitmap)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->CanDrawBitmap();
+	return self->CanDrawBitmap();
 }
 	
-EWXWEXPORT(int, wxDC_CanGetTextExtent)(void* _obj)
+EWXWEXPORT(bool,wxDC_CanGetTextExtent)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->CanGetTextExtent();
+	return self->CanGetTextExtent();
 }
 	
-EWXWEXPORT(int, wxDC_GetDepth)(void* _obj)
+EWXWEXPORT(int,wxDC_GetDepth)(wxDC* self)
 {
-	return ((wxDC*)_obj)->GetDepth();
+	return self->GetDepth();
 }
 	
 EWXWEXPORT(void, wxDC_GetPPI)(void* _obj, void* width, void* height)
@@ -308,278 +308,278 @@ EWXWEXPORT(void, wxDC_GetPPI)(void* _obj, void* width, void* height)
 	*((int*)height) = result.y;
 }
 	
-EWXWEXPORT(int, wxDC_Ok)(void* _obj)
+EWXWEXPORT(bool,wxDC_IsOk)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->Ok();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(int, wxDC_GetBackgroundMode)(void* _obj)
+EWXWEXPORT(int,wxDC_GetBackgroundMode)(wxDC* self)
 {
-	return ((wxDC*)_obj)->GetBackgroundMode();
+	return self->GetBackgroundMode();
 }
 	
-EWXWEXPORT(void, wxDC_GetBackground)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetBackground)(wxDC* self,wxBrush* _ref)
 {
-	*((wxBrush*)_ref) = ((wxDC*)_obj)->GetBackground();
+	*_ref = self->GetBackground();
 }
 	
-EWXWEXPORT(void, wxDC_GetBrush)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetBrush)(wxDC* self,wxBrush* _ref)
 {
-	*((wxBrush*)_ref) = ((wxDC*)_obj)->GetBrush();
+	*_ref = self->GetBrush();
 }
 	
-EWXWEXPORT(void, wxDC_GetFont)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetFont)(wxDC* self,wxFont* _ref)
 {
-	*((wxFont*)_ref) = ((wxDC*)_obj)->GetFont();
+	*_ref = self->GetFont();
 }
 	
-EWXWEXPORT(void, wxDC_GetPen)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetPen)(wxDC* self,wxPen* _ref)
 {
-	*((wxPen*)_ref) = ((wxDC*)_obj)->GetPen();
+	*_ref = self->GetPen();
 }
 	
-EWXWEXPORT(void, wxDC_GetTextBackground)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetTextBackground)(wxDC* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxDC*)_obj)->GetTextBackground();
+	*_ref = self->GetTextBackground();
 }
 	
-EWXWEXPORT(void, wxDC_GetTextForeground)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxDC_GetTextForeground)(wxDC* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxDC*)_obj)->GetTextForeground();
+	*_ref = self->GetTextForeground();
 }
 	
-EWXWEXPORT(void, wxDC_SetTextForeground)(void* _obj, void* colour)
+EWXWEXPORT(void,wxDC_SetTextForeground)(wxDC* self,wxColour* colour)
 {
-	((wxDC*)_obj)->SetTextForeground(*((wxColour*)colour));
+	self->SetTextForeground(*colour);
 }
 	
-EWXWEXPORT(void, wxDC_SetTextBackground)(void* _obj, void* colour)
+EWXWEXPORT(void,wxDC_SetTextBackground)(wxDC* self,wxColour* colour)
 {
-	((wxDC*)_obj)->SetTextBackground(*((wxColour*)colour));
+	self->SetTextBackground(*colour);
 }
 	
-EWXWEXPORT(int, wxDC_GetMapMode)(void* _obj)
+EWXWEXPORT(int,wxDC_GetMapMode)(wxDC* self)
 {
-	return ((wxDC*)_obj)->GetMapMode();
+	return self->GetMapMode();
 }
 	
-EWXWEXPORT(void, wxDC_SetMapMode)(void* _obj, int mode)
+EWXWEXPORT(void,wxDC_SetMapMode)(wxDC* self,int mode)
 {
-	((wxDC*)_obj)->SetMapMode(mode);
+	self->SetMapMode(mode);
 }
 	
-EWXWEXPORT(void, wxDC_GetUserScale)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,wxDC_GetUserScale)(wxDC* self,double* x,double* y)
 {
-	((wxDC*)_obj)->GetUserScale((double*)x, (double*)y);
+	self->GetUserScale(x,y);
 }
 	
-EWXWEXPORT(void, wxDC_SetUserScale)(void* _obj, double x, double y)
+EWXWEXPORT(void,wxDC_SetUserScale)(wxDC* self,double x,double y)
 {
-	((wxDC*)_obj)->SetUserScale(x, y);
+	self->SetUserScale(x, y);
 }
 	
-EWXWEXPORT(void, wxDC_GetLogicalScale)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,wxDC_GetLogicalScale)(wxDC* self,double* x,double* y)
 {
-	((wxDC*)_obj)->GetLogicalScale((double*)x, (double*)y);
+	self->GetLogicalScale(x,y);
 }
 	
-EWXWEXPORT(void, wxDC_SetLogicalScale)(void* _obj, double x, double y)
+EWXWEXPORT(void,wxDC_SetLogicalScale)(wxDC* self,double x,double y)
 {
-	((wxDC*)_obj)->SetLogicalScale(x, y);
+	self->SetLogicalScale(x, y);
 }
 	
-EWXWEXPORT(void, wxDC_GetLogicalOrigin)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,wxDC_GetLogicalOrigin)(wxDC* self,wxCoord* x,wxCoord* y)
 {
-	((wxDC*)_obj)->GetLogicalOrigin((wxCoord*)x, (wxCoord*)y);
+	self->GetLogicalOrigin(x,y);
 }
 	
-EWXWEXPORT(void, wxDC_SetLogicalOrigin)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxDC_SetLogicalOrigin)(wxDC* self,int x,int y)
 {
-	((wxDC*)_obj)->SetLogicalOrigin((wxCoord)x, (wxCoord)y);
+	self->SetLogicalOrigin((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_GetDeviceOrigin)(void* _obj, void* x, void* y)
+EWXWEXPORT(void,wxDC_GetDeviceOrigin)(wxDC* self,wxCoord* x,wxCoord* y)
 {
-	((wxDC*)_obj)->GetDeviceOrigin((wxCoord*)x, (wxCoord*)y);
+	self->GetDeviceOrigin(x,y);
 }
 	
-EWXWEXPORT(void, wxDC_SetDeviceOrigin)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxDC_SetDeviceOrigin)(wxDC* self,int x,int y)
 {
-	((wxDC*)_obj)->SetDeviceOrigin((wxCoord)x, (wxCoord)y);
+	self->SetDeviceOrigin((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_SetAxisOrientation)(void* _obj, int xLeftRight, int yBottomUp)
+EWXWEXPORT(void,wxDC_SetAxisOrientation)(wxDC* self,bool xLeftRight,bool yBottomUp)
 {
-	((wxDC*)_obj)->SetAxisOrientation(xLeftRight != 0, yBottomUp != 0);
+	self->SetAxisOrientation(xLeftRight, yBottomUp);
 }
 	
-EWXWEXPORT(int, wxDC_GetLogicalFunction)(void* _obj)
+EWXWEXPORT(int,wxDC_GetLogicalFunction)(wxDC* self)
 {
-	return ((wxDC*)_obj)->GetLogicalFunction();
+	return self->GetLogicalFunction();
 }
 	
-EWXWEXPORT(void, wxDC_SetLogicalFunction)(void* _obj, int function)
+EWXWEXPORT(void,wxDC_SetLogicalFunction)(wxDC* self,int function)
 {
-	((wxDC*)_obj)->SetLogicalFunction(function);
+	self->SetLogicalFunction(function);
 }
 	
-EWXWEXPORT(void, wxDC_CalcBoundingBox)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxDC_CalcBoundingBox)(wxDC* self,int x,int y)
 {
-	((wxDC*)_obj)->CalcBoundingBox((wxCoord)x, (wxCoord)y);
+	self->CalcBoundingBox((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(void, wxDC_ResetBoundingBox)(void* _obj)
+EWXWEXPORT(void,wxDC_ResetBoundingBox)(wxDC* self)
 {
-	((wxDC*)_obj)->ResetBoundingBox();
+	self->ResetBoundingBox();
 }
 	
-EWXWEXPORT(int, wxDC_MinX)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_MinX)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->MinX();
+	return self->MinX();
 }
 	
-EWXWEXPORT(int, wxDC_MaxX)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_MaxX)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->MaxX();
+	return self->MaxX();
 }
 	
-EWXWEXPORT(int, wxDC_MinY)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_MinY)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->MinY();
+	return self->MinY();
 }
 	
-EWXWEXPORT(int, wxDC_MaxY)(void* _obj)
+EWXWEXPORT(wxCoord,wxDC_MaxY)(wxDC* self)
 {
-	return (int)((wxDC*)_obj)->MaxY();
+	return self->MaxY();
 }
 
-EWXWEXPORT(void*, wxWindowDC_Create) (void* win)
+EWXWEXPORT(wxWindowDC*,wxWindowDC_Create)(wxWindow* win)
 {
-	return (void*) new wxWindowDC((wxWindow*)win);
+	return new wxWindowDC(win);
 }
 
-EWXWEXPORT(void, wxWindowDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxWindowDC_Delete)(wxWindowDC* self)
 {
-	delete (wxWindowDC*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void*, wxClientDC_Create) (void* win)
+EWXWEXPORT(wxClientDC*,wxClientDC_Create)(wxWindow* win)
 {
-	return (void*) new wxClientDC((wxWindow*)win);
+	return new wxClientDC(win);
 }
 
-EWXWEXPORT(void, wxClientDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxClientDC_Delete)(wxClientDC* self)
 {
-	delete (wxClientDC*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void*, wxPaintDC_Create) (void* win)
+EWXWEXPORT(wxPaintDC*,wxPaintDC_Create)(wxWindow* win)
 {
-	return (void*) new wxPaintDC((wxWindow*)win);
+	return new wxPaintDC(win);
 }
 
-EWXWEXPORT(void, wxPaintDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxPaintDC_Delete)(wxPaintDC* self)
 {
-	delete (wxPaintDC*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void*, wxMemoryDC_Create) ()
+EWXWEXPORT(wxMemoryDC*,wxMemoryDC_Create)()
 {
-	return (void*) new wxMemoryDC();
+	return new wxMemoryDC();
 }
 
-EWXWEXPORT(void*, wxMemoryDC_CreateCompatible) (void* dc)
+EWXWEXPORT(wxMemoryDC*,wxMemoryDC_CreateCompatible)(wxDC* dc)
 {
-	return (void*) new wxMemoryDC((wxDC*) dc);
+	return new wxMemoryDC(dc);
 }
 
-EWXWEXPORT(wxMemoryDC*, wxMemoryDC_CreateWithBitmap) (wxBitmap* bitmap)
+EWXWEXPORT(wxMemoryDC*,wxMemoryDC_CreateWithBitmap)(wxBitmap* bitmap)
 {
 	return new wxMemoryDC(*bitmap);
 }
 
-EWXWEXPORT(void, wxMemoryDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxMemoryDC_Delete)(wxMemoryDC* self)
 {
-	delete (wxMemoryDC*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxMemoryDC_SelectObject)(void* _obj, void* bitmap)
+EWXWEXPORT(void,wxMemoryDC_SelectObject)(wxMemoryDC* self,wxBitmap* bitmap)
 {
-	((wxMemoryDC*)_obj)->SelectObject(*((wxBitmap*)bitmap));
+	self->SelectObject(*bitmap);
 }
 
-EWXWEXPORT(wxMirrorDC*, wxMirrorDC_Create) (wxDC* dc, int mirror)
+EWXWEXPORT(wxMirrorDC*,wxMirrorDC_Create)(wxDC* dc,bool mirror)
 {
-	return new wxMirrorDC(*dc, mirror != 0);
+	return new wxMirrorDC(*dc, mirror);
 }
 
-EWXWEXPORT(void, wxMirrorDC_Delete) (wxMirrorDC* self)
+EWXWEXPORT(void,wxMirrorDC_Delete)(wxMirrorDC* self)
 {
 	if (self) delete self;
 }
 
-EWXWEXPORT(void*, wxScreenDC_Create) ()
+EWXWEXPORT(wxScreenDC*,wxScreenDC_Create)()
 {
-	return (void*) new wxScreenDC();
+	return new wxScreenDC();
 }
 
-EWXWEXPORT(void, wxScreenDC_Delete) (void* _obj)
+EWXWEXPORT(void,wxScreenDC_Delete)(wxScreenDC* self)
 {
-	delete (wxScreenDC*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxScreenDC_StartDrawingOnTopOfWin)(void* _obj, void* win)
+EWXWEXPORT(bool,wxScreenDC_StartDrawingOnTopOfWin)(wxScreenDC* self,wxWindow* win)
 {
-	return (int)((wxScreenDC*)_obj)->StartDrawingOnTop((wxWindow*)win);
+	return self->StartDrawingOnTop(win);
 }
 	
-EWXWEXPORT(int, wxScreenDC_StartDrawingOnTop)(void* _obj, int l, int t, int w, int h)
+EWXWEXPORT(bool,wxScreenDC_StartDrawingOnTop)(wxScreenDC* self,int l,int t,int w,int h)
 {
 	wxRect rect(l, t, w, h);
-	return (int)((wxScreenDC*)_obj)->StartDrawingOnTop(&rect);
+	return self->StartDrawingOnTop(&rect);
 }
 	
-EWXWEXPORT(int, wxScreenDC_EndDrawingOnTop)(void* _obj)
+EWXWEXPORT(bool,wxScreenDC_EndDrawingOnTop)(wxScreenDC* self)
 {
-	return (int)((wxScreenDC*)_obj)->EndDrawingOnTop();
+	return self->EndDrawingOnTop();
 }
 
-EWXWEXPORT(wxBufferedDC*, wxBufferedDC_CreateByDCAndSize) ( wxDC *dc, int width, int hight, int style )
+EWXWEXPORT(wxBufferedDC*,wxBufferedDC_CreateByDCAndSize)(wxDC* dc,int width,int hight,int style)
 {
 	return new wxBufferedDC(dc, wxSize(width, hight), style);
 }
 
-EWXWEXPORT(wxBufferedDC*, wxBufferedDC_CreateByDCAndBitmap) ( wxDC *dc, wxBitmap* buffer, int style )
+EWXWEXPORT(wxBufferedDC*,wxBufferedDC_CreateByDCAndBitmap)(wxDC* dc,wxBitmap* buffer,int style)
 {
-	return new wxBufferedDC(dc, *buffer, style);
+	return new wxBufferedDC(dc,*buffer, style);
 }
 
-EWXWEXPORT(void, wxBufferedDC_Delete) (wxBufferedDC* self)
+EWXWEXPORT(void,wxBufferedDC_Delete)(wxBufferedDC* self)
 {
 	if (self) delete self;
 }
 
-EWXWEXPORT(wxBufferedPaintDC*, wxBufferedPaintDC_Create) ( wxWindow *window, int style )
+EWXWEXPORT(wxBufferedPaintDC*,wxBufferedPaintDC_Create)(wxWindow* window,int style)
 {
 	return new wxBufferedPaintDC(window, style);
 }
 
-EWXWEXPORT(wxBufferedPaintDC*, wxBufferedPaintDC_CreateWithBitmap) ( wxWindow *window, wxBitmap* buffer, int style )
+EWXWEXPORT(wxBufferedPaintDC*,wxBufferedPaintDC_CreateWithBitmap)(wxWindow* window,wxBitmap* buffer,int style)
 {
-	return new wxBufferedPaintDC(window, *buffer, style);
+	return new wxBufferedPaintDC(window,*buffer, style);
 }
 
-EWXWEXPORT(void, wxBufferedPaintDC_Delete) (wxBufferedPaintDC* self)
+EWXWEXPORT(void,wxBufferedPaintDC_Delete)(wxBufferedPaintDC* self)
 {
 	if (self) delete self;
 }
 
-EWXWEXPORT(wxAutoBufferedPaintDC*, wxAutoBufferedPaintDC_Create) ( wxWindow *window )
+EWXWEXPORT(wxAutoBufferedPaintDC*,wxAutoBufferedPaintDC_Create)(wxWindow* window)
 {
 	return new wxAutoBufferedPaintDC(window);
 }
 
-EWXWEXPORT(void, wxAutoBufferedPaintDC_Delete) (wxAutoBufferedPaintDC* self)
+EWXWEXPORT(void,wxAutoBufferedPaintDC_Delete)(wxAutoBufferedPaintDC* self)
 {
 	if (self) delete self;
 }
@@ -597,19 +597,19 @@ EWXWEXPORT(void*,wxMetafileDC_Create)(wxString* _file)
 #endif
 }
 
-EWXWEXPORT(void*, wxMetafileDC_Close) (void* _obj)
+EWXWEXPORT(void*, wxMetafileDC_Close) (void* self)
 {
 #if defined(__WXGTK__)
 	return NULL;
 #else
-	return (void*)((wxMetafileDC*)_obj)->Close();
+	return (void*)((wxMetafileDC*)self)->Close();
 #endif
 }
 
-EWXWEXPORT(void, wxMetafileDC_Delete) (void* _obj)
+EWXWEXPORT(void, wxMetafileDC_Delete) (void* self)
 {
 #if !defined(__WXGTK__)
-	delete (wxMetafileDC*)_obj;
+	delete (wxMetafileDC*)self;
 #endif
 }
 
@@ -626,37 +626,37 @@ EWXWEXPORT(void*,wxMetafile_Create)(wxString* _file)
 #endif
 }
 
-EWXWEXPORT(int,wxMetafile_SetClipboard)(void* _obj, int width, int height)
+EWXWEXPORT(bool,wxMetafile_SetClipboard)(wxMetafile* self,int width,int height)
 {
 #if defined(__WXGTK__)
-	return 0;
+	return false;
 #else
-	return (int)((wxMetafile*)_obj)->SetClipboard(width, height);
+	return self->SetClipboard(width, height);
 #endif
 }
 	
-EWXWEXPORT(int,wxMetafile_Play)(void* _obj, void* _dc)
+EWXWEXPORT(bool,wxMetafile_Play)(wxMetafile* self,wxDC* _dc)
 {
 #if defined(__WXGTK__)
-	return 0;
+	return false;
 #else
-	return (int)((wxMetafile*)_obj)->Play((wxDC*)_dc);
+	return self->Play(_dc);
 #endif
 }
 	
-EWXWEXPORT(int,wxMetafile_Ok)(void* _obj)
+EWXWEXPORT(bool,wxMetafile_IsOk)(wxMetafile* self)
 {
 #if defined(__WXGTK__)
-	return 0;
+	return false;
 #else
-	return (int)((wxMetafile*)_obj)->Ok();
+	return self->IsOk();
 #endif
 }
 	
-EWXWEXPORT(void, wxMetafile_Delete) (void* _obj)
+EWXWEXPORT(void,wxMetafile_Delete)(wxMetafile* self)
 {
 #if !defined(__WXGTK__)
-	delete (wxMetafile*)_obj;
+	delete self;
 #endif
 }
 

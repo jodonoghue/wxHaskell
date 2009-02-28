@@ -3,9 +3,9 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxDateTime_Create)()
+EWXWEXPORT(wxDateTime*,wxDateTime_Create)()
 {
-	return (void*) new wxDateTime();
+	return new wxDateTime();
 }
 
 EWXWEXPORT(void,wxDateTime_SetCountry)(int country)
@@ -18,9 +18,9 @@ EWXWEXPORT(int,wxDateTime_GetCountry)()
 	return (int)wxDateTime::GetCountry();
 }
 	
-EWXWEXPORT(int,wxDateTime_IsWestEuropeanCountry)(int country)
+EWXWEXPORT(bool,wxDateTime_IsWestEuropeanCountry)(int country)
 {
-	return (int)wxDateTime::IsWestEuropeanCountry((wxDateTime::Country)country);
+	return wxDateTime::IsWestEuropeanCountry((wxDateTime::Country)country);
 }
 	
 EWXWEXPORT(int,wxDateTime_GetCurrentYear)(int cal)
@@ -38,9 +38,9 @@ EWXWEXPORT(int,wxDateTime_GetCurrentMonth)(int cal)
 	return (int)wxDateTime::GetCurrentMonth((wxDateTime::Calendar)cal);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsLeapYear)(int year,int cal)
+EWXWEXPORT(bool,wxDateTime_IsLeapYear)(int year,int cal)
 {
-	return (int)wxDateTime::IsLeapYear(year, (wxDateTime::Calendar)cal);
+	return wxDateTime::IsLeapYear(year, (wxDateTime::Calendar)cal);
 }
 	
 EWXWEXPORT(int,wxDateTime_GetCentury)(int year)
@@ -88,381 +88,381 @@ EWXWEXPORT(wxString*,wxDateTime_GetPmString)()
 	return result;
 }
 	
-EWXWEXPORT(int,wxDateTime_IsDSTApplicable)(int year,int country)
+EWXWEXPORT(bool,wxDateTime_IsDSTApplicable)(int year,int country)
 {
-	return (int)wxDateTime::IsDSTApplicable(year, (wxDateTime::Country)country);
+	return wxDateTime::IsDSTApplicable(year, (wxDateTime::Country)country);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetBeginDST)(int year,int country,void* dt)
+EWXWEXPORT(void,wxDateTime_GetBeginDST)(int year,int country,wxDateTime* dt)
 {
-	*((wxDateTime*)dt) = wxDateTime::GetBeginDST(year, (wxDateTime::Country)country);
+	*dt = wxDateTime::GetBeginDST(year, (wxDateTime::Country)country);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetEndDST)(int year,int country,void* dt)
+EWXWEXPORT(void,wxDateTime_GetEndDST)(int year,int country,wxDateTime* dt)
 {
-	*((wxDateTime*)dt) = wxDateTime::GetEndDST(year, (wxDateTime::Country)country);
+	*dt = wxDateTime::GetEndDST(year, (wxDateTime::Country)country);
 }
 	
-EWXWEXPORT(void,wxDateTime_Now)(void* dt)
+EWXWEXPORT(void,wxDateTime_Now)(wxDateTime* dt)
 {
-	*((wxDateTime*)dt) = wxDateTime::Now();
+	*dt = wxDateTime::Now();
 }
 	
-EWXWEXPORT(void,wxDateTime_UNow)(void* dt)
+EWXWEXPORT(void,wxDateTime_UNow)(wxDateTime* dt)
 {
-	*((wxDateTime*)dt) = wxDateTime::UNow();
+	*dt = wxDateTime::UNow();
 }
 	
-EWXWEXPORT(void,wxDateTime_Today)(void* dt)
+EWXWEXPORT(void,wxDateTime_Today)(wxDateTime* dt)
 {
-	*((wxDateTime*)dt) = wxDateTime::Today();
+	*dt = wxDateTime::Today();
 }
 	
-EWXWEXPORT(void,wxDateTime_SetToCurrent)(void* _obj)
+EWXWEXPORT(void,wxDateTime_SetToCurrent)(wxDateTime* self)
 {
-	((wxDateTime*)_obj)->SetToCurrent();
+	self->SetToCurrent();
 }
 	
-EWXWEXPORT(void,wxDateTime_SetTime)(void* _obj,int hour,int minute,int second,int millisec)
+EWXWEXPORT(void,wxDateTime_SetTime)(wxDateTime* self,int hour,int minute,int second,int millisec)
 {
-	((wxDateTime*)_obj)->Set((wxDateTime::wxDateTime_t)hour, (wxDateTime::wxDateTime_t)minute, (wxDateTime::wxDateTime_t)second, (wxDateTime::wxDateTime_t)millisec);
+	self->Set((wxDateTime::wxDateTime_t)hour, (wxDateTime::wxDateTime_t)minute, (wxDateTime::wxDateTime_t)second, (wxDateTime::wxDateTime_t)millisec);
 }
 	
-EWXWEXPORT(void,wxDateTime_Set)(void* _obj,int day,int month,int year,int hour,int minute,int second,int millisec)
+EWXWEXPORT(void,wxDateTime_Set)(wxDateTime* self,int day,int month,int year,int hour,int minute,int second,int millisec)
 {
-	((wxDateTime*)_obj)->Set((wxDateTime::wxDateTime_t)day, (wxDateTime::Month)month, year, (wxDateTime::wxDateTime_t)hour,  (wxDateTime::wxDateTime_t)minute, (wxDateTime::wxDateTime_t)second, (wxDateTime::wxDateTime_t)millisec);
+	self->Set((wxDateTime::wxDateTime_t)day, (wxDateTime::Month)month, year, (wxDateTime::wxDateTime_t)hour,  (wxDateTime::wxDateTime_t)minute, (wxDateTime::wxDateTime_t)second, (wxDateTime::wxDateTime_t)millisec);
 }
 	
-EWXWEXPORT(void,wxDateTime_ResetTime)(void* _obj)
+EWXWEXPORT(void,wxDateTime_ResetTime)(wxDateTime* self)
 {
-	((wxDateTime*)_obj)->ResetTime();
+	self->ResetTime();
 }
 	
-EWXWEXPORT(void,wxDateTime_SetYear)(void* _obj,int year)
+EWXWEXPORT(void,wxDateTime_SetYear)(wxDateTime* self,int year)
 {
-	((wxDateTime*)_obj)->SetYear(year);
+	self->SetYear(year);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetMonth)(void* _obj,int month)
+EWXWEXPORT(void,wxDateTime_SetMonth)(wxDateTime* self,int month)
 {
-	((wxDateTime*)_obj)->SetMonth((wxDateTime::Month)month);
+	self->SetMonth((wxDateTime::Month)month);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetDay)(void* _obj,int day)
+EWXWEXPORT(void,wxDateTime_SetDay)(wxDateTime* self,int day)
 {
-	((wxDateTime*)_obj)->SetDay((wxDateTime::wxDateTime_t)day);
+	self->SetDay((wxDateTime::wxDateTime_t)day);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetHour)(void* _obj,int hour)
+EWXWEXPORT(void,wxDateTime_SetHour)(wxDateTime* self,int hour)
 {
-	((wxDateTime*)_obj)->SetHour((wxDateTime::wxDateTime_t)hour);
+	self->SetHour((wxDateTime::wxDateTime_t)hour);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetMinute)(void* _obj,int minute)
+EWXWEXPORT(void,wxDateTime_SetMinute)(wxDateTime* self,int minute)
 {
-	((wxDateTime*)_obj)->SetMinute((wxDateTime::wxDateTime_t)minute);
+	self->SetMinute((wxDateTime::wxDateTime_t)minute);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetSecond)(void* _obj,int second)
+EWXWEXPORT(void,wxDateTime_SetSecond)(wxDateTime* self,int second)
 {
-	((wxDateTime*)_obj)->SetSecond((wxDateTime::wxDateTime_t)second);
+	self->SetSecond((wxDateTime::wxDateTime_t)second);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetMillisecond)(void* _obj,int millisecond)
+EWXWEXPORT(void,wxDateTime_SetMillisecond)(wxDateTime* self,int millisecond)
 {
-	((wxDateTime*)_obj)->SetMillisecond((wxDateTime::wxDateTime_t)millisecond);
+	self->SetMillisecond((wxDateTime::wxDateTime_t)millisecond);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetToWeekDayInSameWeek)(void* _obj,int weekday)
+EWXWEXPORT(void,wxDateTime_SetToWeekDayInSameWeek)(wxDateTime* self,int weekday)
 {
-	((wxDateTime*)_obj)->SetToWeekDayInSameWeek((wxDateTime::WeekDay)weekday);
+	self->SetToWeekDayInSameWeek((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetWeekDayInSameWeek)(void* _obj,int weekday,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetWeekDayInSameWeek)(wxDateTime* self,int weekday,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetWeekDayInSameWeek((wxDateTime::WeekDay)weekday);
+	*_ref = self->GetWeekDayInSameWeek((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetToNextWeekDay)(void* _obj,int weekday)
+EWXWEXPORT(void,wxDateTime_SetToNextWeekDay)(wxDateTime* self,int weekday)
 {
-	((wxDateTime*)_obj)->SetToNextWeekDay((wxDateTime::WeekDay)weekday);
+	self->SetToNextWeekDay((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetNextWeekDay)(void* _obj,int weekday,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetNextWeekDay)(wxDateTime* self,int weekday,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetNextWeekDay((wxDateTime::WeekDay)weekday);
+	*_ref = self->GetNextWeekDay((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetToPrevWeekDay)(void* _obj,int weekday)
+EWXWEXPORT(void,wxDateTime_SetToPrevWeekDay)(wxDateTime* self,int weekday)
 {
-	((wxDateTime*)_obj)->SetToPrevWeekDay((wxDateTime::WeekDay)weekday);
+	self->SetToPrevWeekDay((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetPrevWeekDay)(void* _obj,int weekday,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetPrevWeekDay)(wxDateTime* self,int weekday,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetPrevWeekDay((wxDateTime::WeekDay)weekday);
+	*_ref = self->GetPrevWeekDay((wxDateTime::WeekDay)weekday);
 }
 	
-EWXWEXPORT(int,wxDateTime_SetToWeekDay)(void* _obj,int weekday,int n,int month,int year)
+EWXWEXPORT(bool,wxDateTime_SetToWeekDay)(wxDateTime* self,int weekday,int n,int month,int year)
 {
-	return (int)((wxDateTime*)_obj)->SetToWeekDay((wxDateTime::WeekDay)weekday, n, (wxDateTime::Month)month, year);
+	return self->SetToWeekDay((wxDateTime::WeekDay)weekday, n, (wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetWeekDay)(void* _obj,int weekday,int n,int month,int year,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetWeekDay)(wxDateTime* self,int weekday,int n,int month,int year,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetWeekDay((wxDateTime::WeekDay)weekday, n, (wxDateTime::Month)month, year);
+	*_ref = self->GetWeekDay((wxDateTime::WeekDay)weekday, n, (wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(int,wxDateTime_SetToLastWeekDay)(void* _obj,int weekday,int month,int year)
+EWXWEXPORT(bool,wxDateTime_SetToLastWeekDay)(wxDateTime* self,int weekday,int month,int year)
 {
-	return (int)((wxDateTime*)_obj)->SetToLastWeekDay((wxDateTime::WeekDay)weekday, (wxDateTime::Month)month, year);
+	return self->SetToLastWeekDay((wxDateTime::WeekDay)weekday, (wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetLastWeekDay)(void* _obj,int weekday,int month,int year,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetLastWeekDay)(wxDateTime* self,int weekday,int month,int year,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetLastWeekDay((wxDateTime::WeekDay)weekday, (wxDateTime::Month)month, year);
+	*_ref = self->GetLastWeekDay((wxDateTime::WeekDay)weekday, (wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(void,wxDateTime_SetToLastMonthDay)(void* _obj,int month,int year)
+EWXWEXPORT(void,wxDateTime_SetToLastMonthDay)(wxDateTime* self,int month,int year)
 {
-	((wxDateTime*)_obj)->SetToLastMonthDay((wxDateTime::Month)month, year);
+	self->SetToLastMonthDay((wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(void,wxDateTime_GetLastMonthDay)(void* _obj,int month,int year,void* _ref)
+EWXWEXPORT(void,wxDateTime_GetLastMonthDay)(wxDateTime* self,int month,int year,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->GetLastMonthDay((wxDateTime::Month)month, year);
+	*_ref = self->GetLastMonthDay((wxDateTime::Month)month, year);
 }
 	
-EWXWEXPORT(void,wxDateTime_ToTimezone)(void* _obj,int tz,int noDST)
+EWXWEXPORT(void,wxDateTime_ToTimezone)(wxDateTime* self,int tz,bool noDST)
 {
-	((wxDateTime*)_obj)->ToTimezone(wxDateTime::TimeZone((wxDateTime::TZ)tz), noDST != 0);
+	self->ToTimezone(wxDateTime::TimeZone((wxDateTime::TZ)tz), noDST);
 }
 	
-EWXWEXPORT(void,wxDateTime_MakeTimezone)(void* _obj,int tz,int noDST)
+EWXWEXPORT(void,wxDateTime_MakeTimezone)(wxDateTime* self,int tz,bool noDST)
 {
-	((wxDateTime*)_obj)->MakeTimezone(wxDateTime::TimeZone((wxDateTime::TZ)tz), noDST != 0);
+	self->MakeTimezone(wxDateTime::TimeZone((wxDateTime::TZ)tz), noDST);
 }
 	
-EWXWEXPORT(void,wxDateTime_ToGMT)(void* _obj,int noDST)
+EWXWEXPORT(void,wxDateTime_ToGMT)(wxDateTime* self,bool noDST)
 {
-	((wxDateTime*)_obj)->ToGMT(noDST != 0);
+	self->ToGMT(noDST);
 }
 	
-EWXWEXPORT(void,wxDateTime_MakeGMT)(void* _obj,int noDST)
+EWXWEXPORT(void,wxDateTime_MakeGMT)(wxDateTime* self,bool noDST)
 {
-	((wxDateTime*)_obj)->MakeGMT(noDST != 0);
+	self->MakeGMT(noDST);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsDST)(wxDateTime* _obj,int country)
+EWXWEXPORT(int,wxDateTime_IsDST)(wxDateTime* self,int country)
 {
-	return _obj->IsDST((wxDateTime::Country)country);
+	return self->IsDST((wxDateTime::Country)country);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsValid)(wxDateTime* _obj)
+EWXWEXPORT(bool,wxDateTime_IsValid)(wxDateTime* self)
 {
-	return (int)_obj->IsValid();
+	return self->IsValid();
 }
 	
-EWXWEXPORT(time_t,wxDateTime_GetTicks)(void* _obj)
+EWXWEXPORT(time_t,wxDateTime_GetTicks)(wxDateTime* self)
 {
-	return ((wxDateTime*)_obj)->GetTicks();
+	return self->GetTicks();
 }
 	
-EWXWEXPORT(int,wxDateTime_GetYear)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetYear)(wxDateTime* self,int tz)
 {
-	return ((wxDateTime*)_obj)->GetYear(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return self->GetYear(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetMonth)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetMonth)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetMonth(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetMonth(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetDay)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetDay)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetDay(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetDay(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetWeekDayTZ)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetWeekDayTZ)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetWeekDay(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetWeekDay(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetHour)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetHour)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetHour(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetHour(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetMinute)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetMinute)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetMinute(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetMinute(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetSecond)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetSecond)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetSecond(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetSecond(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetMillisecond)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetMillisecond)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetMillisecond(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetMillisecond(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetDayOfYear)(void* _obj,int tz)
+EWXWEXPORT(int,wxDateTime_GetDayOfYear)(wxDateTime* self,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetDayOfYear(wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetDayOfYear(wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetWeekOfYear)(void* _obj,int flags,int tz)
+EWXWEXPORT(int,wxDateTime_GetWeekOfYear)(wxDateTime* self,int flags,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetWeekOfYear((wxDateTime::WeekFlags)flags, wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetWeekOfYear((wxDateTime::WeekFlags)flags, wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_GetWeekOfMonth)(void* _obj,int flags,int tz)
+EWXWEXPORT(int,wxDateTime_GetWeekOfMonth)(wxDateTime* self,int flags,int tz)
 {
-	return (int)((wxDateTime*)_obj)->GetWeekOfMonth((wxDateTime::WeekFlags)flags, wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	return (int)self->GetWeekOfMonth((wxDateTime::WeekFlags)flags, wxDateTime::TimeZone((wxDateTime::TZ)tz));
 }
 	
-EWXWEXPORT(int,wxDateTime_IsWorkDay)(wxDateTime* _obj,int country)
+EWXWEXPORT(bool,wxDateTime_IsWorkDay)(wxDateTime* self,int country)
 {
-	return (int)_obj->IsWorkDay((wxDateTime::Country)country);
+	return self->IsWorkDay((wxDateTime::Country)country);
 }
 	
 /*
-EWXWEXPORT(bool,wxDateTime_IsGregorianDate)(wxDateTime* _obj,int country)
+EWXWEXPORT(bool,wxDateTime_IsGregorianDate)(wxDateTime* self,int country)
 {
-	return _obj->IsGregorianDate((wxDateTime::GregorianAdoption)country);
+	return self->IsGregorianDate((wxDateTime::GregorianAdoption)country);
 }
 */
 	
-EWXWEXPORT(int,wxDateTime_IsEqualTo)(wxDateTime* _obj,wxDateTime* datetime)
+EWXWEXPORT(bool,wxDateTime_IsEqualTo)(wxDateTime* self,wxDateTime* datetime)
 {
-	return (int)_obj->IsEqualTo(*datetime);
+	return self->IsEqualTo(*datetime);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsEarlierThan)(wxDateTime* _obj,wxDateTime* datetime)
+EWXWEXPORT(bool,wxDateTime_IsEarlierThan)(wxDateTime* self,wxDateTime* datetime)
 {
-	return (int)_obj->IsEarlierThan(*datetime);
+	return self->IsEarlierThan(*datetime);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsLaterThan)(wxDateTime* _obj,wxDateTime* datetime)
+EWXWEXPORT(bool,wxDateTime_IsLaterThan)(wxDateTime* self,wxDateTime* datetime)
 {
-	return (int)_obj->IsLaterThan(*datetime);
+	return self->IsLaterThan(*datetime);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsStrictlyBetween)(wxDateTime* _obj,wxDateTime* t1,wxDateTime* t2)
+EWXWEXPORT(bool,wxDateTime_IsStrictlyBetween)(wxDateTime* self,wxDateTime* t1,wxDateTime* t2)
 {
-	return (int)_obj->IsStrictlyBetween(*t1, *t2);
+	return self->IsStrictlyBetween(*t1,*t2);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsBetween)(wxDateTime* _obj,wxDateTime* t1,wxDateTime* t2)
+EWXWEXPORT(bool,wxDateTime_IsBetween)(wxDateTime* self,wxDateTime* t1,wxDateTime* t2)
 {
-	return (int)_obj->IsBetween(*t1, *t2);
+	return self->IsBetween(*t1,*t2);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsSameDate)(wxDateTime* _obj,wxDateTime* dt)
+EWXWEXPORT(bool,wxDateTime_IsSameDate)(wxDateTime* self,wxDateTime* dt)
 {
-	return (int)_obj->IsSameDate(*dt);
+	return self->IsSameDate(*dt);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsSameTime)(wxDateTime* _obj,wxDateTime* dt)
+EWXWEXPORT(bool,wxDateTime_IsSameTime)(wxDateTime* self,wxDateTime* dt)
 {
-	return (int)_obj->IsSameTime(*dt);
+	return self->IsSameTime(*dt);
 }
 	
-EWXWEXPORT(int,wxDateTime_IsEqualUpTo)(wxDateTime* _obj,wxDateTime* dt,wxTimeSpan* ts)
+EWXWEXPORT(bool,wxDateTime_IsEqualUpTo)(wxDateTime* self,wxDateTime* dt,wxTimeSpan* ts)
 {
-	return (int)_obj->IsEqualUpTo(*dt, *ts);
+	return self->IsEqualUpTo(*dt,*ts);
 }
 	
-EWXWEXPORT(void,wxDateTime_AddTime)(void* _obj,void* diff,void* _ref)
+EWXWEXPORT(void,wxDateTime_AddTime)(wxDateTime* self,wxTimeSpan* diff,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->Add(*((wxTimeSpan*)diff));
+	*_ref = self->Add(*diff);
 }
 	
-EWXWEXPORT(void,wxDateTime_SubtractTime)(void* _obj,void* diff,void* _ref)
+EWXWEXPORT(void,wxDateTime_SubtractTime)(wxDateTime* self,wxTimeSpan* diff,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->Subtract(*((wxTimeSpan*)diff));
+	*_ref = self->Subtract(*diff);
 }
 	
-EWXWEXPORT(void,wxDateTime_AddDate)(void* _obj,void* diff,void* _ref)
+EWXWEXPORT(void,wxDateTime_AddDate)(wxDateTime* self,wxDateSpan* diff,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->Add(*((wxDateSpan*)diff));
+	*_ref = self->Add(*diff);
 }
 	
-EWXWEXPORT(void,wxDateTime_SubtractDate)(void* _obj,void* diff,void* _ref)
+EWXWEXPORT(void,wxDateTime_SubtractDate)(wxDateTime* self,wxDateSpan* diff,wxDateTime* _ref)
 {
-	*((wxDateTime*)_ref) = ((wxDateTime*)_obj)->Subtract(*((wxDateSpan*)diff));
+	*_ref = self->Subtract(*diff);
 }
 	
-EWXWEXPORT(void*,wxDateTime_ParseRfc822Date)(void* _obj,void* date)
+EWXWEXPORT(void*,wxDateTime_ParseRfc822Date)(wxDateTime* self,void* date)
 {
-	return (void*)((wxDateTime*)_obj)->ParseRfc822Date((const wxChar*)date);
+	return (void*)self->ParseRfc822Date((const wxChar*)date);
 }
 	
-EWXWEXPORT(void*,wxDateTime_ParseFormat)(void* _obj,void* date,void* format,void* dateDef)
+EWXWEXPORT(void*,wxDateTime_ParseFormat)(wxDateTime* self,void* date,void* format,wxDateTime* dateDef)
 {
-	return (void*)((wxDateTime*)_obj)->ParseFormat((const wxChar*)date, (const wxChar*)format, *((wxDateTime*)dateDef));
+	return (void*)self->ParseFormat((const wxChar*)date, (const wxChar*)format,*dateDef);
 }
 	
-EWXWEXPORT(void*,wxDateTime_ParseDateTime)(void* _obj,void* datetime)
+EWXWEXPORT(void*,wxDateTime_ParseDateTime)(wxDateTime* self,void* datetime)
 {
-	return (void*)((wxDateTime*)_obj)->ParseDateTime((const wxChar*)datetime);
+	return (void*)self->ParseDateTime((const wxChar*)datetime);
 }
 	
-EWXWEXPORT(void*,wxDateTime_ParseDate)(void* _obj,void* date)
+EWXWEXPORT(void*,wxDateTime_ParseDate)(wxDateTime* self,void* date)
 {
-	return (void*)((wxDateTime*)_obj)->ParseDate((const wxChar*)date);
+	return (void*)self->ParseDate((const wxChar*)date);
 }
 	
-EWXWEXPORT(void*,wxDateTime_ParseTime)(void* _obj,void* time)
+EWXWEXPORT(void*,wxDateTime_ParseTime)(wxDateTime* self,void* time)
 {
-	return (void*)((wxDateTime*)_obj)->ParseTime((const wxChar*)time);
+	return (void*)self->ParseTime((const wxChar*)time);
 }
 	
-EWXWEXPORT(wxString*,wxDateTime_Format)(void* _obj,void* format,int tz)
+EWXWEXPORT(wxString*,wxDateTime_Format)(wxDateTime* self,void* format,int tz)
 {
 	wxString *result = new wxString();
-	*result = ((wxDateTime*)_obj)->Format((const wxChar*)format, wxDateTime::TimeZone((wxDateTime::TZ)tz));
+	*result = self->Format((const wxChar*)format, wxDateTime::TimeZone((wxDateTime::TZ)tz));
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxDateTime_FormatDate)(void* _obj)
+EWXWEXPORT(wxString*,wxDateTime_FormatDate)(wxDateTime* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxDateTime*)_obj)->FormatDate();
+	*result = self->FormatDate();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxDateTime_FormatTime)(void* _obj)
+EWXWEXPORT(wxString*,wxDateTime_FormatTime)(wxDateTime* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxDateTime*)_obj)->FormatTime();
+	*result = self->FormatTime();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxDateTime_FormatISODate)(void* _obj)
+EWXWEXPORT(wxString*,wxDateTime_FormatISODate)(wxDateTime* self)
 {
 	wxString *result = new wxString();
-	*result =  ((wxDateTime*)_obj)->FormatISODate();
+	*result =  self->FormatISODate();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxDateTime_FormatISOTime)(void* _obj)
+EWXWEXPORT(wxString*,wxDateTime_FormatISOTime)(wxDateTime* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxDateTime*)_obj)->FormatISOTime();
+	*result = self->FormatISOTime();
 	return result;
 }
 	
-EWXWEXPORT(void*,wxDateTime_wxDateTime)(long hi_long,unsigned long lo_long)
+EWXWEXPORT(wxDateTime*,wxDateTime_wxDateTime)(long hi_long,unsigned long lo_long)
 {
-	return (void*) new wxDateTime(wxLongLong(hi_long, lo_long));
+	return new wxDateTime(wxLongLong(hi_long, lo_long));
 }
 	
-EWXWEXPORT(void,wxDateTime_GetValue)(void* _obj,long* hi_long,unsigned long* lo_long)
+EWXWEXPORT(void,wxDateTime_GetValue)(wxDateTime* self,long* hi_long,unsigned long* lo_long)
 {
-	wxLongLong val = ((wxDateTime*)_obj)->GetValue();
+	wxLongLong val = self->GetValue();
 	*hi_long = val.GetHi();
 	*lo_long = val.GetLo();
 }
@@ -472,14 +472,14 @@ EWXWEXPORT(int,wxDateTime_GetTimeNow)()
 	return (int)wxDateTime::GetTimeNow();
 }
 	
-EWXWEXPORT(void,wxDateTime_AddTimeValues)(void* _obj,int _hrs,int _min,int _sec,int _mls)
+EWXWEXPORT(void,wxDateTime_AddTimeValues)(wxDateTime* self,int _hrs,int _min,int _sec,int _mls)
 {
-	((wxDateTime*)_obj)->Add(wxTimeSpan((long)_hrs, (long)_min, (long)_sec, (long)_mls));
+	self->Add(wxTimeSpan((long)_hrs, (long)_min, (long)_sec, (long)_mls));
 }
 	
-EWXWEXPORT(void,wxDateTime_AddDateValues)(void* _obj,int _yrs,int _mnt,int _wek,int _day)
+EWXWEXPORT(void,wxDateTime_AddDateValues)(wxDateTime* self,int _yrs,int _mnt,int _wek,int _day)
 {
-	((wxDateTime*)_obj)->Add(wxDateSpan((long)_yrs, (long)_mnt, (long)_wek, (long)_day));
+	self->Add(wxDateSpan((long)_yrs, (long)_mnt, (long)_wek, (long)_day));
 }
 	
 }

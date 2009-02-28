@@ -47,7 +47,7 @@ module Graphics.UI.WXCore.Types(
             -- * Basic types
 
             -- ** Booleans
-            , boolFromInt, intFromBool
+            , toCBool, fromCBool
 
             -- ** Colors
             , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk

@@ -3,26 +3,26 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxPen_CreateDefault) ()
+EWXWEXPORT(void*,wxPen_CreateDefault)()
 {
 	return new wxPen();
 }
 
-EWXWEXPORT(void*, wxPen_CreateFromColour) (void* col, int width, int style)
+EWXWEXPORT(void*,wxPen_CreateFromColour)(wxColour* col,int width,int style)
 {
-	return new wxPen(*((wxColour*)col), width, style);
+	return new wxPen(*col, width, style);
 }
 
-EWXWEXPORT(void*, wxPen_CreateFromBitmap) (void* stipple, int width)
+EWXWEXPORT(void*,wxPen_CreateFromBitmap)(wxBitmap* stipple,int width)
 {
 #ifdef __WIN32__
-	return new wxPen(*((wxBitmap*)stipple), width);
+	return new wxPen(*stipple, width);
 #else
 	return NULL;
 #endif
 }
 
-EWXWEXPORT(void*, wxPen_CreateFromStock) (int id)
+EWXWEXPORT(void*,wxPen_CreateFromStock)(int id)
 {
 	switch (id)
 	{
@@ -51,102 +51,102 @@ EWXWEXPORT(void*, wxPen_CreateFromStock) (int id)
 	return NULL;
 }
 
-EWXWEXPORT(void, wxPen_Delete)(void* _obj)
+EWXWEXPORT(void,wxPen_Delete)(void* self)
 {
-	delete (wxPen*)_obj;
+	delete (wxPen*)self;
 }
 
-EWXWEXPORT(void, wxPen_Assign)(void* _obj, void* pen)
+EWXWEXPORT(void,wxPen_Assign)(void* self,void* pen)
 {
-	*((wxPen*)_obj) = *((wxPen*)pen);
+	*((wxPen*)self) = *((wxPen*)pen);
 }
 	
-EWXWEXPORT(int, wxPen_IsEqual)(void* _obj, void* pen)
+EWXWEXPORT(bool,wxPen_IsEqual)(wxPen* self,wxPen* pen)
 {
-	return (int)(*((wxPen*)_obj) == *((wxPen*)pen));
+	return *self == *pen;
 }
 	
-EWXWEXPORT(int, wxPen_Ok)(void* _obj)
+EWXWEXPORT(bool,wxPen_IsOk)(wxPen* self)
 {
-	return (int)((wxPen*)_obj)->Ok();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(void, wxPen_SetColour)(void* _obj, void* col)
+EWXWEXPORT(void,wxPen_SetColour)(void* self,wxColour* col)
 {
-	((wxPen*)_obj)->SetColour(*((wxColour*)col));
+	((wxPen*)self)->SetColour(*col);
 }
 	
-EWXWEXPORT(void, wxPen_SetColourSingle)(void* _obj, char r, char g, char b)
+EWXWEXPORT(void,wxPen_SetColourSingle)(void* self,wxUint8 r,wxUint8 g,wxUint8 b)
 {
-	((wxPen*)_obj)->SetColour((unsigned char)r, (unsigned char)g, (unsigned char)b);
+	((wxPen*)self)->SetColour(r,g,b);
 }
 	
-EWXWEXPORT(void, wxPen_SetWidth)(void* _obj, int width)
+EWXWEXPORT(void,wxPen_SetWidth)(void* self,int width)
 {
-	((wxPen*)_obj)->SetWidth(width);
+	((wxPen*)self)->SetWidth(width);
 }
 	
-EWXWEXPORT(void, wxPen_SetStyle)(void* _obj, int style)
+EWXWEXPORT(void,wxPen_SetStyle)(void* self,int style)
 {
-	((wxPen*)_obj)->SetStyle(style);
+	((wxPen*)self)->SetStyle(style);
 }
 	
-EWXWEXPORT(void, wxPen_SetStipple)(void* _obj, void* stipple)
+EWXWEXPORT(void,wxPen_SetStipple)(void* self,wxBitmap* stipple)
 {
 #ifdef __WIN32__
-	((wxPen*)_obj)->SetStipple(*((wxBitmap*)stipple));
+	((wxPen*)self)->SetStipple(*stipple);
 #endif
 }
 	
-EWXWEXPORT(void, wxPen_SetDashes)(void* _obj, int nb_dashes, void* dash)
+EWXWEXPORT(void,wxPen_SetDashes)(void* self,int nb_dashes,void* dash)
 {
-	((wxPen*)_obj)->SetDashes(nb_dashes, (wxDash*)dash);
+	((wxPen*)self)->SetDashes(nb_dashes, (wxDash*)dash);
 }
 	
-EWXWEXPORT(void, wxPen_SetJoin)(void* _obj, int join)
+EWXWEXPORT(void,wxPen_SetJoin)(void* self,int join)
 {
-	((wxPen*)_obj)->SetJoin(join);
+	((wxPen*)self)->SetJoin(join);
 }
 	
-EWXWEXPORT(void, wxPen_SetCap)(void* _obj, int cap)
+EWXWEXPORT(void,wxPen_SetCap)(void* self,int cap)
 {
-	((wxPen*)_obj)->SetCap(cap);
+	((wxPen*)self)->SetCap(cap);
 }
 	
-EWXWEXPORT(void, wxPen_GetColour)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPen_GetColour)(void* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxPen*)_obj)->GetColour();
+	*_ref = ((wxPen*)self)->GetColour();
 }
 	
-EWXWEXPORT(int, wxPen_GetWidth)(void* _obj)
+EWXWEXPORT(int,wxPen_GetWidth)(void* self)
 {
-	return ((wxPen*)_obj)->GetWidth();
+	return ((wxPen*)self)->GetWidth();
 }
 	
-EWXWEXPORT(int, wxPen_GetStyle)(void* _obj)
+EWXWEXPORT(int,wxPen_GetStyle)(void* self)
 {
-	return ((wxPen*)_obj)->GetStyle();
+	return ((wxPen*)self)->GetStyle();
 }
 	
-EWXWEXPORT(int, wxPen_GetJoin)(void* _obj)
+EWXWEXPORT(int,wxPen_GetJoin)(void* self)
 {
-	return ((wxPen*)_obj)->GetJoin();
+	return ((wxPen*)self)->GetJoin();
 }
 	
-EWXWEXPORT(int, wxPen_GetCap)(void* _obj)
+EWXWEXPORT(int,wxPen_GetCap)(void* self)
 {
-	return ((wxPen*)_obj)->GetCap();
+	return ((wxPen*)self)->GetCap();
 }
 	
-EWXWEXPORT(int, wxPen_GetDashes)(void* _obj, void* ptr)
+EWXWEXPORT(int,wxPen_GetDashes)(void* self,void* ptr)
 {
-	return ((wxPen*)_obj)->GetDashes((wxDash**)ptr);
+	return ((wxPen*)self)->GetDashes((wxDash**)ptr);
 }
 	
-EWXWEXPORT(void, wxPen_GetStipple)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPen_GetStipple)(void* self,wxBitmap* _ref)
 {
 #ifdef __WIN32__
-	*((wxBitmap*)_ref) = *(((wxPen*)_obj)->GetStipple());
+	*_ref = *(((wxPen*)self)->GetStipple());
 #endif
 }
 	

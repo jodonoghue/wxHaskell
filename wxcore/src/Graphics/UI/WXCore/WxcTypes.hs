@@ -30,7 +30,7 @@ module Graphics.UI.WXCore.WxcTypes(
             , EventId
 
             -- * Basic types
-            , intFromBool, boolFromInt
+            , fromBool, toBool
 
             -- ** Point
             , Point, Point2(Point,pointX,pointY), point, pt, pointFromVec, pointFromSize, pointZero, pointNull
@@ -123,6 +123,7 @@ import Foreign.Ptr
 import Foreign.Storable
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
+import Foreign.Marshal.Utils (fromBool, toBool)
 
 {- note: for GHC 5.04, replace the following two imports by "import Foreign.ForeignPtr" -}
 import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
@@ -616,7 +617,7 @@ fromCDouble cd
 type CBool  = CInt
 
 toCBool :: Bool -> CBool
-toCBool b     = toCInt (if b then 1 else 0)
+toCBool = intToCBool . fromBool
 
 withBoolResult :: IO CBool -> IO Bool
 withBoolResult io
@@ -624,17 +625,10 @@ withBoolResult io
        return (fromCBool x)
 
 fromCBool :: CBool -> Bool
-fromCBool cb
-  = (cb /= 0)
+fromCBool  = toBool . cboolToInt
 
-
-intFromBool :: Bool -> Int
-intFromBool b
-  = if b then 1 else 0
-
-boolFromInt :: Int -> Bool
-boolFromInt i
-  = (i/=0)
+foreign import ccall "intToBool" intToCBool :: Int -> CBool
+foreign import ccall "boolToInt" cboolToInt :: CBool -> Int
 
 {-----------------------------------------------------------------------------------------
   CString

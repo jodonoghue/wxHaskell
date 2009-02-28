@@ -19,332 +19,332 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxCommandEvent_Create)(int _typ, int _id)
+EWXWEXPORT(wxCommandEvent*,wxCommandEvent_Create)(int _typ,int _id)
 {
         return new wxCommandEvent((wxEventType)_typ, _id);
 }
 
-EWXWEXPORT(void,wxCommandEvent_Delete)(void* _obj)
+EWXWEXPORT(void,wxCommandEvent_Delete)(wxCommandEvent* self)
 {
-        delete (wxCommandEvent*)_obj;
+        delete self;
 }
 
-EWXWEXPORT(int, wxEvent_GetTimestamp)(void* _obj)
+EWXWEXPORT(int,wxEvent_GetTimestamp)(wxEvent* self)
 {
-        return ((wxEvent*)_obj)->GetTimestamp();
+        return self->GetTimestamp();
 }
 
-EWXWEXPORT(void, wxEvent_Skip)(void* _obj)
+EWXWEXPORT(void,wxEvent_Skip)(wxEvent* self)
 {
-        ((wxEvent*)_obj)->Skip();
+        self->Skip();
 }
 
-EWXWEXPORT(int, wxEvent_GetEventType)(void* _obj)
+EWXWEXPORT(int,wxEvent_GetEventType)(wxEvent* self)
 {
-        return (int)((wxEvent*)_obj)->GetEventType();
+        return (int)self->GetEventType();
 }
 
-EWXWEXPORT(void, wxEvent_SetEventType)(void* _obj, int typ)
+EWXWEXPORT(void,wxEvent_SetEventType)(wxEvent* self,int typ)
 {
-        ((wxEvent*)_obj)->SetEventType((wxEventType) typ);
+        self->SetEventType((wxEventType) typ);
 }
 
-EWXWEXPORT(void*, wxEvent_GetEventObject)(void* _obj)
+EWXWEXPORT(void*,wxEvent_GetEventObject)(wxEvent* self)
 {
-        return (void*)((wxEvent*)_obj)->GetEventObject();
+        return (void*)self->GetEventObject();
 }
 
-EWXWEXPORT(void, wxEvent_SetEventObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxEvent_SetEventObject)(wxEvent* self,wxObject* obj)
 {
-        ((wxEvent*)_obj)->SetEventObject((wxObject*) obj);
+        self->SetEventObject(obj);
 }
 
-EWXWEXPORT(void, wxEvent_SetTimestamp)(void* _obj, int ts)
+EWXWEXPORT(void,wxEvent_SetTimestamp)(wxEvent* self,int ts)
 {
-        ((wxEvent*)_obj)->SetTimestamp((long)ts);
+        self->SetTimestamp((long)ts);
 }
 
-EWXWEXPORT(int, wxEvent_GetId)(void* _obj)
+EWXWEXPORT(int,wxEvent_GetId)(wxEvent* self)
 {
-        return ((wxEvent*)_obj)->GetId();
+        return self->GetId();
 }
 
-EWXWEXPORT(void, wxEvent_SetId)(void* _obj, int Id)
+EWXWEXPORT(void,wxEvent_SetId)(wxEvent* self,int Id)
 {
-        ((wxEvent*)_obj)->SetId(Id);
+        self->SetId(Id);
 }
 
-EWXWEXPORT(int, wxEvent_GetSkipped)(void* _obj)
+EWXWEXPORT(bool,wxEvent_GetSkipped)(wxEvent* self)
 {
-        return (int)((wxEvent*)_obj)->GetSkipped();
+        return self->GetSkipped();
 }
 
-EWXWEXPORT(int, wxEvent_IsCommandEvent)(void* _obj)
+EWXWEXPORT(bool,wxEvent_IsCommandEvent)(wxEvent* self)
 {
-        return (int)((wxEvent*)_obj)->IsCommandEvent();
+        return self->IsCommandEvent();
 }
 
-EWXWEXPORT(void, wxEvent_CopyObject)(void* _obj, void* object_dest)
+EWXWEXPORT(void,wxEvent_CopyObject)(wxEvent* self,wxObject* object_dest)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxEvent*)_obj)->CopyObject(*((wxObject*) object_dest));
+        self->CopyObject(*object_dest);
 #endif
 }
 
-EWXWEXPORT(void, wxEvent_SetCallbackUserData)(void* _obj, wxObject* obj)
+EWXWEXPORT(void,wxEvent_SetCallbackUserData)(wxEvent* self,wxObject* obj)
 {
-        ((wxEvent*)_obj)->m_callbackUserData = (wxObject*) obj;
+        self->m_callbackUserData = obj;
 }
 
-EWXWEXPORT(void*, wxEvent_GetCallbackUserData)(void* _obj)
+EWXWEXPORT(void*,wxEvent_GetCallbackUserData)(wxEvent* self)
 {
-        return (void*)((wxEvent*)_obj)->m_callbackUserData;
+        return (void*)self->m_callbackUserData;
 }
 
-EWXWEXPORT(void, wxCommandEvent_SetClientData)(void* _obj, void* clientData)
+EWXWEXPORT(void,wxCommandEvent_SetClientData)(wxCommandEvent* self,void* clientData)
 {
-        ((wxCommandEvent*)_obj)->SetClientData(clientData);
+        self->SetClientData(clientData);
 }
 
-EWXWEXPORT(void*, wxCommandEvent_GetClientData)(void* _obj)
+EWXWEXPORT(void*,wxCommandEvent_GetClientData)(wxCommandEvent* self)
 {
-        return ((wxCommandEvent*)_obj)->GetClientData();
+        return self->GetClientData();
 }
 
-EWXWEXPORT(void, wxCommandEvent_SetClientObject)(void* _obj, void* clientObject)
+EWXWEXPORT(void,wxCommandEvent_SetClientObject)(wxCommandEvent* self,void* clientObject)
 {
-        ((wxCommandEvent*)_obj)->SetClientObject((wxClientData*) clientObject);
+        self->SetClientObject((wxClientData*)clientObject);
 }
 
-EWXWEXPORT(void*, wxCommandEvent_GetClientObject)(void* _obj)
+EWXWEXPORT(void*,wxCommandEvent_GetClientObject)(wxCommandEvent* self)
 {
-        return (void*)((wxCommandEvent*)_obj)->GetClientObject();
+        return (void*)self->GetClientObject();
 }
 
-EWXWEXPORT(int, wxCommandEvent_GetSelection)(void* _obj)
+EWXWEXPORT(int,wxCommandEvent_GetSelection)(wxCommandEvent* self)
 {
-        return ((wxCommandEvent*)_obj)->GetSelection();
+        return self->GetSelection();
 }
 
-EWXWEXPORT(void,wxCommandEvent_SetString)(void* _obj,wxString* s)
+EWXWEXPORT(void,wxCommandEvent_SetString)(wxCommandEvent* self,wxString* s)
 {
-        ((wxCommandEvent*)_obj)->SetString(*s);
+        self->SetString(*s);
 }
 
-EWXWEXPORT(wxString*,wxCommandEvent_GetString)(void* _obj)
+EWXWEXPORT(wxString*,wxCommandEvent_GetString)(wxCommandEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxCommandEvent*)_obj)->GetString();
+        *result = self->GetString();
         return result;
 }
 
-EWXWEXPORT(int, wxCommandEvent_IsChecked)(void* _obj)
+EWXWEXPORT(bool,wxCommandEvent_IsChecked)(wxCommandEvent* self)
 {
-        return (int)((wxCommandEvent*)_obj)->IsChecked();
+        return self->IsChecked();
 }
 
-EWXWEXPORT(int, wxCommandEvent_IsSelection)(void* _obj)
+EWXWEXPORT(bool,wxCommandEvent_IsSelection)(wxCommandEvent* self)
 {
-        return (int)((wxCommandEvent*)_obj)->IsSelection();
+        return self->IsSelection();
 }
 
-EWXWEXPORT(void, wxCommandEvent_SetExtraLong)(void* _obj, long extraLong)
+EWXWEXPORT(void,wxCommandEvent_SetExtraLong)(wxCommandEvent* self,long extraLong)
 {
-        ((wxCommandEvent*)_obj)->SetExtraLong(extraLong);
+        self->SetExtraLong(extraLong);
 }
 
-EWXWEXPORT(long, wxCommandEvent_GetExtraLong)(void* _obj)
+EWXWEXPORT(long,wxCommandEvent_GetExtraLong)(wxCommandEvent* self)
 {
-        return ((wxCommandEvent*)_obj)->GetExtraLong();
+        return self->GetExtraLong();
 }
 
-EWXWEXPORT(void, wxCommandEvent_SetInt)(void* _obj, int i)
+EWXWEXPORT(void,wxCommandEvent_SetInt)(wxCommandEvent* self,int i)
 {
-        ((wxCommandEvent*)_obj)->SetInt(i);
+        self->SetInt(i);
 }
 
-EWXWEXPORT(long, wxCommandEvent_GetInt)(void* _obj)
+EWXWEXPORT(long,wxCommandEvent_GetInt)(wxCommandEvent* self)
 {
-        return ((wxCommandEvent*)_obj)->GetInt();
+        return self->GetInt();
 }
 
-EWXWEXPORT(void, wxCommandEvent_CopyObject)(void* _obj, void* object_dest)
+EWXWEXPORT(void,wxCommandEvent_CopyObject)(wxCommandEvent* self,wxObject* object_dest)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxCommandEvent*)_obj)->CopyObject(*((wxObject*) object_dest));
+        self->CopyObject(*object_dest);
 #endif
 }
 
-EWXWEXPORT(void, wxNotifyEvent_Veto)(void* _obj)
+EWXWEXPORT(void,wxNotifyEvent_Veto)(wxNotifyEvent* self)
 {
-        ((wxNotifyEvent*)_obj)->Veto();
+        self->Veto();
 }
 
-EWXWEXPORT(void, wxNotifyEvent_Allow)(void* _obj)
+EWXWEXPORT(void,wxNotifyEvent_Allow)(wxNotifyEvent* self)
 {
-        ((wxNotifyEvent*)_obj)->Allow();
+        self->Allow();
 }
 
-EWXWEXPORT(int, wxNotifyEvent_IsAllowed)(void* _obj)
+EWXWEXPORT(bool,wxNotifyEvent_IsAllowed)(wxNotifyEvent* self)
 {
-        return (int)((wxNotifyEvent*)_obj)->IsAllowed();
+        return self->IsAllowed();
 }
 
-EWXWEXPORT(void, wxNotifyEvent_CopyObject)(void* _obj, void* object_dest)
+EWXWEXPORT(void,wxNotifyEvent_CopyObject)(wxNotifyEvent* self,wxObject* object_dest)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxNotifyEvent*)_obj)->CopyObject(*((wxObject*) object_dest));
+        self->CopyObject(*object_dest);
 #endif
 }
 
-EWXWEXPORT(int, wxScrollWinEvent_GetOrientation)(void* _obj)
+EWXWEXPORT(int,wxScrollWinEvent_GetOrientation)(wxScrollWinEvent* self)
 {
-        return ((wxScrollWinEvent*)_obj)->GetOrientation();
+        return self->GetOrientation();
 }
 
-EWXWEXPORT(int, wxScrollWinEvent_GetPosition)(void* _obj)
+EWXWEXPORT(int,wxScrollWinEvent_GetPosition)(wxScrollWinEvent* self)
 {
-        return ((wxScrollWinEvent*)_obj)->GetPosition();
+        return self->GetPosition();
 }
 
-EWXWEXPORT(void, wxScrollWinEvent_SetOrientation)(void* _obj, int orient)
+EWXWEXPORT(void,wxScrollWinEvent_SetOrientation)(wxScrollWinEvent* self,int orient)
 {
-        ((wxScrollWinEvent*)_obj)->SetOrientation(orient);
+        self->SetOrientation(orient);
 }
 
-EWXWEXPORT(void, wxScrollWinEvent_SetPosition)(void* _obj, int pos)
+EWXWEXPORT(void,wxScrollWinEvent_SetPosition)(wxScrollWinEvent* self,int pos)
 {
-        ((wxScrollWinEvent*)_obj)->SetPosition(pos);
+        self->SetPosition(pos);
 }
 
-EWXWEXPORT(int, wxMouseEvent_IsButton)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_IsButton)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->IsButton();
+        return self->IsButton();
 }
 
-EWXWEXPORT(int, wxMouseEvent_ButtonDown)(void* _obj, int but)
+EWXWEXPORT(bool,wxMouseEvent_ButtonDown)(wxMouseEvent* self,int but)
 {
-        return (int)((wxMouseEvent*)_obj)->ButtonDown(but);
+        return self->ButtonDown(but);
 }
 
-EWXWEXPORT(int, wxMouseEvent_ButtonDClick)(void* _obj, int but)
+EWXWEXPORT(bool,wxMouseEvent_ButtonDClick)(wxMouseEvent* self,int but)
 {
-        return (int)((wxMouseEvent*)_obj)->ButtonDClick(but);
+        return self->ButtonDClick(but);
 }
 
-EWXWEXPORT(int, wxMouseEvent_ButtonUp)(void* _obj, int but)
+EWXWEXPORT(bool,wxMouseEvent_ButtonUp)(wxMouseEvent* self,int but)
 {
-        return (int)((wxMouseEvent*)_obj)->ButtonUp(but);
+        return self->ButtonUp(but);
 }
 
-EWXWEXPORT(int, wxMouseEvent_Button)(void* _obj, int but)
+EWXWEXPORT(bool,wxMouseEvent_Button)(wxMouseEvent* self,int but)
 {
-        return (int)((wxMouseEvent*)_obj)->Button(but);
+        return self->Button(but);
 }
 
-EWXWEXPORT(int, wxMouseEvent_ButtonIsDown)(void* _obj, int but)
+EWXWEXPORT(bool,wxMouseEvent_ButtonIsDown)(wxMouseEvent* self,int but)
 {
-        return (int)((wxMouseEvent*)_obj)->ButtonIsDown(but);
+        return self->ButtonIsDown(but);
 }
 
-EWXWEXPORT(int, wxMouseEvent_ControlDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_ControlDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->ControlDown();
+        return self->ControlDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_MetaDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_MetaDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->MetaDown();
+        return self->MetaDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_AltDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_AltDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->AltDown();
+        return self->AltDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_ShiftDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_ShiftDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->ShiftDown();
+        return self->ShiftDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_LeftDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_LeftDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->LeftDown();
+        return self->LeftDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_MiddleDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_MiddleDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->MiddleDown();
+        return self->MiddleDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_RightDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_RightDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->RightDown();
+        return self->RightDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_LeftUp)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_LeftUp)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->LeftUp();
+        return self->LeftUp();
 }
 
-EWXWEXPORT(int, wxMouseEvent_MiddleUp)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_MiddleUp)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->MiddleUp();
+        return self->MiddleUp();
 }
 
-EWXWEXPORT(int, wxMouseEvent_RightUp)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_RightUp)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->RightUp();
+        return self->RightUp();
 }
 
-EWXWEXPORT(int, wxMouseEvent_LeftDClick)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_LeftDClick)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->LeftDClick();
+        return self->LeftDClick();
 }
 
-EWXWEXPORT(int, wxMouseEvent_MiddleDClick)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_MiddleDClick)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->MiddleDClick();
+        return self->MiddleDClick();
 }
 
-EWXWEXPORT(int, wxMouseEvent_RightDClick)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_RightDClick)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->RightDClick();
+        return self->RightDClick();
 }
 
-EWXWEXPORT(int, wxMouseEvent_LeftIsDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_LeftIsDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->LeftIsDown();
+        return self->LeftIsDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_MiddleIsDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_MiddleIsDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->MiddleIsDown();
+        return self->MiddleIsDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_RightIsDown)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_RightIsDown)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->RightIsDown();
+        return self->RightIsDown();
 }
 
-EWXWEXPORT(int, wxMouseEvent_Dragging)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_Dragging)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->Dragging();
+        return self->Dragging();
 }
 
-EWXWEXPORT(int, wxMouseEvent_Moving)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_Moving)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->Moving();
+        return self->Moving();
 }
 
-EWXWEXPORT(int, wxMouseEvent_Entering)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_Entering)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->Entering();
+        return self->Entering();
 }
 
-EWXWEXPORT(int, wxMouseEvent_Leaving)(void* _obj)
+EWXWEXPORT(bool,wxMouseEvent_Leaving)(wxMouseEvent* self)
 {
-        return (int)((wxMouseEvent*)_obj)->Leaving();
+        return self->Leaving();
 }
 
 EWXWEXPORT(void, wxMouseEvent_GetPosition)(void* _obj, int* xpos, int* ypos)
@@ -359,81 +359,86 @@ EWXWEXPORT(void, wxMouseEvent_GetLogicalPosition)(void* _obj, void* dc, int* xpo
         *ypos = pt.y;
 }
 
-EWXWEXPORT(int, wxMouseEvent_GetX)(void* _obj)
+EWXWEXPORT(int,wxMouseEvent_GetX)(wxMouseEvent* self)
 {
-        return ((wxMouseEvent*)_obj)->GetX();
+        return self->GetX();
 }
 
-EWXWEXPORT(int, wxMouseEvent_GetY)(void* _obj)
+EWXWEXPORT(int,wxMouseEvent_GetY)(wxMouseEvent* self)
 {
-        return ((wxMouseEvent*)_obj)->GetY();
+        return self->GetY();
 }
 
-EWXWEXPORT(void, wxMouseEvent_CopyObject)(void* _obj, void* object_dest)
+EWXWEXPORT(void,wxMouseEvent_CopyObject)(wxMouseEvent* self,wxObject* object_dest)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxMouseEvent*)_obj)->CopyObject(*((wxObject*) object_dest));
+        self->CopyObject(*object_dest);
 #endif
 }
 
-EWXWEXPORT(int, wxSetCursorEvent_GetX)(void* _obj)
+EWXWEXPORT(wxCoord,wxSetCursorEvent_GetX)(wxSetCursorEvent* self)
 {
-        return (int)((wxSetCursorEvent*)_obj)->GetX();
+        return self->GetX();
 }
 
-EWXWEXPORT(int, wxSetCursorEvent_GetY)(void* _obj)
+EWXWEXPORT(wxCoord,wxSetCursorEvent_GetY)(wxSetCursorEvent* self)
 {
-        return (int)((wxSetCursorEvent*)_obj)->GetY();
+        return self->GetY();
 }
 
-EWXWEXPORT(void, wxSetCursorEvent_SetCursor)(void* _obj, void* cursor)
+EWXWEXPORT(void,wxSetCursorEvent_SetCursor)(wxSetCursorEvent* self,wxCursor* cursor)
 {
-        ((wxSetCursorEvent*)_obj)->SetCursor(*((wxCursor*)cursor));
+        self->SetCursor(*cursor);
 }
 
-EWXWEXPORT(void*, wxSetCursorEvent_GetCursor)(void* _obj)
+EWXWEXPORT(void*,wxSetCursorEvent_GetCursor)(void* self)
 {
-        return (void*)(&((wxSetCursorEvent*)_obj)->GetCursor());
+        return (void*)(&((wxSetCursorEvent*)self)->GetCursor());
 }
 
-EWXWEXPORT(int, wxSetCursorEvent_HasCursor)(void* _obj)
+EWXWEXPORT(bool,wxSetCursorEvent_HasCursor)(wxSetCursorEvent* self)
 {
-        return (int)((wxSetCursorEvent*)_obj)->HasCursor();
+        return self->HasCursor();
 }
 
-EWXWEXPORT(int, wxKeyEvent_ControlDown)(void* _obj)
+EWXWEXPORT(bool,wxKeyEvent_ControlDown)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->ControlDown();
+        return self->ControlDown();
 }
 
-EWXWEXPORT(int, wxKeyEvent_MetaDown)(void* _obj)
+EWXWEXPORT(bool,wxKeyEvent_MetaDown)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->MetaDown();
+        return self->MetaDown();
 }
 
-EWXWEXPORT(int, wxKeyEvent_AltDown)(void* _obj)
+EWXWEXPORT(bool,wxKeyEvent_AltDown)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->AltDown();
+        return self->AltDown();
 }
 
-EWXWEXPORT(int, wxKeyEvent_ShiftDown)(void* _obj)
+EWXWEXPORT(bool,wxKeyEvent_ShiftDown)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->ShiftDown();
+        return self->ShiftDown();
 }
 
-EWXWEXPORT(int, wxKeyEvent_HasModifiers)(void* _obj)
+EWXWEXPORT(bool,wxKeyEvent_HasModifiers)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->HasModifiers();
+        return self->HasModifiers();
 }
 
-EWXWEXPORT(int, wxKeyEvent_GetKeyCode)(void* _obj)
+EWXWEXPORT(int,wxKeyEvent_GetKeyCode)(wxKeyEvent* self)
 {
-        return ((wxKeyEvent*)_obj)->GetKeyCode();
+        return self->GetKeyCode();
 }
 
-EWXWEXPORT(void, wxKeyEvent_SetKeyCode)(void* _obj, int code)
+EWXWEXPORT(int,wxKeyEvent_GetModifiers)(wxKeyEvent* self)
 {
-        ((wxKeyEvent*)_obj)->m_keyCode = code;
+        return self->GetModifiers();
+}
+
+EWXWEXPORT(void,wxKeyEvent_SetKeyCode)(wxKeyEvent* self,int code)
+{
+        self->m_keyCode = code;
 }
 
 EWXWEXPORT(void, wxKeyEvent_GetPosition)(void* _obj, int* xpos, int* ypos)
@@ -441,20 +446,20 @@ EWXWEXPORT(void, wxKeyEvent_GetPosition)(void* _obj, int* xpos, int* ypos)
         ((wxKeyEvent*)_obj)->GetPosition((wxCoord*) xpos, (wxCoord*) ypos);
 }
 
-EWXWEXPORT(int, wxKeyEvent_GetX)(void* _obj)
+EWXWEXPORT(wxCoord,wxKeyEvent_GetX)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->GetX();
+        return self->GetX();
 }
 
-EWXWEXPORT(int, wxKeyEvent_GetY)(void* _obj)
+EWXWEXPORT(wxCoord,wxKeyEvent_GetY)(wxKeyEvent* self)
 {
-        return (int)((wxKeyEvent*)_obj)->GetY();
+        return self->GetY();
 }
 
-EWXWEXPORT(void, wxKeyEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxKeyEvent_CopyObject)(wxKeyEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxKeyEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
@@ -465,10 +470,10 @@ EWXWEXPORT(void, wxSizeEvent_GetSize)(void* _obj, int* w, int* h)
         *h = sz.y;
 }
 
-EWXWEXPORT(void, wxSizeEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxSizeEvent_CopyObject)(wxSizeEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxSizeEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
@@ -479,100 +484,100 @@ EWXWEXPORT(void, wxMoveEvent_GetPosition)(void* _obj, int* x, int* y)
         *y = pt.y;
 }
 
-EWXWEXPORT(void, wxMoveEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxMoveEvent_CopyObject)(wxMoveEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxMoveEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(void*, wxEraseEvent_GetDC)(void* _obj)
+EWXWEXPORT(void*,wxEraseEvent_GetDC)(void* self)
 {
-        return (void*)((wxEraseEvent*)_obj)->GetDC();
+        return (void*)((wxEraseEvent*)self)->GetDC();
 }
 
-EWXWEXPORT(void, wxEraseEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxEraseEvent_CopyObject)(wxEraseEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxEraseEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(int, wxActivateEvent_GetActive)(void* _obj)
+EWXWEXPORT(bool,wxActivateEvent_GetActive)(wxActivateEvent* self)
 {
-        return (int)((wxActivateEvent*)_obj)->GetActive();
+        return self->GetActive();
 }
 
-EWXWEXPORT(void, wxActivateEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxActivateEvent_CopyObject)(wxActivateEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxActivateEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(int, wxMenuEvent_GetMenuId)(void* _obj)
+EWXWEXPORT(int,wxMenuEvent_GetMenuId)(wxMenuEvent* self)
 {
-        return ((wxMenuEvent*)_obj)->GetMenuId();
+        return self->GetMenuId();
 }
 
-EWXWEXPORT(void, wxMenuEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxMenuEvent_CopyObject)(wxMenuEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxMenuEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(void, wxCloseEvent_SetLoggingOff)(void* _obj, int logOff)
+EWXWEXPORT(void,wxCloseEvent_SetLoggingOff)(wxCloseEvent* self,bool logOff)
 {
-        ((wxCloseEvent*)_obj)->SetLoggingOff(logOff != 0);
+        self->SetLoggingOff(logOff);
 }
 
-EWXWEXPORT(int, wxCloseEvent_GetLoggingOff)(void* _obj)
+EWXWEXPORT(bool,wxCloseEvent_GetLoggingOff)(wxCloseEvent* self)
 {
-        return (int)((wxCloseEvent*)_obj)->GetLoggingOff();
+        return self->GetLoggingOff();
 }
 
-EWXWEXPORT(void, wxCloseEvent_Veto)(void* _obj, int veto)
+EWXWEXPORT(void,wxCloseEvent_Veto)(wxCloseEvent* self,bool veto)
 {
-        ((wxCloseEvent*)_obj)->Veto(veto != 0);
+        self->Veto(veto);
 }
 
-EWXWEXPORT(void, wxCloseEvent_SetCanVeto)(void* _obj, int canVeto)
+EWXWEXPORT(void,wxCloseEvent_SetCanVeto)(wxCloseEvent* self,bool canVeto)
 {
-        ((wxCloseEvent*)_obj)->SetCanVeto(canVeto != 0);
+        self->SetCanVeto(canVeto);
 }
 
-EWXWEXPORT(int, wxCloseEvent_CanVeto)(void* _obj)
+EWXWEXPORT(bool,wxCloseEvent_CanVeto)(wxCloseEvent* self)
 {
-        return (int)((wxCloseEvent*)_obj)->CanVeto();
+        return self->CanVeto();
 }
 
-EWXWEXPORT(int, wxCloseEvent_GetVeto)(void* _obj)
+EWXWEXPORT(bool,wxCloseEvent_GetVeto)(wxCloseEvent* self)
 {
-        return (int)((wxCloseEvent*)_obj)->GetVeto();
+        return self->GetVeto();
 }
 
-EWXWEXPORT(void, wxCloseEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxCloseEvent_CopyObject)(wxCloseEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxCloseEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(void, wxShowEvent_SetShow)(void* _obj, int show)
+EWXWEXPORT(void,wxShowEvent_SetShow)(wxShowEvent* self,bool show)
 {
-        ((wxShowEvent*)_obj)->SetShow(show != 0);
+        self->SetShow(show);
 }
 
-EWXWEXPORT(int, wxShowEvent_GetShow)(void* _obj)
+EWXWEXPORT(bool,wxShowEvent_GetShow)(wxShowEvent* self)
 {
-        return (int)((wxShowEvent*)_obj)->GetShow();
+        return self->GetShow();
 }
 
-EWXWEXPORT(void, wxShowEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxShowEvent_CopyObject)(wxShowEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxShowEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
@@ -583,262 +588,262 @@ EWXWEXPORT(void, wxJoystickEvent_GetPosition)(void* _obj, int* x, int* y)
         *y = pt.y;
 }
 
-EWXWEXPORT(int, wxJoystickEvent_GetZPosition)(void* _obj)
+EWXWEXPORT(int,wxJoystickEvent_GetZPosition)(wxJoystickEvent* self)
 {
-        return ((wxJoystickEvent*)_obj)->GetZPosition();
+        return self->GetZPosition();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_GetButtonState)(void* _obj)
+EWXWEXPORT(int,wxJoystickEvent_GetButtonState)(wxJoystickEvent* self)
 {
-        return ((wxJoystickEvent*)_obj)->GetButtonState();
+        return self->GetButtonState();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_GetButtonChange)(void* _obj)
+EWXWEXPORT(int,wxJoystickEvent_GetButtonChange)(wxJoystickEvent* self)
 {
-        return ((wxJoystickEvent*)_obj)->GetButtonChange();
+        return self->GetButtonChange();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_GetJoystick)(void* _obj)
+EWXWEXPORT(int,wxJoystickEvent_GetJoystick)(wxJoystickEvent* self)
 {
-        return ((wxJoystickEvent*)_obj)->GetJoystick();
+        return self->GetJoystick();
 }
 
-EWXWEXPORT(void, wxJoystickEvent_SetJoystick)(void* _obj, int stick)
+EWXWEXPORT(void,wxJoystickEvent_SetJoystick)(wxJoystickEvent* self,int stick)
 {
-        ((wxJoystickEvent*)_obj)->SetJoystick(stick);
+        self->SetJoystick(stick);
 }
 
-EWXWEXPORT(void, wxJoystickEvent_SetButtonState)(void* _obj, int state)
+EWXWEXPORT(void,wxJoystickEvent_SetButtonState)(wxJoystickEvent* self,int state)
 {
-        ((wxJoystickEvent*)_obj)->SetButtonState(state);
+        self->SetButtonState(state);
 }
 
-EWXWEXPORT(void, wxJoystickEvent_SetButtonChange)(void* _obj, int change)
+EWXWEXPORT(void,wxJoystickEvent_SetButtonChange)(wxJoystickEvent* self,int change)
 {
-        ((wxJoystickEvent*)_obj)->SetButtonChange(change);
+        self->SetButtonChange(change);
 }
 
-EWXWEXPORT(void, wxJoystickEvent_SetPosition)(void* _obj, void* pos)
+EWXWEXPORT(void,wxJoystickEvent_SetPosition)(wxJoystickEvent* self,void* pos)
 {
-        ((wxJoystickEvent*)_obj)->SetPosition(*((wxPoint*)pos));
+        self->SetPosition(*((wxPoint*)pos));
 }
 
-EWXWEXPORT(void, wxJoystickEvent_SetZPosition)(void* _obj, int zPos)
+EWXWEXPORT(void,wxJoystickEvent_SetZPosition)(wxJoystickEvent* self,int zPos)
 {
-        ((wxJoystickEvent*)_obj)->SetZPosition(zPos);
+        self->SetZPosition(zPos);
 }
 
-EWXWEXPORT(int, wxJoystickEvent_IsButton)(void* _obj)
+EWXWEXPORT(bool,wxJoystickEvent_IsButton)(wxJoystickEvent* self)
 {
-        return (int)((wxJoystickEvent*)_obj)->IsButton();
+        return self->IsButton();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_IsMove)(void* _obj)
+EWXWEXPORT(bool,wxJoystickEvent_IsMove)(wxJoystickEvent* self)
 {
-        return (int)((wxJoystickEvent*)_obj)->IsMove();
+        return self->IsMove();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_IsZMove)(void* _obj)
+EWXWEXPORT(bool,wxJoystickEvent_IsZMove)(wxJoystickEvent* self)
 {
-        return (int)((wxJoystickEvent*)_obj)->IsZMove();
+        return self->IsZMove();
 }
 
-EWXWEXPORT(int, wxJoystickEvent_ButtonDown)(void* _obj, int but)
+EWXWEXPORT(bool,wxJoystickEvent_ButtonDown)(wxJoystickEvent* self,int but)
 {
-        return (int)((wxJoystickEvent*)_obj)->ButtonDown(but);
+        return self->ButtonDown(but);
 }
 
-EWXWEXPORT(int, wxJoystickEvent_ButtonUp)(void* _obj, int but)
+EWXWEXPORT(bool,wxJoystickEvent_ButtonUp)(wxJoystickEvent* self,int but)
 {
-        return (int)((wxJoystickEvent*)_obj)->ButtonUp(but);
+        return self->ButtonUp(but);
 }
 
-EWXWEXPORT(int, wxJoystickEvent_ButtonIsDown)(void* _obj, int but)
+EWXWEXPORT(bool,wxJoystickEvent_ButtonIsDown)(wxJoystickEvent* self,int but)
 {
-        return (int)((wxJoystickEvent*)_obj)->ButtonIsDown(but);
+        return self->ButtonIsDown(but);
 }
 
-EWXWEXPORT(void, wxJoystickEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxJoystickEvent_CopyObject)(wxJoystickEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxJoystickEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetChecked)(void* _obj)
+EWXWEXPORT(bool,wxUpdateUIEvent_GetChecked)(wxUpdateUIEvent* self)
 {
-        return (int)((wxUpdateUIEvent*)_obj)->GetChecked();
+        return self->GetChecked();
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetEnabled)(void* _obj)
+EWXWEXPORT(bool,wxUpdateUIEvent_GetEnabled)(wxUpdateUIEvent* self)
 {
-        return (int)((wxUpdateUIEvent*)_obj)->GetEnabled();
+        return self->GetEnabled();
 }
 
-EWXWEXPORT(wxString*,wxUpdateUIEvent_GetText)(void* _obj)
+EWXWEXPORT(wxString*,wxUpdateUIEvent_GetText)(wxUpdateUIEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxUpdateUIEvent*)_obj)->GetText();
+        *result = self->GetText();
         return result;
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetSetText)(void* _obj)
+EWXWEXPORT(bool,wxUpdateUIEvent_GetSetText)(wxUpdateUIEvent* self)
 {
-        return (int)((wxUpdateUIEvent*)_obj)->GetSetText();
+        return self->GetSetText();
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetSetChecked)(void* _obj)
+EWXWEXPORT(bool,wxUpdateUIEvent_GetSetChecked)(wxUpdateUIEvent* self)
 {
-        return (int)((wxUpdateUIEvent*)_obj)->GetSetChecked();
+        return self->GetSetChecked();
 }
 
-EWXWEXPORT(int, wxUpdateUIEvent_GetSetEnabled)(void* _obj)
+EWXWEXPORT(bool,wxUpdateUIEvent_GetSetEnabled)(wxUpdateUIEvent* self)
 {
-        return (int)((wxUpdateUIEvent*)_obj)->GetSetEnabled();
+        return self->GetSetEnabled();
 }
 
-EWXWEXPORT(void, wxUpdateUIEvent_Check)(void* _obj, int check)
+EWXWEXPORT(void,wxUpdateUIEvent_Check)(wxUpdateUIEvent* self,bool check)
 {
-        ((wxUpdateUIEvent*)_obj)->Check(check != 0);
+        self->Check(check);
 }
 
-EWXWEXPORT(void, wxUpdateUIEvent_Enable)(void* _obj, int enable)
+EWXWEXPORT(void,wxUpdateUIEvent_Enable)(wxUpdateUIEvent* self,bool enable)
 {
-        ((wxUpdateUIEvent*)_obj)->Enable(enable != 0);
+        self->Enable(enable);
 }
 
-EWXWEXPORT(void,wxUpdateUIEvent_SetText)(void* _obj,wxString* text)
+EWXWEXPORT(void,wxUpdateUIEvent_SetText)(wxUpdateUIEvent* self,wxString* text)
 {
-        ((wxUpdateUIEvent*)_obj)->SetText(*text);
+        self->SetText(*text);
 }
 
-EWXWEXPORT(void, wxUpdateUIEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxUpdateUIEvent_CopyObject)(wxUpdateUIEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxUpdateUIEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(void, wxPaletteChangedEvent_SetChangedWindow)(void* _obj, void* win)
+EWXWEXPORT(void,wxPaletteChangedEvent_SetChangedWindow)(wxPaletteChangedEvent* self,wxWindow* win)
 {
-        ((wxPaletteChangedEvent*)_obj)->SetChangedWindow((wxWindow*) win);
+        self->SetChangedWindow(win);
 }
 
-EWXWEXPORT(void*, wxPaletteChangedEvent_GetChangedWindow)(void* _obj)
+EWXWEXPORT(void*,wxPaletteChangedEvent_GetChangedWindow)(wxPaletteChangedEvent* self)
 {
-        return (void*)((wxPaletteChangedEvent*)_obj)->GetChangedWindow();
+        return (void*)self->GetChangedWindow();
 }
 
-EWXWEXPORT(void, wxPaletteChangedEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxPaletteChangedEvent_CopyObject)(wxPaletteChangedEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxPaletteChangedEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(void, wxQueryNewPaletteEvent_SetPaletteRealized)(void* _obj, int realized)
+EWXWEXPORT(void,wxQueryNewPaletteEvent_SetPaletteRealized)(wxQueryNewPaletteEvent* self,bool realized)
 {
-        ((wxQueryNewPaletteEvent*)_obj)->SetPaletteRealized(realized != 0);
+        self->SetPaletteRealized(realized);
 }
 
-EWXWEXPORT(int, wxQueryNewPaletteEvent_GetPaletteRealized)(void* _obj)
+EWXWEXPORT(bool,wxQueryNewPaletteEvent_GetPaletteRealized)(wxQueryNewPaletteEvent* self)
 {
-        return (int)((wxQueryNewPaletteEvent*)_obj)->GetPaletteRealized();
+        return self->GetPaletteRealized();
 }
 
-EWXWEXPORT(void, wxQueryNewPaletteEvent_CopyObject)(void* _obj, void* obj)
+EWXWEXPORT(void,wxQueryNewPaletteEvent_CopyObject)(wxQueryNewPaletteEvent* self,wxObject* obj)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxQueryNewPaletteEvent*)_obj)->CopyObject(*((wxObject*)obj));
+        self->CopyObject(*obj);
 #endif
 }
 
-EWXWEXPORT(int, wxNavigationKeyEvent_GetDirection)(void* _obj)
+EWXWEXPORT(bool,wxNavigationKeyEvent_GetDirection)(wxNavigationKeyEvent* self)
 {
-        return (int)((wxNavigationKeyEvent*)_obj)->GetDirection();
+        return self->GetDirection();
 }
 
-EWXWEXPORT(void, wxNavigationKeyEvent_SetDirection)(void* _obj, int bForward)
+EWXWEXPORT(void,wxNavigationKeyEvent_SetDirection)(wxNavigationKeyEvent* self,bool bForward)
 {
-        ((wxNavigationKeyEvent*)_obj)->SetDirection(bForward != 0);
+        self->SetDirection(bForward);
 }
 
-EWXWEXPORT(int, wxNavigationKeyEvent_IsWindowChange)(void* _obj)
+EWXWEXPORT(bool,wxNavigationKeyEvent_IsWindowChange)(wxNavigationKeyEvent* self)
 {
-        return (int)((wxNavigationKeyEvent*)_obj)->IsWindowChange();
+        return self->IsWindowChange();
 }
 
-EWXWEXPORT(void, wxNavigationKeyEvent_SetWindowChange)(void* _obj, int bIs)
+EWXWEXPORT(void,wxNavigationKeyEvent_SetWindowChange)(wxNavigationKeyEvent* self,bool bIs)
 {
-        ((wxNavigationKeyEvent*)_obj)->SetWindowChange(bIs != 0);
+        self->SetWindowChange(bIs);
 }
 
-EWXWEXPORT(int, wxNavigationKeyEvent_ShouldPropagate)(void* _obj)
+EWXWEXPORT(bool,wxNavigationKeyEvent_ShouldPropagate)(wxNavigationKeyEvent* self)
 {
-        return (int)((wxNavigationKeyEvent*)_obj)->ShouldPropagate();
+        return self->ShouldPropagate();
 }
 	
-EWXWEXPORT(void*, wxNavigationKeyEvent_GetCurrentFocus)(void* _obj)
+EWXWEXPORT(void*,wxNavigationKeyEvent_GetCurrentFocus)(wxNavigationKeyEvent* self)
 {
-        return (void*)((wxNavigationKeyEvent*)_obj)->GetCurrentFocus();
+        return (void*) self->GetCurrentFocus();
 }
 
-EWXWEXPORT(void, wxNavigationKeyEvent_SetCurrentFocus)(void* _obj, void* win)
+EWXWEXPORT(void,wxNavigationKeyEvent_SetCurrentFocus)(wxNavigationKeyEvent* self,wxWindow* win)
 {
-        ((wxNavigationKeyEvent*)_obj)->SetCurrentFocus((wxWindow*)win);
+        self->SetCurrentFocus(win);
 }
 
-EWXWEXPORT(void*, wxWindowCreateEvent_GetWindow)(void* _obj)
+EWXWEXPORT(void*,wxWindowCreateEvent_GetWindow)(wxWindowCreateEvent* self)
 {
-        return (void*)((wxWindowCreateEvent*)_obj)->GetWindow();
+        return (void*)self->GetWindow();
 }
 
-EWXWEXPORT(void*, wxWindowDestroyEvent_GetWindow)(void* _obj)
+EWXWEXPORT(void*,wxWindowDestroyEvent_GetWindow)(wxWindowDestroyEvent* self)
 {
-        return (void*)((wxWindowDestroyEvent*)_obj)->GetWindow();
+        return (void*)self->GetWindow();
 }
 
-EWXWEXPORT(void, wxIdleEvent_RequestMore)(void* _obj, int needMore)
+EWXWEXPORT(void,wxIdleEvent_RequestMore)(wxIdleEvent* self,bool needMore)
 {
-        ((wxIdleEvent*)_obj)->RequestMore(needMore != 0);
+        self->RequestMore(needMore);
 }
 
-EWXWEXPORT(int, wxIdleEvent_MoreRequested)(void* _obj)
+EWXWEXPORT(bool,wxIdleEvent_MoreRequested)(wxIdleEvent* self)
 {
-        return (int)((wxIdleEvent*)_obj)->MoreRequested();
+        return self->MoreRequested();
 }
 
-EWXWEXPORT(void, wxIdleEvent_CopyObject)(void* _obj, void* object_dest)
+EWXWEXPORT(void,wxIdleEvent_CopyObject)(wxIdleEvent* self,wxObject* object_dest)
 {
 #if wxVERSION_NUMBER < 2400
-        ((wxIdleEvent*)_obj)->CopyObject(*((wxObject*) object_dest));
+        self->CopyObject(*object_dest);
 #endif
 }
 
-EWXWEXPORT(int, wxListEvent_GetCode)(void* _obj)
+EWXWEXPORT(int,wxListEvent_GetCode)(wxListEvent* self)
 {
 #if wxCHECK_VERSION(2,5,0)
-	return ((wxListEvent*)_obj)->GetKeyCode();
+	return self->GetKeyCode();
 #else
-        return ((wxListEvent*)_obj)->GetCode();
+        return self->GetCode();
 #endif
 }
 
-EWXWEXPORT(int, wxListEvent_GetIndex)(void* _obj)
+EWXWEXPORT(long,wxListEvent_GetIndex)(wxListEvent* self)
 {
-        return (int)((wxListEvent*)_obj)->GetIndex();
+        return self->GetIndex();
 }
-EWXWEXPORT(int, wxListEvent_GetColumn)(void* _obj)
+EWXWEXPORT(int,wxListEvent_GetColumn)(wxListEvent* self)
 {
-        return ((wxListEvent*)_obj)->GetColumn();
+        return self->GetColumn();
 }
 
-EWXWEXPORT(int, wxListEvent_Cancelled)(void* _obj)
+EWXWEXPORT(bool,wxListEvent_Cancelled)(wxListEvent* self)
 {
 #if wxVERSION_NUMBER < 2400
-        return (int)((wxListEvent*)_obj)->Cancelled();
+        return self->Cancelled();
 #else
-        return 0;
+        return false;
 #endif
 }
 
@@ -849,53 +854,53 @@ EWXWEXPORT(void, wxListEvent_GetPoint)(void* _obj, void* x, void* y)
         *((int*)y) = pos.y;
 }
 
-EWXWEXPORT(wxString*,wxListEvent_GetLabel)(void* _obj)
+EWXWEXPORT(wxString*,wxListEvent_GetLabel)(wxListEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxListEvent*)_obj)->GetLabel();
+        *result = self->GetLabel();
         return result;
 }
 
-EWXWEXPORT(wxString*,wxListEvent_GetText)(void* _obj)
+EWXWEXPORT(wxString*,wxListEvent_GetText)(wxListEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxListEvent*)_obj)->GetText();
+        *result = self->GetText();
         return result;
 }
 
-EWXWEXPORT(int, wxListEvent_GetImage)(void* _obj)
+EWXWEXPORT(int,wxListEvent_GetImage)(wxListEvent* self)
 {
-        return ((wxListEvent*)_obj)->GetImage();
+        return self->GetImage();
 }
 
-EWXWEXPORT(int, wxListEvent_GetData)(void* _obj)
+EWXWEXPORT(long,wxListEvent_GetData)(wxListEvent* self)
 {
-        return (int)((wxListEvent*)_obj)->GetData();
+        return self->GetData();
 }
 
-EWXWEXPORT(int, wxListEvent_GetMask)(void* _obj)
+EWXWEXPORT(long,wxListEvent_GetMask)(wxListEvent* self)
 {
-        return (int)((wxListEvent*)_obj)->GetMask();
+        return self->GetMask();
 }
 
-EWXWEXPORT(void, wxListEvent_GetItem)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxListEvent_GetItem)(wxListEvent* self,void* _ref)
 {
 #if wxVERSION_NUMBER < 2400
-        *((wxListItem*)_ref) = ((wxListEvent*)_obj)->GetItem();
+        *((wxListItem*)_ref) = self->GetItem();
 #else
-        wxListItem* ret = new wxListItem(((wxListEvent*)_obj)->GetItem());
+        wxListItem* ret = new wxListItem(self->GetItem());
         *((void**)_ref) = (void*)ret;
 #endif
 }
 
-EWXWEXPORT(void, wxTreeEvent_GetItem)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxTreeEvent_GetItem)(wxTreeEvent* self,wxTreeItemId* _ref)
 {
-        *((wxTreeItemId*)_ref) = ((wxTreeEvent*)_obj)->GetItem();
+        *_ref = self->GetItem();
 }
 
-EWXWEXPORT(void, wxTreeEvent_GetOldItem)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxTreeEvent_GetOldItem)(wxTreeEvent* self,wxTreeItemId* _ref)
 {
-        *((wxTreeItemId*)_ref) = ((wxTreeEvent*)_obj)->GetOldItem();
+        *_ref = self->GetOldItem();
 }
 
 EWXWEXPORT(void, wxTreeEvent_GetPoint)(void* _obj, void* x, void* y)
@@ -905,52 +910,52 @@ EWXWEXPORT(void, wxTreeEvent_GetPoint)(void* _obj, void* x, void* y)
         *((int*)y) = pos.y;
 }
 
-EWXWEXPORT(int, wxTreeEvent_GetCode)(void* _obj)
+EWXWEXPORT(int,wxTreeEvent_GetCode)(wxTreeEvent* self)
 {
-        return ((wxTreeEvent*)_obj)->GetKeyCode();
+        return self->GetKeyCode();
 }
 
-EWXWEXPORT(wxString*,wxTreeEvent_GetLabel)(void* _obj)
+EWXWEXPORT(wxString*,wxTreeEvent_GetLabel)(wxTreeEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxTreeEvent*)_obj)->GetLabel();
+        *result = self->GetLabel();
         return result;
 }
 
-EWXWEXPORT(int, wxSpinEvent_GetPosition)(void* _obj)
+EWXWEXPORT(int,wxSpinEvent_GetPosition)(wxSpinEvent* self)
 {
-        return ((wxSpinEvent*)_obj)->GetPosition();
+        return self->GetPosition();
 }
 
-EWXWEXPORT(void, wxSpinEvent_SetPosition)(void* _obj, int pos)
+EWXWEXPORT(void,wxSpinEvent_SetPosition)(wxSpinEvent* self,int pos)
 {
-        ((wxSpinEvent*)_obj)->SetPosition(pos);
+        self->SetPosition(pos);
 }
 
-EWXWEXPORT(int, wxTimerEvent_GetInterval)(void* _obj)
+EWXWEXPORT(int,wxTimerEvent_GetInterval)(wxTimerEvent* self)
 {
-        return ((wxTimerEvent*)_obj)->GetInterval();
+        return self->GetInterval();
 }
 
-EWXWEXPORT(int, wxCalendarEvent_GetWeekDay)(void* _obj)
+EWXWEXPORT(int,wxCalendarEvent_GetWeekDay)(wxCalendarEvent* self)
 {
-        return ((wxCalendarEvent*)_obj)->GetWeekDay();
+        return self->GetWeekDay();
 }
 
-EWXWEXPORT(void, wxCalendarEvent_GetDate)(void* _obj, void* _dte)
+EWXWEXPORT(void,wxCalendarEvent_GetDate)(wxCalendarEvent* self,wxDateTime* _dte)
 {
-        *((wxDateTime*)_dte) = ((wxCalendarEvent*)_obj)->GetDate();
+        *_dte = self->GetDate();
 }
 
 
-EWXWEXPORT(int, wxScrollEvent_GetOrientation)(void* _obj)
+EWXWEXPORT(int,wxScrollEvent_GetOrientation)(wxScrollEvent* self)
 {
-        return ((wxScrollEvent*)_obj)->GetOrientation();
+        return self->GetOrientation();
 }
 
-EWXWEXPORT(int, wxScrollEvent_GetPosition)(void* _obj)
+EWXWEXPORT(int,wxScrollEvent_GetPosition)(wxScrollEvent* self)
 {
-        return ((wxScrollEvent*)_obj)->GetPosition();
+        return self->GetPosition();
 }
 
 EWXWEXPORT(void,wxHelpEvent_GetPosition)(void* _obj, void* x, void* y)
@@ -960,33 +965,33 @@ EWXWEXPORT(void,wxHelpEvent_GetPosition)(void* _obj, void* x, void* y)
         *((int*)y) = pos.y;
 }
 
-EWXWEXPORT(void,wxHelpEvent_SetPosition)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxHelpEvent_SetPosition)(wxHelpEvent* self,int x,int y)
 {
-        ((wxHelpEvent*)_obj)->SetPosition(wxPoint(x, y));
+        self->SetPosition(wxPoint(x, y));
 }
 
-EWXWEXPORT(wxString*,wxHelpEvent_GetLink)(void* _obj)
+EWXWEXPORT(wxString*,wxHelpEvent_GetLink)(wxHelpEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxHelpEvent*)_obj)->GetLink();
+        *result = self->GetLink();
         return result;
 }
 
-EWXWEXPORT(void,wxHelpEvent_SetLink)(void* _obj,wxString* link)
+EWXWEXPORT(void,wxHelpEvent_SetLink)(wxHelpEvent* self,wxString* link)
 {
-        ((wxHelpEvent*)_obj)->SetLink(*link);
+        self->SetLink(*link);
 }
 
-EWXWEXPORT(wxString*,wxHelpEvent_GetTarget)(void* _obj)
+EWXWEXPORT(wxString*,wxHelpEvent_GetTarget)(wxHelpEvent* self)
 {
         wxString *result = new wxString();
-        *result = ((wxHelpEvent*)_obj)->GetTarget();
+        *result = self->GetTarget();
         return result;
 }
 
-EWXWEXPORT(void,wxHelpEvent_SetTarget)(void* _obj,wxString* target)
+EWXWEXPORT(void,wxHelpEvent_SetTarget)(wxHelpEvent* self,wxString* target)
 {
-        ((wxHelpEvent*)_obj)->SetTarget(*target);
+        self->SetTarget(*target);
 }
 
 EWXWEXPORT(int,expEVT_COMMAND_BUTTON_CLICKED)()

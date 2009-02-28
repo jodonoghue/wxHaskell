@@ -52,9 +52,9 @@ EWXWEXPORT(void,wxTreeItemId_Delete)(void* _obj)
 	delete (wxTreeItemId*)_obj;
 }
 
-EWXWEXPORT(int,wxTreeItemId_IsOk)(wxTreeItemId* _obj)
+EWXWEXPORT(bool,wxTreeItemId_IsOk)(wxTreeItemId* _obj)
 {
-	return (int) _obj->IsOk();
+	return _obj->IsOk();
 }
 
 EWXWEXPORT(wxTreeItemId*,wxTreeItemId_Clone)(wxTreeItemId* _obj)
@@ -97,9 +97,9 @@ EWXWEXPORT(wxKeyEvent*,wxTreeEvent_GetKeyEvent)(wxTreeEvent* _obj)
 	return (wxKeyEvent*)&(_obj->GetKeyEvent());
 }
 
-EWXWEXPORT(int,wxTreeEvent_IsEditCancelled)(wxTreeEvent* _obj)
+EWXWEXPORT(bool,wxTreeEvent_IsEditCancelled)(wxTreeEvent* _obj)
 {
-	return (int) _obj->IsEditCancelled();
+	return _obj->IsEditCancelled();
 }
 
 EWXWEXPORT(void,wxTreeEvent_Allow)(wxTreeEvent* _obj)
@@ -242,20 +242,20 @@ EWXWEXPORT(void,wxTreeCtrl_SetItemClientClosure)(wxTreeCtrl* _obj,void* item,wxC
 }
 
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemHasChildren)(void* _obj,void* item,int has)
+EWXWEXPORT(void,wxTreeCtrl_SetItemHasChildren)(void* _obj,void* item,bool has)
 {
-	((wxTreeCtrl*)_obj)->SetItemHasChildren(*((wxTreeItemId*)item), has != 0);
+	((wxTreeCtrl*)_obj)->SetItemHasChildren(*((wxTreeItemId*)item), has);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemBold)(void* _obj,void* item,int bold)
+EWXWEXPORT(void,wxTreeCtrl_SetItemBold)(void* _obj,void* item,bool bold)
 {
-	((wxTreeCtrl*)_obj)->SetItemBold(*((wxTreeItemId*) item), bold != 0);
+	((wxTreeCtrl*)_obj)->SetItemBold(*((wxTreeItemId*) item), bold);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemDropHighlight)(void* _obj,void* item,int highlight)
+EWXWEXPORT(void,wxTreeCtrl_SetItemDropHighlight)(void* _obj,void* item,bool highlight)
 {
 #ifdef __WIN32__
-	((wxTreeCtrl*)_obj)->SetItemDropHighlight(*((wxTreeItemId*) item), highlight != 0);
+	((wxTreeCtrl*)_obj)->SetItemDropHighlight(*((wxTreeItemId*) item), highlight);
 #endif
 }
 	
@@ -274,9 +274,9 @@ EWXWEXPORT(void,wxTreeCtrl_SetItemFont)(void* _obj,void* item,void* font)
 	((wxTreeCtrl*)_obj)->SetItemFont(*((wxTreeItemId*) item), *((wxFont*) font));
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_IsVisible)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsVisible)(wxTreeCtrl* _obj,wxTreeItemId* item)
 {
-	return (int) _obj->IsVisible(*item);
+	return _obj->IsVisible(*item);
 }
 	
 EWXWEXPORT(int,wxTreeCtrl_ItemHasChildren)(void* _obj,void* item)
@@ -284,24 +284,24 @@ EWXWEXPORT(int,wxTreeCtrl_ItemHasChildren)(void* _obj,void* item)
 	return (int)((wxTreeCtrl*)_obj)->ItemHasChildren(*((wxTreeItemId*) item));
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_IsExpanded)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsExpanded)(wxTreeCtrl* _obj,wxTreeItemId* item)
 {
-	return (int) _obj->IsExpanded(*item);
+	return _obj->IsExpanded(*item);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_IsSelected)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsSelected)(wxTreeCtrl* _obj,wxTreeItemId* item)
 {
-	return (int) _obj->IsSelected(*item);
+	return _obj->IsSelected(*item);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_IsBold)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsBold)(wxTreeCtrl* _obj,wxTreeItemId* item)
 {
-	return (int) _obj->IsBold(*item);
+	return _obj->IsBold(*item);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetChildrenCount)(void* _obj,void* item,int recursively)
+EWXWEXPORT(int,wxTreeCtrl_GetChildrenCount)(wxTreeCtrl* self,wxTreeItemId* item,bool recursively)
 {
-	return ((wxTreeCtrl*)_obj)->GetChildrenCount(*((wxTreeItemId*) item), recursively);
+	return self->GetChildrenCount(* item, recursively);
 }
 	
 EWXWEXPORT(void,wxTreeCtrl_GetRootItem)(void* _obj,void* _item)
@@ -508,10 +508,10 @@ EWXWEXPORT(void*,wxTreeCtrl_GetEditControl)(void* _obj)
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_EndEditLabel)(void* _obj,void* item,int discardChanges)
+EWXWEXPORT(void,wxTreeCtrl_EndEditLabel)(void* _obj,void* item,bool discardChanges)
 {
 #ifdef __WIN32__
-	((wxTreeCtrl*)_obj)->EndEditLabel(*((wxTreeItemId*)item), discardChanges != 0);
+	((wxTreeCtrl*)_obj)->EndEditLabel(*((wxTreeItemId*)item), discardChanges);
 #endif
 }
 	
@@ -530,11 +530,11 @@ EWXWEXPORT(void,wxTreeCtrl_HitTest)(void* _obj,int _x,int _y,void* flags,void* _
 	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->HitTest(wxPoint(_x, _y), *((int*)flags));
 }
 	
-EWXWEXPORT(int, wxTreeCtrl_GetBoundingRect)(void* _obj, void* item, int textOnly, void* _x, void* _y, void* _w, void* _h)
+EWXWEXPORT(int,wxTreeCtrl_GetBoundingRect)(wxTreeCtrl* _obj,wxTreeItemId* item,bool textOnly,void* _x,void* _y,void* _w,void* _h)
 {
 #ifdef __WIN32__
 	wxRect rct;
-	int result = ((wxTreeCtrl*)_obj)->GetBoundingRect(*((wxTreeItemId*)item), rct, textOnly != 0);
+	int result = ((wxTreeCtrl*)_obj)->GetBoundingRect(*((wxTreeItemId*)item), rct, textOnly);
 	if (result)
 	{
 		*((int*)_x) = rct.x;

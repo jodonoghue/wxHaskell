@@ -3,10 +3,10 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxWizard_Create)(wxWindow* _prt,int _id,wxString* _txt,void* _bmp,int _lft,int _top,int _wdt,int _hgt)
+EWXWEXPORT(void*,wxWizard_Create)(wxWindow* _prt,int _id,wxString* _txt,wxBitmap* _bmp,int _lft,int _top,int _wdt,int _hgt)
 {
 	wxBitmap bmp = wxNullBitmap;
-	if (_bmp) bmp = *((wxBitmap*)_bmp);
+	if (_bmp) bmp = *_bmp;
 #if wxVERSION_NUMBER >= 2400
 	return (void*) new wxWizard (_prt, _id, *_txt, bmp, wxPoint(_lft, _top));
 #else
@@ -14,14 +14,14 @@ EWXWEXPORT(void*,wxWizard_Create)(wxWindow* _prt,int _id,wxString* _txt,void* _b
 #endif
 }
 
-EWXWEXPORT(bool,wxWizard_RunWizard)(wxWizard* _obj,wxWizardPage* firstPage)
+EWXWEXPORT(bool,wxWizard_RunWizard)(wxWizard* self,wxWizardPage* firstPage)
 {
-	return _obj->RunWizard(firstPage);
+	return self->RunWizard(firstPage);
 }
 	
-EWXWEXPORT(void*,wxWizard_GetCurrentPage)(void* _obj)
+EWXWEXPORT(void*,wxWizard_GetCurrentPage)(wxWizard* self)
 {
-	return (void*)((wxWizard*)_obj)->GetCurrentPage();
+	return (void*)self->GetCurrentPage();
 }
 	
 EWXWEXPORT(void,wxWizard_Chain)(void* f,void* s)
@@ -29,9 +29,9 @@ EWXWEXPORT(void,wxWizard_Chain)(void* f,void* s)
 	wxWizardPageSimple::Chain((wxWizardPageSimple*)f, (wxWizardPageSimple*)s);
 }
 	
-EWXWEXPORT(void,wxWizard_SetPageSize)(void* _obj,int w,int h)
+EWXWEXPORT(void,wxWizard_SetPageSize)(wxWizard* self,int w,int h)
 {
-	((wxWizard*)_obj)->SetPageSize(wxSize(w, h));
+	self->SetPageSize(wxSize(w, h));
 }
 	
 EWXWEXPORT(void, wxWizard_GetPageSize)(void* _obj, void* w, void* h)
@@ -46,34 +46,34 @@ EWXWEXPORT(void*,wxWizardPageSimple_Create)(void* _prt)
 	return (void*)new wxWizardPageSimple ((wxWizard*)_prt);
 }
 
-EWXWEXPORT(void*,wxWizardPageSimple_GetPrev)(void* _obj)
+EWXWEXPORT(void*,wxWizardPageSimple_GetPrev)(void* self)
 {
-	return (void*)((wxWizardPageSimple*)_obj)->GetPrev();
+	return (void*)((wxWizardPageSimple*)self)->GetPrev();
 }
 	
-EWXWEXPORT(void*,wxWizardPageSimple_GetNext)(void* _obj)
+EWXWEXPORT(void*,wxWizardPageSimple_GetNext)(void* self)
 {
-	return (void*)((wxWizardPageSimple*)_obj)->GetNext();
+	return (void*)((wxWizardPageSimple*)self)->GetNext();
 }
 	
-EWXWEXPORT(void,wxWizardPageSimple_GetBitmap)(void* _obj,void* _ref)
+EWXWEXPORT(void,wxWizardPageSimple_GetBitmap)(void* self,wxBitmap* _ref)
 {
-	*((wxBitmap*)_ref) = ((wxWizardPageSimple*)_obj)->GetBitmap();
+	*_ref = ((wxWizardPageSimple*)self)->GetBitmap();
 }
 	
-EWXWEXPORT(void,wxWizardPageSimple_SetPrev)(void* _obj,void* prev)
+EWXWEXPORT(void,wxWizardPageSimple_SetPrev)(void* self,void* prev)
 {
-	((wxWizardPageSimple*)_obj)->SetPrev((wxWizardPage*)prev);
+	((wxWizardPageSimple*)self)->SetPrev((wxWizardPage*)prev);
 }
 	
-EWXWEXPORT(void,wxWizardPageSimple_SetNext)(void* _obj,void* next)
+EWXWEXPORT(void,wxWizardPageSimple_SetNext)(void* self,void* next)
 {
-	((wxWizardPageSimple*)_obj)->SetNext((wxWizardPage*)next);
+	((wxWizardPageSimple*)self)->SetNext((wxWizardPage*)next);
 }
 
-EWXWEXPORT(bool,wxWizardEvent_GetDirection)(wxWizardEvent* _obj)
+EWXWEXPORT(bool,wxWizardEvent_GetDirection)(wxWizardEvent* self)
 {
-	return _obj->GetDirection();
+	return self->GetDirection();
 }
 	
 }

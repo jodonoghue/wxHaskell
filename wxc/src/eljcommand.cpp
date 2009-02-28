@@ -31,26 +31,24 @@ class ELJCommand : public wxCommand
 extern "C"
 {
 
-EWXWEXPORT(void*,ELJCommand_Create)(int _und,wxString* _nme,void* _obj,void* _clb)
+EWXWEXPORT(void*,ELJCommand_Create)(bool _und,wxString* _nme,void* _obj,void* _clb)
 {
-	return (void*)new ELJCommand(_und != 0, *_nme, _obj, _clb);
+	return (void*)new ELJCommand(_und,*_nme, _obj, _clb);
 }
 
-EWXWEXPORT(void,ELJCommand_Delete)(ELJCommand* _obj)
+EWXWEXPORT(void,ELJCommand_Delete)(ELJCommand* self)
 {
-	delete _obj;
+	delete self;
 }
 
 EWXWEXPORT(wxString*,ELJCommand_GetName)(void* _obj)
 {
-	wxString *result = new wxString();
-	*result = ((ELJCommand*)_obj)->GetName();
-	return result;
+	return new wxString(((ELJCommand*)_obj)->GetName());
 }
 
-EWXWEXPORT(int,ELJCommand_CanUndo)(ELJCommand* _obj)
+EWXWEXPORT(bool,ELJCommand_CanUndo)(ELJCommand* self)
 {
-	return (int)_obj->CanUndo();
+	return self->CanUndo();
 }
 	
 
@@ -59,59 +57,59 @@ EWXWEXPORT(void*,wxCommandProcessor_wxCommandProcessor)(int maxCommands)
 	return (void*)new wxCommandProcessor(maxCommands);
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_Delete)(void* _obj)
+EWXWEXPORT(void,wxCommandProcessor_Delete)(wxCommandProcessor* self)
 {
-	delete (wxCommandProcessor*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int,wxCommandProcessor_Submit)(wxCommandProcessor* _obj,wxCommand* command,int storeIt)
+EWXWEXPORT(bool,wxCommandProcessor_Submit)(wxCommandProcessor* self,wxCommand* command,bool storeIt)
 {
-	return (int)_obj->Submit(command, storeIt != 0);
+	return self->Submit(command, storeIt);
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_Undo)(wxCommandProcessor* _obj)
+EWXWEXPORT(bool,wxCommandProcessor_Undo)(wxCommandProcessor* self)
 {
-	return (int)_obj->Undo();
+	return self->Undo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_Redo)(wxCommandProcessor* _obj)
+EWXWEXPORT(bool,wxCommandProcessor_Redo)(wxCommandProcessor* self)
 {
-	return (int)_obj->Redo();
+	return self->Redo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_CanUndo)(wxCommandProcessor* _obj)
+EWXWEXPORT(bool,wxCommandProcessor_CanUndo)(wxCommandProcessor* self)
 {
-	return (int)_obj->CanUndo();
+	return self->CanUndo();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_CanRedo)(wxCommandProcessor* _obj)
+EWXWEXPORT(bool,wxCommandProcessor_CanRedo)(wxCommandProcessor* self)
 {
-	return (int)_obj->CanRedo();
+	return self->CanRedo();
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_SetEditMenu)(void* _obj,void* menu)
+EWXWEXPORT(void,wxCommandProcessor_SetEditMenu)(wxCommandProcessor* self,wxMenu* menu)
 {
-	((wxCommandProcessor*)_obj)->SetEditMenu((wxMenu*)menu);
+	self->SetEditMenu(menu);
 }
 	
-EWXWEXPORT(void*,wxCommandProcessor_GetEditMenu)(void* _obj)
+EWXWEXPORT(void*,wxCommandProcessor_GetEditMenu)(wxCommandProcessor* self)
 {
-	return (void*)((wxCommandProcessor*)_obj)->GetEditMenu();
+	return (void*)self->GetEditMenu();
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_SetMenuStrings)(void* _obj)
+EWXWEXPORT(void,wxCommandProcessor_SetMenuStrings)(wxCommandProcessor* self)
 {
-	((wxCommandProcessor*)_obj)->SetMenuStrings();
+	self->SetMenuStrings();
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_Initialize)(void* _obj)
+EWXWEXPORT(void,wxCommandProcessor_Initialize)(wxCommandProcessor* self)
 {
-	((wxCommandProcessor*)_obj)->Initialize();
+	self->Initialize();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_GetCommands)(void* _obj,void* _ref)
+EWXWEXPORT(int,wxCommandProcessor_GetCommands)(wxCommandProcessor* self,void* _ref)
 {
-	wxList lst = ((wxCommandProcessor*)_obj)->GetCommands();
+	wxList lst = self->GetCommands();
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < lst.GetCount(); i++)
@@ -121,14 +119,14 @@ EWXWEXPORT(int,wxCommandProcessor_GetCommands)(void* _obj,void* _ref)
 	return lst.GetCount();
 }
 	
-EWXWEXPORT(int,wxCommandProcessor_GetMaxCommands)(void* _obj)
+EWXWEXPORT(int,wxCommandProcessor_GetMaxCommands)(wxCommandProcessor* self)
 {
-	return ((wxCommandProcessor*)_obj)->GetMaxCommands();
+	return self->GetMaxCommands();
 }
 	
-EWXWEXPORT(void,wxCommandProcessor_ClearCommands)(void* _obj)
+EWXWEXPORT(void,wxCommandProcessor_ClearCommands)(wxCommandProcessor* self)
 {
-	((wxCommandProcessor*)_obj)->ClearCommands();
+	self->ClearCommands();
 }
 	
 }

@@ -318,14 +318,14 @@ EWXWEXPORT(int,wxcPrintEvent_GetEndPage)(wxcPrintEvent* self)
   return self->GetEndPage();
 } 
 
-EWXWEXPORT(int,wxcPrintEvent_GetContinue)(wxcPrintEvent* self)
+EWXWEXPORT(bool,wxcPrintEvent_GetContinue)(wxcPrintEvent* self)
 {
-  return (int) self->GetContinue();
+  return self->GetContinue();
 } 
     
-EWXWEXPORT(void,wxcPrintEvent_SetContinue)(wxcPrintEvent* self,int cont)
+EWXWEXPORT(void,wxcPrintEvent_SetContinue)(wxcPrintEvent* self,bool cont)
 {
-  self->SetContinue(cont != 0);
+  self->SetContinue(cont);
 } 
 
 EWXWEXPORT(void,wxcPrintEvent_SetPageLimits)(wxcPrintEvent* self,int startPage,int endPage,int fromPage,int toPage)
@@ -393,14 +393,14 @@ EWXWEXPORT(void,wxPrintout_GetPPIPrinter)(void* _obj,int* x,int* y)
 	((wxPrintout*)_obj)->GetPPIPrinter(x,y);
 }
 	
-EWXWEXPORT(int,wxPrintout_IsPreview)(wxPrintout* _obj)
+EWXWEXPORT(bool,wxPrintout_IsPreview)(wxPrintout* _obj)
 {
-	return (int) _obj->IsPreview();
+	return _obj->IsPreview();
 }
 	
-EWXWEXPORT(void,wxPrintout_SetIsPreview)(void* _obj,int p)
+EWXWEXPORT(void,wxPrintout_SetIsPreview)(void* _obj,bool p)
 {
-	((wxPrintout*)_obj)->SetIsPreview(p != 0);
+	((wxPrintout*)_obj)->SetIsPreview(p);
 }
  
     

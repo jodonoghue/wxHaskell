@@ -35,41 +35,41 @@ class ELJArtProv: public wxArtProvider
 extern "C"
 {
 
-EWXWEXPORT(void*,ELJArtProv_Create)(void* _obj, void* _clb)
+EWXWEXPORT(void*,ELJArtProv_Create)(void* _obj,void* _clb)
 {
 	return (void*)new ELJArtProv(_obj, _clb);
 }
 	
-EWXWEXPORT(void,ELJArtProv_Release)(void* _obj)
+EWXWEXPORT(void,ELJArtProv_Release)(ELJArtProv* self)
 {
-	((ELJArtProv*)_obj)->Release();
-	delete (ELJArtProv*)_obj;
+	self->Release();
+	delete self;
 }
 	
-EWXWEXPORT(void,PushProvider)(void* provider)
+EWXWEXPORT(void,PushProvider)(wxArtProvider* provider)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	wxArtProvider::PushProvider((wxArtProvider*)provider);
+	wxArtProvider::PushProvider(provider);
 #else
-  wxArtProvider::Push((wxArtProvider*)provider);
+	wxArtProvider::Push(provider);
 #endif
 }
 
-EWXWEXPORT(int,PopProvider)()
+EWXWEXPORT(bool,PopProvider)()
 {
 #if WXWIN_COMPATIBILITY_2_6
-	return (int)wxArtProvider::PopProvider();
+	return wxArtProvider::PopProvider();
 #else
-  return wxArtProvider::Pop();
+	return wxArtProvider::Pop();
 #endif
 }
 
-EWXWEXPORT(int,RemoveProvider)(void* provider)
+EWXWEXPORT(bool,RemoveProvider)(wxArtProvider* provider)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	return (int)wxArtProvider::RemoveProvider((wxArtProvider*)provider);
+	return wxArtProvider::RemoveProvider(provider);
 #else
-  return wxArtProvider::Remove((wxArtProvider*)provider);
+	return wxArtProvider::Remove(provider);
 #endif
 }
 

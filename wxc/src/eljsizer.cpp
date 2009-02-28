@@ -3,19 +3,19 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxSizerItem_Create)(int width, int height, int option, int flag, int border, void* userData)
+EWXWEXPORT(void*,wxSizerItem_Create)(int width,int height,int option,int flag,int border,void* userData)
 {
-	return (void*) new wxSizerItem(width, height, option, flag, border, new ELJDataObject(userData));
+	return (void*)new wxSizerItem(width, height, option, flag, border, new ELJDataObject(userData));
 }
 	
-EWXWEXPORT(void*, wxSizerItem_CreateInWindow)(void* window, int option, int flag, int border, void* userData )
+EWXWEXPORT(void*,wxSizerItem_CreateInWindow)(wxWindow* window,int option,int flag,int border,void* userData)
 {
-	return (void*) new wxSizerItem((wxWindow*)window, option, flag, border, new ELJDataObject(userData));
+	return (void*)new wxSizerItem(window, option, flag, border, new ELJDataObject(userData));
 }
 	
-EWXWEXPORT(void*, wxSizerItem_CreateInSizer)(void* sizer, int option, int flag, int border, void* userData )
+EWXWEXPORT(void*,wxSizerItem_CreateInSizer)(wxSizer* sizer,int option,int flag,int border,void* userData)
 {
-	return (void*) new wxSizerItem((wxSizer*) sizer, option, flag, border, new ELJDataObject(userData));
+	return (void*)new wxSizerItem(sizer, option, flag, border, new ELJDataObject(userData));
 }
 	
 EWXWEXPORT(void, wxSizerItem_GetSize)(void* _obj, void* _w, void* _h)
@@ -44,98 +44,98 @@ EWXWEXPORT(void, wxSizerItem_GetMinSize)(void* _obj, void* _w, void* _h)
 	(*(int*)_w) = res.GetWidth();
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetRatio)(void* _obj,  int width, int height)
+EWXWEXPORT(void,wxSizerItem_SetRatio)(wxSizerItem* self,int width,int height)
 {
-	((wxSizerItem*)_obj)->SetRatio(width, height);
+	self->SetRatio(width, height);
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetFloatRatio)(void* _obj,  float ratio)
+EWXWEXPORT(void,wxSizerItem_SetFloatRatio)(wxSizerItem* self,float ratio)
 {
-	((wxSizerItem*)_obj)->SetRatio(ratio);
+	self->SetRatio(ratio);
 }
 	
-EWXWEXPORT(float, wxSizerItem_GetRatio)(void* _obj)
+EWXWEXPORT(float,wxSizerItem_GetRatio)(wxSizerItem* self)
 {
-	return ((wxSizerItem*)_obj)->GetRatio();
+	return self->GetRatio();
 }
 	
-EWXWEXPORT(int, wxSizerItem_IsWindow)(void* _obj)
+EWXWEXPORT(bool,wxSizerItem_IsWindow)(wxSizerItem* self)
 {
-	return (int)((wxSizerItem*)_obj)->IsWindow();
+	return self->IsWindow();
 }
 	
-EWXWEXPORT(int, wxSizerItem_IsSizer)(void* _obj)
+EWXWEXPORT(bool,wxSizerItem_IsSizer)(wxSizerItem* self)
 {
-	return (int)((wxSizerItem*)_obj)->IsSizer();
+	return self->IsSizer();
 }
 	
-EWXWEXPORT(int, wxSizerItem_IsSpacer)(void* _obj)
+EWXWEXPORT(bool,wxSizerItem_IsSpacer)(wxSizerItem* self)
 {
-	return (int)((wxSizerItem*)_obj)->IsSpacer();
+	return self->IsSpacer();
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetInitSize)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxSizerItem_SetInitSize)(wxSizerItem* self,int x,int y)
 {
-	((wxSizerItem*)_obj)->SetInitSize(x, y);
+	self->SetInitSize(x, y);
 }
 	
 #if (wxVERSION_NUMBER < 2800)	
-EWXWEXPORT(void, wxSizerItem_SetOption)(void* _obj, int option)
+EWXWEXPORT(void,wxSizerItem_SetOption)(wxSizerItem* self,int option)
 {
-	((wxSizerItem*)_obj)->SetOption(option);
+	self->SetOption(option);
 }
 #endif
 
-EWXWEXPORT(void, wxSizerItem_SetFlag)(void* _obj, int flag)
+EWXWEXPORT(void,wxSizerItem_SetFlag)(wxSizerItem* self,int flag)
 {
-	((wxSizerItem*)_obj)->SetFlag(flag);
+	self->SetFlag(flag);
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetBorder)(void* _obj, int border)
+EWXWEXPORT(void,wxSizerItem_SetBorder)(wxSizerItem* self,int border)
 {
-	((wxSizerItem*)_obj)->SetBorder(border);
+	self->SetBorder(border);
 }
 	
-EWXWEXPORT(void*, wxSizerItem_GetWindow)(void* _obj)
+EWXWEXPORT(wxWindow*,wxSizerItem_GetWindow)(wxSizerItem* self)
 {
-	return (void*)((wxSizerItem*)_obj)->GetWindow();
+	return self->GetWindow();
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetWindow)(void* _obj, void* window)
+EWXWEXPORT(void,wxSizerItem_SetWindow)(wxSizerItem* self,wxWindow* window)
 {
-	((wxSizerItem*)_obj)->SetWindow((wxWindow*) window);
+	self->SetWindow(window);
 }
 	
-EWXWEXPORT(void*, wxSizerItem_GetSizer)(void* _obj)
+EWXWEXPORT(void*,wxSizerItem_GetSizer)(wxSizerItem* self)
 {
-	return (void*)((wxSizerItem*)_obj)->GetSizer();
+	return (void*)self->GetSizer();
 }
 	
-EWXWEXPORT(void, wxSizerItem_SetSizer)(void* _obj, void* sizer)
+EWXWEXPORT(void,wxSizerItem_SetSizer)(wxSizerItem* self,wxSizer* sizer)
 {
-	((wxSizerItem*)_obj)->SetSizer((wxSizer*) sizer);
+	self->SetSizer(sizer);
 }
 	
 #if (wxVERSION_NUMBER < 2800)
-EWXWEXPORT(int, wxSizerItem_GetOption)(void* _obj)
+EWXWEXPORT(int,wxSizerItem_GetOption)(wxSizerItem* self)
 {
-	return ((wxSizerItem*)_obj)->GetOption();
+	return self->GetOption();
 }
 #endif
 
-EWXWEXPORT(int, wxSizerItem_GetFlag)(void* _obj)
+EWXWEXPORT(int,wxSizerItem_GetFlag)(wxSizerItem* self)
 {
-	return ((wxSizerItem*)_obj)->GetFlag();
+	return self->GetFlag();
 }
 	
-EWXWEXPORT(int, wxSizerItem_GetBorder)(void* _obj)
+EWXWEXPORT(int,wxSizerItem_GetBorder)(wxSizerItem* self)
 {
-	return ((wxSizerItem*)_obj)->GetBorder();
+	return self->GetBorder();
 }
 	
-EWXWEXPORT(void*, wxSizerItem_GetUserData)(void* _obj)
+EWXWEXPORT(void*,wxSizerItem_GetUserData)(wxSizerItem* self)
 {
-	return ((ELJDataObject*)((wxSizerItem*)_obj)->GetUserData())->data;
+	return ((ELJDataObject*)self->GetUserData())->data;
 }
 	
 EWXWEXPORT(void, wxSizerItem_GetPosition)(void* _obj, void* _x, void* _y)
@@ -146,24 +146,24 @@ EWXWEXPORT(void, wxSizerItem_GetPosition)(void* _obj, void* _x, void* _y)
 }
 	
 #if (wxVERSION_NUMBER >= 2800)
-EWXWEXPORT(void, wxSizerItem_Delete)(void* _obj)
+EWXWEXPORT(void,wxSizerItem_Delete)(wxSizerItem* self)
 {
-  delete ((wxSizerItem*)_obj);
+  delete self;
 }
 
-EWXWEXPORT(void, wxSizerItem_DeleteWindows)(void *_obj)
+EWXWEXPORT(void,wxSizerItem_DeleteWindows)(wxSizerItem* self)
 {
-  ((wxSizerItem*)_obj)->DeleteWindows();
+  self->DeleteWindows();
 }
 
-EWXWEXPORT(void, wxSizerItem_DetachSizer)(void *_obj)
+EWXWEXPORT(void,wxSizerItem_DetachSizer)(wxSizerItem* self)
 {
-  ((wxSizerItem*)_obj)->DetachSizer();
+  self->DetachSizer();
 }
 
-EWXWEXPORT(int, wxSizerItem_GetProportion)(void *_obj)
+EWXWEXPORT(int,wxSizerItem_GetProportion)(wxSizerItem* self)
 {
-  return ((wxSizerItem*)_obj)->GetProportion();
+  return self->GetProportion();
 }
 
 EWXWEXPORT(void, wxSizerItem_GetRect)(void *_obj, void *_x, void *_y, void *_w, void *_h)
@@ -188,107 +188,107 @@ EWXWEXPORT(void, wxSizerItem_GetSpacer)(void *_obj, void *_w, void *_h)
   (*(int *)_h) = sz.GetHeight();
 }
 
-EWXWEXPORT(int, wxSizerItem_IsShown)(void *_obj)
+EWXWEXPORT(bool,wxSizerItem_IsShown)(wxSizerItem* self)
 {
-  return (int) ((wxSizerItem*)_obj)->IsShown();
+  return  self->IsShown();
 }
 
-EWXWEXPORT(void, wxSizerItem_SetProportion)(void *_obj, int proportion)
+EWXWEXPORT(void,wxSizerItem_SetProportion)(wxSizerItem* self,int proportion)
 {
-  ((wxSizerItem*)_obj)->SetProportion(proportion);
+  self->SetProportion(proportion);
 }
 
-EWXWEXPORT(void, wxSizerItem_SetSpacer)(void *_obj, int width, int height)
+EWXWEXPORT(void,wxSizerItem_SetSpacer)(wxSizerItem* self,int width,int height)
 {
-  ((wxSizerItem*)_obj)->SetSpacer(wxSize(width, height));
+  self->SetSpacer(wxSize(width, height));
 }
 
-EWXWEXPORT(void, wxSizerItem_Show)(void *_obj, int show)
+EWXWEXPORT(void,wxSizerItem_Show)(wxSizerItem* self,int show)
 {
-  ((wxSizerItem*)_obj)->Show(show);
+  self->Show(show);
 }
 #endif
 
-EWXWEXPORT(void, wxSizer_AddWindow)(void* _obj, void* window, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_AddWindow)(wxSizer* self,wxWindow* window,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Add((wxWindow*)window, option, flag, border, new ELJDataObject (userData));
+	self->Add(window, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_AddSizer)(void* _obj, void* sizer, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_AddSizer)(wxSizer* self,wxSizer* sizer,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Add((wxSizer*)sizer, option, flag, border, new ELJDataObject (userData));
+	self->Add(sizer, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_Add)(void* _obj, int width, int height, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_Add)(wxSizer* self,int width,int height,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Add(width, height, option, flag, border, new ELJDataObject (userData));
+	self->Add(width, height, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_InsertWindow)(void* _obj, int before, void* window, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_InsertWindow)(wxSizer* self,int before,wxWindow* window,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Insert(before, (wxWindow*)window, option, flag, border, new ELJDataObject (userData));
+	self->Insert(before, window, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_InsertSizer)(void* _obj, int before, void* sizer, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_InsertSizer)(wxSizer* self,int before,wxSizer* sizer,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Insert(before, (wxSizer*)sizer, option, flag, border, new ELJDataObject (userData));
+	self->Insert(before, sizer, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_Insert)(void* _obj, int before, int width, int height, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_Insert)(wxSizer* self,int before,int width,int height,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Insert(before, width, height, option, flag, border, new ELJDataObject (userData));
+	self->Insert(before, width, height, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_PrependWindow)(void* _obj, void* window, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_PrependWindow)(wxSizer* self,wxWindow* window,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Prepend((wxWindow*)window, option, flag, border, new ELJDataObject (userData));
+	self->Prepend(window, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_PrependSizer)(void* _obj, void* sizer, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_PrependSizer)(wxSizer* self,wxSizer* sizer,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Prepend((wxSizer*)sizer, option, flag, border, new ELJDataObject (userData));
+	self->Prepend(sizer, option, flag, border, new ELJDataObject (userData));
 }
 	
-EWXWEXPORT(void, wxSizer_Prepend)(void* _obj, int width, int height, int option, int flag, int border, void* userData)
+EWXWEXPORT(void,wxSizer_Prepend)(wxSizer* self,int width,int height,int option,int flag,int border,void* userData)
 {
-	((wxSizer*)_obj)->Prepend(width, height, option, flag, border, new ELJDataObject (userData));
+	self->Prepend(width, height, option, flag, border, new ELJDataObject (userData));
 }
 	
 #if (wxVERSION_NUMBER < 2800)	
-EWXWEXPORT(int, wxSizer_RemoveWindow)(void* _obj, void* window)
+EWXWEXPORT(bool,wxSizer_RemoveWindow)(wxSizer* self,wxWindow* window)
 {
-	return (int)((wxSizer*)_obj)->Remove((wxWindow*) window);
+	return self->Remove(window);
 }
 	
-EWXWEXPORT(int, wxSizer_RemoveSizer)(void* _obj, void* sizer)
+EWXWEXPORT(bool,wxSizer_RemoveSizer)(wxSizer* self,wxSizer* sizer)
 {
-	return (int)((wxSizer*)_obj)->Remove((wxSizer*) sizer);
+	return self->Remove(sizer);
 }
 	
-EWXWEXPORT(int, wxSizer_Remove)(void* _obj, int pos)
+EWXWEXPORT(bool,wxSizer_Remove)(wxSizer* self,int pos)
 {
-	return (int)((wxSizer*)_obj)->Remove(pos);
+	return self->Remove(pos);
 }
 #endif
 	
-EWXWEXPORT(void, wxSizer_SetMinSize)(void* _obj, int width, int height)
+EWXWEXPORT(void,wxSizer_SetMinSize)(wxSizer* self,int width,int height)
 {
-	((wxSizer*)_obj)->SetMinSize(width, height);
+	self->SetMinSize(width, height);
 }
 	
-EWXWEXPORT(void, wxSizer_SetItemMinSizeWindow)(void* _obj, void* window, int width, int height)
+EWXWEXPORT(void,wxSizer_SetItemMinSizeWindow)(wxSizer* self,wxWindow* window,int width,int height)
 {
-	((wxSizer*)_obj)->SetItemMinSize((wxWindow*) window, width, height);
+	self->SetItemMinSize( window, width, height);
 }
 	
-EWXWEXPORT(void, wxSizer_SetItemMinSizeSizer)(void* _obj, void* sizer, int width, int height)
+EWXWEXPORT(void,wxSizer_SetItemMinSizeSizer)(wxSizer* self,wxSizer* sizer,int width,int height)
 {
-	((wxSizer*)_obj)->SetItemMinSize((wxSizer*) sizer, width, height);
+	self->SetItemMinSize(sizer, width, height);
 }
 	
-EWXWEXPORT(void, wxSizer_SetItemMinSize)(void* _obj, int pos, int width, int height )
+EWXWEXPORT(void,wxSizer_SetItemMinSize)(wxSizer* self,int pos,int width,int height)
 {
-	((wxSizer*)_obj)->SetItemMinSize(pos, width, height);
+	self->SetItemMinSize(pos, width, height);
 }
 	
 EWXWEXPORT(void, wxSizer_GetSize)(void* _obj, void* _w, void* _h)
@@ -312,9 +312,9 @@ EWXWEXPORT(void, wxSizer_GetMinSize)(void* _obj, void* _w, void* _h)
 	(*(int*)_h) = res.GetHeight();
 }
 	
-EWXWEXPORT(void, wxSizer_RecalcSizes)(void* _obj)
+EWXWEXPORT(void,wxSizer_RecalcSizes)(wxSizer* self)
 {
-	((wxSizer*)_obj)->RecalcSizes();
+	self->RecalcSizes();
 }
 	
 EWXWEXPORT(void, wxSizer_CalcMin)(void* _obj, void* _w, void* _h)
@@ -324,27 +324,27 @@ EWXWEXPORT(void, wxSizer_CalcMin)(void* _obj, void* _w, void* _h)
 	(*(int*)_h) = res.GetHeight();
 }
 	
-EWXWEXPORT(void, wxSizer_Layout)(void* _obj)
+EWXWEXPORT(void,wxSizer_Layout)(wxSizer* self)
 {
-	((wxSizer*)_obj)->Layout();
+	self->Layout();
 }
 	
-EWXWEXPORT(void, wxSizer_Fit)(void* _obj, void* window )
+EWXWEXPORT(void,wxSizer_Fit)(wxSizer* self,wxWindow* window)
 {
-	((wxSizer*)_obj)->Fit((wxWindow*) window);
+	self->Fit(window);
 }
 	
-EWXWEXPORT(void, wxSizer_SetSizeHints)(void* _obj, void* window )
+EWXWEXPORT(void,wxSizer_SetSizeHints)(wxSizer* self,wxWindow* window)
 {
-	((wxSizer*)_obj)->SetSizeHints((wxWindow*) window);
+	self->SetSizeHints(window);
 }
 	
-EWXWEXPORT(int, wxSizer_GetChildren)(void* _obj, void* _res, int _cnt)
+EWXWEXPORT(int, wxSizer_GetChildren)(wxSizer* self, void* _res, int _cnt)
 {
-	if (_res && (unsigned int)_cnt == ((wxSizer*)_obj)->GetChildren().GetCount())
+	if (_res && (unsigned int)_cnt == self->GetChildren().GetCount())
 	{
 		int i = 0;
-		wxSizerItemList::compatibility_iterator node = ((wxSizer*)_obj)->GetChildren().GetFirst();
+		wxSizerItemList::compatibility_iterator node = self->GetChildren().GetFirst();
 		while (node)
 		{
 			((void**)_res)[i] = node->GetData();
@@ -354,164 +354,164 @@ EWXWEXPORT(int, wxSizer_GetChildren)(void* _obj, void* _res, int _cnt)
 		return i;
 	}
 	else
-		return ((wxSizer*)_obj)->GetChildren().GetCount();
+		return self->GetChildren().GetCount();
 }
 
 #if (wxVERSION_NUMBER >= 2800)
-EWXWEXPORT(void, wxSizer_AddSpacer)(void* _obj, int size)
+EWXWEXPORT(void,wxSizer_AddSpacer)(wxSizer* self,int size)
 {
-  ((wxSizer*)_obj)->AddSpacer(size);
+  self->AddSpacer(size);
 }
 
-EWXWEXPORT(void, wxSizer_AddStretchSpacer)(void* _obj, int size)
+EWXWEXPORT(void,wxSizer_AddStretchSpacer)(wxSizer* self,int size)
 {
-  ((wxSizer*)_obj)->AddStretchSpacer(size);
+  self->AddStretchSpacer(size);
 }
 
-EWXWEXPORT(void, wxSizer_Clear)(void* _obj, int delete_windows)
+EWXWEXPORT(void,wxSizer_Clear)(wxSizer* self,bool delete_windows)
 {
-  ((wxSizer*)_obj)->Clear((bool) delete_windows);
+  self->Clear(delete_windows);
 }
 
-EWXWEXPORT(int, wxSizer_DetachWindow)(void* _obj, void *window)
+EWXWEXPORT(bool,wxSizer_DetachWindow)(wxSizer* self,wxWindow* window)
 {
-  return (int)((wxSizer*)_obj)->Detach((wxWindow*) window);
+  return self->Detach(window);
 }
 
-EWXWEXPORT(int, wxSizer_DetachSizer)(void* _obj, void *sizer)
+EWXWEXPORT(bool,wxSizer_DetachSizer)(wxSizer* self,wxSizer* sizer)
 {
-  return (int)((wxSizer*)_obj)->Detach((wxSizer*) sizer);
+  return self->Detach(sizer);
 }
 
-EWXWEXPORT(int, wxSizer_Detach)(void* _obj, int index)
+EWXWEXPORT(bool,wxSizer_Detach)(wxSizer* self,int index)
 {
-  return (int)((wxSizer*)_obj)->Detach((size_t) index);
+  return self->Detach((size_t) index);
 }
 
-EWXWEXPORT(void, wxSizer_FitInside)(void* _obj, void *window)
+EWXWEXPORT(void,wxSizer_FitInside)(wxSizer* self,wxWindow* window)
 {
-  ((wxSizer*)_obj)->FitInside((wxWindow*) window);
+  self->FitInside( window);
 }
 
-EWXWEXPORT(void *, wxSizer_GetContainingWindow)(void* _obj)
+EWXWEXPORT(void*,wxSizer_GetContainingWindow)(wxSizer* self)
 {
-  return (void *)((wxSizer*)_obj)->GetContainingWindow();
+  return (void*)self->GetContainingWindow();
 }
 
-EWXWEXPORT(void *, wxSizer_GetItemWindow)(void* _obj, void *window, int recursive)
+EWXWEXPORT(void*,wxSizer_GetItemWindow)(wxSizer* self,wxWindow* window,bool recursive)
 {
-  return (void *)((wxSizer*)_obj)->GetItem((wxWindow*) window, (bool) recursive);
+  return (void*)self->GetItem( window, recursive);
 }
 
-EWXWEXPORT(void *, wxSizer_GetItemSizer)(void* _obj, void *sizer, int recursive)
+EWXWEXPORT(void*,wxSizer_GetItemSizer)(wxSizer* self,wxSizer* sizer,bool recursive)
 {
-  return (void *)((wxSizer*)_obj)->GetItem((wxSizer*) sizer, (bool) recursive);
+  return (void*)self->GetItem(sizer, recursive);
 }
 
-EWXWEXPORT(void *, wxSizer_GetItem)(void* _obj, int index)
+EWXWEXPORT(void*,wxSizer_GetItem)(wxSizer* self,int index)
 {
-  return (void *)((wxSizer*)_obj)->GetItem((size_t) index);
+  return (void*)self->GetItem((size_t) index);
 }
 
-EWXWEXPORT(int, wxSizer_HideWindow)(void* _obj, void *window)
+EWXWEXPORT(bool,wxSizer_HideWindow)(wxSizer* self,wxWindow* window)
 {
-  return (int)((wxSizer*)_obj)->Hide((wxWindow*) window);
+  return self->Hide(window);
 }
 
-EWXWEXPORT(int, wxSizer_HideSizer)(void* _obj, void *sizer)
+EWXWEXPORT(bool,wxSizer_HideSizer)(wxSizer* self,wxSizer* sizer)
 {
-  return (int)((wxSizer*)_obj)->Hide((wxSizer*) sizer);
+  return self->Hide(sizer);
 }
 
-EWXWEXPORT(int, wxSizer_Hide)(void* _obj, int index)
+EWXWEXPORT(bool,wxSizer_Hide)(wxSizer* self,int index)
 {
-  return (int)((wxSizer*)_obj)->Hide((size_t) index);
+  return self->Hide((size_t) index);
 }
 
-EWXWEXPORT(void *, wxSizer_InsertSpacer)(void* _obj, int index, int size)
+EWXWEXPORT(void*,wxSizer_InsertSpacer)(wxSizer* self,int index,int size)
 {
-  return (void *)((wxSizer*)_obj)->InsertSpacer((size_t) index, size);
+  return (void*)self->InsertSpacer((size_t) index, size);
 }
 
-EWXWEXPORT(void *, wxSizer_InsertStretchSpacer)(void* _obj, int index, int prop)
+EWXWEXPORT(void*,wxSizer_InsertStretchSpacer)(wxSizer* self,int index,int prop)
 {
-  return (void *)((wxSizer*)_obj)->InsertStretchSpacer((size_t) index, prop);
+  return (void*)self->InsertStretchSpacer((size_t) index, prop);
 }
 
-EWXWEXPORT(int, wxSizer_IsShownWindow)(void* _obj, void *window)
+EWXWEXPORT(bool,wxSizer_IsShownWindow)(wxSizer* self,wxWindow* window)
 {
-  return (int)((wxSizer*)_obj)->IsShown((wxWindow*) window);
+  return self->IsShown( window);
 }
 
-EWXWEXPORT(int, wxSizer_IsShownSizer)(void* _obj, void *sizer)
+EWXWEXPORT(bool,wxSizer_IsShownSizer)(wxSizer* self,wxSizer* sizer)
 {
-  return (int)((wxSizer*)_obj)->IsShown((wxSizer*) sizer);
+  return self->IsShown(sizer);
 }
 
-EWXWEXPORT(int, wxSizer_IsShown)(void* _obj, int index)
+EWXWEXPORT(bool,wxSizer_IsShown)(wxSizer* self,size_t index)
 {
-  return (int)((wxSizer*)_obj)->IsShown((size_t) index);
+  return self->IsShown( index);
 }
 
-EWXWEXPORT(void *, wxSizer_PrependSpacer)(void* _obj, int size)
+EWXWEXPORT(void*,wxSizer_PrependSpacer)(wxSizer* self,int size)
 {
-  return (void *)((wxSizer*)_obj)->PrependSpacer(size);
+  return (void*)self->PrependSpacer(size);
 }
 
-EWXWEXPORT(void *, wxSizer_PrependStretchSpacer)(void* _obj, int prop)
+EWXWEXPORT(void*,wxSizer_PrependStretchSpacer)(wxSizer* self,int prop)
 {
-  return (void *)((wxSizer*)_obj)->PrependStretchSpacer(prop);
+  return (void*)self->PrependStretchSpacer(prop);
 }
 
-EWXWEXPORT(int, wxSizer_ReplaceWindow)(void* _obj, void *oldwin, void *newwin, int recursive)
+EWXWEXPORT(bool,wxSizer_ReplaceWindow)(wxSizer* self,wxWindow* oldwin,wxWindow* newwin,bool recursive)
 {
-  return (int)((wxSizer*)_obj)->Replace((wxWindow*) oldwin, (wxWindow*) newwin, (bool) recursive);
+  return self->Replace(oldwin, newwin, recursive);
 }
 
-EWXWEXPORT(int, wxSizer_ReplaceSizer)(void* _obj, void *oldsz, void *newsz, int recursive)
+EWXWEXPORT(bool,wxSizer_ReplaceSizer)(wxSizer* self,wxSizer* oldsz,wxSizer* newsz,bool recursive)
 {
-  return (int)((wxSizer*)_obj)->Replace((wxSizer*) oldsz, (wxSizer*) newsz, (bool) recursive);
+  return self->Replace( oldsz, newsz,recursive);
 }
 
-EWXWEXPORT(int, wxSizer_Replace)(void* _obj, int oldindex, void *newsz)
+EWXWEXPORT(bool,wxSizer_Replace)(wxSizer* self,int oldindex,wxSizerItem* newsz)
 {
-  return (int)((wxSizer*)_obj)->Replace((size_t) oldindex, (wxSizerItem*) newsz);
+  return self->Replace((size_t) oldindex,newsz);
 }
 
-EWXWEXPORT(void, wxSizer_SetVirtualSizeHints)(void* _obj, void *window)
+EWXWEXPORT(void,wxSizer_SetVirtualSizeHints)(wxSizer* self,wxWindow* window)
 {
-  ((wxSizer*)_obj)->SetVirtualSizeHints((wxWindow*) window);
+  self->SetVirtualSizeHints(window);
 }
 
-EWXWEXPORT(int, wxSizer_ShowWindow)(void* _obj, void *window, int show, int recursive)
+EWXWEXPORT(bool,wxSizer_ShowWindow)(wxSizer* self,wxWindow* window,bool show,bool recursive)
 {
-  return (int)((wxSizer*)_obj)->Show((wxWindow*) window, (bool) show, (bool) recursive);
+  return self->Show(window, show, recursive);
 }
 
-EWXWEXPORT(int, wxSizer_ShowSizer)(void* _obj, void *sizer, int show, int recursive)
+EWXWEXPORT(bool,wxSizer_ShowSizer)(wxSizer* self,wxSizer* sizer,bool show,bool recursive)
 {
-  return (int)((wxSizer*)_obj)->Show((wxSizer*) sizer, (bool) show, (bool) recursive);
+  return self->Show(sizer, show, recursive);
 }
 
-EWXWEXPORT(int, wxSizer_Show)(void* _obj, int index, int show)
+EWXWEXPORT(bool,wxSizer_Show)(wxSizer* self,int index,bool show)
 {
-  return (int)((wxSizer*)_obj)->Show((size_t) index, (bool) show);
+  return self->Show((size_t) index, show);
 }
 #endif
 	
-EWXWEXPORT(void, wxSizer_SetDimension)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(void,wxSizer_SetDimension)(wxSizer* self,int x,int y,int width,int height)
 {
-	((wxSizer*)_obj)->SetDimension(x, y, width, height);
+	self->SetDimension(x, y, width, height);
 }
 	
-EWXWEXPORT(void*, wxGridSizer_Create)(int rows, int cols, int vgap, int hgap)
+EWXWEXPORT(void*,wxGridSizer_Create)(int rows,int cols,int vgap,int hgap)
 {
-	return (void*) new wxGridSizer(rows, cols, vgap, hgap);
+	return (void*)new wxGridSizer(rows, cols, vgap, hgap);
 }
 	
-EWXWEXPORT(void, wxGridSizer_RecalcSizes)(void* _obj)
+EWXWEXPORT(void,wxGridSizer_RecalcSizes)(void* self)
 {
-	((wxGridSizer*)_obj)->RecalcSizes();
+	((wxGridSizer*)self)->RecalcSizes();
 }
 	
 EWXWEXPORT(void, wxGridSizer_CalcMin)(void* _obj, void* _w, void* _h)
@@ -521,54 +521,54 @@ EWXWEXPORT(void, wxGridSizer_CalcMin)(void* _obj, void* _w, void* _h)
 	(*(int*)_h) = res.GetHeight();
 }
 	
-EWXWEXPORT(void, wxGridSizer_SetCols)(void* _obj, int cols )
+EWXWEXPORT(void,wxGridSizer_SetCols)(void* self,int cols)
 {
-	((wxGridSizer*)_obj)->SetCols(cols);
+	((wxGridSizer*)self)->SetCols(cols);
 }
 	
-EWXWEXPORT(void, wxGridSizer_SetRows)(void* _obj, int rows)
+EWXWEXPORT(void,wxGridSizer_SetRows)(void* self,int rows)
 {
-	((wxGridSizer*)_obj)->SetRows(rows);
+	((wxGridSizer*)self)->SetRows(rows);
 }
 	
-EWXWEXPORT(void, wxGridSizer_SetVGap)(void* _obj, int gap)
+EWXWEXPORT(void,wxGridSizer_SetVGap)(void* self,int gap)
 {
-	((wxGridSizer*)_obj)->SetVGap(gap);
+	((wxGridSizer*)self)->SetVGap(gap);
 }
 	
-EWXWEXPORT(void, wxGridSizer_SetHGap)(void* _obj, int gap)
+EWXWEXPORT(void,wxGridSizer_SetHGap)(void* self,int gap)
 {
-	((wxGridSizer*)_obj)->SetHGap(gap);
+	((wxGridSizer*)self)->SetHGap(gap);
 }
 	
-EWXWEXPORT(int, wxGridSizer_GetCols)(void* _obj)
+EWXWEXPORT(int,wxGridSizer_GetCols)(void* self)
 {
-	return ((wxGridSizer*)_obj)->GetCols();
+	return ((wxGridSizer*)self)->GetCols();
 }
 	
-EWXWEXPORT(int, wxGridSizer_GetRows)(void* _obj)
+EWXWEXPORT(int,wxGridSizer_GetRows)(void* self)
 {
-	return ((wxGridSizer*)_obj)->GetRows();
+	return ((wxGridSizer*)self)->GetRows();
 }
 	
-EWXWEXPORT(int, wxGridSizer_GetVGap)(void* _obj)
+EWXWEXPORT(int,wxGridSizer_GetVGap)(void* self)
 {
-	return ((wxGridSizer*)_obj)->GetVGap();
+	return ((wxGridSizer*)self)->GetVGap();
 }
 	
-EWXWEXPORT(int, wxGridSizer_GetHGap)(void* _obj)
+EWXWEXPORT(int,wxGridSizer_GetHGap)(void* self)
 {
-	return ((wxGridSizer*)_obj)->GetHGap();
+	return ((wxGridSizer*)self)->GetHGap();
 }
 	
-EWXWEXPORT(void*, wxFlexGridSizer_Create)(int rows, int cols, int vgap, int hgap)
+EWXWEXPORT(void*,wxFlexGridSizer_Create)(int rows,int cols,int vgap,int hgap)
 {
 	return new wxFlexGridSizer(rows, cols, vgap, hgap);
 }
 	
-EWXWEXPORT(void, wxFlexGridSizer_RecalcSizes)(void* _obj)
+EWXWEXPORT(void,wxFlexGridSizer_RecalcSizes)(void* self)
 {
-	((wxFlexGridSizer*)_obj)->RecalcSizes();
+	((wxFlexGridSizer*)self)->RecalcSizes();
 }
 	
 EWXWEXPORT(void, wxFlexGridSizer_CalcMin)(void* _obj, void* _w, void* _h)
@@ -578,34 +578,34 @@ EWXWEXPORT(void, wxFlexGridSizer_CalcMin)(void* _obj, void* _w, void* _h)
 	(*(int*)_h) = res.GetHeight();
 }
 	
-EWXWEXPORT(void, wxFlexGridSizer_AddGrowableRow)(void* _obj, size_t idx)
+EWXWEXPORT(void,wxFlexGridSizer_AddGrowableRow)(void* self,size_t idx)
 {
-	((wxFlexGridSizer*)_obj)->AddGrowableRow(idx);
+	((wxFlexGridSizer*)self)->AddGrowableRow(idx);
 }
 	
-EWXWEXPORT(void, wxFlexGridSizer_RemoveGrowableRow)(void* _obj, size_t idx)
+EWXWEXPORT(void,wxFlexGridSizer_RemoveGrowableRow)(void* self,size_t idx)
 {
-	((wxFlexGridSizer*)_obj)->RemoveGrowableRow(idx);
+	((wxFlexGridSizer*)self)->RemoveGrowableRow(idx);
 }
 	
-EWXWEXPORT(void, wxFlexGridSizer_AddGrowableCol)(void* _obj, size_t idx)
+EWXWEXPORT(void,wxFlexGridSizer_AddGrowableCol)(void* self,size_t idx)
 {
-	((wxFlexGridSizer*)_obj)->AddGrowableCol(idx);
+	((wxFlexGridSizer*)self)->AddGrowableCol(idx);
 }
 	
-EWXWEXPORT(void, wxFlexGridSizer_RemoveGrowableCol)(void* _obj, size_t idx)
+EWXWEXPORT(void,wxFlexGridSizer_RemoveGrowableCol)(void* self,size_t idx)
 {
-	((wxFlexGridSizer*)_obj)->RemoveGrowableCol(idx);
+	((wxFlexGridSizer*)self)->RemoveGrowableCol(idx);
 }
 	
-EWXWEXPORT(void*, wxBoxSizer_Create)(int orient )
+EWXWEXPORT(void*,wxBoxSizer_Create)(int orient)
 {
-	return (void*) new wxBoxSizer(orient);
+	return (void*)new wxBoxSizer(orient);
 }
 	
-EWXWEXPORT(void, wxBoxSizer_RecalcSizes)(void* _obj)
+EWXWEXPORT(void,wxBoxSizer_RecalcSizes)(void* self)
 {
-	((wxBoxSizer*)_obj)->RecalcSizes();
+	((wxBoxSizer*)self)->RecalcSizes();
 }
 	
 EWXWEXPORT(void, wxBoxSizer_CalcMin)(void* _obj, void* _w, void* _h)

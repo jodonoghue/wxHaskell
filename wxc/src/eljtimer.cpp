@@ -3,70 +3,70 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxTimer_Create) (void* _prt, int _id)
+EWXWEXPORT(wxTimer*,wxTimer_Create)(wxEvtHandler* _prt,int _id)
 {
-	return (void*) new wxTimer ((wxEvtHandler*)_prt, _id);
+	return  new wxTimer (_prt, _id);
 }
 
-EWXWEXPORT(void, wxTimer_Delete) (void* _obj)
+EWXWEXPORT(void,wxTimer_Delete)(wxTimer* self)
 {
-	delete (wxTimer*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxTimer_Start) (void* _obj, int _int, int _one)
+EWXWEXPORT(bool,wxTimer_Start)(wxTimer* self,int _int,bool _one)
 {
-	return (int)((wxTimer*)_obj)->Start (_int, _one != 0);
+	return self->Start (_int, _one);
 }
 
-EWXWEXPORT(void, wxTimer_Stop) (void* _obj)
+EWXWEXPORT(void,wxTimer_Stop)(wxTimer* self)
 {
-	((wxTimer*)_obj)->Stop();
+	self->Stop();
 }
 
-EWXWEXPORT(int, wxTimer_IsRuning) (void* _obj)
+EWXWEXPORT(bool,wxTimer_IsRuning)(wxTimer* self)
 {
-	return (int)((wxTimer*)_obj)->IsRunning();
+	return self->IsRunning();
 }
 
-EWXWEXPORT(int, wxTimer_IsOneShot) (void* _obj)
+EWXWEXPORT(bool,wxTimer_IsOneShot)(wxTimer* self)
 {
-	return (int)((wxTimer*)_obj)->IsOneShot();
+	return self->IsOneShot();
 }
 
-EWXWEXPORT(int, wxTimer_GetInterval) (void* _obj)
+EWXWEXPORT(int,wxTimer_GetInterval)(wxTimer* self)
 {
-	return ((wxTimer*)_obj)->GetInterval();
+	return self->GetInterval();
 }
 
 
-EWXWEXPORT(void*,wxStopWatch_Create)()
+EWXWEXPORT(wxStopWatch*,wxStopWatch_Create)()
 {
-	return (void*)new wxStopWatch();
+	return new wxStopWatch();
 }
 	
-EWXWEXPORT(void,wxStopWatch_Delete)(void* _obj)
+EWXWEXPORT(void,wxStopWatch_Delete)(wxStopWatch* self)
 {
-	delete (wxStopWatch*)_obj;
+	delete self;
 }
 	
-EWXWEXPORT(void,wxStopWatch_Start)(void* _obj, int _t)
+EWXWEXPORT(void,wxStopWatch_Start)(wxStopWatch* self,int _t)
 {
-	((wxStopWatch*)_obj)->Start((long)_t);
+	self->Start((long)_t);
 }
 	
-EWXWEXPORT(void,wxStopWatch_Pause)(void* _obj)
+EWXWEXPORT(void,wxStopWatch_Pause)(wxStopWatch* self)
 {
-	((wxStopWatch*)_obj)->Pause();
+	self->Pause();
 }
 	
-EWXWEXPORT(void,wxStopWatch_Resume)(void* _obj)
+EWXWEXPORT(void,wxStopWatch_Resume)(wxStopWatch* self)
 {
-	((wxStopWatch*)_obj)->Resume();
+	self->Resume();
 }
 	
-EWXWEXPORT(int,wxStopWatch_Time)(void* _obj)
+EWXWEXPORT(long,wxStopWatch_Time)(wxStopWatch* self)
 {
-	return (int)((wxStopWatch*)_obj)->Time();
+	return self->Time();
 }
 	
 }

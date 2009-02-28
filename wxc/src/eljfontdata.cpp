@@ -3,89 +3,89 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxFontData_Create) ()
+EWXWEXPORT(void*,wxFontData_Create)()
 {
-	return (void*) new wxFontData();
+	return (void*)new wxFontData();
 }
 
-EWXWEXPORT(void, wxFontData_Delete) (void* _obj)
+EWXWEXPORT(void,wxFontData_Delete)(void* self)
 {
-	delete (wxFontData*)_obj;
+	delete (wxFontData*)self;
 }
 
-EWXWEXPORT(void, wxFontData_SetAllowSymbols)(void* _obj, int flag)
+EWXWEXPORT(void,wxFontData_SetAllowSymbols)(void* self,bool flag)
 {
-	((wxFontData*)_obj)->SetAllowSymbols(flag != 0);
+	((wxFontData*)self)->SetAllowSymbols(flag);
 }
 	
-EWXWEXPORT(int, wxFontData_GetAllowSymbols)(void* _obj)
+EWXWEXPORT(bool,wxFontData_GetAllowSymbols)(wxFontData* self)
 {
-	return (int)((wxFontData*)_obj)->GetAllowSymbols();
+	return self->GetAllowSymbols();
 }
 	
-EWXWEXPORT(void, wxFontData_SetColour)(void* _obj, void* colour)
+EWXWEXPORT(void,wxFontData_SetColour)(void* self,wxColour* colour)
 {
-	((wxFontData*)_obj)->SetColour(*((wxColour*)colour));
+	((wxFontData*)self)->SetColour(*colour);
 }
 	
-EWXWEXPORT(void, wxFontData_GetColour)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxFontData_GetColour)(void* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxFontData*)_obj)->GetColour();
+	*_ref = ((wxFontData*)self)->GetColour();
 }
 	
-EWXWEXPORT(void, wxFontData_SetShowHelp)(void* _obj, int flag)
+EWXWEXPORT(void,wxFontData_SetShowHelp)(void* self,bool flag)
 {
-	((wxFontData*)_obj)->SetShowHelp(flag != 0);
+	((wxFontData*)self)->SetShowHelp(flag);
 }
 	
-EWXWEXPORT(int, wxFontData_GetShowHelp)(void* _obj)
+EWXWEXPORT(bool,wxFontData_GetShowHelp)(wxFontData* self)
 {
-	return (int)((wxFontData*)_obj)->GetShowHelp();
+	return self->GetShowHelp();
 }
 	
-EWXWEXPORT(void, wxFontData_EnableEffects)(void* _obj, int flag)
+EWXWEXPORT(void,wxFontData_EnableEffects)(void* self,bool flag)
 {
-	((wxFontData*)_obj)->EnableEffects(flag != 0);
+	((wxFontData*)self)->EnableEffects(flag);
 }
 	
-EWXWEXPORT(int, wxFontData_GetEnableEffects)(void* _obj)
+EWXWEXPORT(bool,wxFontData_GetEnableEffects)(wxFontData* self)
 {
-	return (int)((wxFontData*)_obj)->GetEnableEffects();
+	return self->GetEnableEffects();
 }
 	
-EWXWEXPORT(void, wxFontData_SetInitialFont)(void* _obj, void* font)
+EWXWEXPORT(void,wxFontData_SetInitialFont)(void* self,wxFont* font)
 {
-	((wxFontData*)_obj)->SetInitialFont(*((wxFont*)font));
+	((wxFontData*)self)->SetInitialFont(*font);
 }
 	
-EWXWEXPORT(void, wxFontData_GetInitialFont)(void* _obj, void* ref)
+EWXWEXPORT(void,wxFontData_GetInitialFont)(void* self,wxFont* ref)
 {
-	*((wxFont*)ref) = ((wxFontData*)_obj)->GetInitialFont();
+	*ref = ((wxFontData*)self)->GetInitialFont();
 }
 	
-EWXWEXPORT(void, wxFontData_SetChosenFont)(void* _obj, void* font)
+EWXWEXPORT(void,wxFontData_SetChosenFont)(void* self,wxFont* font)
 {
-	((wxFontData*)_obj)->SetChosenFont(*((wxFont*)font));
+	((wxFontData*)self)->SetChosenFont(*font);
 }
 	
-EWXWEXPORT(void, wxFontData_GetChosenFont)(void* _obj, void* ref)
+EWXWEXPORT(void,wxFontData_GetChosenFont)(void* self,wxFont* ref)
 {
-	*((wxFont*)ref) = ((wxFontData*)_obj)->GetChosenFont();
+	*ref = ((wxFontData*)self)->GetChosenFont();
 }
 	
-EWXWEXPORT(void, wxFontData_SetRange)(void* _obj, int minRange, int maxRange)
+EWXWEXPORT(void,wxFontData_SetRange)(void* self,int minRange,int maxRange)
 {
-	((wxFontData*)_obj)->SetRange(minRange, maxRange);
+	((wxFontData*)self)->SetRange(minRange, maxRange);
 }
 	
-EWXWEXPORT(int, wxFontData_GetEncoding)(void* _obj)
+EWXWEXPORT(int,wxFontData_GetEncoding)(wxFontData* self)
 {
-	return (int)((wxFontData*)_obj)->GetEncoding();
+	return (int)self->GetEncoding();
 }
 	
-EWXWEXPORT(void, wxFontData_SetEncoding)(void* _obj, int encoding)
+EWXWEXPORT(void,wxFontData_SetEncoding)(void* self,int encoding)
 {
-	((wxFontData*)_obj)->SetEncoding((wxFontEncoding)encoding);
+	((wxFontData*)self)->SetEncoding((wxFontEncoding)encoding);
 }
 	
 }

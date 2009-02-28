@@ -3,242 +3,242 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxConfigBase_Create)()
+EWXWEXPORT(wxConfigBase*,wxConfigBase_Create)()
 {
-	return (void*) wxConfigBase::Create();
+	return wxConfigBase::Create();
 }
 	
-EWXWEXPORT(void,wxConfigBase_Delete)(void* _obj)
+EWXWEXPORT(void,wxConfigBase_Delete)(wxConfigBase* self)
 {
-	delete (wxConfigBase*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void,wxConfigBase_SetPath)(void* _obj,wxString* strPath)
+EWXWEXPORT(void,wxConfigBase_SetPath)(wxConfigBase* self,wxString* strPath)
 {
-	((wxConfigBase*)_obj)->SetPath(*strPath);
+	self->SetPath(*strPath);
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetPath)(wxString* _obj)
+EWXWEXPORT(wxString*,wxConfigBase_GetPath)(wxConfigBase* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxConfigBase*)_obj)->GetPath();
+	*result = self->GetPath();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetFirstGroup)(wxConfigBase* _obj,long* lIndex)
+EWXWEXPORT(wxString*,wxConfigBase_GetFirstGroup)(wxConfigBase* self,long* lIndex)
 {
 	wxString* tmp;
         tmp = new wxString(wxT(""));
-        if (_obj->GetFirstGroup(*tmp, *lIndex)) {
+        if (self->GetFirstGroup(*tmp,*lIndex)) {
           *lIndex = -1;
         }         
 	return tmp;
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetNextGroup)(wxConfigBase* _obj,long* lIndex)
+EWXWEXPORT(wxString*,wxConfigBase_GetNextGroup)(wxConfigBase* self,long* lIndex)
 {
 	wxString* tmp;
         tmp = new wxString(wxT(""));
-        if (_obj->GetNextGroup(*tmp, *lIndex)) {
+        if (self->GetNextGroup(*tmp,*lIndex)) {
           *lIndex = -1;
         }         
 	return tmp;
 }
 
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetFirstEntry)(wxConfigBase* _obj,long* lIndex)
+EWXWEXPORT(wxString*,wxConfigBase_GetFirstEntry)(wxConfigBase* self,long* lIndex)
 {
 	wxString* tmp;
         tmp = new wxString(wxT(""));
-        if (_obj->GetFirstEntry(*tmp, *lIndex)) {
+        if (self->GetFirstEntry(*tmp,*lIndex)) {
           *lIndex = -1;
         }         
 	return tmp;
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetNextEntry)(wxConfigBase* _obj,long* lIndex)
+EWXWEXPORT(wxString*,wxConfigBase_GetNextEntry)(wxConfigBase* self,long* lIndex)
 {
 	wxString* tmp;
         tmp = new wxString(wxT(""));
-        if (_obj->GetNextEntry(*tmp, *lIndex)) {
+        if (self->GetNextEntry(*tmp,*lIndex)) {
           *lIndex = -1;
         }         
 	return tmp;
 }
 	
-EWXWEXPORT(int,wxConfigBase_GetNumberOfEntries)(wxConfigBase* _obj,int bRecursive)
+EWXWEXPORT(size_t,wxConfigBase_GetNumberOfEntries)(wxConfigBase* self,bool bRecursive)
 {
-	return (int)_obj->GetNumberOfEntries(bRecursive != 0);
+	return self->GetNumberOfEntries(bRecursive);
 }
 	
-EWXWEXPORT(int,wxConfigBase_GetNumberOfGroups)(wxConfigBase* _obj,int bRecursive)
+EWXWEXPORT(size_t,wxConfigBase_GetNumberOfGroups)(wxConfigBase* self,bool bRecursive)
 {
-	return (int)_obj->GetNumberOfGroups(bRecursive != 0);
+	return self->GetNumberOfGroups(bRecursive);
 }
 	
-EWXWEXPORT(int,wxConfigBase_HasGroup)(wxConfigBase* _obj,wxString* strName)
+EWXWEXPORT(bool,wxConfigBase_HasGroup)(wxConfigBase* self,wxString* strName)
 {
-	return (int)_obj->HasGroup(*strName);
+	return self->HasGroup(*strName);
 }
 	
-EWXWEXPORT(int,wxConfigBase_HasEntry)(wxConfigBase* _obj,wxString* strName)
+EWXWEXPORT(bool,wxConfigBase_HasEntry)(wxConfigBase* self,wxString* strName)
 {
-	return (int)_obj->HasEntry(*strName);
+	return self->HasEntry(*strName);
 }
 	
-EWXWEXPORT(int,wxConfigBase_Exists)(wxConfigBase* _obj,wxString* strName)
+EWXWEXPORT(bool,wxConfigBase_Exists)(wxConfigBase* self,wxString* strName)
 {
-	return (int)_obj->Exists(*strName);
+	return self->Exists(*strName);
 }
 	
-EWXWEXPORT(int,wxConfigBase_GetEntryType)(void* _obj,wxString* name)
+EWXWEXPORT(int,wxConfigBase_GetEntryType)(wxConfigBase* self,wxString* name)
 {
-	return (int)((wxConfigBase*)_obj)->GetEntryType(*name);
+	return (int)self->GetEntryType(*name);
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_ReadString)(wxConfigBase* _obj,wxString* key,wxString* defVal)
+EWXWEXPORT(wxString*,wxConfigBase_ReadString)(wxConfigBase* self,wxString* key,wxString* defVal)
 {
 	wxString tmp;
-        tmp = ((wxConfigBase*)_obj)->Read(*key, *defVal);
+        tmp = self->Read(*key,*defVal);
 	return new wxString(tmp);
 }
 	
-EWXWEXPORT(int,wxConfigBase_ReadInteger)(void* _obj,wxString* key,int defVal)
+EWXWEXPORT(int,wxConfigBase_ReadInteger)(wxConfigBase* self,wxString* key,int defVal)
 {
-	return ((wxConfigBase*)_obj)->Read(*key, defVal);
+	return self->Read(*key, defVal);
 }
 	
-EWXWEXPORT(double,wxConfigBase_ReadDouble)(void* _obj,wxString* key,double defVal)
+EWXWEXPORT(double,wxConfigBase_ReadDouble)(wxConfigBase* self,wxString* key,double defVal)
 {
 	double val;
-	if (((wxConfigBase*)_obj)->Read(*key, &val, defVal))
+	if (self->Read(*key, &val, defVal))
  		return val;
  	return 0.0;
 }
 	
-EWXWEXPORT(int,wxConfigBase_ReadBool)(wxConfigBase* _obj,wxString* key,int defVal)
+EWXWEXPORT(bool,wxConfigBase_ReadBool)(wxConfigBase* self,wxString* key,bool defVal)
 {
 	bool val;
-	if (_obj->Read(*key, &val, defVal != 0))
+	if (self->Read(*key, &val, defVal))
 		return val;
-	return (int)false;
+	return false;
 }
 	
-EWXWEXPORT(int,wxConfigBase_WriteString)(wxConfigBase* _obj,wxString* key,wxString* value)
+EWXWEXPORT(bool,wxConfigBase_WriteString)(wxConfigBase* self,wxString* key,wxString* value)
 {
-	return (int)_obj->Write(*key, *value);
+	return self->Write(*key,*value);
 }
-
+	
 // FIXME: just left for backward-compatibiliry. wxHaskell uses int as long now.
-EWXWEXPORT(int, wxConfigBase_WriteInteger)(void* _obj, void* key, int value)
+EWXWEXPORT(bool,wxConfigBase_WriteInteger)(wxConfigBase* self,wxString* key,int value)
 {
-	return (int)((wxConfigBase*)_obj)->Write((wxChar*)key, (long)value);
+	return self->Write(*key, (long)value);
 }
 	
-EWXWEXPORT(int,wxConfigBase_WriteLong)(wxConfigBase* _obj,wxString* key,long value)
+EWXWEXPORT(bool,wxConfigBase_WriteLong)(wxConfigBase* self,wxString* key,long value)
 {
-	return (int)_obj->Write(*key, value);
+	return self->Write(*key, value);
 }
 	
-EWXWEXPORT(int,wxConfigBase_WriteDouble)(wxConfigBase* _obj,wxString* key,double value)
+EWXWEXPORT(bool,wxConfigBase_WriteDouble)(wxConfigBase* self,wxString* key,double value)
 {
-	return (int)_obj->Write(*key, value);
+	return self->Write(*key, value);
 }
 	
-EWXWEXPORT(int,wxConfigBase_WriteBool)(wxConfigBase* _obj,wxString* key,int value)
+EWXWEXPORT(bool,wxConfigBase_WriteBool)(wxConfigBase* self,wxString* key,bool value)
 {
-	return (int)_obj->Write(*key, value != 0);
+	return self->Write(*key, value);
 }
 	
-EWXWEXPORT(int,wxConfigBase_Flush)(wxConfigBase* _obj,int bCurrentOnly)
+EWXWEXPORT(bool,wxConfigBase_Flush)(wxConfigBase* self,bool bCurrentOnly)
 {
-	return (int)_obj->Flush(bCurrentOnly != 0);
+	return self->Flush(bCurrentOnly);
 }
 	
-EWXWEXPORT(int,wxConfigBase_RenameEntry)(wxConfigBase* _obj,wxString* oldName,wxString* newName)
+EWXWEXPORT(bool,wxConfigBase_RenameEntry)(wxConfigBase* self,wxString* oldName,wxString* newName)
 {
-	return (int)_obj->RenameEntry(*oldName, *newName);
+	return self->RenameEntry(*oldName,*newName);
 }
 	
-EWXWEXPORT(int,wxConfigBase_RenameGroup)(wxConfigBase* _obj,wxString* oldName,wxString* newName)
+EWXWEXPORT(bool,wxConfigBase_RenameGroup)(wxConfigBase* self,wxString* oldName,wxString* newName)
 {
-	return (int)_obj->RenameGroup(*oldName, *newName);
+	return self->RenameGroup(*oldName,*newName);
 }
 	
-EWXWEXPORT(int,wxConfigBase_DeleteEntry)(wxConfigBase* _obj,wxString* key,int bDeleteGroupIfEmpty)
+EWXWEXPORT(bool,wxConfigBase_DeleteEntry)(wxConfigBase* self,wxString* key,bool bDeleteGroupIfEmpty)
 {
-	return (int)_obj->DeleteEntry(*key, bDeleteGroupIfEmpty != 0);
+	return self->DeleteEntry(*key, bDeleteGroupIfEmpty);
 }
 	
-EWXWEXPORT(int,wxConfigBase_DeleteGroup)(wxConfigBase* _obj,wxString* key)
+EWXWEXPORT(bool,wxConfigBase_DeleteGroup)(wxConfigBase* self,wxString* key)
 {
-	return (int)_obj->DeleteGroup(*key);
+	return self->DeleteGroup(*key);
 }
 	
-EWXWEXPORT(int,wxConfigBase_DeleteAll)(wxConfigBase* _obj)
+EWXWEXPORT(bool,wxConfigBase_DeleteAll)(wxConfigBase* self)
 {
-	return (int)_obj->DeleteAll();
+	return self->DeleteAll();
 }
 	
-EWXWEXPORT(int,wxConfigBase_IsExpandingEnvVars)(wxConfigBase* _obj)
+EWXWEXPORT(bool,wxConfigBase_IsExpandingEnvVars)(wxConfigBase* self)
 {
-	return (int)_obj->IsExpandingEnvVars();
+	return self->IsExpandingEnvVars();
 }
 	
-EWXWEXPORT(void,wxConfigBase_SetExpandEnvVars)(wxConfigBase* _obj,int bDoIt)
+EWXWEXPORT(void,wxConfigBase_SetExpandEnvVars)(wxConfigBase* self,bool bDoIt)
 {
-	_obj->SetExpandEnvVars(bDoIt != 0);
+	self->SetExpandEnvVars(bDoIt);
 }
 	
-EWXWEXPORT(void,wxConfigBase_SetRecordDefaults)(void* _obj,int bDoIt)
+EWXWEXPORT(void,wxConfigBase_SetRecordDefaults)(wxConfigBase* self,bool bDoIt)
 {
-	((wxConfigBase*)_obj)->SetRecordDefaults(bDoIt != 0);
+	self->SetRecordDefaults(bDoIt);
 }
 	
-EWXWEXPORT(int,wxConfigBase_IsRecordingDefaults)(wxConfigBase* _obj)
+EWXWEXPORT(bool,wxConfigBase_IsRecordingDefaults)(wxConfigBase* self)
 {
-	return (int)_obj->IsRecordingDefaults();
+	return self->IsRecordingDefaults();
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_ExpandEnvVars)(void* _obj,wxString* str)
+EWXWEXPORT(wxString*,wxConfigBase_ExpandEnvVars)(wxConfigBase* self,wxString* str)
 {
 	wxString *result = new wxString();
-	*result = ((wxConfigBase*)_obj)->ExpandEnvVars(*str);
+	*result = self->ExpandEnvVars(*str);
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetAppName)(void* _obj)
+EWXWEXPORT(wxString*,wxConfigBase_GetAppName)(wxConfigBase* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxConfigBase*)_obj)->GetAppName();
+	*result = self->GetAppName();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxConfigBase_GetVendorName)(void* _obj)
+EWXWEXPORT(wxString*,wxConfigBase_GetVendorName)(wxConfigBase* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxConfigBase*)_obj)->GetVendorName();
+	*result = self->GetVendorName();
 	return result;
 }
 	
-EWXWEXPORT(void,wxConfigBase_SetAppName)(void* _obj,wxString* appName)
+EWXWEXPORT(void,wxConfigBase_SetAppName)(wxConfigBase* self,wxString* appName)
 {
-	((wxConfigBase*)_obj)->SetAppName(*appName);
+	self->SetAppName(*appName);
 }
 	
-EWXWEXPORT(void,wxConfigBase_SetVendorName)(void* _obj,wxString* vendorName)
+EWXWEXPORT(void,wxConfigBase_SetVendorName)(wxConfigBase* self,wxString* vendorName)
 {
-	((wxConfigBase*)_obj)->SetVendorName(*vendorName);
+	self->SetVendorName(*vendorName);
 }
 	
-EWXWEXPORT(void,wxConfigBase_SetStyle)(void* _obj,int style)
+EWXWEXPORT(void,wxConfigBase_SetStyle)(wxConfigBase* self,int style)
 {
-	((wxConfigBase*)_obj)->SetStyle((long)style);
+	self->SetStyle((long)style);
 }
 	
-EWXWEXPORT(int,wxConfigBase_GetStyle)(void* _obj)
+EWXWEXPORT(long,wxConfigBase_GetStyle)(wxConfigBase* self)
 {
-	return (int)((wxConfigBase*)_obj)->GetStyle();
+	return self->GetStyle();
 }
 	
 }

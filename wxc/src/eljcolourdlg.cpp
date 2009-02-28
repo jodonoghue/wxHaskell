@@ -3,14 +3,14 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxColourDialog_Create) (void* _prt, void* col)
+EWXWEXPORT(wxColourDialog*,wxColourDialog_Create)(wxWindow* _prt,wxColourData* col)
 {
-	return (void*) new wxColourDialog ((wxWindow*)_prt, (wxColourData*) col);
+	return new wxColourDialog (_prt, col);
 }
 
-EWXWEXPORT(void, wxColourDialog_GetColourData)(void* _obj, void* col)
+EWXWEXPORT(void,wxColourDialog_GetColourData)(wxColourDialog* self,wxColourData* col)
 {
-	*((wxColourData*)col) = ((wxColourDialog*)_obj)->GetColourData();
+	*col = self->GetColourData();
 }
 
 }

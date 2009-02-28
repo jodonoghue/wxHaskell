@@ -120,7 +120,7 @@ void wxListCtrl_GetColumn2( TSelf(wxListCtrl) _obj, int col, TClassRef(wxListIte
 void wxListCtrl_GetItem2( TSelf(wxListCtrl) _obj, TClassRef(wxListItem) info);
 void wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item, TPointOut(x,y));
 /** Sort items in a list control. Takes a closure that is called with a 'CommandEvent' where the @Int@ is the item data of the first item and the @ExtraLong@ the item data of the second item. The event handler should set the @Int@ to 0 when the items are equal, -1 when the first is less, and 1 when the second is less. */
-TBoolInt wxListCtrl_SortItems2(TSelf(wxListCtrl) _obj, TClass(wxClosure) closure );
+TBool wxListCtrl_SortItems2(TSelf(wxListCtrl) _obj, TClass(wxClosure) closure );
 
 /* tree ctrl */
 TClassDefExtend(wxcTreeItemData,wxTreeItemData)
@@ -255,9 +255,9 @@ TClass(wxcHtmlWindow) wxcHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRec
 TClass(wxHtmlWindow) wxHtmlWindow_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl, TClass(wxString) _txt );
 TBool                wxHtmlWindow_AppendToPage( TSelf(wxHtmlWindow) _obj, TClass(wxString) source );
 TClass(wxHtmlContainerCell) wxHtmlWindow_GetInternalRepresentation( TSelf(wxHtmlWindow) _obj );
-TStringLen           wxHtmlWindow_GetOpenedAnchor( TSelf(wxHtmlWindow) _obj, TStringOutVoid _buf ) ;
-TStringLen           wxHtmlWindow_GetOpenedPage( TSelf(wxHtmlWindow) _obj, TStringOutVoid _buf );
-TStringLen            wxHtmlWindow_GetOpenedPageTitle( TSelf(wxHtmlWindow) _obj, TStringOutVoid _buf );
+TClass(wxString)     wxHtmlWindow_GetOpenedAnchor( TSelf(wxHtmlWindow) _obj ) ;
+TClass(wxString)     wxHtmlWindow_GetOpenedPage( TSelf(wxHtmlWindow) _obj );
+TClass(wxString)     wxHtmlWindow_GetOpenedPageTitle( TSelf(wxHtmlWindow) _obj );
 TClass(wxFrame)      wxHtmlWindow_GetRelatedFrame( TSelf(wxHtmlWindow) _obj );
 TBool                wxHtmlWindow_HistoryBack( TSelf(wxHtmlWindow) _obj);
 TBool                wxHtmlWindow_HistoryCanBack( TSelf(wxHtmlWindow) _obj );

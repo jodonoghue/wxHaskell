@@ -6,7 +6,7 @@
 extern "C"
 {
 
-typedef int _cdecl (*TTextEnum) (void* _obj, void* _txt);
+typedef int _cdecl (*TTextEnum) (void* self, void* _txt);
 
 }
 
@@ -16,10 +16,10 @@ class ELJFontEnumerator : public wxFontEnumerator
 		TTextEnum func;
 		void*     EiffelObject;
 	public:
-		ELJFontEnumerator (void* _obj, void* _fnc) : wxFontEnumerator()
+		ELJFontEnumerator (void* self, void* _fnc) : wxFontEnumerator()
 		{
 			func = (TTextEnum)_fnc;
-			EiffelObject = _obj;
+			EiffelObject = self;
 		}
 		
 	    virtual bool OnFacename(const wxString& facename)
@@ -36,148 +36,164 @@ class ELJFontEnumerator : public wxFontEnumerator
 extern "C"
 {
 
-EWXWEXPORT(void*,wxFont_Create)(int pointSize,int family,int style,int weight,int underlined,wxString* face,int enc)
+EWXWEXPORT(wxFont*,wxFont_Create)(int pointSize,int family,int style,int weight,bool underlined,wxString* face,int enc)
 {
-	return new wxFont (pointSize, family, style, weight, underlined != 0, *face, (wxFontEncoding)enc);
+	return new wxFont (pointSize, family, style, weight, underlined,*face, (wxFontEncoding)enc);
 }
 
-EWXWEXPORT(void*,wxFont_CreateDefault)()
+EWXWEXPORT(wxFont*,wxFont_CreateDefault)()
 {
 	return new wxFont ();
 }
 
-EWXWEXPORT(void,wxFont_Delete)(void* _obj)
+EWXWEXPORT(void*,wxFont_CreateFromStock)(int id)
 {
-	delete ((wxFont*)_obj);
+	switch(id) {
+	case 0:
+		return (void*)wxITALIC_FONT;
+	case 1:
+		return (void*)wxNORMAL_FONT;
+	case 2:
+		return (void*)wxSMALL_FONT;
+	case 3:
+		return (void*)wxSWISS_FONT;
+	}
+
+	return NULL;
 }
 
-EWXWEXPORT(int,wxFont_IsOk)(wxFont* _obj)
+EWXWEXPORT(void,wxFont_Delete)(wxFont* self)
 {
-	return (int)_obj->IsOk();
+	delete self;
+}
+
+EWXWEXPORT(bool,wxFont_IsOk)(wxFont* self)
+{
+	return self->IsOk();
 }
 	
-EWXWEXPORT(int,wxFont_GetPointSize)(void* _obj)
+EWXWEXPORT(int,wxFont_GetPointSize)(wxFont* self)
 {
-	return ((wxFont*)_obj)->GetPointSize();
+	return self->GetPointSize();
 }
 	
-EWXWEXPORT(int,wxFont_GetFamily)(void* _obj)
+EWXWEXPORT(int,wxFont_GetFamily)(wxFont* self)
 {
-	return ((wxFont*)_obj)->GetFamily();
+	return self->GetFamily();
 }
 	
-EWXWEXPORT(int,wxFont_GetStyle)(void* _obj)
+EWXWEXPORT(int,wxFont_GetStyle)(wxFont* self)
 {
-	return ((wxFont*)_obj)->GetStyle();
+	return self->GetStyle();
 }
 	
-EWXWEXPORT(int,wxFont_GetWeight)(void* _obj)
+EWXWEXPORT(int,wxFont_GetWeight)(wxFont* self)
 {
-	return ((wxFont*)_obj)->GetWeight();
+	return self->GetWeight();
 }
 	
-EWXWEXPORT(int,wxFont_GetUnderlined)(wxFont* _obj)
+EWXWEXPORT(bool,wxFont_GetUnderlined)(wxFont* self)
 {
-	return (int)_obj->GetUnderlined();
+	return self->GetUnderlined();
 }
 	
-EWXWEXPORT(wxString*,wxFont_GetFaceName)(void* _obj)
+EWXWEXPORT(wxString*,wxFont_GetFaceName)(wxFont* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxFont*)_obj)->GetFaceName();
+	*result = self->GetFaceName();
 	return result;
 }
 	
-EWXWEXPORT(int,wxFont_GetEncoding)(wxFont* _obj)
+EWXWEXPORT(int,wxFont_GetEncoding)(wxFont* self)
 {
-	return (int)_obj->GetEncoding();
+	return (int)self->GetEncoding();
 }
 	
-EWXWEXPORT(void,wxFont_SetPointSize)(void* _obj,int pointSize)
+EWXWEXPORT(void,wxFont_SetPointSize)(wxFont* self,int pointSize)
 {
-	((wxFont*)_obj)->SetPointSize(pointSize);
+	self->SetPointSize(pointSize);
 }
 	
-EWXWEXPORT(void,wxFont_SetFamily)(void* _obj,int family)
+EWXWEXPORT(void,wxFont_SetFamily)(wxFont* self,int family)
 {
-	((wxFont*)_obj)->SetFamily(family);
+	self->SetFamily(family);
 }
 	
-EWXWEXPORT(void,wxFont_SetStyle)(void* _obj,int style)
+EWXWEXPORT(void,wxFont_SetStyle)(wxFont* self,int style)
 {
-	((wxFont*)_obj)->SetStyle(style);
+	self->SetStyle(style);
 }
 	
-EWXWEXPORT(void,wxFont_SetWeight)(void* _obj,int weight)
+EWXWEXPORT(void,wxFont_SetWeight)(wxFont* self,int weight)
 {
-	((wxFont*)_obj)->SetWeight(weight);
+	self->SetWeight(weight);
 }
 	
-EWXWEXPORT(void,wxFont_SetFaceName)(void* _obj,wxString* faceName)
+EWXWEXPORT(void,wxFont_SetFaceName)(wxFont* self,wxString* faceName)
 {
-	((wxFont*)_obj)->SetFaceName(*faceName);
+	self->SetFaceName(*faceName);
 }
 	
-EWXWEXPORT(void,wxFont_SetUnderlined)(void* _obj,int underlined)
+EWXWEXPORT(void,wxFont_SetUnderlined)(wxFont* self,bool underlined)
 {
-	((wxFont*)_obj)->SetUnderlined(underlined != 0);
+	self->SetUnderlined(underlined);
 }
 	
-EWXWEXPORT(void,wxFont_SetEncoding)(void* _obj,int encoding)
+EWXWEXPORT(void,wxFont_SetEncoding)(wxFont* self,int encoding)
 {
-	((wxFont*)_obj)->SetEncoding((wxFontEncoding)encoding);
+	self->SetEncoding((wxFontEncoding)encoding);
 }
 	
-EWXWEXPORT(wxString*,wxFont_GetFamilyString)(void* _obj)
+EWXWEXPORT(wxString*,wxFont_GetFamilyString)(wxFont* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxFont*)_obj)->GetFamilyString();
+	*result = self->GetFamilyString();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxFont_GetStyleString)(void* _obj)
+EWXWEXPORT(wxString*,wxFont_GetStyleString)(wxFont* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxFont*)_obj)->GetStyleString();
+	*result = self->GetStyleString();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxFont_GetWeightString)(void* _obj)
+EWXWEXPORT(wxString*,wxFont_GetWeightString)(wxFont* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxFont*)_obj)->GetWeightString();
+	*result = self->GetWeightString();
 	return result;
 }
 	
-EWXWEXPORT(int,wxFont_GetDefaultEncoding)(wxFont* _obj)
+EWXWEXPORT(int,wxFont_GetDefaultEncoding)(wxFont* self)
 {
-	return (int)_obj->GetDefaultEncoding();
+	return (int)self->GetDefaultEncoding();
 }
 	
-EWXWEXPORT(void,wxFont_SetDefaultEncoding)(void* _obj,int encoding)
+EWXWEXPORT(void,wxFont_SetDefaultEncoding)(wxFont* self,int encoding)
 {
-	((wxFont*)_obj)->SetDefaultEncoding((wxFontEncoding) encoding);
+	self->SetDefaultEncoding((wxFontEncoding) encoding);
 }
 	
 
-EWXWEXPORT(void*,wxFontEnumerator_Create)(void* _obj,void* _fnc)
+EWXWEXPORT(void*,wxFontEnumerator_Create)(void* self,void* _fnc)
 {
-	return (void*) new ELJFontEnumerator(_obj, _fnc);
+	return (void*)new ELJFontEnumerator(self, _fnc);
 }
 
-EWXWEXPORT(void,wxFontEnumerator_Delete)(void* _obj)
+EWXWEXPORT(void,wxFontEnumerator_Delete)(ELJFontEnumerator* self)
 {
-	delete ((ELJFontEnumerator*)_obj);
+	delete self;
 }
 
-EWXWEXPORT(int,wxFontEnumerator_EnumerateFacenames)(ELJFontEnumerator* _obj,int encoding,int fixedWidthOnly)
+EWXWEXPORT(bool,wxFontEnumerator_EnumerateFacenames)(ELJFontEnumerator* self,int encoding,bool fixedWidthOnly)
 {
-	return (int)_obj->EnumerateFacenames((wxFontEncoding)encoding, fixedWidthOnly != 0);
+	return self->EnumerateFacenames((wxFontEncoding)encoding, fixedWidthOnly);
 }
 	
-EWXWEXPORT(int,wxFontEnumerator_EnumerateEncodings)(ELJFontEnumerator* _obj,wxString* facename)
+EWXWEXPORT(bool,wxFontEnumerator_EnumerateEncodings)(ELJFontEnumerator* self,wxString* facename)
 {
-	return (int)_obj->EnumerateEncodings(*facename);
+	return self->EnumerateEncodings(*facename);
 }
 	
 
@@ -186,40 +202,40 @@ EWXWEXPORT(void*,wxFontMapper_Create)()
 	return wxTheFontMapper;
 }
 
-EWXWEXPORT(int,wxFontMapper_GetAltForEncoding)(wxFontMapper* _obj,int encoding,void* alt_encoding,wxString* facename)
+EWXWEXPORT(bool,wxFontMapper_GetAltForEncoding)(wxFontMapper* self,int encoding,void* alt_encoding,wxString* facename)
 {
-	return (int)_obj->GetAltForEncoding((wxFontEncoding)encoding, (wxFontEncoding*)alt_encoding, *facename, false);
+	return self->GetAltForEncoding((wxFontEncoding)encoding, (wxFontEncoding*)alt_encoding,*facename, false);
 }
 	
-EWXWEXPORT(int,wxFontMapper_IsEncodingAvailable)(wxFontMapper* _obj,int encoding,wxString* _buf)
+EWXWEXPORT(bool,wxFontMapper_IsEncodingAvailable)(wxFontMapper* self,int encoding,wxString* _buf)
 {
-	return (int)_obj->IsEncodingAvailable((wxFontEncoding)encoding, *_buf);
+	return self->IsEncodingAvailable((wxFontEncoding)encoding,*_buf);
 }
 	
 
 EWXWEXPORT(void*,wxEncodingConverter_Create)()
 {
-	return (void*) new wxEncodingConverter();
+	return (void*)new wxEncodingConverter();
 }
 
-EWXWEXPORT(void,wxEncodingConverter_Delete)(void* _obj)
+EWXWEXPORT(void,wxEncodingConverter_Delete)(void* self)
 {
-	delete (wxEncodingConverter*)_obj;
+	delete (wxEncodingConverter*)self;
 }
 
-EWXWEXPORT(int,wxEncodingConverter_Init)(wxEncodingConverter* _obj,int input_enc,int output_enc,int method)
+EWXWEXPORT(bool,wxEncodingConverter_Init)(wxEncodingConverter* self,int input_enc,int output_enc,int method)
 {
-	return (int)_obj->Init((wxFontEncoding)input_enc, (wxFontEncoding)output_enc, method);
+	return self->Init((wxFontEncoding)input_enc, (wxFontEncoding)output_enc, method);
 }
 	
-EWXWEXPORT(void,wxEncodingConverter_Convert)(void* _obj,void* input,void* output)
+EWXWEXPORT(void,wxEncodingConverter_Convert)(void* self,void* input,void* output)
 {
-	((wxEncodingConverter*)_obj)->Convert((const char*)input, (char*)output);
+	((wxEncodingConverter*)self)->Convert((const char*)input, (char*)output);
 }
 
-EWXWEXPORT(int,wxEncodingConverter_GetPlatformEquivalents)(void* _obj,int enc,int platform,void* _lst)
+EWXWEXPORT(int,wxEncodingConverter_GetPlatformEquivalents)(void* self,int enc,int platform,void* _lst)
 {
-	wxFontEncodingArray arr = ((wxEncodingConverter*)_obj)->GetPlatformEquivalents((wxFontEncoding)enc, platform);
+	wxFontEncodingArray arr = ((wxEncodingConverter*)self)->GetPlatformEquivalents((wxFontEncoding)enc, platform);
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
@@ -228,9 +244,9 @@ EWXWEXPORT(int,wxEncodingConverter_GetPlatformEquivalents)(void* _obj,int enc,in
 	return (int)arr.GetCount();
 }
 
-EWXWEXPORT(int,wxEncodingConverter_GetAllEquivalents)(void* _obj,int enc,void* _lst)
+EWXWEXPORT(int,wxEncodingConverter_GetAllEquivalents)(void* self,int enc,void* _lst)
 {
-	wxFontEncodingArray arr = ((wxEncodingConverter*)_obj)->GetAllEquivalents((wxFontEncoding)enc);
+	wxFontEncodingArray arr = ((wxEncodingConverter*)self)->GetAllEquivalents((wxFontEncoding)enc);
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)

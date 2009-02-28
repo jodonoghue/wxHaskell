@@ -3,245 +3,245 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxImage_CreateDefault)()
+EWXWEXPORT(wxImage*,wxImage_CreateDefault)()
 {
-	return (void*) new wxImage();
+	return new wxImage();
 }
 
-EWXWEXPORT(void*,wxImage_CreateSized)(int width,int height)
+EWXWEXPORT(wxImage*,wxImage_CreateSized)(int width,int height)
 {
-	return (void*) new wxImage(width, height);
+	return new wxImage(width, height);
 }
 
-EWXWEXPORT(void*,wxImage_CreateFromByteString)(char* data,size_t length,int type)
-{
-	wxMemoryInputStream in(data,length);
-	return (void*) new wxImage(in, type);
-}
-
-EWXWEXPORT(void*,wxImage_CreateFromLazyByteString)(char* data,size_t length,int type)
+EWXWEXPORT(wxImage*,wxImage_CreateFromByteString)(char* data,size_t length,int type)
 {
 	wxMemoryInputStream in(data,length);
-	return (void*) new wxImage(in, type);
+	return new wxImage(in, type);
 }
 
-EWXWEXPORT(size_t,wxImage_ConvertToByteString)(wxImage* _obj,int type,char* data)
+EWXWEXPORT(wxImage*,wxImage_CreateFromLazyByteString)(char* data,size_t length,int type)
+{
+	wxMemoryInputStream in(data,length);
+	return new wxImage(in, type);
+}
+
+EWXWEXPORT(size_t,wxImage_ConvertToByteString)(wxImage* self,int type,char* data)
 {
 	wxMemoryOutputStream out;
-	_obj->SaveFile(out, type);
+	self->SaveFile(out, type);
 	size_t len = out.GetLength();
         return out.CopyTo(data, len);
 }
 
-EWXWEXPORT(size_t,wxImage_ConvertToLazyByteString)(wxImage* _obj,int type,char* data)
+EWXWEXPORT(size_t,wxImage_ConvertToLazyByteString)(wxImage* self,int type,char* data)
 {
 	wxMemoryOutputStream out;
-	_obj->SaveFile(out, type);
+	self->SaveFile(out, type);
 	size_t len = out.GetLength();
         return out.CopyTo(data, len);
 }
 
-EWXWEXPORT(void*,wxImage_CreateFromData)(int width,int height,void* data)
+EWXWEXPORT(wxImage*,wxImage_CreateFromData)(int width,int height,void* data)
 {
-	return (void*) new wxImage(width, height, (unsigned char*)data, true);
+	return new wxImage(width, height, (unsigned char*)data, true);
 }
 
-EWXWEXPORT(void*,wxImage_CreateFromFile)(wxString* name)
+EWXWEXPORT(wxImage*,wxImage_CreateFromFile)(wxString* name)
 {
-	return (void*) new wxImage(*name);
+	return new wxImage(*name);
 }
 
-EWXWEXPORT(void*,wxImage_CreateFromBitmap)(void* bitmap)
+EWXWEXPORT(wxImage*,wxImage_CreateFromBitmap)(wxBitmap* bitmap)
 {
-	return (void*) new wxImage(((wxBitmap*)bitmap)->ConvertToImage());
+	return new wxImage(bitmap->ConvertToImage());
 }
 
-EWXWEXPORT(void,wxImage_ConvertToBitmap)(void* _obj,void* bitmap)
+EWXWEXPORT(void,wxImage_ConvertToBitmap)(wxImage* self,wxBitmap* bitmap)
 {
-	wxBitmap tmp(*((wxImage*)_obj));
-	*((wxBitmap*)bitmap) = tmp;
+	wxBitmap tmp(*self);
+	*bitmap = tmp;
 }
 	
-EWXWEXPORT(void,wxImage_Initialize)(void* _obj,int width,int height)
+EWXWEXPORT(void,wxImage_Initialize)(wxImage* self,int width,int height)
 {
-	((wxImage*)_obj)->Create(width, height);
+	self->Create(width, height);
 }
 	
-EWXWEXPORT(void,wxImage_InitializeFromData)(void* _obj,int width,int height,void* data)
+EWXWEXPORT(void,wxImage_InitializeFromData)(wxImage* self,int width,int height,void* data)
 {
-	((wxImage*)_obj)->Create(width, height, (unsigned char*)data, true);
+	self->Create(width, height, (unsigned char*)data, true);
 }
 	
-EWXWEXPORT(void,wxImage_Destroy)(void* _obj)
+EWXWEXPORT(void,wxImage_Destroy)(wxImage* self)
 {
-	((wxImage*)_obj)->Destroy();
+	self->Destroy();
 }
 	
-EWXWEXPORT(void,wxImage_GetSubImage)(void* _obj,int x,int y,int w,int h,void* image)
+EWXWEXPORT(void,wxImage_GetSubImage)(wxImage* self,int x,int y,int w,int h,wxImage* image)
 {
-	*((wxImage*)image) = ((wxImage*)_obj)->GetSubImage(wxRect(x, y, w, h));
+	*image = self->GetSubImage(wxRect(x, y, w, h));
 }
 	
-EWXWEXPORT(void,wxImage_Paste)(void* _obj,void* image,int x,int y)
+EWXWEXPORT(void,wxImage_Paste)(wxImage* self,wxImage* image,int x,int y)
 {
-	((wxImage*)_obj)->Paste(*((wxImage*)image), x, y);
+	self->Paste(*image, x, y);
 }
 	
-EWXWEXPORT(void,wxImage_Scale)(void* _obj,int width,int height,void* image)
+EWXWEXPORT(void,wxImage_Scale)(wxImage* self,int width,int height,wxImage* image)
 {
-	*((wxImage*)image) = ((wxImage*)_obj)->Scale(width, height);
+	*image = self->Scale(width, height);
 }
 	
-EWXWEXPORT(void,wxImage_Rescale)(void* _obj,int width,int height)
+EWXWEXPORT(void,wxImage_Rescale)(wxImage* self,int width,int height)
 {
-	((wxImage*)_obj)->Rescale(width, height);
+	self->Rescale(width, height);
 }
 	
-EWXWEXPORT(void,wxImage_Rotate)(void* _obj,double angle,int c_x,int c_y,int interpolating,void* offset_after_rotation,void* image)
+EWXWEXPORT(void,wxImage_Rotate)(wxImage* self,double angle,int c_x,int c_y,bool interpolating,void* offset_after_rotation,wxImage* image)
 {
-	*((wxImage*)image) = ((wxImage*)_obj)->Rotate(angle, wxPoint(c_x, c_y), interpolating != 0, (wxPoint*)offset_after_rotation);
+	*image = self->Rotate(angle, wxPoint(c_x, c_y), interpolating, (wxPoint*)offset_after_rotation);
 }
 	
-EWXWEXPORT(void,wxImage_Rotate90)(void* _obj,int clockwise,void* image)
+EWXWEXPORT(void,wxImage_Rotate90)(wxImage* self,bool clockwise,wxImage* image)
 {
-	*((wxImage*)image) = ((wxImage*)_obj)->Rotate90(clockwise != 0);
+	*image = self->Rotate90(clockwise);
 }
 	
-EWXWEXPORT(void,wxImage_Mirror)(void* _obj,int horizontally,void* image)
+EWXWEXPORT(void,wxImage_Mirror)(wxImage* self,bool horizontally,wxImage* image)
 {
-	*((wxImage*)image) = ((wxImage*)_obj)->Mirror(horizontally != 0);
+	*image = self->Mirror(horizontally);
 }
 	
-EWXWEXPORT(void,wxImage_Replace)(void* _obj,char r1,char g1,char b1,char r2,char g2,char b2)
+EWXWEXPORT(void,wxImage_Replace)(wxImage* self,wxUint8 r1,wxUint8 g1,wxUint8 b1,wxUint8 r2,wxUint8 g2,wxUint8 b2)
 {
-	((wxImage*)_obj)->Replace(r1, g1, b1, r2, g2, b2);
+	self->Replace(r1, g1, b1, r2, g2, b2);
 }
 	
-EWXWEXPORT(void,wxImage_SetRGB)(void* _obj,int x,int y,char r,char g,char b)
+EWXWEXPORT(void,wxImage_SetRGB)(wxImage* self,int x,int y,wxUint8 r,wxUint8 g,wxUint8 b)
 {
-	((wxImage*)_obj)->SetRGB(x, y, r, g, b);
+	self->SetRGB(x, y, r, g, b);
 }
 	
-EWXWEXPORT(char,wxImage_GetRed)(void* _obj,int x,int y)
+EWXWEXPORT(wxUint8,wxImage_GetRed)(wxImage* self,int x,int y)
 {
-	return ((wxImage*)_obj)->GetRed(x, y);
+	return self->GetRed(x, y);
 }
 	
-EWXWEXPORT(char,wxImage_GetGreen)(void* _obj,int x,int y)
+EWXWEXPORT(wxUint8,wxImage_GetGreen)(wxImage* self,int x,int y)
 {
-	return ((wxImage*)_obj)->GetGreen(x, y);
+	return self->GetGreen(x, y);
 }
 	
-EWXWEXPORT(char,wxImage_GetBlue)(void* _obj,int x,int y)
+EWXWEXPORT(wxUint8,wxImage_GetBlue)(wxImage* self,int x,int y)
 {
-	return ((wxImage*)_obj)->GetBlue(x, y);
+	return self->GetBlue(x, y);
 }
 	
-EWXWEXPORT(int,wxImage_CanRead)(wxString* name)
+EWXWEXPORT(bool,wxImage_CanRead)(wxString* name)
 {
-	return (int)wxImage::CanRead(*name);
+	return wxImage::CanRead(*name);
 }
 	
-EWXWEXPORT(int,wxImage_LoadFile)(wxImage* _obj,wxString* name,int type)
+EWXWEXPORT(bool,wxImage_LoadFile)(wxImage* self,wxString* name,int type)
 {
-	return (int)_obj->LoadFile(*name, (long)type);
+	return self->LoadFile(*name, (long)type);
 }
 	
-EWXWEXPORT(int,wxImage_SaveFile)(wxImage* _obj,wxString* name,int type)
+EWXWEXPORT(bool,wxImage_SaveFile)(wxImage* self,wxString* name,int type)
 {
-	return (int)_obj->SaveFile(*name, (long)type);
+	return self->SaveFile(*name, (long)type);
 }
 	
-EWXWEXPORT(int,wxImage_IsOk)(wxImage* _obj)
+EWXWEXPORT(bool,wxImage_IsOk)(wxImage* self)
 {
-	return (int)_obj->IsOk();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(int,wxImage_GetWidth)(void* _obj)
+EWXWEXPORT(int,wxImage_GetWidth)(wxImage* self)
 {
-	return ((wxImage*)_obj)->GetWidth();
+	return self->GetWidth();
 }
 	
-EWXWEXPORT(int,wxImage_GetHeight)(void* _obj)
+EWXWEXPORT(int,wxImage_GetHeight)(wxImage* self)
 {
-	return ((wxImage*)_obj)->GetHeight();
+	return self->GetHeight();
 }
 	
-EWXWEXPORT(void*,wxImage_GetData)(void* _obj)
+EWXWEXPORT(void*,wxImage_GetData)(wxImage* self)
 {
-	return (void*)((wxImage*)_obj)->GetData();
+	return (void*)self->GetData();
 }
 	
-EWXWEXPORT(void,wxImage_SetData)(void* _obj,void* data)
+EWXWEXPORT(void,wxImage_SetData)(wxImage* self,void* data)
 {
-	((wxImage*)_obj)->SetData((unsigned char*)data);
+	self->SetData((unsigned char*)data);
 }
 	
-EWXWEXPORT(void,wxImage_SetDataAndSize)(void* _obj,char* data,int new_width,int new_height)
+EWXWEXPORT(void,wxImage_SetDataAndSize)(wxImage* self,char* data,int new_width,int new_height)
 {
-	((wxImage*)_obj)->SetData((unsigned char*)data, new_width, new_height);
+	self->SetData((unsigned char*)data, new_width, new_height);
 }
 	
-EWXWEXPORT(void,wxImage_SetMaskColour)(void* _obj,char r,char g,char b)
+EWXWEXPORT(void,wxImage_SetMaskColour)(wxImage* self,wxUint8 r,wxUint8 g,wxUint8 b)
 {
-	((wxImage*)_obj)->SetMaskColour(r, g, b);
+	self->SetMaskColour(r, g, b);
 }
 	
-EWXWEXPORT(char,wxImage_GetMaskRed)(void* _obj)
+EWXWEXPORT(wxUint8,wxImage_GetMaskRed)(wxImage* self)
 {
-	return ((wxImage*)_obj)->GetMaskRed();
+	return self->GetMaskRed();
 }
 	
-EWXWEXPORT(char,wxImage_GetMaskGreen)(void* _obj)
+EWXWEXPORT(wxUint8,wxImage_GetMaskGreen)(wxImage* self)
 {
-	return ((wxImage*)_obj)->GetMaskGreen();
+	return self->GetMaskGreen();
 }
 	
-EWXWEXPORT(char,wxImage_GetMaskBlue)(void* _obj)
+EWXWEXPORT(wxUint8,wxImage_GetMaskBlue)(wxImage* self)
 {
-	return ((wxImage*)_obj)->GetMaskBlue();
+	return self->GetMaskBlue();
 }
 	
-EWXWEXPORT(void,wxImage_SetMask)(void* _obj,int mask)
+EWXWEXPORT(void,wxImage_SetMask)(wxImage* self,bool mask)
 {
-	((wxImage*)_obj)->SetMask(mask != 0);
+	self->SetMask(mask);
 }
 	
-EWXWEXPORT(int,wxImage_HasMask)(wxImage* _obj)
+EWXWEXPORT(bool,wxImage_HasMask)(wxImage* self)
 {
-	return (int)_obj->HasMask();
+	return self->HasMask();
 }
 	
-EWXWEXPORT(int,wxImage_CountColours)(void* _obj,int stopafter)
+EWXWEXPORT(int,wxImage_CountColours)(wxImage* self,int stopafter)
 {
-	return ((wxImage*)_obj)->CountColours((long)stopafter);
+	return self->CountColours((long)stopafter);
 }
 
-EWXWEXPORT (wxString*,wxImage_GetOption)(wxImage* _obj,wxString* key)
+EWXWEXPORT (wxString*,wxImage_GetOption)(wxImage* self,wxString* key)
 {
 	wxString *result = new wxString();
-	*result = _obj->GetOption(*key);
+	*result = self->GetOption(*key);
 	return result;
 }
 
-EWXWEXPORT (int,wxImage_GetOptionInt)(wxImage* _obj,wxString* key)
+EWXWEXPORT (int,wxImage_GetOptionInt)(wxImage* self,wxString* key)
 {
-	return  _obj->GetOptionInt(*key);
+	return  self->GetOptionInt(*key);
 }
 
-EWXWEXPORT(void,wxImage_SetOption)(wxImage* _obj,wxString* key,wxString* value)
+EWXWEXPORT(void,wxImage_SetOption)(wxImage* self,wxString* key,wxString* value)
 {
-	_obj->SetOption(*key, *value);
+	self->SetOption(*key,*value);
 }
 
-EWXWEXPORT(void,wxImage_SetOptionInt)(wxImage* _obj,wxString* key,int value)
+EWXWEXPORT(void,wxImage_SetOptionInt)(wxImage* self,wxString* key,int value)
 {
-	_obj->SetOption(*key, value);
+	self->SetOption(*key, value);
 }
 
-EWXWEXPORT(int,wxImage_HasOption)(wxImage* _obj,wxString* key)
+EWXWEXPORT(int,wxImage_HasOption)(wxImage* self,wxString* key)
 {
-	return _obj->HasOption(*key);
+	return self->HasOption(*key);
 }
 
 }

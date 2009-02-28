@@ -3,70 +3,70 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxValidator_Create)()
+EWXWEXPORT(void*,wxValidator_Create)()
 {
-	return (void*) new wxValidator();
+	return (void*)new wxValidator();
 }
 
-EWXWEXPORT(void, wxValidator_Delete)(void* _obj)
+EWXWEXPORT(void,wxValidator_Delete)(void* self)
 {
-	delete (wxValidator*)_obj;
+	delete (wxValidator*)self;
 }
 
-EWXWEXPORT(int, wxValidator_Validate)(void* _obj, void* parent)
+EWXWEXPORT(bool,wxValidator_Validate)(wxValidator* self,wxWindow* parent)
 {
-	return (int)((wxValidator*)_obj)->Validate((wxWindow*)parent);
+	return self->Validate(parent);
 }
 	
-EWXWEXPORT(int, wxValidator_TransferToWindow)(void* _obj)
+EWXWEXPORT(bool,wxValidator_TransferToWindow)(wxValidator* self)
 {
-	return (int)((wxValidator*)_obj)->TransferToWindow();
+	return self->TransferToWindow();
 }
 	
-EWXWEXPORT(int, wxValidator_TransferFromWindow)(void* _obj)
+EWXWEXPORT(bool,wxValidator_TransferFromWindow)(wxValidator* self)
 {
-	return (int)((wxValidator*)_obj)->TransferFromWindow();
+	return self->TransferFromWindow();
 }
 	
-EWXWEXPORT(void*, wxValidator_GetWindow)(void* _obj)
+EWXWEXPORT(void*,wxValidator_GetWindow)(void* self)
 {
-	return (void*)((wxValidator*)_obj)->GetWindow();
+	return (void*)((wxValidator*)self)->GetWindow();
 }
 	
-EWXWEXPORT(void, wxValidator_SetWindow)(void* _obj, void* win)
+EWXWEXPORT(void,wxValidator_SetWindow)(void* self,wxWindowBase* win)
 {
-	((wxValidator*)_obj)->SetWindow((wxWindowBase*)win);
+	((wxValidator*)self)->SetWindow(win);
 }
 	
 #if (wxVERSION_NUMBER < 2800)	
-EWXWEXPORT(int, wxValidator_IsSilent)()
+EWXWEXPORT(bool,wxValidator_IsSilent)()
 {
-	return (int)wxValidator::IsSilent();
+	return wxValidator::IsSilent();
 }
 #endif
 	
-EWXWEXPORT(void, wxValidator_SetBellOnError)(int doIt)
+EWXWEXPORT(void,wxValidator_SetBellOnError)(bool doIt)
 {
-	wxValidator::SetBellOnError(doIt != 0);
+	wxValidator::SetBellOnError(doIt);
 }
 	
-EWXWEXPORT(void*, wxTextValidator_Create)(int style, void* val)
+EWXWEXPORT(void*,wxTextValidator_Create)(int style,void* val)
 {
-	return (void*) new wxTextValidator((long)style, new wxString);
+	return (void*)new wxTextValidator((long)style, new wxString);
 }
 
-EWXWEXPORT(int, wxTextValidator_GetStyle)(void* _obj)
+EWXWEXPORT(int,wxTextValidator_GetStyle)(wxTextValidator* self)
 {
-	return (int)((wxTextValidator*)_obj)->GetStyle();
+	return (int)self->GetStyle();
 }
 	
-EWXWEXPORT(void, wxTextValidator_SetStyle)(void* _obj, int style)
+EWXWEXPORT(void,wxTextValidator_SetStyle)(void* self,int style)
 {
-	((wxTextValidator*)_obj)->SetStyle((long) style);
+	((wxTextValidator*)self)->SetStyle((long) style);
 }
 	
 #if (wxVERSION_NUMBER < 2800)	
-EWXWEXPORT(void, wxTextValidator_SetIncludeList)(void* _obj, void* list, int count)
+EWXWEXPORT(void,wxTextValidator_SetIncludeList)(void* self,void* list,int count)
 {
 #if (wxVERSION_NUMBER <= 2600)
 	wxStringList str;
@@ -74,23 +74,23 @@ EWXWEXPORT(void, wxTextValidator_SetIncludeList)(void* _obj, void* list, int cou
 	for (int i = 0; i < count; i++)
 		str.Add(((wxChar**)list)[i]);
 		
-	((wxTextValidator*)_obj)->SetIncludeList(str);
+	((wxTextValidator*)self)->SetIncludeList(str);
 #else
-	((wxTextValidator*)_obj)->SetIncludes((const wxArrayString&)list);
+	((wxTextValidator*)self)->SetIncludes((const wxArrayString&)list);
 #endif
 }
 	
-EWXWEXPORT(int, wxTextValidator_GetIncludeList)(void* _obj, void* _ref)
+EWXWEXPORT(int,wxTextValidator_GetIncludeList)(void* self,void* _ref)
 {
 #if (wxVERSION_NUMBER <= 2600)
 	if (_ref)
 	{
-		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetIncludeList().GetCount(); i++)
-			((const wxChar**)_ref)[i] = wxStrdup(((wxTextValidator*)_obj)->GetIncludeList().Item(i)->GetData());
+		for (unsigned int i = 0; i < ((wxTextValidator*)self)->GetIncludeList().GetCount(); i++)
+			((const wxChar**)_ref)[i] = wxStrdup(((wxTextValidator*)self)->GetIncludeList().Item(i)->GetData());
 	}
-	return ((wxTextValidator*)_obj)->GetIncludeList().GetCount();
+	return ((wxTextValidator*)self)->GetIncludeList().GetCount();
 #else
-	wxArrayString arr = ((wxTextValidator*)_obj)->GetIncludes();
+	wxArrayString arr = ((wxTextValidator*)self)->GetIncludes();
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
@@ -100,7 +100,7 @@ EWXWEXPORT(int, wxTextValidator_GetIncludeList)(void* _obj, void* _ref)
 #endif
 }
 	
-EWXWEXPORT(void, wxTextValidator_SetExcludeList)(void* _obj, void* list, int count)
+EWXWEXPORT(void,wxTextValidator_SetExcludeList)(void* self,void* list,int count)
 {
 #if (wxVERSION_NUMBER <= 2600)
 	wxStringList str;
@@ -108,23 +108,23 @@ EWXWEXPORT(void, wxTextValidator_SetExcludeList)(void* _obj, void* list, int cou
 	for (int i = 0; i < count; i++)
 		str.Add(((wxChar**)list)[i]);
 		
-	((wxTextValidator*)_obj)->SetExcludeList(str);
+	((wxTextValidator*)self)->SetExcludeList(str);
 #else
-	((wxTextValidator*)_obj)->SetExcludes((const wxArrayString&)list);
+	((wxTextValidator*)self)->SetExcludes((const wxArrayString&)list);
 #endif
 }
 	
-EWXWEXPORT(int, wxTextValidator_GetExcludeList)(void* _obj, void* _ref)
+EWXWEXPORT(int,wxTextValidator_GetExcludeList)(void* self,void* _ref)
 {
 #if (wxVERSION_NUMBER <= 2600)
 	if (_ref)
 	{
-		for (unsigned int i = 0; i < ((wxTextValidator*)_obj)->GetExcludeList().GetCount(); i++)
-			((const wxChar**)_ref)[i] = ((wxTextValidator*)_obj)->GetExcludeList().Item(i)->GetData();
+		for (unsigned int i = 0; i < ((wxTextValidator*)self)->GetExcludeList().GetCount(); i++)
+			((const wxChar**)_ref)[i] = ((wxTextValidator*)self)->GetExcludeList().Item(i)->GetData();
 	}
-	return ((wxTextValidator*)_obj)->GetExcludeList().GetCount();
+	return ((wxTextValidator*)self)->GetExcludeList().GetCount();
 #else
-	wxArrayString arr = ((wxTextValidator*)_obj)->GetExcludes();
+	wxArrayString arr = ((wxTextValidator*)self)->GetExcludes();
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
@@ -134,89 +134,89 @@ EWXWEXPORT(int, wxTextValidator_GetExcludeList)(void* _obj, void* _ref)
 #endif
 }
 #else
-EWXWEXPORT(void, wxTextValidator_SetIncludes)(void* _obj, void* list, int count)
+EWXWEXPORT(void,wxTextValidator_SetIncludes)(void* self,void* list,int count)
 {
   wxArrayString str;
   
   for (int i = 0; i < count; i++)
     str.Add(((wxChar**)list)[i]);
   
-  ((wxTextValidator*)_obj)->SetIncludes(str);
+  ((wxTextValidator*)self)->SetIncludes(str);
 }
 
-EWXWEXPORT(void *, wxTextValidator_GetIncludes)(void* _obj, int *_nitems)
+EWXWEXPORT(void*,wxTextValidator_GetIncludes)(void* self,int* _nitems)
 {
-  void *retval = NULL;
+  void* retval = NULL;
 
   if (_nitems != NULL)
   {
-    wxArrayString items = ((wxTextValidator*)_obj)->GetIncludes();
-    wxChar **items_copy = (wxChar **) malloc(sizeof(wxChar *) * items.GetCount());
+    wxArrayString items = ((wxTextValidator*)self)->GetIncludes();
+    wxChar **items_copy = (wxChar **)malloc(sizeof(wxChar *)* items.GetCount());
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
       items_copy[i] = wxStrdup(items.Item(i).GetData());
     }
-    retval = (void *) items_copy;
+    retval = (void*)items_copy;
     *_nitems = items.GetCount();
   }
   return retval;
 }
 	
-EWXWEXPORT(void, wxTextValidator_SetExcludes)(void* _obj, void* list, int count)
+EWXWEXPORT(void,wxTextValidator_SetExcludes)(void* self,void* list,int count)
 {
 	wxArrayString str;
 	
 	for (int i = 0; i < count; i++)
 		str.Add(((wxChar**)list)[i]);
 		
-	((wxTextValidator*)_obj)->SetExcludes(str);
+	((wxTextValidator*)self)->SetExcludes(str);
 }
 	
-EWXWEXPORT(void *, wxTextValidator_GetExcludes)(void* _obj, int* _nitems)
+EWXWEXPORT(void*,wxTextValidator_GetExcludes)(void* self,int* _nitems)
 {
-  void *retval = NULL;
+  void* retval = NULL;
 
   if (_nitems != NULL)
   {
-    wxArrayString items = ((wxTextValidator*)_obj)->GetExcludes();
-    wxChar **items_copy = (wxChar **) malloc(sizeof(wxChar *) * items.GetCount());
+    wxArrayString items = ((wxTextValidator*)self)->GetExcludes();
+    wxChar **items_copy = (wxChar **)malloc(sizeof(wxChar *)* items.GetCount());
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
       items_copy[i] = wxStrdup(items.Item(i).GetData());
     }
-    retval = (void *) items_copy;
+    retval = (void*)items_copy;
     *_nitems = items.GetCount();
   }
   return retval;
 }
 
-EWXWEXPORT(void *, wxTextValidator_Clone)(void *_obj)
+EWXWEXPORT(void*,wxTextValidator_Clone)(void* self)
 {
-  return (void *)((wxTextValidator*)_obj)->Clone();
+  return (void*)((wxTextValidator*)self)->Clone();
 }
 
-EWXWEXPORT(int, wxTextValidator_TransferToWindow)(void* _obj)
+EWXWEXPORT(bool,wxTextValidator_TransferToWindow)(wxTextValidator* self)
 {
-	return (int)((wxTextValidator*)_obj)->TransferToWindow();
+	return self->TransferToWindow();
 }
 	
-EWXWEXPORT(int, wxTextValidator_TransferFromWindow)(void* _obj)
+EWXWEXPORT(bool,wxTextValidator_TransferFromWindow)(wxTextValidator* self)
 {
-	return (int)((wxTextValidator*)_obj)->TransferFromWindow();
+	return self->TransferFromWindow();
 }
 	
 #endif
 
-EWXWEXPORT(void, wxTextValidator_OnChar)(void* _obj, void* event)
+EWXWEXPORT(void,wxTextValidator_OnChar)(void* self,wxKeyEvent* event)
 {
-	((wxTextValidator*)_obj)->OnChar(*((wxKeyEvent*)event));
+	((wxTextValidator*)self)->OnChar(*event);
 }
 
-EWXWEXPORT(void*, ELJTextValidator_Create) (void* _obj, void* _fnc, void* _txt, long _stl)
+EWXWEXPORT(void*,ELJTextValidator_Create)(void* self,void* _fnc,void* _txt,long _stl)
 {
-	return new ELJTextValidator(_obj, _fnc, _txt, _stl);
+	return new ELJTextValidator(self, _fnc, _txt, _stl);
 }
 
 }

@@ -16,165 +16,165 @@ int wxCALLBACK ListCmp (long item1, long item2, long sortData)
 	return ((EiffelSort*)sortData)->fnc (((EiffelSort*)sortData)->obj, (int)item1, (int)item2);
 }
 
-EWXWEXPORT(void*,wxListItem_Create)()
+EWXWEXPORT(wxListItem*,wxListItem_Create)()
 {
-	return (void*) new wxListItem();
+	return new wxListItem();
 }
 
-EWXWEXPORT(void,wxListItem_Delete)(void* _obj)
+EWXWEXPORT(void,wxListItem_Delete)(wxListItem* self)
 {
-	delete (wxListItem*)_obj;
+	delete self;
 }
-EWXWEXPORT(void,wxListItem_Clear)(void* _obj)
+EWXWEXPORT(void,wxListItem_Clear)(wxListItem* self)
 {
-	((wxListItem*)_obj)->Clear();
-}
-	
-EWXWEXPORT(void,wxListItem_ClearAttributes)(void* _obj)
-{
-	((wxListItem*)_obj)->ClearAttributes();
+	self->Clear();
 }
 	
-EWXWEXPORT(void,wxListItem_SetMask)(void* _obj,int mask)
+EWXWEXPORT(void,wxListItem_ClearAttributes)(wxListItem* self)
 {
-	((wxListItem*)_obj)->SetMask((long)mask);
+	self->ClearAttributes();
 }
 	
-EWXWEXPORT(void,wxListItem_SetId)(void* _obj,int id)
+EWXWEXPORT(void,wxListItem_SetMask)(wxListItem* self,int mask)
 {
-	((wxListItem*)_obj)->SetId((long)id);
+	self->SetMask((long)mask);
 }
 	
-EWXWEXPORT(void,wxListItem_SetColumn)(void* _obj,int col)
+EWXWEXPORT(void,wxListItem_SetId)(wxListItem* self,int id)
 {
-	((wxListItem*)_obj)->SetColumn(col);
+	self->SetId((long)id);
 }
 	
-EWXWEXPORT(void,wxListItem_SetState)(void* _obj,int state)
+EWXWEXPORT(void,wxListItem_SetColumn)(wxListItem* self,int col)
 {
-	((wxListItem*)_obj)->SetState((long)state);
+	self->SetColumn(col);
 }
 	
-EWXWEXPORT(void,wxListItem_SetStateMask)(void* _obj,int stateMask)
+EWXWEXPORT(void,wxListItem_SetState)(wxListItem* self,int state)
 {
-	((wxListItem*)_obj)->SetStateMask((long)stateMask);
+	self->SetState((long)state);
 }
 	
-EWXWEXPORT(void,wxListItem_SetText)(void* _obj,wxString* text)
+EWXWEXPORT(void,wxListItem_SetStateMask)(wxListItem* self,int stateMask)
 {
-	((wxListItem*)_obj)->SetText(*text);
+	self->SetStateMask((long)stateMask);
 }
 	
-EWXWEXPORT(void,wxListItem_SetImage)(void* _obj,int image)
+EWXWEXPORT(void,wxListItem_SetText)(wxListItem* self,wxString* text)
 {
-	((wxListItem*)_obj)->SetImage(image);
+	self->SetText(*text);
 }
 	
-EWXWEXPORT(void,wxListItem_SetData)(void* _obj,int data)
+EWXWEXPORT(void,wxListItem_SetImage)(wxListItem* self,int image)
 {
-	((wxListItem*)_obj)->SetData((long)data);
+	self->SetImage(image);
 }
 	
-EWXWEXPORT(void,wxListItem_SetDataPointer)(void* _obj,void* data)
+EWXWEXPORT(void,wxListItem_SetData)(wxListItem* self,int data)
 {
-	((wxListItem*)_obj)->SetData(data);
+	self->SetData((long)data);
 }
 	
-EWXWEXPORT(void,wxListItem_SetWidth)(void* _obj,int width)
+EWXWEXPORT(void,wxListItem_SetDataPointer)(wxListItem* self,void* data)
 {
-	((wxListItem*)_obj)->SetWidth(width);
+	self->SetData(data);
 }
 	
-EWXWEXPORT(void,wxListItem_SetAlign)(void* _obj,int align)
+EWXWEXPORT(void,wxListItem_SetWidth)(wxListItem* self,int width)
 {
-	((wxListItem*)_obj)->SetAlign((wxListColumnFormat)align);
+	self->SetWidth(width);
 }
 	
-EWXWEXPORT(void,wxListItem_SetTextColour)(void* _obj,void* colText)
+EWXWEXPORT(void,wxListItem_SetAlign)(wxListItem* self,int align)
 {
-	((wxListItem*)_obj)->SetTextColour(*((wxColour*)colText));
+	self->SetAlign((wxListColumnFormat)align);
 }
 	
-EWXWEXPORT(void,wxListItem_SetBackgroundColour)(void* _obj,void* colBack)
+EWXWEXPORT(void,wxListItem_SetTextColour)(wxListItem* self,wxColour* colText)
 {
-	((wxListItem*)_obj)->SetBackgroundColour(*((wxColour*)colBack));
+	self->SetTextColour(*colText);
 }
 	
-EWXWEXPORT(void,wxListItem_SetFont)(void* _obj,void* font)
+EWXWEXPORT(void,wxListItem_SetBackgroundColour)(wxListItem* self,wxColour* colBack)
 {
-	((wxListItem*)_obj)->SetFont(*((wxFont*)font));
+	self->SetBackgroundColour(*colBack);
 }
 	
-EWXWEXPORT(int,wxListItem_GetMask)(wxListItem* _obj)
+EWXWEXPORT(void,wxListItem_SetFont)(wxListItem* self,wxFont* font)
 {
-	return (int)_obj->GetMask();
+	self->SetFont(*font);
 }
 	
-EWXWEXPORT(int,wxListItem_GetId)(wxListItem* _obj)
+EWXWEXPORT(long,wxListItem_GetMask)(wxListItem* self)
 {
-	return (int)_obj->GetId();
+	return self->GetMask();
 }
 	
-EWXWEXPORT(int,wxListItem_GetColumn)(void* _obj)
+EWXWEXPORT(long,wxListItem_GetId)(wxListItem* self)
 {
-	return ((wxListItem*)_obj)->GetColumn();
+	return self->GetId();
 }
 	
-EWXWEXPORT(int,wxListItem_GetState)(wxListItem* _obj)
+EWXWEXPORT(int,wxListItem_GetColumn)(wxListItem* self)
 {
-	return (int)_obj->GetState();
+	return self->GetColumn();
 }
 	
-EWXWEXPORT(wxString*,wxListItem_GetText)(void* _obj)
+EWXWEXPORT(long,wxListItem_GetState)(wxListItem* self)
+{
+	return self->GetState();
+}
+	
+EWXWEXPORT(wxString*,wxListItem_GetText)(wxListItem* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxListItem*)_obj)->GetText();
+	*result = self->GetText();
 	return result;
 }
 	
-EWXWEXPORT(int,wxListItem_GetImage)(void* _obj)
+EWXWEXPORT(int,wxListItem_GetImage)(wxListItem* self)
 {
-	return ((wxListItem*)_obj)->GetImage();
+	return self->GetImage();
 }
 	
-EWXWEXPORT(int,wxListItem_GetData)(wxListItem* _obj)
+EWXWEXPORT(long,wxListItem_GetData)(wxListItem* self)
 {
-	return (int)_obj->GetData();
+	return self->GetData();
 }
 	
-EWXWEXPORT(int,wxListItem_GetWidth)(void* _obj)
+EWXWEXPORT(int,wxListItem_GetWidth)(wxListItem* self)
 {
-	return ((wxListItem*)_obj)->GetWidth();
+	return self->GetWidth();
 }
 	
-EWXWEXPORT(int,wxListItem_GetAlign)(wxListItem* _obj)
+EWXWEXPORT(int,wxListItem_GetAlign)(wxListItem* self)
 {
-	return (int)_obj->GetAlign();
+	return (int)self->GetAlign();
 }
 	
-EWXWEXPORT(void*,wxListItem_GetAttributes)(void* _obj)
+EWXWEXPORT(void*,wxListItem_GetAttributes)(wxListItem* self)
 {
-	return (void*)((wxListItem*)_obj)->GetAttributes();
+	return (void*)self->GetAttributes();
 }
 	
-EWXWEXPORT(int,wxListItem_HasAttributes)(wxListItem* _obj)
+EWXWEXPORT(int,wxListItem_HasAttributes)(wxListItem* self)
 {
-	return (int)_obj->HasAttributes();
+	return (int)self->HasAttributes();
 }
 	
-EWXWEXPORT(void,wxListItem_GetTextColour)(void* _obj,void* _ref)
+EWXWEXPORT(void,wxListItem_GetTextColour)(wxListItem* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxListItem*)_obj)->GetTextColour();
+	*_ref = self->GetTextColour();
 }
 	
-EWXWEXPORT(void,wxListItem_GetBackgroundColour)(void* _obj,void* _ref)
+EWXWEXPORT(void,wxListItem_GetBackgroundColour)(wxListItem* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxListItem*)_obj)->GetBackgroundColour();
+	*_ref = self->GetBackgroundColour();
 }
 	
-EWXWEXPORT(void,wxListItem_GetFont)(void* _obj,void* _ref)
+EWXWEXPORT(void,wxListItem_GetFont)(wxListItem* self,wxFont* _ref)
 {
-	*((wxFont*)_ref) = ((wxListItem*)_obj)->GetFont();
+	*_ref = self->GetFont();
 }
 	
 EWXWEXPORT(void*,wxListCtrl_Create)(wxWindow* _prt,int _id, int _lft,int _top,int _wdt,int _hgt,int _stl)
@@ -182,100 +182,100 @@ EWXWEXPORT(void*,wxListCtrl_Create)(wxWindow* _prt,int _id, int _lft,int _top,in
 	return (void*) new wxListCtrl (_prt, _id,wxPoint(_lft, _top),wxSize(_wdt, _hgt), _stl);
 }
 
-EWXWEXPORT(int,wxListCtrl_SetForegroundColour)(wxListCtrl* _obj,wxColour* col)
+EWXWEXPORT(int,wxListCtrl_SetForegroundColour)(wxListCtrl* self,wxColour* col)
 {
-	return (int)_obj->SetForegroundColour(*col);
+	return (int)self->SetForegroundColour(*col);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetBackgroundColour)(wxListCtrl* _obj,void* col)
+EWXWEXPORT(int,wxListCtrl_SetBackgroundColour)(wxListCtrl* self,wxColour* col)
 {
-	return (int)_obj->SetBackgroundColour(*((wxColour*)col));
+	return (int)self->SetBackgroundColour(*col);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetColumn)(wxListCtrl* _obj,int col,void* item)
+EWXWEXPORT(int,wxListCtrl_GetColumn)(wxListCtrl* self,int col,wxListItem* item)
 {
-	return (int)_obj->GetColumn(col, *((wxListItem*)item));
+	return (int)self->GetColumn(col,*item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetColumn)(wxListCtrl* _obj,int col,void* item)
+EWXWEXPORT(int,wxListCtrl_SetColumn)(wxListCtrl* self,int col,wxListItem* item)
 {
-	return (int)_obj->SetColumn(col, *((wxListItem*)item));
+	return (int)self->SetColumn(col,*item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetColumnWidth)(void* _obj,int col)
+EWXWEXPORT(int,wxListCtrl_GetColumnWidth)(void* self,int col)
 {
-	return ((wxListCtrl*)_obj)->GetColumnWidth(col);
+	return ((wxListCtrl*)self)->GetColumnWidth(col);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetColumnWidth)(wxListCtrl* _obj,int col,int width)
+EWXWEXPORT(bool,wxListCtrl_SetColumnWidth)(wxListCtrl* self,int col,int width)
 {
-	return (int)_obj->SetColumnWidth(col, width);
+	return self->SetColumnWidth(col, width);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetCountPerPage)(void* _obj)
+EWXWEXPORT(int,wxListCtrl_GetCountPerPage)(wxListCtrl* self)
 {
-	return ((wxListCtrl*)_obj)->GetCountPerPage();
+	return self->GetCountPerPage();
 }
 	
-EWXWEXPORT(void*,wxListCtrl_GetEditControl)(void* _obj)
+EWXWEXPORT(void*,wxListCtrl_GetEditControl)(wxListCtrl* self)
 {
 #ifdef __WIN32__
-	return (void*)((wxListCtrl*)_obj)->GetEditControl();
+	return (void*)self->GetEditControl();
 #else
 	return NULL;
 #endif
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetItem)(wxListCtrl* _obj,void* info)
+EWXWEXPORT(int,wxListCtrl_GetItem)(wxListCtrl* self,wxListItem* info)
 {
-	return (int)_obj->GetItem(*((wxListItem*)info));
+	return (int)self->GetItem(*info);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItemFromInfo)(wxListCtrl* _obj,void* info)
+EWXWEXPORT(bool,wxListCtrl_SetItemFromInfo)(wxListCtrl* self,wxListItem* info)
 {
-	return (int)_obj->SetItem(*((wxListItem*)info));
+	return self->SetItem(*info);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItem)(wxListCtrl* _obj,int index,int col,wxString* label,int imageId)
+EWXWEXPORT(bool,wxListCtrl_SetItem)(wxListCtrl* self,int index,int col,wxString* label,int imageId)
 {
-	return (int) _obj->SetItem((long)index, col, *label, imageId);
+	return self->SetItem((long)index, col,*label, imageId);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetItemState)(void* _obj,int item,int stateMask)
+EWXWEXPORT(int,wxListCtrl_GetItemState)(void* self,int item,int stateMask)
 {
-	return ((wxListCtrl*)_obj)->GetItemState((long)item, (long)stateMask);
+	return ((wxListCtrl*)self)->GetItemState((long)item, (long)stateMask);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItemState)(wxListCtrl* _obj,int item,int state,int stateMask)
+EWXWEXPORT(bool,wxListCtrl_SetItemState)(wxListCtrl* self,int item,int state,int stateMask)
 {
-	return (int)_obj->SetItemState((long)item, (long)state, (long)stateMask);
+	return self->SetItemState((long)item, (long)state, (long)stateMask);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItemImage)(wxListCtrl* _obj,int item,int image,int selImage)
+EWXWEXPORT(bool,wxListCtrl_SetItemImage)(wxListCtrl* self,int item,int image,int selImage)
 {
-	return (int)_obj->SetItemImage((long)item, image, selImage);
+	return self->SetItemImage((long)item, image, selImage);
 }
 	
-EWXWEXPORT(wxString*,wxListCtrl_GetItemText)(void* _obj,int item)
+EWXWEXPORT(wxString*,wxListCtrl_GetItemText)(wxListCtrl* self,int item)
 {
 	wxString *result = new wxString();
-	*result = ((wxListCtrl*)_obj)->GetItemText((long)item);
+	*result = self->GetItemText((long)item);
 	return result;
 }
 	
-EWXWEXPORT(void,wxListCtrl_SetItemText)(void* _obj,int item,wxString* str)
+EWXWEXPORT(void,wxListCtrl_SetItemText)(wxListCtrl* self,int item,wxString* str)
 {
-	((wxListCtrl*)_obj)->SetItemText((long)item, *str);
+	self->SetItemText((long)item,*str);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetItemData)(wxListCtrl* _obj,int item)
+EWXWEXPORT(int,wxListCtrl_GetItemData)(wxListCtrl* self,int item)
 {
-	return (int)_obj->GetItemData((long)item);
+	return (int)self->GetItemData((long)item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItemData)(wxListCtrl* _obj,int item,int data)
+EWXWEXPORT(bool,wxListCtrl_SetItemData)(wxListCtrl* self,int item,int data)
 {
-	return (int)_obj->SetItemData((long)item, (long)data);
+	return self->SetItemData((long)item, (long)data);
 }
 	
 EWXWEXPORT(int, wxListCtrl_GetItemRect)(void* _obj, int item, int code, void* x, void* y, void* w, void* h)
@@ -302,25 +302,25 @@ EWXWEXPORT(int, wxListCtrl_GetItemPosition)(void* _obj, int item, void* x, void*
 	return result;
 }
 	
-EWXWEXPORT(int,wxListCtrl_SetItemPosition)(void* _obj,int item,int x,int y)
+EWXWEXPORT(int,wxListCtrl_SetItemPosition)(wxListCtrl* self,int item,int x,int y)
 {
-  return ((wxListCtrl*)_obj)->SetItemPosition((long)item, wxPoint(x,y));
+	return self->SetItemPosition((long)item, wxPoint(x,y));
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetItemCount)(void* _obj)
+EWXWEXPORT(int,wxListCtrl_GetItemCount)(wxListCtrl* self)
 {
-	return ((wxListCtrl*)_obj)->GetItemCount();
+	return self->GetItemCount();
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetColumnCount)(void* _obj)
+EWXWEXPORT(int,wxListCtrl_GetColumnCount)(wxListCtrl* self)
 {
-	return ((wxListCtrl*)_obj)->GetColumnCount();
+	return self->GetColumnCount();
 }
 	
-EWXWEXPORT(void,wxListCtrl_GetItemSpacing)(void* _obj,int isSmall,int* h,int* w)
+EWXWEXPORT(void,wxListCtrl_GetItemSpacing)(void* _obj,bool isSmall,int* h,int* w)
 {
 #if (wxVERSION_NUMBER <= 2600)
-	int x = ((wxListCtrl*)_obj)->GetItemSpacing(isSmall != 0);
+	int x = ((wxListCtrl*)_obj)->GetItemSpacing(isSmall);
         *h = x;
         *w = x;
 #else
@@ -330,165 +330,165 @@ EWXWEXPORT(void,wxListCtrl_GetItemSpacing)(void* _obj,int isSmall,int* h,int* w)
 #endif
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetSelectedItemCount)(void* _obj)
+EWXWEXPORT(int,wxListCtrl_GetSelectedItemCount)(wxListCtrl* self)
 {
-	return ((wxListCtrl*)_obj)->GetSelectedItemCount();
+	return self->GetSelectedItemCount();
 }
 	
-EWXWEXPORT(void,wxListCtrl_GetTextColour)(void* _obj,void* colour)
+EWXWEXPORT(void,wxListCtrl_GetTextColour)(wxListCtrl* self,wxColour* colour)
 {
-	*((wxColour*)colour) = ((wxListCtrl*)_obj)->GetTextColour();
+	*colour = self->GetTextColour();
 }
 	
-EWXWEXPORT(void,wxListCtrl_SetTextColour)(void* _obj,void* col)
+EWXWEXPORT(void,wxListCtrl_SetTextColour)(wxListCtrl* self,wxColour* col)
 {
-	((wxListCtrl*)_obj)->SetTextColour(*((wxColour*)col));
+	self->SetTextColour(*col);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetTopItem)(wxListCtrl* _obj)
+EWXWEXPORT(int,wxListCtrl_GetTopItem)(wxListCtrl* self)
 {
-	return (int)_obj->GetTopItem();
+	return (int)self->GetTopItem();
 }
 	
-EWXWEXPORT(void,wxListCtrl_SetSingleStyle)(void* _obj,int style,int add)
+EWXWEXPORT(void,wxListCtrl_SetSingleStyle)(wxListCtrl* self,int style,bool add)
 {
-	((wxListCtrl*)_obj)->SetSingleStyle((long)style, add != 0);
+	self->SetSingleStyle((long)style, add);
 }
 	
-EWXWEXPORT(void,wxListCtrl_SetWindowStyleFlag)(void* _obj,int style)
+EWXWEXPORT(void,wxListCtrl_SetWindowStyleFlag)(wxListCtrl* self,int style)
 {
-	((wxListCtrl*)_obj)->SetWindowStyleFlag((long)style);
+	self->SetWindowStyleFlag((long)style);
 }
 	
-EWXWEXPORT(int,wxListCtrl_GetNextItem)(void* _obj,int item,int geometry,int state)
+EWXWEXPORT(int,wxListCtrl_GetNextItem)(wxListCtrl* self,int item,int geometry,int state)
 {
-	return ((wxListCtrl*)_obj)->GetNextItem((long)item, geometry, state);
+	return self->GetNextItem((long)item, geometry, state);
 }
 	
-EWXWEXPORT(void*,wxListCtrl_GetImageList)(void* _obj,int which)
+EWXWEXPORT(void*,wxListCtrl_GetImageList)(wxListCtrl* self,int which)
 {
-	return (void*)((wxListCtrl*)_obj)->GetImageList(which);
+	return (void*)self->GetImageList(which);
 }
 	
-EWXWEXPORT(void,wxListCtrl_SetImageList)(void* _obj,void* imageList,int which)
+EWXWEXPORT(void,wxListCtrl_SetImageList)(wxListCtrl* self,void* imageList,int which)
 {
-	((wxListCtrl*)_obj)->SetImageList((wxImageList*)imageList, which);
+	self->SetImageList((wxImageList*)imageList, which);
 }
 	
-EWXWEXPORT(int,wxListCtrl_Arrange)(wxListCtrl* _obj,int flag)
+EWXWEXPORT(bool,wxListCtrl_Arrange)(wxListCtrl* self,int flag)
 {
-	return (int)_obj->Arrange(flag);
+	return self->Arrange(flag);
 }
 	
-EWXWEXPORT(int,wxListCtrl_DeleteItem)(wxListCtrl* _obj,int item)
+EWXWEXPORT(bool,wxListCtrl_DeleteItem)(wxListCtrl* self,int item)
 {
-	return (int)_obj->DeleteItem((long)item);
+	return self->DeleteItem((long)item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_DeleteAllItems)(wxListCtrl* _obj)
+EWXWEXPORT(bool,wxListCtrl_DeleteAllItems)(wxListCtrl* self)
 {
-	return (int)_obj->DeleteAllItems();
+	return self->DeleteAllItems();
 }
 	
-EWXWEXPORT(int,wxListCtrl_DeleteColumn)(wxListCtrl* _obj,int col)
+EWXWEXPORT(bool,wxListCtrl_DeleteColumn)(wxListCtrl* self,int col)
 {
-	return (int)_obj->DeleteColumn(col);
+	return self->DeleteColumn(col);
 }
 	
-EWXWEXPORT(int,wxListCtrl_DeleteAllColumns)(wxListCtrl* _obj)
+EWXWEXPORT(int,wxListCtrl_DeleteAllColumns)(wxListCtrl* self)
 {
-	return (int)_obj->DeleteAllColumns();
+	return (int)self->DeleteAllColumns();
 }
 	
-EWXWEXPORT(void,wxListCtrl_ClearAll)(void* _obj)
+EWXWEXPORT(void,wxListCtrl_ClearAll)(wxListCtrl* self)
 {
-	((wxListCtrl*)_obj)->ClearAll();
+	self->ClearAll();
 }
 	
-EWXWEXPORT(void,wxListCtrl_EditLabel)(void* _obj,int item)
+EWXWEXPORT(void,wxListCtrl_EditLabel)(wxListCtrl* self,int item)
 {
-	((wxListCtrl*)_obj)->EditLabel((long)item);
+	self->EditLabel((long)item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_EndEditLabel)(wxListCtrl* _obj,int cancel)
+EWXWEXPORT(bool,wxListCtrl_EndEditLabel)(wxListCtrl* self,bool cancel)
 {
 #ifdef __WIN32__
-	return (int)_obj->EndEditLabel(cancel != 0);
+	return self->EndEditLabel(cancel);
 #else
-	return 0;
+	return false;
 #endif
 }
 	
-EWXWEXPORT(int,wxListCtrl_EnsureVisible)(wxListCtrl* _obj,int item)
+EWXWEXPORT(bool,wxListCtrl_EnsureVisible)(wxListCtrl* self,int item)
 {
-	return (int)_obj->EnsureVisible((long)item);
+	return self->EnsureVisible((long)item);
 }
 	
-EWXWEXPORT(int,wxListCtrl_FindItem)(void* _obj,int start,wxString* str,int partial)
+EWXWEXPORT(int,wxListCtrl_FindItem)(wxListCtrl* self,int start,wxString* str,bool partial)
 {
-	return (long)((wxListCtrl*)_obj)->FindItem((long)start, * str, partial != 0);
+	return (long)self->FindItem((long)start,* str, partial);
 }
 	
-EWXWEXPORT(int,wxListCtrl_FindItemByData)(wxListCtrl* _obj,int start,int data)
+EWXWEXPORT(int,wxListCtrl_FindItemByData)(wxListCtrl* self,int start,int data)
 {
-	return (int)_obj->FindItem((long)start, (long)data);
+	return (int)self->FindItem((long)start, (long)data);
 }
 	
-EWXWEXPORT(int,wxListCtrl_FindItemByPosition)(wxListCtrl* _obj,int start,int x,int y,int direction)
+EWXWEXPORT(int,wxListCtrl_FindItemByPosition)(wxListCtrl* self,int start,int x,int y,int direction)
 {
-	return (int)_obj->FindItem((long)start, wxPoint(x, y), direction);
+	return (int)self->FindItem((long)start, wxPoint(x, y), direction);
 }
 	
-EWXWEXPORT(int,wxListCtrl_HitTest)(void* _obj,int x,int y,void* flags)
+EWXWEXPORT(int,wxListCtrl_HitTest)(wxListCtrl* self,int x,int y,void* flags)
 {
-	return ((wxListCtrl*)_obj)->HitTest(wxPoint(x, y), *((int*)flags));
+	return self->HitTest(wxPoint(x, y),*((int*)flags));
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertItem)(wxListCtrl* _obj,void* info)
+EWXWEXPORT(int,wxListCtrl_InsertItem)(wxListCtrl* self,wxListItem* info)
 {
-	return (int)_obj->InsertItem(*((wxListItem*)info));
+	return (int)self->InsertItem(*info);
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertItemWithData)(wxListCtrl* _obj,int index,wxString* label)
+EWXWEXPORT(int,wxListCtrl_InsertItemWithData)(wxListCtrl* self,int index,wxString* label)
 {
-	return (int)_obj->InsertItem((long)index, *label);
+	return (int)self->InsertItem((long)index,*label);
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertItemWithImage)(wxListCtrl* _obj,int index,int imageIndex)
+EWXWEXPORT(int,wxListCtrl_InsertItemWithImage)(wxListCtrl* self,int index,int imageIndex)
 {
-	return (int)_obj->InsertItem((long)index, imageIndex);
+	return (int)self->InsertItem((long)index, imageIndex);
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertItemWithLabel)(wxListCtrl* _obj,int index,wxString* label,int imageIndex)
+EWXWEXPORT(int,wxListCtrl_InsertItemWithLabel)(wxListCtrl* self,int index,wxString* label,int imageIndex)
 {
-	return (int)_obj->InsertItem((long)index, *label, imageIndex);
+	return (int)self->InsertItem((long)index,*label, imageIndex);
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertColumnFromInfo)(wxListCtrl* _obj,int col,void* info)
+EWXWEXPORT(int,wxListCtrl_InsertColumnFromInfo)(wxListCtrl* self,int col,wxListItem* info)
 {
-	return (int)_obj->InsertColumn((long)col, *((wxListItem*)info));
+	return (int)self->InsertColumn((long)col,*info);
 }
 	
-EWXWEXPORT(int,wxListCtrl_InsertColumn)(wxListCtrl* _obj,int col,wxString* heading,int format,int width)
+EWXWEXPORT(int,wxListCtrl_InsertColumn)(wxListCtrl* self,int col,wxString* heading,int format,int width)
 {
-	return (int)_obj->InsertColumn((long)col, * heading, format, width);
+	return (int)self->InsertColumn((long)col,* heading, format, width);
 }
 	
-EWXWEXPORT(int,wxListCtrl_ScrollList)(wxListCtrl* _obj,int dx,int dy)
+EWXWEXPORT(bool,wxListCtrl_ScrollList)(wxListCtrl* self,int dx,int dy)
 {
-	return (int)_obj->ScrollList(dx, dy);
+	return self->ScrollList(dx, dy);
 }
 	
-EWXWEXPORT(int,wxListCtrl_SortItems)(wxListCtrl* _obj,void* fnc,void* obj)
+EWXWEXPORT(bool,wxListCtrl_SortItems)(wxListCtrl* self,void* fnc,void* obj)
 {
 	EiffelSort srt = {obj, (EiffelSortFunc)fnc};
-	return (int)_obj->SortItems(ListCmp, (long)&srt);
+	return self->SortItems(ListCmp, (long)&srt);
 }
 	
-EWXWEXPORT(void,wxListCtrl_UpdateStyle)(void* _obj)
+EWXWEXPORT(void,wxListCtrl_UpdateStyle)(wxListCtrl* self)
 {
 #ifdef __WIN32__
-	((wxListCtrl*)_obj)->UpdateStyle();
+	self->UpdateStyle();
 #endif
 }
 	

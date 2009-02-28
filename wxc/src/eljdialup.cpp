@@ -4,25 +4,25 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxDialUpManager_Create)()
+EWXWEXPORT(wxDialUpManager*,wxDialUpManager_Create)()
 {
-	return (void*) wxDialUpManager::Create();
+	return wxDialUpManager::Create();
 }
 
-EWXWEXPORT(void,wxDialUpManager_Delete)(void* _obj)
+EWXWEXPORT(void,wxDialUpManager_Delete)(wxDialUpManager* self)
 {
-	delete (wxDialUpManager*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int,wxDialUpManager_IsOk)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_IsOk)(wxDialUpManager* self)
 {
-	return (int)_obj->IsOk();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_GetISPNames)(void* _obj,void* _lst)
+EWXWEXPORT(int,wxDialUpManager_GetISPNames)(wxDialUpManager* self,void* _lst)
 {
 	wxArrayString arr;
-	((wxDialUpManager*)_obj)->GetISPNames(arr);
+	self->GetISPNames(arr);
 
 	if (_lst)
 	{
@@ -33,70 +33,70 @@ EWXWEXPORT(int,wxDialUpManager_GetISPNames)(void* _obj,void* _lst)
 	return arr.GetCount();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_Dial)(wxDialUpManager* _obj,wxString* nameOfISP,wxString* username,wxString* password,int async)
+EWXWEXPORT(bool,wxDialUpManager_Dial)(wxDialUpManager* self,wxString* nameOfISP,wxString* username,wxString* password,bool async)
 {
-	return (int)_obj->Dial(*nameOfISP, *username, *password, async != 0);
+	return self->Dial(*nameOfISP,*username,*password, async);
 }
 	
-EWXWEXPORT(int,wxDialUpManager_IsDialing)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_IsDialing)(wxDialUpManager* self)
 {
-	return (int)_obj->IsDialing();
+	return self->IsDialing();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_CancelDialing)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_CancelDialing)(wxDialUpManager* self)
 {
-	return (int)_obj->CancelDialing();
+	return self->CancelDialing();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_HangUp)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_HangUp)(wxDialUpManager* self)
 {
-	return (int)_obj->HangUp();
+	return self->HangUp();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_IsAlwaysOnline)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_IsAlwaysOnline)(wxDialUpManager* self)
 {
-	return (int)_obj->IsAlwaysOnline();
+	return self->IsAlwaysOnline();
 }
 	
-EWXWEXPORT(int,wxDialUpManager_IsOnline)(wxDialUpManager* _obj)
+EWXWEXPORT(bool,wxDialUpManager_IsOnline)(wxDialUpManager* self)
 {
-	return (int)_obj->IsOnline();
+	return self->IsOnline();
 }
 	
-EWXWEXPORT(void,wxDialUpManager_SetOnlineStatus)(void* _obj,int isOnline)
+EWXWEXPORT(void,wxDialUpManager_SetOnlineStatus)(wxDialUpManager* self,bool isOnline)
 {
-	((wxDialUpManager*)_obj)->SetOnlineStatus(isOnline != 0);
+	self->SetOnlineStatus(isOnline);
 }
 	
-EWXWEXPORT(int,wxDialUpManager_EnableAutoCheckOnlineStatus)(wxDialUpManager* _obj,int nSeconds)
+EWXWEXPORT(bool,wxDialUpManager_EnableAutoCheckOnlineStatus)(wxDialUpManager* self,size_t nSeconds)
 {
-	return (int)_obj->EnableAutoCheckOnlineStatus((size_t)nSeconds);
+	return self->EnableAutoCheckOnlineStatus(nSeconds);
 }
 	
-EWXWEXPORT(void,wxDialUpManager_DisableAutoCheckOnlineStatus)(void* _obj)
+EWXWEXPORT(void,wxDialUpManager_DisableAutoCheckOnlineStatus)(wxDialUpManager* self)
 {
-	((wxDialUpManager*)_obj)->DisableAutoCheckOnlineStatus();
+	self->DisableAutoCheckOnlineStatus();
 }
 	
-EWXWEXPORT(void,wxDialUpManager_SetWellKnownHost)(void* _obj,void* hostname,int portno)
+EWXWEXPORT(void,wxDialUpManager_SetWellKnownHost)(wxDialUpManager* self,wxString* hostname,int portno)
 {
-	((wxDialUpManager*)_obj)->SetWellKnownHost((const wxChar*)hostname, portno);
+	self->SetWellKnownHost(*hostname, portno);
 }
 	
-EWXWEXPORT(void,wxDialUpManager_SetConnectCommand)(void* _obj,void* commandDial,void* commandHangup)
+EWXWEXPORT(void,wxDialUpManager_SetConnectCommand)(wxDialUpManager* self,wxString* commandDial,wxString* commandHangup)
 {
-	((wxDialUpManager*)_obj)->SetConnectCommand((const wxChar*)commandDial, (const wxChar*)commandHangup);
+	self->SetConnectCommand(*commandDial,*commandHangup);
 }
 	
 
-EWXWEXPORT(int,wxDialUpEvent_IsConnectedEvent)(wxDialUpEvent* _obj)
+EWXWEXPORT(bool,wxDialUpEvent_IsConnectedEvent)(wxDialUpEvent* self)
 {
-	return (int)_obj->IsConnectedEvent();
+	return self->IsConnectedEvent();
 }
 	
-EWXWEXPORT(int,wxDialUpEvent_IsOwnEvent)(wxDialUpEvent* _obj)
+EWXWEXPORT(bool,wxDialUpEvent_IsOwnEvent)(wxDialUpEvent* self)
 {
-	return (int)_obj->IsOwnEvent();
+	return self->IsOwnEvent();
 }
-	
+
 }

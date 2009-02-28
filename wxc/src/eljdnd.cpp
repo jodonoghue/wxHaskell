@@ -126,7 +126,7 @@ void ELJDropTarget::OnLeave()
 bool ELJFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
 	bool result = false;
-	const wxChar** arr = (const wxChar**)malloc (sizeof(wxChar*) * filenames.GetCount());
+	const wxChar** arr = (const wxChar**)malloc (sizeof(wxChar*)* filenames.GetCount());
 	
 	for (unsigned int i = 0; i < filenames.GetCount(); i++)
 		arr[i] = filenames.Item(i).c_str();
@@ -145,45 +145,45 @@ bool ELJTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
 extern "C"
 {
 
-EWXWEXPORT(void*,ELJFileDropTarget_Create)(void* _obj,void* _func)
+EWXWEXPORT(void*,ELJFileDropTarget_Create)(void* self,void* _func)
 {
-	return (void*) new ELJFileDropTarget(_obj, (FileDropFunc)_func);
+	return (void*)new ELJFileDropTarget(self, (FileDropFunc)_func);
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_Delete)(void* _obj)
+EWXWEXPORT(void,ELJFileDropTarget_Delete)(ELJFileDropTarget* self)
 {
-	delete (ELJFileDropTarget*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void*,ELJTextDropTarget_Create)(void* _obj,void* _func)
+EWXWEXPORT(void*,ELJTextDropTarget_Create)(void* self,void* _func)
 {
-	return (void*) new ELJTextDropTarget(_obj, (TextDropFunc)_func);
+	return (void*)new ELJTextDropTarget(self, (TextDropFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_Delete)(void* _obj)
+EWXWEXPORT(void,ELJTextDropTarget_Delete)(ELJTextDropTarget* self)
 {
-	delete (ELJTextDropTarget*)_obj;
+	delete self;
 }
 
 EWXWEXPORT(void*,TextDataObject_Create)(wxString* _txt)
 {
-	return (void*) new wxTextDataObject(*_txt);
+	return (void*)new wxTextDataObject(*_txt);
 }
 
-EWXWEXPORT(void,TextDataObject_Delete)(void* _obj)
+EWXWEXPORT(void,TextDataObject_Delete)(void* self)
 {
-	delete (wxTextDataObject*)_obj;
+	delete (wxTextDataObject*)self;
 }
 
-EWXWEXPORT(size_t,TextDataObject_GetTextLength)(void* _obj)
+EWXWEXPORT(size_t,TextDataObject_GetTextLength)(void* self)
 {
-	return ((wxTextDataObject*)_obj)->GetTextLength();
+	return ((wxTextDataObject*)self)->GetTextLength();
 }
 
-EWXWEXPORT(wxString*,TextDataObject_GetText)(void* _obj)
+EWXWEXPORT(wxString*,TextDataObject_GetText)(void* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxTextDataObject*)_obj)->GetText();
+	*result = ((wxTextDataObject*)self)->GetText();
 	return result;
 }
 
@@ -200,22 +200,22 @@ EWXWEXPORT(void*,FileDataObject_Create)(int _cnt,void* _lst)
 		for (int i = 0; i < _cnt; i++)
 			result->AddFile(((wxChar**)_lst)[i]);
 	}
-	return (void*) result;
+	return (void*)result;
 }
 
-EWXWEXPORT(void,FileDataObject_Delete)(void* _obj)
+EWXWEXPORT(void,FileDataObject_Delete)(void* self)
 {
-	delete (wxFileDataObject*)_obj;
+	delete (wxFileDataObject*)self;
 }
 
-EWXWEXPORT(void,FileDataObject_AddFile)(void* _obj,wxString* _fle)
+EWXWEXPORT(void,FileDataObject_AddFile)(void* self,wxString* _fle)
 {
-	((wxFileDataObject*)_obj)->AddFile(*_fle);
+	((wxFileDataObject*)self)->AddFile(*_fle);
 }
 
-EWXWEXPORT(int,FileDataObject_GetFilenames)(void* _obj,void* _lst)
+EWXWEXPORT(int,FileDataObject_GetFilenames)(void* self,void* _lst)
 {
-	wxArrayString arr = ((wxFileDataObject*)_obj)->GetFilenames();
+	wxArrayString arr = ((wxFileDataObject*)self)->GetFilenames();
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
@@ -225,169 +225,169 @@ EWXWEXPORT(int,FileDataObject_GetFilenames)(void* _obj,void* _lst)
 }
 
 
-EWXWEXPORT(void*,BitmapDataObject_Create)(void* _bmp)
+EWXWEXPORT(void*,BitmapDataObject_Create)(wxBitmap* _bmp)
 {
-	return (void*) new wxBitmapDataObject(*((wxBitmap*)_bmp));
+	return (void*)new wxBitmapDataObject(*_bmp);
 }
 
 EWXWEXPORT(void*,BitmapDataObject_CreateEmpty)()
 {
-	return (void*) new wxBitmapDataObject();
+	return (void*)new wxBitmapDataObject();
 }
 
-EWXWEXPORT(void,BitmapDataObject_Delete)(void* _obj)
+EWXWEXPORT(void,BitmapDataObject_Delete)(void* self)
 {
-	delete (wxBitmapDataObject*)_obj;
+	delete (wxBitmapDataObject*)self;
 }
 
-EWXWEXPORT(void,BitmapDataObject_SetBitmap)(void* _obj,void* _bmp)
+EWXWEXPORT(void,BitmapDataObject_SetBitmap)(void* self,wxBitmap* _bmp)
 {
-	((wxBitmapDataObject*)_obj)->SetBitmap (*((wxBitmap*)_bmp));
+	((wxBitmapDataObject*)self)->SetBitmap (*_bmp);
 }
 
-EWXWEXPORT(void,BitmapDataObject_GetBitmap)(void* _obj,void* _bmp)
+EWXWEXPORT(void,BitmapDataObject_GetBitmap)(void* self,wxBitmap* _bmp)
 {
-	*((wxBitmap*)_bmp) = ((wxBitmapDataObject*)_obj)->GetBitmap ();
+	*_bmp = ((wxBitmapDataObject*)self)->GetBitmap ();
 }
 
 
 EWXWEXPORT(void*,DropSource_Create)(wxDataObject* data,wxWindow* win,void* copy,void* move,void* none)
 {
 #if (wxCHECK_VERSION(2,5,0) && defined(__WXMAC__)) || defined(__WIN32__)
-	return (void*) new wxDropSource(*data, win, *((wxCursor*)copy), *((wxCursor*)move), *((wxCursor*)none));
+	return (void*)new wxDropSource(*data, win,*((wxCursor*)copy),*((wxCursor*)move),*((wxCursor*)none));
 #else
-	return (void*) new wxDropSource(*data, win, *((wxIcon*)copy), *((wxIcon*)move), *((wxIcon*)none));
+	return (void*)new wxDropSource(*data, win,*((wxIcon*)copy),*((wxIcon*)move),*((wxIcon*)none));
 #endif
 }
 
-EWXWEXPORT(void,DropSource_Delete)(void* _obj)
+EWXWEXPORT(void,DropSource_Delete)(void* self)
 {
-	delete (wxDropSource*)_obj;
+	delete (wxDropSource*)self;
 }
 
-EWXWEXPORT(int,DropSource_DoDragDrop)(void* _obj,int _move)
+EWXWEXPORT(int,DropSource_DoDragDrop)(void* self,bool _move)
 {
-	return (int)((wxDropSource*)_obj)->DoDragDrop(_move != 0);
+	return (int)((wxDropSource*)self)->DoDragDrop(_move);
 }
 
-EWXWEXPORT(void*,ELJDropTarget_Create)(void* _obj)
+EWXWEXPORT(void*,ELJDropTarget_Create)(void* self)
 {
-	return (void*) new ELJDropTarget(_obj);
+	return (void*)new ELJDropTarget(self);
 }
 
-EWXWEXPORT(void,ELJDropTarget_Delete)(void* _obj)
+EWXWEXPORT(void,ELJDropTarget_Delete)(void* self)
 {
-	delete (ELJDropTarget*)_obj;
+	delete (ELJDropTarget*)self;
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_SetOnData)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJFileDropTarget_SetOnData)(void* self,void* _func)
 {
-	((ELJFileDropTarget*)_obj)->SetOnData((DragThreeFunc)_func);
+	((ELJFileDropTarget*)self)->SetOnData((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_SetOnDrop)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJFileDropTarget_SetOnDrop)(void* self,void* _func)
 {
-	((ELJFileDropTarget*)_obj)->SetOnDrop((DragTwoFunc)_func);
+	((ELJFileDropTarget*)self)->SetOnDrop((DragTwoFunc)_func);
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_SetOnEnter)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJFileDropTarget_SetOnEnter)(void* self,void* _func)
 {
-	((ELJFileDropTarget*)_obj)->SetOnEnter((DragThreeFunc)_func);
+	((ELJFileDropTarget*)self)->SetOnEnter((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_SetOnDragOver)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJFileDropTarget_SetOnDragOver)(void* self,void* _func)
 {
-	((ELJFileDropTarget*)_obj)->SetOnDragOver((DragThreeFunc)_func);
+	((ELJFileDropTarget*)self)->SetOnDragOver((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJFileDropTarget_SetOnLeave)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJFileDropTarget_SetOnLeave)(void* self,void* _func)
 {
-	((ELJFileDropTarget*)_obj)->SetOnLeave((DragZeroFunc)_func);
+	((ELJFileDropTarget*)self)->SetOnLeave((DragZeroFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_SetOnData)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJTextDropTarget_SetOnData)(void* self,void* _func)
 {
-	((ELJTextDropTarget*)_obj)->SetOnData((DragThreeFunc)_func);
+	((ELJTextDropTarget*)self)->SetOnData((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_SetOnDrop)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJTextDropTarget_SetOnDrop)(void* self,void* _func)
 {
-	((ELJTextDropTarget*)_obj)->SetOnDrop((DragTwoFunc)_func);
+	((ELJTextDropTarget*)self)->SetOnDrop((DragTwoFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_SetOnEnter)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJTextDropTarget_SetOnEnter)(void* self,void* _func)
 {
-	((ELJTextDropTarget*)_obj)->SetOnEnter((DragThreeFunc)_func);
+	((ELJTextDropTarget*)self)->SetOnEnter((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_SetOnDragOver)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJTextDropTarget_SetOnDragOver)(void* self,void* _func)
 {
-	((ELJTextDropTarget*)_obj)->SetOnDragOver((DragThreeFunc)_func);
+	((ELJTextDropTarget*)self)->SetOnDragOver((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJTextDropTarget_SetOnLeave)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJTextDropTarget_SetOnLeave)(void* self,void* _func)
 {
-	((ELJTextDropTarget*)_obj)->SetOnLeave((DragZeroFunc)_func);
+	((ELJTextDropTarget*)self)->SetOnLeave((DragZeroFunc)_func);
 }
 
-EWXWEXPORT(void,ELJDropTarget_SetOnData)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJDropTarget_SetOnData)(void* self,void* _func)
 {
-	((ELJDropTarget*)_obj)->SetOnData((DragThreeFunc)_func);
+	((ELJDropTarget*)self)->SetOnData((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJDropTarget_SetOnDrop)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJDropTarget_SetOnDrop)(void* self,void* _func)
 {
-	((ELJDropTarget*)_obj)->SetOnDrop((DragTwoFunc)_func);
+	((ELJDropTarget*)self)->SetOnDrop((DragTwoFunc)_func);
 }
 
-EWXWEXPORT(void,ELJDropTarget_SetOnEnter)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJDropTarget_SetOnEnter)(void* self,void* _func)
 {
-	((ELJDropTarget*)_obj)->SetOnEnter((DragThreeFunc)_func);
+	((ELJDropTarget*)self)->SetOnEnter((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJDropTarget_SetOnDragOver)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJDropTarget_SetOnDragOver)(void* self,void* _func)
 {
-	((ELJDropTarget*)_obj)->SetOnDragOver((DragThreeFunc)_func);
+	((ELJDropTarget*)self)->SetOnDragOver((DragThreeFunc)_func);
 }
 
-EWXWEXPORT(void,ELJDropTarget_SetOnLeave)(void* _obj,void* _func)
+EWXWEXPORT(void,ELJDropTarget_SetOnLeave)(void* self,void* _func)
 {
-	((ELJDropTarget*)_obj)->SetOnLeave((DragZeroFunc)_func);
+	((ELJDropTarget*)self)->SetOnLeave((DragZeroFunc)_func);
 }
 
-EWXWEXPORT(void,wxDropTarget_GetData)(void* _obj)
+EWXWEXPORT(void,wxDropTarget_GetData)(void* self)
 {
-	((wxDropTarget*)_obj)->GetData();
+	((wxDropTarget*)self)->GetData();
 }
 
-EWXWEXPORT(void,wxDropTarget_SetDataObject)(void* _obj,void* _dat)
+EWXWEXPORT(void,wxDropTarget_SetDataObject)(void* self,void* _dat)
 {
-	((wxDropTarget*)_obj)->SetDataObject((wxDataObject*)_dat);
+	((wxDropTarget*)self)->SetDataObject((wxDataObject*)_dat);
 }
 
-EWXWEXPORT(void*,ELJDragDataObject_Create)(void* _obj,wxString* _fmt,void* _func1,void* _func2,void* _func3)
+EWXWEXPORT(void*,ELJDragDataObject_Create)(void* self,wxString* _fmt,void* _func1,void* _func2,void* _func3)
 {
-	return (void*) new ELJDragDataObject(_obj, const_cast<wxChar*>(_fmt->c_str()), (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
+	return (void*)new ELJDragDataObject(self, const_cast<wxChar*>(_fmt->c_str()), (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
 }
 
-EWXWEXPORT(void,ELJDragDataObject_Delete)(void* _obj)
+EWXWEXPORT(void,ELJDragDataObject_Delete)(void* self)
 {
-	delete (ELJDragDataObject*)_obj;
+	delete (ELJDragDataObject*)self;
 }
 
 EWXWEXPORT(void*,wxDataObjectComposite_Create)()
 {
-	return (void*) new wxDataObjectComposite();
+	return (void*)new wxDataObjectComposite();
 }
 
-EWXWEXPORT(void,wxDataObjectComposite_Delete)(void* _obj)
+EWXWEXPORT(void,wxDataObjectComposite_Delete)(void* self)
 {
-	delete (wxDataObjectComposite*)_obj;
+	delete (wxDataObjectComposite*)self;
 }
 
-EWXWEXPORT(void,wxDataObjectComposite_Add)(void* _obj,void* _dat,int _preferred)
+EWXWEXPORT(void,wxDataObjectComposite_Add)(void* self,void* _dat,bool _preferred)
 {
-	((wxDataObjectComposite*)_obj)->Add((wxDataObjectSimple*)_dat, _preferred != 0);
+	((wxDataObjectComposite*)self)->Add((wxDataObjectSimple*)_dat, _preferred);
 }
 
 }

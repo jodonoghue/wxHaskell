@@ -274,7 +274,7 @@ instance Help (MenuItem a) where
   help  = newAttr "help" menuItemGetHelp menuItemSetHelp
 
 instance Checkable (MenuItem a) where
-  checkable = reflectiveAttr "checkable" menuItemIsCheckable (\m c -> menuItemSetCheckable m (intFromBool c))
+  checkable = reflectiveAttr "checkable" menuItemIsCheckable (\m c -> menuItemSetCheckable m c)
   checked   = newAttr "checked"   menuItemIsChecked menuItemCheck
 
 instance Identity (MenuItem a) where

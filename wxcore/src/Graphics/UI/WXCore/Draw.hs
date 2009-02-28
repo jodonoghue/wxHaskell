@@ -254,7 +254,7 @@ dcGetFontStyle dc
 -- | Create a 'Font' from 'FontStyle'. Returns both the font and a deletion procedure.
 fontCreateFromStyle :: FontStyle -> IO (Font (),IO ())
 fontCreateFromStyle (FontStyle size family style weight underline face encoding)
-  = do font <- fontCreate size cfamily cstyle cweight (intFromBool underline) face encoding
+  = do font <- fontCreate size cfamily cstyle cweight underline face encoding
        return (font,when (font /= objectNull) (fontDelete font))
   where
     cfamily
@@ -497,7 +497,7 @@ penGetPenStyle :: Pen a -> IO PenStyle
 penGetPenStyle pen
   = if (objectIsNull pen)
      then return penDefault
-     else do ok <- penOk pen
+     else do ok <- penIsOk pen
              if not ok 
               then return penDefault
               else do stl <- penGetStyle pen
@@ -633,7 +633,7 @@ brushGetBrushStyle :: Brush a -> IO BrushStyle
 brushGetBrushStyle brush
   = if (objectIsNull brush)
      then return brushDefault
-     else do ok <- brushOk brush
+     else do ok <- brushIsOk brush
              if not ok
               then return brushDefault
               else do stl   <- brushGetStyle brush

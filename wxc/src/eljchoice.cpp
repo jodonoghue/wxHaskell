@@ -3,7 +3,7 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxChoice_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _n,void* _str,int _stl)
+EWXWEXPORT(wxChoice*,wxChoice_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _n,void* _str,int _stl)
 {
 	wxString* list = new wxString[_n];
 
@@ -17,51 +17,51 @@ EWXWEXPORT(void*,wxChoice_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _
 	return result;
 }
 
-EWXWEXPORT(void,wxChoice_Append)(wxChoice* _obj,wxString* item)
+EWXWEXPORT(void,wxChoice_Append)(wxChoice* self,wxString* item)
 {
-	_obj->Append(*item);
+	self->Append(*item);
 }
 	
-EWXWEXPORT(void,wxChoice_Delete)(wxChoice* _obj,int n)
+EWXWEXPORT(void,wxChoice_Delete)(wxChoice* self,int n)
 {
-	_obj->Delete(n);
+	self->Delete(n);
 }
 	
-EWXWEXPORT(void,wxChoice_Clear)(wxChoice* _obj)
+EWXWEXPORT(void,wxChoice_Clear)(wxChoice* self)
 {
-	_obj->Clear();
+	self->Clear();
 }
 	
-EWXWEXPORT(int,wxChoice_GetCount)(wxChoice* _obj)
+EWXWEXPORT(int,wxChoice_GetCount)(wxChoice* self)
 {
-	return _obj->GetCount();
+	return self->GetCount();
 }
 	
-EWXWEXPORT(int,wxChoice_GetSelection)(wxChoice* _obj)
+EWXWEXPORT(int,wxChoice_GetSelection)(wxChoice* self)
 {
-	return _obj->GetSelection();
+	return self->GetSelection();
 }
 	
-EWXWEXPORT(void,wxChoice_SetSelection)(wxChoice* _obj,int n)
+EWXWEXPORT(void,wxChoice_SetSelection)(wxChoice* self,int n)
 {
-	_obj->SetSelection(n);
+	self->SetSelection(n);
 }
 	
-EWXWEXPORT(int,wxChoice_FindString)(wxChoice* _obj,wxString* s)
+EWXWEXPORT(int,wxChoice_FindString)(wxChoice* self,wxString* s)
 {
-	return _obj->FindString(*s);
+	return self->FindString(*s);
 }
 	
-EWXWEXPORT(wxString*,wxChoice_GetString)(wxChoice* _obj,int n)
+EWXWEXPORT(wxString*,wxChoice_GetString)(wxChoice* self,int n)
 {
 	wxString *result = new wxString();
-	*result = _obj->GetString(n);
+	*result = self->GetString(n);
 	return result;
 }
 	
-EWXWEXPORT(void,wxChoice_SetString)(wxChoice* _obj,int n,wxString* s)
+EWXWEXPORT(void,wxChoice_SetString)(wxChoice* self,int n,wxString* s)
 {
-	_obj->SetString(n, *s);
+	self->SetString(n,*s);
 }
 	
 } 

@@ -3,34 +3,34 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxSashWindow_Create) (void* _par, int _id, int _x, int _y, int _w, int _h, int _stl)
+EWXWEXPORT(void*,wxSashWindow_Create)(wxWindow* _par,int _id,int _x,int _y,int _w,int _h,int _stl)
 {
-	return (void*) new wxSashWindow ((wxWindow*)_par, _id, wxPoint(_x, _y), wxSize (_w, _h), (long)_stl);
+	return (void*)new wxSashWindow (_par, _id, wxPoint(_x, _y), wxSize (_w, _h), (long)_stl);
 }
 
-EWXWEXPORT(void, wxSashWindow_SetSashVisible)(void* _obj, int edge, int sash)
+EWXWEXPORT(void,wxSashWindow_SetSashVisible)(void* self,int edge,bool sash)
 {
-	((wxSashWindow*)_obj)->SetSashVisible((wxSashEdgePosition)edge, sash != 0);
+	((wxSashWindow*)self)->SetSashVisible((wxSashEdgePosition)edge, sash);
 }
 	
-EWXWEXPORT(int, wxSashWindow_GetSashVisible)(void* _obj, int edge)
+EWXWEXPORT(bool,wxSashWindow_GetSashVisible)(wxSashWindow* self,int edge)
 {
-	return (int)((wxSashWindow*)_obj)->GetSashVisible((wxSashEdgePosition)edge);
+	return self->GetSashVisible((wxSashEdgePosition)edge);
 }
 	
-EWXWEXPORT(void, wxSashWindow_SetSashBorder)(void* _obj, int edge, int border)
+EWXWEXPORT(void,wxSashWindow_SetSashBorder)(wxSashWindow* self,int edge,bool border)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	((wxSashWindow*)_obj)->SetSashBorder((wxSashEdgePosition)edge, border != 0);
+	self->SetSashBorder((wxSashEdgePosition)edge, border);
 #endif
 }
 	
-EWXWEXPORT(int, wxSashWindow_HasBorder)(void* _obj, int edge)
+EWXWEXPORT(bool,wxSashWindow_HasBorder)(wxSashWindow* self,int edge)
 {
 #if WXWIN_COMPATIBILITY_2_6
-	return (int)((wxSashWindow*)_obj)->HasBorder((wxSashEdgePosition)edge);
+	return self->HasBorder((wxSashEdgePosition)edge);
 #else
-  return FALSE;
+	return false;
 #endif
 }
 	
@@ -263,30 +263,30 @@ EWXWEXPORT(void*, wxLayoutAlgorithm_Create)()
 	return (void*) new wxLayoutAlgorithm();
 }
 
-EWXWEXPORT(void, wxLayoutAlgorithm_Delete)(void* _obj)
+EWXWEXPORT(void,wxLayoutAlgorithm_Delete)(wxLayoutAlgorithm* self)
 {
-	delete (wxLayoutAlgorithm*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxLayoutAlgorithm_LayoutMDIFrame)(void* _obj, void* frame, int x, int y , int w, int h, int use)
+EWXWEXPORT(bool,wxLayoutAlgorithm_LayoutMDIFrame)(wxLayoutAlgorithm* self,wxMDIParentFrame* frame,int x,int y,int w,int h,int use)
 {
 	wxRect* r = NULL;
 	if (use) r = new wxRect(x, y, w, h);
 	
-	int result = (int)((wxLayoutAlgorithm*)_obj)->LayoutMDIFrame((wxMDIParentFrame*)frame, r);
+	bool result = self->LayoutMDIFrame(frame, r);
 	
 	if (r) delete r;
 	return result;
 }
 	
-EWXWEXPORT(int, wxLayoutAlgorithm_LayoutFrame)(void* _obj, void* frame, void* mainWindow)
+EWXWEXPORT(bool,wxLayoutAlgorithm_LayoutFrame)(wxLayoutAlgorithm* self,wxFrame* frame,wxWindow* mainWindow)
 {
-	return (int)((wxLayoutAlgorithm*)_obj)->LayoutFrame((wxFrame*)frame, (wxWindow*)mainWindow);
+	return self->LayoutFrame(frame, mainWindow);
 }
 	
-EWXWEXPORT(int, wxLayoutAlgorithm_LayoutWindow)(void* _obj, void* frame, void* mainWindow)
+EWXWEXPORT(bool,wxLayoutAlgorithm_LayoutWindow)(wxLayoutAlgorithm* self,wxFrame* frame,wxWindow* mainWindow)
 {
-	return (int)((wxLayoutAlgorithm*)_obj)->LayoutWindow((wxFrame*)frame, (wxWindow*)mainWindow);
+	return self->LayoutWindow(frame, mainWindow);
 }
 	
 }

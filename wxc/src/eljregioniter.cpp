@@ -3,59 +3,59 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxRegionIterator_Create)()
+EWXWEXPORT(void*,wxRegionIterator_Create)()
 {
-	return (void*) new wxRegionIterator();
+	return (void*)new wxRegionIterator();
 }
 
-EWXWEXPORT(void*, wxRegionIterator_CreateFromRegion)(void* region)
+EWXWEXPORT(void*,wxRegionIterator_CreateFromRegion)(void* region)
 {
-	return (void*) new wxRegionIterator(*((wxRegion*)region));
+	return (void*)new wxRegionIterator(*((wxRegion*)region));
 }
 
-EWXWEXPORT(void, wxRegionIterator_Delete)(void* _obj)
+EWXWEXPORT(void,wxRegionIterator_Delete)(wxRegionIterator* self)
 {
-	delete (wxRegionIterator*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxRegionIterator_Reset)(void* _obj)
+EWXWEXPORT(void,wxRegionIterator_Reset)(wxRegionIterator* self)
 {
-	((wxRegionIterator*)_obj)->Reset();
+	self->Reset();
 }
 	
-EWXWEXPORT(void, wxRegionIterator_ResetToRegion)(void* _obj, void* region)
+EWXWEXPORT(void,wxRegionIterator_ResetToRegion)(wxRegionIterator* self,wxRegion* region)
 {
-	((wxRegionIterator*)_obj)->Reset(*((wxRegion*)region));
+	self->Reset(*region);
 }
 	
-EWXWEXPORT(int, wxRegionIterator_HaveRects)(void* _obj)
+EWXWEXPORT(bool,wxRegionIterator_HaveRects)(wxRegionIterator* self)
 {
-	return (int)((wxRegionIterator*)_obj)->HaveRects();
+	return self->HaveRects();
 }
 
-EWXWEXPORT(void, wxRegionIterator_Next)(void* _obj)
+EWXWEXPORT(void,wxRegionIterator_Next)(wxRegionIterator* self)
 {
-	(*((wxRegionIterator*)_obj))++;
+	(*self)++;
 }
 	
-EWXWEXPORT(int, wxRegionIterator_GetX)(void* _obj)
+EWXWEXPORT(int,wxRegionIterator_GetX)(wxRegionIterator* self)
 {
-	return ((wxRegionIterator*)_obj)->GetX();
+	return self->GetX();
 }
 	
-EWXWEXPORT(int, wxRegionIterator_GetY)(void* _obj)
+EWXWEXPORT(int,wxRegionIterator_GetY)(wxRegionIterator* self)
 {
-	return ((wxRegionIterator*)_obj)->GetY();
+	return self->GetY();
 }
 	
-EWXWEXPORT(int, wxRegionIterator_GetWidth)(void* _obj)
+EWXWEXPORT(int,wxRegionIterator_GetWidth)(wxRegionIterator* self)
 {
-	return ((wxRegionIterator*)_obj)->GetWidth();
+	return self->GetWidth();
 }
 	
-EWXWEXPORT(int, wxRegionIterator_GetHeight)(void* _obj)
+EWXWEXPORT(int,wxRegionIterator_GetHeight)(wxRegionIterator* self)
 {
-	return ((wxRegionIterator*)_obj)->GetHeight();
+	return self->GetHeight();
 }
 	
 }

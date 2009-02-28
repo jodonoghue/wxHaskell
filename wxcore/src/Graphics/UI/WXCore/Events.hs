@@ -909,7 +909,7 @@ windowOnActivate window eventHandler
   where
     activateHandler event
       = do active <- activateEventGetActive (objectCast event)
-           eventHandler (boolFromInt active)
+           eventHandler active
 
 -- | Get the current activate event handler.
 windowGetOnActivate :: Window a -> IO (Bool -> IO ())
@@ -1069,7 +1069,7 @@ windowGetUpdateRects window
   where
     getRects iter
       = do more <- regionIteratorHaveRects iter
-           if (boolFromInt more)
+           if more
             then do x <- regionIteratorGetX iter
                     y <- regionIteratorGetY iter
                     w <- regionIteratorGetWidth iter

@@ -41,44 +41,44 @@ EWXWEXPORT(void*,wxColour_CreateFromStock)(int _id)
 	return NULL;
 }
 
-EWXWEXPORT(void,wxColour_Delete)(wxColour* _obj)
+EWXWEXPORT(void,wxColour_Delete)(wxColour* self)
 {
-	delete _obj;
+	delete self;
 }
 
-EWXWEXPORT(void,wxColour_Set)(wxColour* _obj,wxUint8 _red,wxUint8 _green,wxUint8 _blue,wxUint8 _alpha)
+EWXWEXPORT(void,wxColour_Set)(wxColour* self,wxUint8 _red,wxUint8 _green,wxUint8 _blue,wxUint8 _alpha)
 {
-	_obj->Set(_red, _green, _blue);
+	self->Set(_red, _green, _blue);
 }
 	
-EWXWEXPORT(void,wxColour_Assign)(wxColour* _obj,wxColour* other)
+EWXWEXPORT(void,wxColour_Assign)(wxColour* self,wxColour* other)
 {
-	*_obj = *other;
+	*self = *other;
 }
 	
-EWXWEXPORT(bool,wxColour_IsOk)(wxColour* _obj)
+EWXWEXPORT(bool,wxColour_IsOk)(wxColour* self)
 {
-	return _obj->IsOk();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(wxUint8,wxColour_Red)(wxColour* _obj)
+EWXWEXPORT(wxUint8,wxColour_Red)(wxColour* self)
 {
-	return _obj->Red();
+	return self->Red();
 }
 	
-EWXWEXPORT(wxUint8,wxColour_Green)(wxColour* _obj)
+EWXWEXPORT(wxUint8,wxColour_Green)(wxColour* self)
 {
-	return _obj->Green();
+	return self->Green();
 }
 	
-EWXWEXPORT(wxUint8,wxColour_Blue)(wxColour* _obj)
+EWXWEXPORT(wxUint8,wxColour_Blue)(wxColour* self)
 {
-	return _obj->Blue();
+	return self->Blue();
 }
 
-EWXWEXPORT(wxUint8,wxColour_Alpha)(wxColour* _obj)
+EWXWEXPORT(wxUint8,wxColour_Alpha)(wxColour* self)
 {
-	return _obj->Alpha();
+	return self->Alpha();
 }
 
 // FIXME: the return type on this is platform dependent
@@ -89,19 +89,19 @@ EWXWEXPORT(wxUint8,wxColour_Alpha)(wxColour* _obj)
 //   GTK     - int
 //   X11     - long
 //   Mac     - (WXCOLORREF&)
-// EWXWEXPORT(WXCOLORREF,wxColour_GetPixel)(wxColour* _obj)
+// EWXWEXPORT(WXCOLORREF,wxColour_GetPixel)(wxColour* self)
 // {
-// 	return _obj->GetPixel();
+// 	return self->GetPixel();
 // }
 
-EWXWEXPORT(void,wxColour_Copy)(wxColour* _obj,wxColour* _other)
+EWXWEXPORT(void,wxColour_Copy)(wxColour* self,wxColour* _other)
 {
-	*_obj = *_other;
+	*self = *_other;
 }
 
-EWXWEXPORT(void,wxColour_SetByName)(wxColour* _obj,wxString* _name)
+EWXWEXPORT(void,wxColour_SetByName)(wxColour* self,wxString* _name)
 {
-	*_obj = *_name;
+	*self = *_name;
 }
 
 EWXWEXPORT(bool,wxColour_ValidName)(wxString* _name)

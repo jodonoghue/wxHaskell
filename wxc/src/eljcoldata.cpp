@@ -3,44 +3,44 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxColourData_Create) ()
+EWXWEXPORT(wxColourData*,wxColourData_Create)()
 {
-	return (void*) new wxColourData();
+	return new wxColourData();
 }
 
-EWXWEXPORT(void, wxColourData_Delete) (void* _obj)
+EWXWEXPORT(void,wxColourData_Delete)(wxColourData* self)
 {
-	delete (wxColourData*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxColourData_SetChooseFull)(void* _obj, int flag)
+EWXWEXPORT(void,wxColourData_SetChooseFull)(wxColourData* self,bool flag)
 {
-	((wxColourData*)_obj)->SetChooseFull(flag != 0);
+	self->SetChooseFull(flag);
 }
 	
-EWXWEXPORT(int, wxColourData_GetChooseFull)(void* _obj)
+EWXWEXPORT(bool,wxColourData_GetChooseFull)(wxColourData* self)
 {
-	return (int)((wxColourData*)_obj)->GetChooseFull();
+	return self->GetChooseFull();
 }
 	
-EWXWEXPORT(void, wxColourData_SetColour)(void* _obj, void* colour)
+EWXWEXPORT(void,wxColourData_SetColour)(wxColourData* self,wxColour* colour)
 {
-	((wxColourData*)_obj)->SetColour(*((wxColour*)colour));
+	self->SetColour(*colour);
 }
 	
-EWXWEXPORT(void, wxColourData_GetColour)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxColourData_GetColour)(wxColourData* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxColourData*)_obj)->GetColour();
+	*_ref = self->GetColour();
 }
 	
-EWXWEXPORT(void, wxColourData_SetCustomColour)(void* _obj, int i, void* colour)
+EWXWEXPORT(void,wxColourData_SetCustomColour)(wxColourData* self,int i,wxColour* colour)
 {
-	((wxColourData*)_obj)->SetCustomColour(i, *((wxColour*)colour));
+	self->SetCustomColour(i,*colour);
 }
 	
-EWXWEXPORT(void, wxColourData_GetCustomColour)(void* _obj, int i, void* _ref)
+EWXWEXPORT(void,wxColourData_GetCustomColour)(wxColourData* self,int i,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxColourData*)_obj)->GetCustomColour(i);
+	*_ref = self->GetCustomColour(i);
 }
 	
 } 

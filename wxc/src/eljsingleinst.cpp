@@ -10,19 +10,19 @@ EWXWEXPORT(void*,wxSingleInstanceChecker_CreateDefault)()
 	return (void*)new wxSingleInstanceChecker();
 }
 	
-EWXWEXPORT(bool,wxSingleInstanceChecker_Create)(wxSingleInstanceChecker* _obj,wxString* name,wxString* path)
+EWXWEXPORT(bool,wxSingleInstanceChecker_Create)(wxSingleInstanceChecker* self,wxString* name,wxString* path)
 {
-	return _obj->Create(*name, *path);
+	return self->Create(*name,*path);
 }
 	
-EWXWEXPORT(bool,wxSingleInstanceChecker_IsAnotherRunning)(wxSingleInstanceChecker* _obj)
+EWXWEXPORT(bool,wxSingleInstanceChecker_IsAnotherRunning)(wxSingleInstanceChecker* self)
 {
-	return _obj->IsAnotherRunning();
+	return self->IsAnotherRunning();
 }
 	
-EWXWEXPORT(void,wxSingleInstanceChecker_Delete)(void* _obj)
+EWXWEXPORT(void,wxSingleInstanceChecker_Delete)(void* self)
 {
-	delete (wxSingleInstanceChecker*)_obj;
+	delete (wxSingleInstanceChecker*)self;
 }
 	
 }

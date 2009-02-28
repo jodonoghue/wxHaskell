@@ -13,57 +13,57 @@ EWXWEXPORT(void*,wxListBox_Create)(wxWindow* _prt, int _id, int _lft, int _top, 
 	return (void*) result;
 }
 
-EWXWEXPORT(void,wxListBox_Clear)(void* _obj)
+EWXWEXPORT(void,wxListBox_Clear)(wxListBox* self)
 {
-	((wxListBox*)_obj)->Clear();
+	self->Clear();
 }
 	
-EWXWEXPORT(void,wxListBox_Delete)(void* _obj,int n)
+EWXWEXPORT(void,wxListBox_Delete)(wxListBox* self,int n)
 {
-	((wxListBox*)_obj)->Delete(n);
+	self->Delete(n);
 }
 	
-EWXWEXPORT(int,wxListBox_GetCount)(void* _obj)
+EWXWEXPORT(int,wxListBox_GetCount)(wxListBox* self)
 {
-	return ((wxListBox*)_obj)->GetCount();
+	return self->GetCount();
 }
 	
-EWXWEXPORT(wxString*,wxListBox_GetString)(void* _obj,int n)
+EWXWEXPORT(wxString*,wxListBox_GetString)(wxListBox* self,int n)
 {
 	wxString *result = new wxString();
-	*result = ((wxListBox*)_obj)->GetString(n);
+	*result = self->GetString(n);
 	return result;
 }
 	
-EWXWEXPORT(void,wxListBox_SetString)(void* _obj,int n,wxString* s)
+EWXWEXPORT(void,wxListBox_SetString)(wxListBox* self,int n,wxString* s)
 {
-	((wxListBox*)_obj)->SetString(n, *s);
+	self->SetString(n,*s);
 }
 	
-EWXWEXPORT(int,wxListBox_FindString)(void* _obj,wxString* s)
+EWXWEXPORT(int,wxListBox_FindString)(wxListBox* self,wxString* s)
 {
-	return ((wxListBox*)_obj)->FindString(*s);
+	return self->FindString(*s);
 }
 	
-EWXWEXPORT(int,wxListBox_IsSelected)(wxListBox* _obj,int n)
+EWXWEXPORT(bool,wxListBox_IsSelected)(wxListBox* self,int n)
 {
-	return (int)_obj->IsSelected(n);
+	return self->IsSelected(n);
 }
 	
-EWXWEXPORT(void,wxListBox_SetSelection)(void* _obj,int n,int select)
+EWXWEXPORT(void,wxListBox_SetSelection)(wxListBox* self,int n,bool select)
 {
-	((wxListBox*)_obj)->SetSelection(n, select != 0);
+	self->SetSelection(n, select);
 }
 	
-EWXWEXPORT(int,wxListBox_GetSelection)(void* _obj)
+EWXWEXPORT(int,wxListBox_GetSelection)(wxListBox* self)
 {
-	return ((wxListBox*)_obj)->GetSelection();
+	return self->GetSelection();
 }
 	
-EWXWEXPORT(int,wxListBox_GetSelections)(void* _obj,int* aSelections,int allocated)
+EWXWEXPORT(int,wxListBox_GetSelections)(wxListBox* self,int* aSelections,int allocated)
 {
 	wxArrayInt sel;
-	int result = ((wxListBox*)_obj)->GetSelections(sel);
+	int result = self->GetSelections(sel);
 	
 	if (allocated < result) return -result;
 	
@@ -71,44 +71,44 @@ EWXWEXPORT(int,wxListBox_GetSelections)(void* _obj,int* aSelections,int allocate
 	return result;
 }
 	
-EWXWEXPORT(void,wxListBox_Append)(void* _obj,wxString* item)
+EWXWEXPORT(void,wxListBox_Append)(wxListBox* self,wxString* item)
 {
-	((wxListBox*)_obj)->Append(*item);
+	self->Append(*item);
 }
 	
-EWXWEXPORT(void,wxListBox_AppendData)(void* _obj,wxString* item,void* _data)
+EWXWEXPORT(void,wxListBox_AppendData)(wxListBox* self,wxString* item,void* _data)
 {
-	((wxListBox*)_obj)->Append(*item, _data);
+	self->Append(*item, _data);
 }
 	
-EWXWEXPORT(void,wxListBox_InsertItems)(void* _obj,void* items,int pos,int count)
+EWXWEXPORT(void,wxListBox_InsertItems)(wxListBox* self,void* items,int pos,int count)
 {
 	wxArrayString array;
 	
 	for (int i = 0; i< count; i++)
 		array[i] = ((wxChar**)items)[i];
 	
-	((wxListBox*)_obj)->InsertItems(array, pos);
+	self->InsertItems(array, pos);
 }
 	
-EWXWEXPORT(void,wxListBox_SetFirstItem)(void* _obj,int n)
+EWXWEXPORT(void,wxListBox_SetFirstItem)(wxListBox* self,int n)
 {
-	((wxListBox*)_obj)->SetFirstItem(n);
+	self->SetFirstItem(n);
 }
 	
-EWXWEXPORT(void,wxListBox_SetClientData)(void* _obj,int n,void* clientData)
+EWXWEXPORT(void,wxListBox_SetClientData)(wxListBox* self,int n,void* clientData)
 {
-	((wxListBox*)_obj)->SetClientData(n, clientData);
+	self->SetClientData(n, clientData);
 }
 	
-EWXWEXPORT(void*,wxListBox_GetClientData)(void* _obj,int n)
+EWXWEXPORT(void*,wxListBox_GetClientData)(wxListBox* self,int n)
 {
-	return (void*)((wxListBox*)_obj)->GetClientData(n);
+	return (void*) self->GetClientData(n);
 }
 	
-EWXWEXPORT(void,wxListBox_SetStringSelection)(void* _obj,wxString* str,int sel)
+EWXWEXPORT(void,wxListBox_SetStringSelection)(wxListBox* self,wxString* str,bool sel)
 {
-	((wxListBox*)_obj)->SetStringSelection(*str, sel != 0);
+	self->SetStringSelection(*str, sel);
 }
-	
+
 }

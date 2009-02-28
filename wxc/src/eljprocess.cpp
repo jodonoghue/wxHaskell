@@ -5,168 +5,168 @@ extern "C"
 
 {
 
-EWXWEXPORT(void*, wxProcess_CreateDefault)(void* _prt, int _id)
+EWXWEXPORT(void*,wxProcess_CreateDefault)(wxEvtHandler* _prt,int _id)
 {
-	return (void*)new wxProcess ((wxEvtHandler*)_prt, _id);
+	return (void*)new wxProcess (_prt, _id);
 }
 
-EWXWEXPORT(void*, wxProcess_CreateRedirect)(void* _prt, int _rdr)
+EWXWEXPORT(void*,wxProcess_CreateRedirect)(wxEvtHandler* _prt,bool _rdr)
 {
-	return (void*)new wxProcess ((wxEvtHandler*)_prt, _rdr != 0);
+	return (void*)new wxProcess (_prt, _rdr);
 }
 
-EWXWEXPORT(void, wxProcess_Delete)(void* _obj)
+EWXWEXPORT(void,wxProcess_Delete)(wxProcess* self)
 {
-    delete (wxProcess*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxProcess_Redirect)(void* _obj)
+EWXWEXPORT(void,wxProcess_Redirect)(wxProcess* self)
 {
-	((wxProcess*)_obj)->Redirect();
+	self->Redirect();
 }
 	
-EWXWEXPORT(int, wxProcess_IsRedirected)(void* _obj)
+EWXWEXPORT(bool,wxProcess_IsRedirected)(wxProcess* self)
 {
-	return (int)((wxProcess*)_obj)->IsRedirected();
+	return self->IsRedirected();
 }
 	
-EWXWEXPORT(void, wxProcess_Detach)(void* _obj)
+EWXWEXPORT(void,wxProcess_Detach)(wxProcess* self)
 {
-	((wxProcess*)_obj)->Detach();
+	self->Detach();
 }
 	
-EWXWEXPORT(void*, wxProcess_GetInputStream)(void* _obj)
+EWXWEXPORT(void*,wxProcess_GetInputStream)(wxProcess* self)
 {
-	return (void*)((wxProcess*)_obj)->GetInputStream();
+	return (void*)self->GetInputStream();
 }
 	
-EWXWEXPORT(void*, wxProcess_GetErrorStream)(void* _obj)
+EWXWEXPORT(void*,wxProcess_GetErrorStream)(wxProcess* self)
 {
-	return (void*)((wxProcess*)_obj)->GetErrorStream();
+	return (void*)self->GetErrorStream();
 }
 	
-EWXWEXPORT(void*, wxProcess_GetOutputStream)(void* _obj)
+EWXWEXPORT(void*,wxProcess_GetOutputStream)(wxProcess* self)
 {
-	return (void*)((wxProcess*)_obj)->GetOutputStream();
+	return (void*)self->GetOutputStream();
 }
 	
-EWXWEXPORT(void, wxProcess_CloseOutput)(void* _obj)
+EWXWEXPORT(void,wxProcess_CloseOutput)(wxProcess* self)
 {
-	((wxProcess*)_obj)->CloseOutput();
-}
-	
-
-EWXWEXPORT(int, wxProcessEvent_GetPid)(void* _obj)
-{
-	return ((wxProcessEvent*)_obj)->GetPid();
-}
-
-EWXWEXPORT(int, wxProcessEvent_GetExitCode)(void* _obj)
-{
-	return ((wxProcessEvent*)_obj)->GetExitCode();
-}
-
-
-EWXWEXPORT(int, wxStreamBase_GetLastError)(void* _obj)
-{
-	return (int)((wxStreamBase*)_obj)->GetLastError();
-}
-	
-EWXWEXPORT(int, wxStreamBase_IsOk)(void* _obj)
-{
-	return (int)((wxStreamBase*)_obj)->IsOk();
-}
-	
-EWXWEXPORT(int, wxStreamBase_GetSize)(void* _obj)
-{
-	return (int)((wxStreamBase*)_obj)->GetSize();
+	self->CloseOutput();
 }
 	
 
-EWXWEXPORT(void, wxOutputStream_Delete)(void* _obj)
+EWXWEXPORT(int,wxProcessEvent_GetPid)(wxProcessEvent* self)
 {
-	delete (wxOutputStream*)_obj;
+	return self->GetPid();
 }
 
-EWXWEXPORT(void, wxOutputStream_PutC)(void* _obj, char c)
+EWXWEXPORT(int,wxProcessEvent_GetExitCode)(wxProcessEvent* self)
 {
-	((wxOutputStream*)_obj)->PutC(c);
+	return self->GetExitCode();
+}
+
+
+EWXWEXPORT(int,wxStreamBase_GetLastError)(wxStreamBase* self)
+{
+	return (int)self->GetLastError();
 }
 	
-EWXWEXPORT(void, wxOutputStream_Write)(void* _obj, void* buffer, int size)
+EWXWEXPORT(bool,wxStreamBase_IsOk)(wxStreamBase* self)
 {
-	((wxOutputStream*)_obj)->Write((const void*)buffer, (size_t)size);
+	return self->IsOk();
 }
 	
-EWXWEXPORT(int, wxOutputStream_Seek)(void* _obj, int pos, int mode)
+EWXWEXPORT(int,wxStreamBase_GetSize)(wxStreamBase* self)
 {
-	return (int)((wxOutputStream*)_obj)->SeekO((off_t)pos, (wxSeekMode)mode);
-}
-	
-EWXWEXPORT(int, wxOutputStream_Tell)(void* _obj)
-{
-	return (int)((wxOutputStream*)_obj)->TellO();
-}
-	
-EWXWEXPORT(int, wxOutputStream_LastWrite)(void* _obj)
-{
-	return (int)((wxOutputStream*)_obj)->LastWrite();
-}
-	
-EWXWEXPORT(void, wxOutputStream_Sync)(void* _obj)
-{
-	((wxOutputStream*)_obj)->Sync();
+	return (int)self->GetSize();
 }
 	
 
-EWXWEXPORT(void, wxInputStream_Delete)(void* _obj)
+EWXWEXPORT(void,wxOutputStream_Delete)(wxOutputStream* self)
 {
-	delete (wxInputStream*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxInputStream_Eof)(void* _obj)
+EWXWEXPORT(void,wxOutputStream_PutC)(wxOutputStream* self,char c)
 {
-	return (int)((wxInputStream*)_obj)->Eof();
+	self->PutC(c);
 }
 	
-EWXWEXPORT(char, wxInputStream_Peek)(void* _obj)
+EWXWEXPORT(void,wxOutputStream_Write)(wxOutputStream* self,void* buffer,int size)
 {
-	return ((wxInputStream*)_obj)->Peek();
+	self->Write((const void*)buffer, (size_t)size);
 }
 	
-EWXWEXPORT(char, wxInputStream_GetC)(void* _obj)
+EWXWEXPORT(int,wxOutputStream_Seek)(wxOutputStream* self,int pos,int mode)
 {
-	return ((wxInputStream*)_obj)->GetC();
+	return (int)self->SeekO((off_t)pos, (wxSeekMode)mode);
 }
 	
-EWXWEXPORT(void, wxInputStream_Read)(void* _obj, void *buffer, int size)
+EWXWEXPORT(int,wxOutputStream_Tell)(wxOutputStream* self)
 {
-	((wxInputStream*)_obj)->Read(buffer, (size_t)size);
+	return (int)self->TellO();
 }
 	
-EWXWEXPORT(int, wxInputStream_SeekI)(void* _obj, int pos, int mode)
+EWXWEXPORT(int,wxOutputStream_LastWrite)(wxOutputStream* self)
 {
-	return (int)((wxInputStream*)_obj)->SeekI((off_t)pos, (wxSeekMode)mode);
+	return (int)self->LastWrite();
 }
 	
-EWXWEXPORT(int, wxInputStream_Tell)(void* _obj)
+EWXWEXPORT(void,wxOutputStream_Sync)(void* self)
 {
-	return (int)((wxInputStream*)_obj)->TellI();
+	((wxOutputStream*)self)->Sync();
 }
 	
-EWXWEXPORT(int, wxInputStream_LastRead)(void* _obj)
+
+EWXWEXPORT(void,wxInputStream_Delete)(wxInputStream* self)
 {
-	return (int)((wxInputStream*)_obj)->LastRead();
+	delete self;
+}
+
+EWXWEXPORT(bool,wxInputStream_Eof)(wxInputStream* self)
+{
+	return self->Eof();
+}
+	
+EWXWEXPORT(char,wxInputStream_Peek)(wxInputStream* self)
+{
+	return self->Peek();
+}
+	
+EWXWEXPORT(char,wxInputStream_GetC)(wxInputStream* self)
+{
+	return self->GetC();
+}
+	
+EWXWEXPORT(void,wxInputStream_Read)(wxInputStream* self,void* buffer,int size)
+{
+	self->Read(buffer, (size_t)size);
+}
+	
+EWXWEXPORT(int,wxInputStream_SeekI)(wxInputStream* self,int pos,int mode)
+{
+	return (int)self->SeekI((off_t)pos, (wxSeekMode)mode);
+}
+	
+EWXWEXPORT(int,wxInputStream_Tell)(wxInputStream* self)
+{
+	return (int)self->TellI();
+}
+	
+EWXWEXPORT(int,wxInputStream_LastRead)(wxInputStream* self)
+{
+	return (int)self->LastRead();
 }	
 
-EWXWEXPORT(int, wxInputStream_UngetBuffer)(void* _obj, void* buffer, int size)
+EWXWEXPORT(int,wxInputStream_UngetBuffer)(wxInputStream* self,void* buffer,int size)
 {
-	return (int)((wxInputStream*)_obj)->Ungetch((const void*)buffer, (size_t)size);
+	return (int)self->Ungetch((const void*)buffer, (size_t)size);
 }
 	
-EWXWEXPORT(int, wxInputStream_Ungetch)(void* _obj, char c)
+EWXWEXPORT(int,wxInputStream_Ungetch)(wxInputStream* self,char c)
 {
-	return (int)((wxInputStream*)_obj)->Ungetch(c);
+	return (int)self->Ungetch(c);
 }
 	
 }

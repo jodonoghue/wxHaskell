@@ -8,116 +8,116 @@ EWXWEXPORT(void*,wxHtmlHelpController_Create)(int _style)
 {
 	wxGetApp().InitZipFileSystem();
 	wxGetApp().InitImageHandlers();
-	return (void*) new wxHtmlHelpController(_style);
+	return (void*)new wxHtmlHelpController(_style);
 }
 
-EWXWEXPORT(void,wxHtmlHelpController_Delete)(void* _obj)
+EWXWEXPORT(void,wxHtmlHelpController_Delete)(void* self)
 {
-	delete (wxHtmlHelpController*)_obj;
+	delete (wxHtmlHelpController*)self;
 }
 
-EWXWEXPORT(void,wxHtmlHelpController_SetTitleFormat)(void* _obj,wxString* format)
+EWXWEXPORT(void,wxHtmlHelpController_SetTitleFormat)(void* self,wxString* format)
 {
-	((wxHtmlHelpController*)_obj)->SetTitleFormat(*format);
+	((wxHtmlHelpController*)self)->SetTitleFormat(*format);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_SetTempDir)(void* _obj,wxString* path)
+EWXWEXPORT(void,wxHtmlHelpController_SetTempDir)(void* self,wxString* path)
 {
-	((wxHtmlHelpController*)_obj)->SetTempDir(*path);
+	((wxHtmlHelpController*)self)->SetTempDir(*path);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_AddBook)(wxHtmlHelpController* _obj,wxString* book,int show_wait_msg)
+EWXWEXPORT(bool,wxHtmlHelpController_AddBook)(wxHtmlHelpController* self,wxString* book,bool show_wait_msg)
 {
-	return (int)_obj->AddBook(* book, show_wait_msg != 0);
+	return self->AddBook(*book, show_wait_msg);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_Display)(wxHtmlHelpController* _obj,wxString* x)
+EWXWEXPORT(void,wxHtmlHelpController_Display)(wxHtmlHelpController* self,wxString* x)
 {
-	_obj->Display(*x);
+	self->Display(*x);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_DisplayNumber)(wxHtmlHelpController* _obj,int id)
+EWXWEXPORT(void,wxHtmlHelpController_DisplayNumber)(wxHtmlHelpController* self,int id)
 {
-	_obj->Display(id);
+	self->Display(id);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_DisplayContents)(wxHtmlHelpController* _obj)
+EWXWEXPORT(void,wxHtmlHelpController_DisplayContents)(wxHtmlHelpController* self)
 {
-	_obj->DisplayContents();
+	self->DisplayContents();
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_DisplayIndex)(wxHtmlHelpController* _obj)
+EWXWEXPORT(void,wxHtmlHelpController_DisplayIndex)(wxHtmlHelpController* self)
 {
-	_obj->DisplayIndex();
+	self->DisplayIndex();
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_KeywordSearch)(wxHtmlHelpController* _obj,wxString* keyword)
+EWXWEXPORT(bool,wxHtmlHelpController_KeywordSearch)(wxHtmlHelpController* self,wxString* keyword)
 {
-	return (int)_obj->KeywordSearch(*keyword);
+	return self->KeywordSearch(*keyword);
 }
 	
-EWXWEXPORT(void*,wxHtmlHelpController_GetFrame)(void* _obj)
+EWXWEXPORT(void*,wxHtmlHelpController_GetFrame)(void* self)
 {
-	return (void*)((wxHtmlHelpController*)_obj)->GetFrame();
+	return (void*)((wxHtmlHelpController*)self)->GetFrame();
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_UseConfig)(void* _obj,void* config,wxString* rootpath)
+EWXWEXPORT(void,wxHtmlHelpController_UseConfig)(void* self,wxConfigBase* config,wxString* rootpath)
 {
-	((wxHtmlHelpController*)_obj)->UseConfig((wxConfigBase*)config, *rootpath);
+	((wxHtmlHelpController*)self)->UseConfig(config,*rootpath);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_ReadCustomization)(void* _obj,void* cfg,wxString* path)
+EWXWEXPORT(void,wxHtmlHelpController_ReadCustomization)(void* self,wxConfigBase* cfg,wxString* path)
 {
-	((wxHtmlHelpController*)_obj)->ReadCustomization((wxConfigBase*)cfg, *path);
+	((wxHtmlHelpController*)self)->ReadCustomization(cfg,*path);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_WriteCustomization)(void* _obj,void* cfg,wxString* path)
+EWXWEXPORT(void,wxHtmlHelpController_WriteCustomization)(void* self,wxConfigBase* cfg,wxString* path)
 {
-	((wxHtmlHelpController*)_obj)->WriteCustomization((wxConfigBase*)cfg, *path);
+	((wxHtmlHelpController*)self)->WriteCustomization(cfg,*path);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_Initialize)(wxHtmlHelpController* _obj,wxString* file)
+EWXWEXPORT(bool,wxHtmlHelpController_Initialize)(wxHtmlHelpController* self,wxString* file)
 {
-	return (int)_obj->Initialize(*file);
+	return self->Initialize(*file);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_SetViewer)(void* _obj,wxString* viewer,int flags)
+EWXWEXPORT(void,wxHtmlHelpController_SetViewer)(void* self,wxString* viewer,int flags)
 {
-	((wxHtmlHelpController*)_obj)->SetViewer(*viewer, (long)flags);
+	((wxHtmlHelpController*)self)->SetViewer(*viewer, (long)flags);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_LoadFile)(wxHtmlHelpController* _obj,wxString* file)
+EWXWEXPORT(bool,wxHtmlHelpController_LoadFile)(wxHtmlHelpController* self,wxString* file)
 {
-	return (int)_obj->LoadFile(* file);
+	return self->LoadFile(*file);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_DisplaySectionNumber)(wxHtmlHelpController* _obj,int sectionNo)
+EWXWEXPORT(bool,wxHtmlHelpController_DisplaySectionNumber)(wxHtmlHelpController* self,int sectionNo)
 {
-	return (int)_obj->DisplaySection(sectionNo);
+	return self->DisplaySection(sectionNo);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_DisplaySection)(wxHtmlHelpController* _obj,wxString* section)
+EWXWEXPORT(bool,wxHtmlHelpController_DisplaySection)(wxHtmlHelpController* self,wxString* section)
 {
-	return (int)_obj->DisplaySection(*section);
+	return self->DisplaySection(*section);
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_DisplayBlock)(wxHtmlHelpController* _obj,int blockNo)
+EWXWEXPORT(bool,wxHtmlHelpController_DisplayBlock)(wxHtmlHelpController* self,int blockNo)
 {
-	return (int)_obj->DisplayBlock((long)blockNo);
+	return self->DisplayBlock((long)blockNo);
 }
 	
-EWXWEXPORT(void,wxHtmlHelpController_SetFrameParameters)(void* _obj,wxString* title,int width,int height,int pos_x,int pos_y,int newFrameEachTime)
+EWXWEXPORT(void,wxHtmlHelpController_SetFrameParameters)(void* self,wxString* title,int width,int height,int pos_x,int pos_y,bool newFrameEachTime)
 {
-	((wxHtmlHelpController*)_obj)->SetFrameParameters(* title, wxSize(width, height), wxPoint(pos_x, pos_y), newFrameEachTime != 0);
+	((wxHtmlHelpController*)self)->SetFrameParameters(*title, wxSize(width, height), wxPoint(pos_x, pos_y), newFrameEachTime);
 }
 	
-EWXWEXPORT(void*,wxHtmlHelpController_GetFrameParameters)(void* _obj,void* title,int* width,int* height,int* pos_x,int* pos_y,int* newFrameEachTime)
+EWXWEXPORT(void*,wxHtmlHelpController_GetFrameParameters)(void* self,void* title,int* width,int* height,int* pos_x,int* pos_y,int* newFrameEachTime)
 {
 	void* result;
 	wxPoint pos;
 	wxSize size;
 
-	result = (void*)((wxHtmlHelpController*)_obj)->GetFrameParameters(&size, &pos, (bool*)newFrameEachTime);
+	result = (void*)((wxHtmlHelpController*)self)->GetFrameParameters(&size, &pos, (bool*)newFrameEachTime);
 	
 	*height = size.y;
 	*width  = size.x;
@@ -127,9 +127,9 @@ EWXWEXPORT(void*,wxHtmlHelpController_GetFrameParameters)(void* _obj,void* title
 	return result;
 }
 	
-EWXWEXPORT(int,wxHtmlHelpController_Quit)(wxHtmlHelpController* _obj)
+EWXWEXPORT(bool,wxHtmlHelpController_Quit)(wxHtmlHelpController* self)
 {
-	return (int)_obj->Quit();
+	return self->Quit();
 }
 	
 }

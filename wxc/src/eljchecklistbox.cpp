@@ -3,24 +3,29 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxCheckListBox_Create) (void* _prt, int _id, int _lft, int _top, int _wdt, int _hgt, int _n, void* _str, int _stl)
+EWXWEXPORT(wxCheckListBox*,wxCheckListBox_Create)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _n,void* _str,int _stl)
 {
 	wxCheckListBox* result = new wxCheckListBox ((wxWindow*)_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), 0, NULL, _stl, wxDefaultValidator);
 
 	for (int i = 0; i < _n; i++)
 		result->Append(((wxChar**)_str)[i]);
 
-	return (void*) result;
+	return result;
 }
 
-EWXWEXPORT(void, wxCheckListBox_Check)(void* _obj, int item, int check)
+EWXWEXPORT(void,wxCheckListBox_Delete)(wxCheckListBox* self)
 {
-	((wxCheckListBox*)_obj)->Check(item, check != 0);
+	delete self;
+}
+
+EWXWEXPORT(void,wxCheckListBox_Check)(wxCheckListBox* self,int item,bool check)
+{
+	self->Check(item, check);
 }
 	
-EWXWEXPORT(int, wxCheckListBox_IsChecked)(void* _obj, int item)
+EWXWEXPORT(bool,wxCheckListBox_IsChecked)(wxCheckListBox* self,int item)
 {
-	return (int)((wxCheckListBox*)_obj)->IsChecked(item);
+	return self->IsChecked(item);
 }
 
 }

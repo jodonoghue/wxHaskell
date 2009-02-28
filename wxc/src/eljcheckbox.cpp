@@ -8,14 +8,19 @@ EWXWEXPORT(void*,wxCheckBox_Create)(wxWindow* _prt,int _id,wxString* _txt, int _
 	return (void*) new wxCheckBox (_prt, _id, *_txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
 
-EWXWEXPORT(void,wxCheckBox_SetValue)(wxCheckBox* _obj,int value)
+EWXWEXPORT(void,wxCheckBox_Delete)(wxCheckBox* self)
 {
-	_obj->SetValue(value != 0);
+	delete self;
+}
+
+EWXWEXPORT(void,wxCheckBox_SetValue)(wxCheckBox* self,bool value)
+{
+	self->SetValue(value);
 }
 	
-EWXWEXPORT(int,wxCheckBox_GetValue)(wxCheckBox* _obj)
+EWXWEXPORT(bool,wxCheckBox_GetValue)(wxCheckBox* self)
 {
-	return (int)_obj->GetValue();
+	return self->GetValue();
 }
 
 } 

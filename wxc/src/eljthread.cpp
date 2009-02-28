@@ -3,106 +3,106 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxCriticalSection_Create) ()
+EWXWEXPORT(void*,wxCriticalSection_Create)()
 {
-	return (void*) new wxCriticalSection ();
+	return (void*)new wxCriticalSection ();
 }
 
-EWXWEXPORT(void, wxCriticalSection_Delete) (void* _obj)
+EWXWEXPORT(void,wxCriticalSection_Delete)(void* self)
 {
-	delete (wxCriticalSection*)_obj;
+	delete (wxCriticalSection*)self;
 }
 
-EWXWEXPORT(void, wxCriticalSection_Enter) (void* _obj)
+EWXWEXPORT(void,wxCriticalSection_Enter)(void* self)
 {
-	((wxCriticalSection*)_obj)->Enter();
+	((wxCriticalSection*)self)->Enter();
 }
 
-EWXWEXPORT(void, wxCriticalSection_Leave) (void* _obj)
+EWXWEXPORT(void,wxCriticalSection_Leave)(void* self)
 {
-	((wxCriticalSection*)_obj)->Leave();
+	((wxCriticalSection*)self)->Leave();
 }
 
 
-EWXWEXPORT(void*, wxMutex_Create) ()
+EWXWEXPORT(wxMutex*,wxMutex_Create)()
 {
-	return (void*) new wxMutex ();
+	return new wxMutex ();
 }
 
-EWXWEXPORT(void, wxMutex_Delete) (void* _obj)
+EWXWEXPORT(void,wxMutex_Delete)(wxMutex* self)
 {
-	delete (wxMutex*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxMutex_Lock) (void* _obj)
+EWXWEXPORT(int,wxMutex_Lock)(wxMutex* self)
 {
-	return (int)((wxMutex*)_obj)->Lock();
+	return (int)self->Lock();
 }
 
-EWXWEXPORT(int, wxMutex_TryLock) (void* _obj)
+EWXWEXPORT(int,wxMutex_TryLock)(wxMutex* self)
 {
-	return (int)((wxMutex*)_obj)->TryLock();
+	return (int)self->TryLock();
 }
 
-EWXWEXPORT(int, wxMutex_Unlock) (void* _obj)
+EWXWEXPORT(int,wxMutex_Unlock)(wxMutex* self)
 {
-	return (int)((wxMutex*)_obj)->Unlock();
+	return (int)self->Unlock();
 }
 
-EWXWEXPORT(int, wxMutex_IsLocked) (void* _obj)
+EWXWEXPORT(bool,wxMutex_IsLocked)(wxMutex* self)
 {
 #if wxVERSION_NUMBER >= 2400
-	return 0;
+	return false;
 #else
-	return (int)((wxMutex*)_obj)->IsLocked();
+	return self->IsLocked();
 #endif
 }
 
-EWXWEXPORT(void*, wxCondition_Create) (void* _mutex)
+EWXWEXPORT(void*,wxCondition_Create)(void* _mutex)
 {
 #if wxVERSION_NUMBER < 2400
-	return (void*) new wxCondition ();
+	return (void*)new wxCondition ();
 #else
-	return (void*) new wxCondition (*((wxMutex*)_mutex));
+	return (void*)new wxCondition (*((wxMutex*)_mutex));
 #endif
 }
 
-EWXWEXPORT(void, wxCondition_Delete) (void* _obj)
+EWXWEXPORT(void,wxCondition_Delete)(void* self)
 {
-	delete (wxCondition*)_obj;
+	delete (wxCondition*)self;
 }
 
-EWXWEXPORT(void, wxCondition_Wait) (void* _obj)
+EWXWEXPORT(void,wxCondition_Wait)(void* self)
 {
-	((wxCondition*)_obj)->Wait();
+	((wxCondition*)self)->Wait();
 }
 
-EWXWEXPORT(int, wxCondition_WaitFor) (void* _obj, int sec, int nsec)
+EWXWEXPORT(int,wxCondition_WaitFor)(void* self,int sec,int nsec)
 {
 #if wxVERSION_NUMBER >= 2400
-	return (int)((wxCondition*)_obj)->WaitTimeout((unsigned long)nsec);
+	return (int)((wxCondition*)self)->WaitTimeout((unsigned long)nsec);
 #else
-	return (int)((wxCondition*)_obj)->Wait((unsigned long)sec, (unsigned long)nsec);
+	return (int)((wxCondition*)self)->Wait((unsigned long)sec, (unsigned long)nsec);
 #endif
 }
 
-EWXWEXPORT(void, wxCondition_Signal) (void* _obj)
+EWXWEXPORT(void,wxCondition_Signal)(void* self)
 {
-	((wxCondition*)_obj)->Signal();
+	((wxCondition*)self)->Signal();
 }
 
-EWXWEXPORT(void, wxCondition_Broadcast) (void* _obj)
+EWXWEXPORT(void,wxCondition_Broadcast)(void* self)
 {
-	((wxCondition*)_obj)->Broadcast();
+	((wxCondition*)self)->Broadcast();
 }
 
 
-EWXWEXPORT(void, wxMutexGui_Enter) ()
+EWXWEXPORT(void,wxMutexGui_Enter)()
 {
 	wxMutexGuiEnter();
 }
 
-EWXWEXPORT(void, wxMutexGui_Leave) ()
+EWXWEXPORT(void,wxMutexGui_Leave)()
 {
 	wxMutexGuiLeave();
 }

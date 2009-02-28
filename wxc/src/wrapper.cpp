@@ -314,12 +314,12 @@ EWXWEXPORT(int,ELJApp_MainLoop)()
         return wxGetApp().MainLoop();
 }
 
-EWXWEXPORT(int,ELJApp_Initialized)()
+EWXWEXPORT(bool,ELJApp_Initialized)()
 {
 #if WXWIN_COMPATIBILITY_2_6
         return (int)wxGetApp().Initialized();
 #else
-        return TRUE;
+        return true;
 #endif
 }
 
@@ -374,9 +374,9 @@ EWXWEXPORT(void*,ELJApp_GetTopWindow)()
         return wxGetApp().GetTopWindow();
 }
 
-EWXWEXPORT(void,ELJApp_SetExitOnFrameDelete)(int flag)
+EWXWEXPORT(void,ELJApp_SetExitOnFrameDelete)(bool flag)
 {
-        wxGetApp().SetExitOnFrameDelete(flag != 0);
+        wxGetApp().SetExitOnFrameDelete(flag);
 }
 
 EWXWEXPORT(int,ELJApp_GetExitOnFrameDelete)()
@@ -401,9 +401,9 @@ EWXWEXPORT(int,ELJApp_GetWantDebugOutput)()
 }
 */
 
-EWXWEXPORT(void,ELJApp_SetUseBestVisual)(int flag)
+EWXWEXPORT(void,ELJApp_SetUseBestVisual)(bool flag)
 {
-        wxGetApp().SetUseBestVisual( flag != 0);
+        wxGetApp().SetUseBestVisual( flag);
 }
 
 EWXWEXPORT(int,ELJApp_GetUseBestVisual)()
@@ -436,9 +436,9 @@ EWXWEXPORT(int,ELJApp_SendIdleEventsToWindow)(wxWindow* win)
         return (int)wxGetApp().SendIdleEvents( win);
 }
 */
-EWXWEXPORT(void,ELJApp_EnableTooltips)(int _enable)
+EWXWEXPORT(void,ELJApp_EnableTooltips)(bool _enable)
 {
-        wxToolTip::Enable (_enable != 0);
+        wxToolTip::Enable (_enable);
 }
 
 EWXWEXPORT(void,ELJApp_SetTooltipDelay)(int _ms)
@@ -461,9 +461,9 @@ EWXWEXPORT(void, ELJApp_DisplaySize)(void* w, void* h)
         wxDisplaySize((int*)w, (int*)h);
 }
 
-EWXWEXPORT(void,ELJApp_EnableTopLevelWindows)(int _enb)
+EWXWEXPORT(void,ELJApp_EnableTopLevelWindows)(bool _enb)
 {
-        wxEnableTopLevelWindows(_enb != 0);
+        wxEnableTopLevelWindows(_enb);
 }
 
 EWXWEXPORT(void,ELJApp_Exit)()
@@ -518,9 +518,9 @@ EWXWEXPORT(wxString*,ELJApp_GetUserHome)(wxString* _usr)
 	return result;
 }
 
-EWXWEXPORT(int,ELJApp_ExecuteProcess)(wxString* _cmd,int _snc,void* _prc)
+EWXWEXPORT(int,ELJApp_ExecuteProcess)(wxString* _cmd,bool _snc,void* _prc)
 {
-        return (int)wxExecute(*_cmd, _snc != 0 , (wxProcess*)_prc);
+        return (int)wxExecute(*_cmd, _snc , (wxProcess*)_prc);
 }
 
 EWXWEXPORT(int,ELJApp_Yield)()
@@ -559,9 +559,9 @@ EWXWEXPORT(void,ELJApp_MilliSleep)(int _mscs)
 #endif
 }
 
-EWXWEXPORT(int,ELJApp_IsTerminating)()
+EWXWEXPORT(bool,ELJApp_IsTerminating)()
 {
-        return (int)APPTerminating;
+        return APPTerminating;
 }
 
 EWXWEXPORT(int,QuantizePalette)(void* src,void* dest,void* pPalette,int desiredNoColours,void* eightBitData,int flags)
@@ -619,9 +619,9 @@ EWXWEXPORT(void,wxEvtHandler_SetPreviousHandler)(void* _obj,void* handler)
         ((wxEvtHandler*)_obj)->SetPreviousHandler((wxEvtHandler*)handler);
 }
 
-EWXWEXPORT(void,wxEvtHandler_SetEvtHandlerEnabled)(void* _obj,int enabled)
+EWXWEXPORT(void,wxEvtHandler_SetEvtHandlerEnabled)(void* _obj,bool enabled)
 {
-        ((wxEvtHandler*)_obj)->SetEvtHandlerEnabled(enabled != 0);
+        ((wxEvtHandler*)_obj)->SetEvtHandlerEnabled(enabled);
 }
 
 EWXWEXPORT(int,wxEvtHandler_GetEvtHandlerEnabled)(void* _obj)
@@ -734,12 +734,12 @@ EWXWEXPORT(void*,wxClassInfo_GetClassName)(void* _obj)
         return NULL;
 }
 
-EWXWEXPORT(int,wxClassInfo_IsKindOf)(wxObject* _obj,wxString* _name)
+EWXWEXPORT(bool,wxClassInfo_IsKindOf)(wxObject* _obj,wxString* _name)
 {
         wxClassInfo* inf = wxClassInfo::FindClass (*_name);
         if (inf)
                 return _obj->IsKindOf(inf);
-        return (int)false;
+        return false;
 }
 
 EWXWEXPORT(int,wxEvent_NewEventType)()

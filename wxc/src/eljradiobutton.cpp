@@ -8,14 +8,14 @@ EWXWEXPORT(void*,wxRadioButton_Create)(wxWindow* _prt,int _id,wxString* _txt,int
 	return (void*) new wxRadioButton (_prt, _id, *_txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
 
-EWXWEXPORT(void,wxRadioButton_SetValue)(void* _obj,int value)
+EWXWEXPORT(void,wxRadioButton_SetValue)(wxRadioButton* self,bool value)
 {
-	((wxRadioButton*)_obj)->SetValue(value != 0);
+	self->SetValue(value);
 }
 	
-EWXWEXPORT(int,wxRadioButton_GetValue)(wxRadioButton* _obj)
+EWXWEXPORT(bool,wxRadioButton_GetValue)(wxRadioButton* self)
 {
-	return (int)_obj->GetValue();
+	return self->GetValue();
 }
 
 } 

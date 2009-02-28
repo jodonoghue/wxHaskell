@@ -3,89 +3,89 @@
 extern "C"
 {
 	
-EWXWEXPORT(void*, wxRegion_CreateDefault) ()
+EWXWEXPORT(void*,wxRegion_CreateDefault)()
 {
-	return (void*) new wxRegion();
+	return (void*)new wxRegion();
 }
 
-EWXWEXPORT(void*, wxRegion_CreateFromRect) (int x, int y, int w, int h)
+EWXWEXPORT(void*,wxRegion_CreateFromRect)(int x,int y,int w,int h)
 {
-	return (void*) new wxRegion((wxCoord)x, (wxCoord)y, (wxCoord)w, (wxCoord)h);
+	return (void*)new wxRegion((wxCoord)x, (wxCoord)y, (wxCoord)w, (wxCoord)h);
 }
 
-EWXWEXPORT(void, wxRegion_Delete) (void* _obj)
+EWXWEXPORT(void,wxRegion_Delete)(wxRegion* self)
 {
-	delete (wxRegion*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxRegion_Assign)(void* _obj, void* region)
+EWXWEXPORT(void,wxRegion_Assign)(wxRegion* self,wxRegion* region)
 {
-	*((wxRegion*)_obj) = *((wxRegion*)region);
+	*self = *region;
 }
 
-EWXWEXPORT(void, wxRegion_Clear)(void* _obj)
+EWXWEXPORT(void,wxRegion_Clear)(wxRegion* self)
 {
-	((wxRegion*)_obj)->Clear();
+	self->Clear();
 }
 	
-EWXWEXPORT(int, wxRegion_UnionRect)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(bool,wxRegion_UnionRect)(wxRegion* self,int x,int y,int width,int height)
 {
-	return (int)((wxRegion*)_obj)->Union((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	return self->Union((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(int, wxRegion_UnionRegion)(void* _obj, void* region)
+EWXWEXPORT(bool,wxRegion_UnionRegion)(wxRegion* self,wxRegion* region)
 {
-	return (int)((wxRegion*)_obj)->Union(*((wxRegion*)region));
+	return self->Union(*region);
 }
 	
-EWXWEXPORT(int, wxRegion_IntersectRect)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(bool,wxRegion_IntersectRect)(wxRegion* self,int x,int y,int width,int height)
 {
-	return (int)((wxRegion*)_obj)->Intersect((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	return self->Intersect((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(int, wxRegion_IntersectRegion)(void* _obj, void* region)
+EWXWEXPORT(bool,wxRegion_IntersectRegion)(wxRegion* self,wxRegion* region)
 {
-	return (int)((wxRegion*)_obj)->Intersect(*((wxRegion*)region));
+	return self->Intersect(*region);
 }
 	
-EWXWEXPORT(int, wxRegion_SubtractRect)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(bool,wxRegion_SubtractRect)(wxRegion* self,int x,int y,int width,int height)
 {
-	return (int)((wxRegion*)_obj)->Subtract((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	return self->Subtract((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(int, wxRegion_SubtractRegion)(void* _obj, void* region)
+EWXWEXPORT(bool,wxRegion_SubtractRegion)(wxRegion* self,wxRegion* region)
 {
-	return (int)((wxRegion*)_obj)->Subtract(*((wxRegion*)region));
+	return self->Subtract(*region);
 }
 	
-EWXWEXPORT(int, wxRegion_XorRect)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(bool,wxRegion_XorRect)(wxRegion* self,int x,int y,int width,int height)
 {
-	return (int)((wxRegion*)_obj)->Xor((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	return self->Xor((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
-EWXWEXPORT(int, wxRegion_XorRegion)(void* _obj, void* region)
+EWXWEXPORT(bool,wxRegion_XorRegion)(wxRegion* self,wxRegion* region)
 {
-	return (int)((wxRegion*)_obj)->Xor(*((wxRegion*)region));
+	return self->Xor(*region);
 }
 	
-EWXWEXPORT(void, wxRegion_GetBox)(void* _obj, void* x, void* y, void* w, void* h)
+EWXWEXPORT(void,wxRegion_GetBox)(wxRegion* self,void* x,void* y,void* w,void* h)
 {
-	((wxRegion*)_obj)->GetBox(*((wxCoord*)x), *((wxCoord*)y), *((wxCoord*)w), *((wxCoord*)h));
+	self->GetBox(*((wxCoord*)x),*((wxCoord*)y),*((wxCoord*)w),*((wxCoord*)h));
 }
 	
-EWXWEXPORT(int, wxRegion_Empty)(void* _obj)
+EWXWEXPORT(bool,wxRegion_IsEmpty)(wxRegion* self)
 {
-	return (int)((wxRegion*)_obj)->Empty();
+	return self->IsEmpty();
 }
 	
-EWXWEXPORT(int, wxRegion_ContainsPoint)(void* _obj, int x, int y)
+EWXWEXPORT(bool,wxRegion_ContainsPoint)(wxRegion* self,int x,int y)
 {
-	return (int)((wxRegion*)_obj)->Contains((wxCoord)x, (wxCoord)y);
+	return self->Contains((wxCoord)x, (wxCoord)y);
 }
 	
-EWXWEXPORT(int, wxRegion_ContainsRect)(void* _obj, int x, int y, int width, int height)
+EWXWEXPORT(bool,wxRegion_ContainsRect)(wxRegion* self,int x,int y,int width,int height)
 {
-	return (int)((wxRegion*)_obj)->Contains((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
+	return self->Contains((wxCoord)x, (wxCoord)y, (wxCoord)width, (wxCoord)height);
 }
 	
 }

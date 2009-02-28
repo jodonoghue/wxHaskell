@@ -3,22 +3,22 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxBrush_CreateDefault) ()
+EWXWEXPORT(wxBrush*,wxBrush_CreateDefault)()
 {
-	return (void*) new wxBrush();
+	return  new wxBrush();
 }
 
-EWXWEXPORT(void*, wxBrush_CreateFromBitmap) (void* bitmap)
+EWXWEXPORT(wxBrush*,wxBrush_CreateFromBitmap)(wxBitmap* bitmap)
 {
-	return (void*) new wxBrush(*((wxBitmap*)bitmap));
+	return new wxBrush(*bitmap);
 }
 
-EWXWEXPORT(void*, wxBrush_CreateFromColour) (void* col, int style)
+EWXWEXPORT(wxBrush*,wxBrush_CreateFromColour)(wxColour* col,int style)
 {
-	return (void*) new wxBrush(*((wxColour*)col), style);
+	return new wxBrush(*col, style);
 }
 
-EWXWEXPORT(void*, wxBrush_CreateFromStock) (int id)
+EWXWEXPORT(void*,wxBrush_CreateFromStock)(int id)
 {
 	switch (id)
 	{
@@ -47,59 +47,59 @@ EWXWEXPORT(void*, wxBrush_CreateFromStock) (int id)
 	return NULL;
 }
 
-EWXWEXPORT(void, wxBrush_Delete) (void* _obj)
+EWXWEXPORT(void,wxBrush_Delete)(wxBrush* self)
 {
-	delete (wxBrush*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void, wxBrush_SetColour)(void* _obj, void* col)
+EWXWEXPORT(void,wxBrush_SetColour)(wxBrush* self,wxColour* col)
 {
-	((wxBrush*)_obj)->SetColour(*((wxColour*)col));
+	self->SetColour(*col);
 }
 	
-EWXWEXPORT(void, wxBrush_SetColourSingle)(void* _obj, char r, char g, char b)
+EWXWEXPORT(void,wxBrush_SetColourSingle)(wxBrush* self,wxUint8 r,wxUint8 g,wxUint8 b)
 {
-	((wxBrush*)_obj)->SetColour((unsigned char)r, (unsigned char)g, (unsigned char)b);
+	self->SetColour(r,g,b);
 }
 	
-EWXWEXPORT(void, wxBrush_SetStyle)(void* _obj, int style)
+EWXWEXPORT(void,wxBrush_SetStyle)(wxBrush* self,int style)
 {
-	((wxBrush*)_obj)->SetStyle(style);
+	self->SetStyle(style);
 }
 	
-EWXWEXPORT(void, wxBrush_SetStipple)(void* _obj, void* stipple)
+EWXWEXPORT(void,wxBrush_SetStipple)(wxBrush* self,wxBitmap* stipple)
 {
-	((wxBrush*)_obj)->SetStipple(*((wxBitmap*)stipple));
+	self->SetStipple(*stipple);
 }
 	
-EWXWEXPORT(void, wxBrush_Assign)(void* _obj, void* brush)
+EWXWEXPORT(void,wxBrush_Assign)(wxBrush* self,wxBrush* brush)
 {
-	*((wxBrush*)_obj) = *((wxBrush*)brush);
+	*self = *brush;
 }
 	
-EWXWEXPORT(int, wxBrush_IsEqual)(void* _obj, void* brush)
+EWXWEXPORT(bool,wxBrush_IsEqual)(wxBrush* self,wxBrush* brush)
 {
-	return (int)(*((wxBrush*)_obj) == *((wxBrush*)brush));
+	return *self == *brush;
 }
 	
-EWXWEXPORT(void, wxBrush_GetColour)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxBrush_GetColour)(wxBrush* self,wxColour* _ref)
 {
-	*((wxColour*)_ref) = ((wxBrush*)_obj)->GetColour();
+	*_ref = self->GetColour();
 }
 	
-EWXWEXPORT(int, wxBrush_GetStyle)(void* _obj)
+EWXWEXPORT(int,wxBrush_GetStyle)(wxBrush* self)
 {
-	return ((wxBrush*)_obj)->GetStyle();
+	return self->GetStyle();
 }
 	
-EWXWEXPORT(void, wxBrush_GetStipple)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxBrush_GetStipple)(wxBrush* self,wxBitmap* _ref)
 {
-	*((wxBitmap*)_ref) = (*((wxBrush*)_obj)->GetStipple());
+	*_ref = *(self->GetStipple());
 }
 	
-EWXWEXPORT(int, wxBrush_Ok)(void* _obj)
+EWXWEXPORT(bool,wxBrush_IsOk)(wxBrush* self)
 {
-	return (int)((wxBrush*)_obj)->Ok();
+	return self->IsOk();
 }
 	
 }

@@ -34,7 +34,7 @@ module Graphics.UI.WX.Types
     , BitMask(..), mask, (.+.), (.-.), bits, bitsSet
 
     -- ** Booleans
-    , boolFromInt, intFromBool
+    , toCBool, fromCBool
 
     -- ** Misc.
     , Style

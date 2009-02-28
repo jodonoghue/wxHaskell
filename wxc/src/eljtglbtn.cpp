@@ -10,24 +10,24 @@ EWXWEXPORT(void*,wxToggleButton_Create)(wxWindow* parent,int id,wxString* label,
 	return (void*)new wxToggleButton(parent, (wxWindowID)id, *label, wxPoint(x, y), wxSize(w, h), (long)style);
 }
 	
-EWXWEXPORT(void,wxToggleButton_SetValue)(void* _obj,int state)
+EWXWEXPORT(void,wxToggleButton_SetValue)(wxToggleButton* self,bool state)
 {
-	((wxToggleButton*)_obj)->SetValue(state != 0);
+	self->SetValue(state);
 }
 	
-EWXWEXPORT(int,wxToggleButton_GetValue)(void* _obj)
+EWXWEXPORT(bool,wxToggleButton_GetValue)(wxToggleButton* self)
 {
-	return (int)((wxToggleButton*)_obj)->GetValue();
+	return self->GetValue();
 }
 	
-EWXWEXPORT(void,wxToggleButton_SetLabel)(void* _obj,wxString* label)
+EWXWEXPORT(void,wxToggleButton_SetLabel)(wxToggleButton* self,wxString* label)
 {
-	((wxToggleButton*)_obj)->SetLabel(*label);
+	self->SetLabel(*label);
 }
 	
-EWXWEXPORT(int,wxToggleButton_Enable)(void* _obj,int enable)
+EWXWEXPORT(bool,wxToggleButton_Enable)(wxToggleButton* self,bool enable)
 {
-	return (int)((wxToggleButton*)_obj)->Enable(enable != 0);
+	return self->Enable(enable);
 }
 
 EWXWEXPORT(int,expEVT_COMMAND_TOGGLEBUTTON_CLICKED)()

@@ -23,7 +23,7 @@ extern "C" {
 /*-----------------------------------------------------------------------------
   Sound
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxSound*,wxSound_Create)( wxString* fileName, bool isResource )  
+EWXWEXPORT(wxSound*,wxSound_Create)(wxString* fileName,bool isResource)
 {
 #ifdef wxUSE_SOUND 
   return new wxSound(*fileName,isResource);
@@ -32,14 +32,14 @@ EWXWEXPORT(wxSound*,wxSound_Create)( wxString* fileName, bool isResource )
 #endif
 }
 
-EWXWEXPORT(void,wxSound_Delete)(wxSound* self)  
+EWXWEXPORT(void,wxSound_Delete)(wxSound* self)
 {
 #ifdef wxUSE_SOUND 
   if (self) delete self;
 #endif
 }
 
-EWXWEXPORT(bool,wxSound_IsOk)(wxSound* self)  
+EWXWEXPORT(bool,wxSound_IsOk)(wxSound* self)
 {
 #ifdef wxUSE_SOUND 
   return self->IsOk();
@@ -48,16 +48,16 @@ EWXWEXPORT(bool,wxSound_IsOk)(wxSound* self)
 #endif
 }
 
-EWXWEXPORT(bool,wxSound_Play)(wxSound* self, unsigned flag )  
+EWXWEXPORT(bool,wxSound_Play)(wxSound* self,unsigned flag)
 {
 #ifdef wxUSE_SOUND 
-  return ((wxSoundBase *) self)->Play(flag);
+  return ((wxSoundBase *)self)->Play(flag);
 #else
   return false;
 #endif
 }
 
-EWXWEXPORT(void,wxSound_Stop)(wxSound* self)  
+EWXWEXPORT(void,wxSound_Stop)(wxSound* self)
 {
 #ifdef wxUSE_SOUND
   self->Stop();

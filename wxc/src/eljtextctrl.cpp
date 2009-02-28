@@ -8,183 +8,183 @@ EWXWEXPORT(void*,wxTextCtrl_Create)(wxWindow* _prt,int _id,wxString* _txt,int _l
 	return (void*) new wxTextCtrl (_prt, _id, *_txt, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
 
-EWXWEXPORT(wxString*,wxTextCtrl_GetValue)(void* _obj)
+EWXWEXPORT(wxString*,wxTextCtrl_GetValue)(void* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxTextCtrl*)_obj)->GetValue();
+	*result = ((wxTextCtrl*)self)->GetValue();
 	return result;
 }
 	
-EWXWEXPORT(void,wxTextCtrl_SetValue)(void* _obj,wxString* value)
+EWXWEXPORT(void,wxTextCtrl_SetValue)(wxTextCtrl* self,wxString* value)
 {
-	((wxTextCtrl*)_obj)->SetValue(*value);
+	self->SetValue(*value);
 }
 	
-EWXWEXPORT(int,wxTextCtrl_GetLineLength)(void* _obj,long lineNo)
+EWXWEXPORT(int,wxTextCtrl_GetLineLength)(wxTextCtrl* self,long lineNo)
 {
-	return ((wxTextCtrl*)_obj)->GetLineLength(lineNo);
+	return self->GetLineLength(lineNo);
 }
 	
-EWXWEXPORT(wxString*,wxTextCtrl_GetLineText)(void* _obj,long lineNo)
+EWXWEXPORT(wxString*,wxTextCtrl_GetLineText)(wxTextCtrl* self,long lineNo)
 {
 	wxString *result = new wxString();
-	*result = ((wxTextCtrl*)_obj)->GetLineText(lineNo);
+	*result = self->GetLineText(lineNo);
 	return result;
 }
 	
-EWXWEXPORT(int,wxTextCtrl_GetNumberOfLines)(void* _obj)
+EWXWEXPORT(int,wxTextCtrl_GetNumberOfLines)(wxTextCtrl* self)
 {
-	return ((wxTextCtrl*)_obj)->GetNumberOfLines();
+	return self->GetNumberOfLines();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_IsModified)(wxTextCtrl* _obj)
+EWXWEXPORT(bool,wxTextCtrl_IsModified)(wxTextCtrl* self)
 {
-	return (int)_obj->IsModified();
+	return self->IsModified();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_IsEditable)(wxTextCtrl* _obj)
+EWXWEXPORT(bool,wxTextCtrl_IsEditable)(wxTextCtrl* self)
 {
-	return (int)_obj->IsEditable();
+	return self->IsEditable();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_GetSelection)(void* _obj,void* from,void* to)
+EWXWEXPORT(void,wxTextCtrl_GetSelection)(wxTextCtrl* self,void* from,void* to)
 {
-	((wxTextCtrl*)_obj)->GetSelection((long*) from, (long*) to);
+	self->GetSelection((long*)from, (long*)to);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Clear)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Clear)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Clear();
+	self->Clear();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Replace)(void* _obj,long from,long to,wxString* value)
+EWXWEXPORT(void,wxTextCtrl_Replace)(wxTextCtrl* self,long from,long to,wxString* value)
 {
-	((wxTextCtrl*)_obj)->Replace(from, to, *value);
+	self->Replace(from, to,*value);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Remove)(void* _obj,long from,long to)
+EWXWEXPORT(void,wxTextCtrl_Remove)(wxTextCtrl* self,long from,long to)
 {
-	((wxTextCtrl*)_obj)->Remove(from, to);
+	self->Remove(from, to);
 }
 	
-EWXWEXPORT(int,wxTextCtrl_LoadFile)(void* _obj,wxString* file)
+EWXWEXPORT(bool,wxTextCtrl_LoadFile)(wxTextCtrl* self,wxString* file)
 {
-	return (int)((wxTextCtrl*)_obj)->LoadFile(*file);
+	return self->LoadFile(*file);
 }
 	
-EWXWEXPORT(int,wxTextCtrl_SaveFile)(void* _obj,wxString* file)
+EWXWEXPORT(bool,wxTextCtrl_SaveFile)(wxTextCtrl* self,wxString* file)
 {
-	return (int)((wxTextCtrl*)_obj)->SaveFile(*file);
+	return self->SaveFile(*file);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_DiscardEdits)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_DiscardEdits)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->DiscardEdits();
+	self->DiscardEdits();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_WriteText)(void* _obj,wxString* text)
+EWXWEXPORT(void,wxTextCtrl_WriteText)(wxTextCtrl* self,wxString* text)
 {
-	((wxTextCtrl*)_obj)->WriteText(*text);
+	self->WriteText(*text);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_AppendText)(void* _obj,wxString* text)
+EWXWEXPORT(void,wxTextCtrl_AppendText)(wxTextCtrl* self,wxString* text)
 {
-	((wxTextCtrl*)_obj)->AppendText(*text);
+	self->AppendText(*text);
 }
 	
-EWXWEXPORT(long,wxTextCtrl_XYToPosition)(void* _obj,long x,long y)
+EWXWEXPORT(long,wxTextCtrl_XYToPosition)(wxTextCtrl* self,long x,long y)
 {
-	return ((wxTextCtrl*)_obj)->XYToPosition(x, y);
+	return self->XYToPosition(x, y);
 }
 	
-EWXWEXPORT(int,wxTextCtrl_PositionToXY)(void* _obj,long pos,long* x,long* y)
+EWXWEXPORT(int,wxTextCtrl_PositionToXY)(wxTextCtrl* self,long pos,long* x,long* y)
 {
-	return (int)((wxTextCtrl*)_obj)->PositionToXY(pos, x, y);
+	return (int)self->PositionToXY(pos, x, y);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_ShowPosition)(void* _obj,long pos)
+EWXWEXPORT(void,wxTextCtrl_ShowPosition)(wxTextCtrl* self,long pos)
 {
-	((wxTextCtrl*)_obj)->ShowPosition(pos);
+	self->ShowPosition(pos);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Copy)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Copy)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Copy();
+	self->Copy();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Cut)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Cut)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Cut();
+	self->Cut();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Paste)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Paste)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Paste();
+	self->Paste();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_CanCopy)(void* _obj)
+EWXWEXPORT(bool,wxTextCtrl_CanCopy)(wxTextCtrl* self)
 {
-	return (int)((wxTextCtrl*)_obj)->CanCopy();
+	return self->CanCopy();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_CanCut)(void* _obj)
+EWXWEXPORT(bool,wxTextCtrl_CanCut)(wxTextCtrl* self)
 {
-	return (int)((wxTextCtrl*)_obj)->CanCut();
+	return self->CanCut();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_CanPaste)(void* _obj)
+EWXWEXPORT(bool,wxTextCtrl_CanPaste)(wxTextCtrl* self)
 {
-	return (int)((wxTextCtrl*)_obj)->CanPaste();
+	return self->CanPaste();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Undo)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Undo)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Undo();
+	self->Undo();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_Redo)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_Redo)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->Redo();
+	self->Redo();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_CanUndo)(void* _obj)
+EWXWEXPORT(bool,wxTextCtrl_CanUndo)(wxTextCtrl* self)
 {
-	return (int)((wxTextCtrl*)_obj)->CanUndo();
+	return self->CanUndo();
 }
 	
-EWXWEXPORT(int,wxTextCtrl_CanRedo)(void* _obj)
+EWXWEXPORT(bool,wxTextCtrl_CanRedo)(wxTextCtrl* self)
 {
-	return (int)((wxTextCtrl*)_obj)->CanRedo();
+	return self->CanRedo();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_SetInsertionPoint)(void* _obj,long pos)
+EWXWEXPORT(void,wxTextCtrl_SetInsertionPoint)(wxTextCtrl* self,long pos)
 {
-	((wxTextCtrl*)_obj)->SetInsertionPoint(pos);
+	self->SetInsertionPoint(pos);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_SetInsertionPointEnd)(void* _obj)
+EWXWEXPORT(void,wxTextCtrl_SetInsertionPointEnd)(wxTextCtrl* self)
 {
-	((wxTextCtrl*)_obj)->SetInsertionPointEnd();
+	self->SetInsertionPointEnd();
 }
 	
-EWXWEXPORT(long,wxTextCtrl_GetInsertionPoint)(void* _obj)
+EWXWEXPORT(long,wxTextCtrl_GetInsertionPoint)(wxTextCtrl* self)
 {
-	return ((wxTextCtrl*)_obj)->GetInsertionPoint();
+	return self->GetInsertionPoint();
 }
 	
-EWXWEXPORT(long,wxTextCtrl_GetLastPosition)(void* _obj)
+EWXWEXPORT(long,wxTextCtrl_GetLastPosition)(wxTextCtrl* self)
 {
-	return ((wxTextCtrl*)_obj)->GetLastPosition();
+	return self->GetLastPosition();
 }
 	
-EWXWEXPORT(void,wxTextCtrl_SetSelection)(void* _obj,long from,long to)
+EWXWEXPORT(void,wxTextCtrl_SetSelection)(wxTextCtrl* self,long from,long to)
 {
-	((wxTextCtrl*)_obj)->SetSelection(from, to);
+	self->SetSelection(from, to);
 }
 	
-EWXWEXPORT(void,wxTextCtrl_SetEditable)(void* _obj,int editable)
+EWXWEXPORT(void,wxTextCtrl_SetEditable)(wxTextCtrl* self,bool editable)
 {
-	((wxTextCtrl*)_obj)->SetEditable(editable != 0);
+	self->SetEditable(editable);
 }
 	
 }

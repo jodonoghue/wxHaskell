@@ -3,168 +3,167 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxMenu_Create)(wxString* title,long style)
+EWXWEXPORT(wxMenu*,wxMenu_Create)(wxString* title,long style)
 {
-	return (void*) new wxMenu(*title, style);
+	return new wxMenu(*title, style);
 }
 	
-EWXWEXPORT(void,wxMenu_DeletePointer)(void* _obj)
+EWXWEXPORT(void,wxMenu_DeletePointer)(wxMenu* self)
 {
-	delete (wxMenu*)_obj;
+	delete self;
 }
 	
-EWXWEXPORT(void,wxMenu_AppendSeparator)(void* _obj)
+EWXWEXPORT(void,wxMenu_AppendSeparator)(wxMenu* self)
 {
-	((wxMenu*)_obj)->AppendSeparator();
+	self->AppendSeparator();
 }
 	
-EWXWEXPORT(void,wxMenu_Append)(void* _obj,int id,wxString* text,wxString* help,int isCheckable)
+EWXWEXPORT(void,wxMenu_Append)(wxMenu* self,int id,wxString* text,wxString* help,bool isCheckable)
 {
-	((wxMenu*)_obj)->Append(id, *text, *help, isCheckable != 0);
+	self->Append(id,*text,*help, isCheckable);
 }
 	
-EWXWEXPORT(void,wxMenu_AppendSub)(void* _obj,int id,wxString* text,void* submenu,wxString* help)
+EWXWEXPORT(void,wxMenu_AppendSub)(wxMenu* self,int id,wxString* text,wxMenu* submenu,wxString* help)
 {
-	((wxMenu*)_obj)->Append(id, *text, (wxMenu*) submenu, *help);
+	self->Append(id,*text,submenu,*help);
 }
 	
-EWXWEXPORT(void,wxMenu_AppendItem)(void* _obj,void* _itm)
+EWXWEXPORT(void,wxMenu_AppendItem)(wxMenu* self,wxMenuItem* _itm)
 {
-	((wxMenu*)_obj)->Append((wxMenuItem*)_itm);
+	self->Append(_itm);
 }
 	
-EWXWEXPORT(void,wxMenu_Break)(void* _obj)
+EWXWEXPORT(void,wxMenu_Break)(wxMenu* self)
 {
-	((wxMenu*)_obj)->Break();
+	self->Break();
 }
 	
-EWXWEXPORT(void,wxMenu_Insert)(void* _obj,size_t pos,int id,wxString* text,wxString* help,int isCheckable)
+EWXWEXPORT(void,wxMenu_Insert)(wxMenu* self,size_t pos,int id,wxString* text,wxString* help,bool isCheckable)
 {
-	((wxMenu*)_obj)->Insert(pos, id, *text, *help, isCheckable != 0);
+	self->Insert(pos, id,*text,*help, isCheckable);
 }
 	
-EWXWEXPORT(void,wxMenu_InsertSub)(void* _obj,size_t pos,int id,wxString* text,void* submenu,wxString* help)
+EWXWEXPORT(void,wxMenu_InsertSub)(wxMenu* self,size_t pos,int id,wxString* text,wxMenu* submenu,wxString* help)
 {
-	((wxMenu*)_obj)->Insert(pos, id, *text, (wxMenu*) submenu, *help);
+	self->Insert(pos, id,*text, submenu,*help);
 }
 	
-EWXWEXPORT(void,wxMenu_InsertItem)(void* _obj,int pos,void* _itm)
+EWXWEXPORT(void,wxMenu_InsertItem)(wxMenu* self,int pos,wxMenuItem* _itm)
 {
-	((wxMenu*)_obj)->Insert((size_t)pos, (wxMenuItem*)_itm);
+	self->Insert((size_t)pos, _itm);
 }
 	
-EWXWEXPORT(void,wxMenu_Prepend)(void* _obj,int id,wxString* text,wxString* help,int isCheckable)
+EWXWEXPORT(void,wxMenu_Prepend)(wxMenu* self,int id,wxString* text,wxString* help,bool isCheckable)
 {
-	((wxMenu*)_obj)->Prepend(id, *text, *help, isCheckable != 0);
+	self->Prepend(id,*text,*help, isCheckable);
 }
 	
-EWXWEXPORT(void,wxMenu_PrependSub)(void* _obj,int id,wxString* text,void* submenu,wxString* help)
+EWXWEXPORT(void,wxMenu_PrependSub)(wxMenu* self,int id,wxString* text,wxMenu* submenu,wxString* help)
 {
-	((wxMenu*)_obj)->Prepend(id, *text, (wxMenu*) submenu, *help);
+	self->Prepend(id,*text, submenu,*help);
 }
 	
-EWXWEXPORT(void,wxMenu_PrependItem)(void* _obj,void* _itm)
+EWXWEXPORT(void,wxMenu_PrependItem)(wxMenu* self,wxMenuItem* _itm)
 {
-	((wxMenu*)_obj)->Prepend((wxMenuItem*)_itm);
+	self->Prepend(_itm);
 }
 	
-EWXWEXPORT(void,wxMenu_RemoveByItem)(void* _obj,void* item)
+EWXWEXPORT(void,wxMenu_RemoveByItem)(wxMenu* self,wxMenuItem* item)
 {
-	((wxMenu*)_obj)->Remove((wxMenuItem*) item);
+	self->Remove(item);
 }
 	
-EWXWEXPORT(void,wxMenu_RemoveById)(void* _obj,int id,void* _itm)
+EWXWEXPORT(void,wxMenu_RemoveById)(wxMenu* self,int id,void* _itm)
 {
-	*((void**)_itm) = (void*)((wxMenu*)_obj)->Remove(id);
+	*((void**)_itm) = (void*)self->Remove(id);
 }
 	
-EWXWEXPORT(void,wxMenu_DeleteById)(void* _obj,int id)
+EWXWEXPORT(void,wxMenu_DeleteById)(wxMenu* self,int id)
 {
-	((wxMenu*)_obj)->Delete(id);
+	self->Delete(id);
 }
 	
-EWXWEXPORT(void,wxMenu_DeleteByItem)(void* _obj,void* _itm)
+EWXWEXPORT(void,wxMenu_DeleteByItem)(wxMenu* self,wxMenuItem* _itm)
 {
-	((wxMenu*)_obj)->Delete((wxMenuItem*)_itm);
+	self->Delete(_itm);
 }
 	
-EWXWEXPORT(void,wxMenu_DestroyById)(void* _obj,int id)
+EWXWEXPORT(void,wxMenu_DestroyById)(wxMenu* self,int id)
 {
-	((wxMenu*)_obj)->Destroy(id);
+	self->Destroy(id);
 }
 	
-EWXWEXPORT(void,wxMenu_DestroyByItem)(void* _obj,void* _itm)
+EWXWEXPORT(void,wxMenu_DestroyByItem)(wxMenu* self,wxMenuItem* _itm)
 {
-	((wxMenu*)_obj)->Destroy((wxMenuItem*)_itm);
+	self->Destroy(_itm);
 }
 	
-EWXWEXPORT(size_t,wxMenu_GetMenuItemCount)(void* _obj)
+EWXWEXPORT(size_t,wxMenu_GetMenuItemCount)(wxMenu* self)
 {
-	return ((wxMenu*)_obj)->GetMenuItemCount();
+	return self->GetMenuItemCount();
 }
 	
-EWXWEXPORT(int,wxMenu_GetMenuItems)(void* _obj,void* _lst)
+EWXWEXPORT(int,wxMenu_GetMenuItems)(wxMenu* self,void* _lst)
 {
 	if (_lst)
 	{
-		for (unsigned int i = 0; i < ((wxMenu*)_obj)->GetMenuItems().GetCount(); i++)
-			((void**)_lst)[i] = ((wxMenu*)_obj)->GetMenuItems().Item(i)->GetData();
+		for (unsigned int i = 0; i < self->GetMenuItems().GetCount(); i++)
+			((void**)_lst)[i] = self->GetMenuItems().Item(i)->GetData();
 	}
-	return ((wxMenu*)_obj)->GetMenuItems().GetCount();
+	return self->GetMenuItems().GetCount();
 }
 	
-EWXWEXPORT(int,wxMenu_FindItemByLabel)(void* _obj,wxString* itemString)
+EWXWEXPORT(int,wxMenu_FindItemByLabel)(wxMenu* self,wxString* itemString)
 {
-	return ((wxMenu*)_obj)->FindItem(*itemString);
+	return self->FindItem(*itemString);
 }
 	
-EWXWEXPORT(void*,wxMenu_FindItem)(void* _obj,int id)
+EWXWEXPORT(wxMenuItem*,wxMenu_FindItem)(wxMenu* self,int id)
 {
-	wxMenu* _foo = new wxMenu;
-	return (void*)((wxMenu*)_obj)->FindItem(id, &_foo);
+	return self->FindItem(id);
 }
 	
-EWXWEXPORT(void,wxMenu_Enable)(void* _obj,int id,int enable)
+EWXWEXPORT(void,wxMenu_Enable)(wxMenu* self,int id,bool enable)
 {
-	((wxMenu*)_obj)->Enable(id, enable != 0);
+	self->Enable(id, enable);
 }
 	
-EWXWEXPORT(int,wxMenu_IsEnabled)(wxMenu* _obj,int id)
+EWXWEXPORT(bool,wxMenu_IsEnabled)(wxMenu* self,int id)
 {
-	return (int)_obj->IsEnabled(id);
+	return self->IsEnabled(id);
 }
 	
-EWXWEXPORT(void,wxMenu_Check)(void* _obj,int id,int check)
+EWXWEXPORT(void,wxMenu_Check)(wxMenu* self,int id,bool check)
 {
-	((wxMenu*)_obj)->Check(id, check != 0);
+	self->Check(id, check);
 }
 	
-EWXWEXPORT(int,wxMenu_IsChecked)(wxMenu* _obj,int id)
+EWXWEXPORT(bool,wxMenu_IsChecked)(wxMenu* self,int id)
 {
-	return (int)_obj->IsChecked(id);
+	return self->IsChecked(id);
 }
 	
-EWXWEXPORT(void,wxMenu_SetLabel)(void* _obj,int id,wxString* label)
+EWXWEXPORT(void,wxMenu_SetLabel)(wxMenu* self,int id,wxString* label)
 {
-	((wxMenu*)_obj)->SetLabel(id, *label);
+	self->SetLabel(id,*label);
 }
 	
-EWXWEXPORT(wxString*,wxMenu_GetLabel)(void* _obj,int id)
+EWXWEXPORT(wxString*,wxMenu_GetLabel)(wxMenu* self,int id)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenu*)_obj)->GetLabel(id);
+	*result = self->GetLabel(id);
 	return result;
 }
 	
-EWXWEXPORT(void,wxMenu_SetHelpString)(void* _obj,int id,wxString* helpString)
+EWXWEXPORT(void,wxMenu_SetHelpString)(wxMenu* self,int id,wxString* helpString)
 {
-	((wxMenu*)_obj)->SetHelpString(id, *helpString);
+	self->SetHelpString(id,*helpString);
 }
 	
-EWXWEXPORT(wxString*,wxMenu_GetHelpString)(void* _obj,int id)
+EWXWEXPORT(wxString*,wxMenu_GetHelpString)(wxMenu* self,int id)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenu*)_obj)->GetHelpString(id);
+	*result = self->GetHelpString(id);
 	return result;
 }
 	
@@ -173,110 +172,110 @@ EWXWEXPORT(void,wxMenu_SetTitle)(void* _obj,wxString* title)
 	((wxMenu*)_obj)->SetTitle(*title);
 }
 	
-EWXWEXPORT(wxString*,wxMenu_GetTitle)(void* _obj)
+EWXWEXPORT(wxString*,wxMenu_GetTitle)(wxMenu* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenu*)_obj)->GetTitle();
+	*result = self->GetTitle();
 	return result;
 }
 	
-EWXWEXPORT(void,wxMenu_SetClientData)(void* _obj,void* clientData)
+EWXWEXPORT(void,wxMenu_SetClientData)(wxMenu* self,void* clientData)
 {
-	((wxMenu*)_obj)->SetClientData(clientData);
+	self->SetClientData(clientData);
 }
 	
-EWXWEXPORT(void*,wxMenu_GetClientData)(void* _obj)
+EWXWEXPORT(void*,wxMenu_GetClientData)(wxMenu* self)
 {
-	return (void*)((wxMenu*)_obj)->GetClientData();
+	return (void*)self->GetClientData();
 }
 	
-EWXWEXPORT(void,wxMenu_SetEventHandler)(void* _obj,void* handler)
+EWXWEXPORT(void,wxMenu_SetEventHandler)(wxMenu* self,wxEvtHandler* handler)
 {
-	((wxMenu*)_obj)->SetEventHandler((wxEvtHandler*) handler);
+	self->SetEventHandler(handler);
 }
 	
-EWXWEXPORT(void,wxMenu_SetInvokingWindow)(void* _obj,wxWindow* win)
+EWXWEXPORT(void,wxMenu_SetInvokingWindow)(wxMenu* self,wxWindow* win)
 {
-	((wxMenu*)_obj)->SetInvokingWindow(win);
+	self->SetInvokingWindow(win);
 }
 	
-EWXWEXPORT(void*,wxMenu_GetInvokingWindow)(void* _obj)
+EWXWEXPORT(void*,wxMenu_GetInvokingWindow)(wxMenu* self)
 {
-	return (void*)((wxMenu*)_obj)->GetInvokingWindow();
+	return (void*)self->GetInvokingWindow();
 }
 	
-EWXWEXPORT(int,wxMenu_GetStyle)(void* _obj)
+EWXWEXPORT(int,wxMenu_GetStyle)(wxMenu* self)
 {
-	return ((wxMenu*)_obj)->GetStyle();
+	return self->GetStyle();
 }
 	
-EWXWEXPORT(void,wxMenu_UpdateUI)(void* _obj,void* source)
+EWXWEXPORT(void,wxMenu_UpdateUI)(wxMenu* self,wxEvtHandler* source)
 {
-	((wxMenu*)_obj)->UpdateUI((wxEvtHandler*) source);
+	self->UpdateUI(source);
 }
 	
-EWXWEXPORT(int,wxMenu_IsAttached)(wxMenu* _obj)
+EWXWEXPORT(bool,wxMenu_IsAttached)(wxMenu* self)
 {
-	return (int)_obj->IsAttached();
+	return self->IsAttached();
 }
 	
-EWXWEXPORT(void,wxMenu_SetParent)(void* _obj,void* parent)
+EWXWEXPORT(void,wxMenu_SetParent)(wxMenu* self,wxMenu* parent)
 {
-	((wxMenu*)_obj)->SetParent((wxMenu*) parent);
+	self->SetParent(parent);
 }
 	
-EWXWEXPORT(void*,wxMenu_GetParent)(void* _obj)
+EWXWEXPORT(void*,wxMenu_GetParent)(wxMenu* self)
 {
-	return (void*)((wxMenu*)_obj)->GetParent();
+	return (void*)self->GetParent();
 }
 	
 
-EWXWEXPORT(void*,wxMenuItem_Create)()
+EWXWEXPORT(wxMenuItem*,wxMenuItem_Create)()
 {
-	return (void*) new wxMenuItem();
+	return new wxMenuItem();
 }
 	
-EWXWEXPORT(void,wxMenuItem_Delete)(void* _obj)
+EWXWEXPORT(void,wxMenuItem_Delete)(wxMenuItem* self)
 {
-	delete (wxMenuItem*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(void*,wxMenuItem_GetMenu)(void* _obj)
+EWXWEXPORT(wxMenu*,wxMenuItem_GetMenu)(wxMenuItem* self)
 {
-	return (void*)((wxMenuItem*)_obj)->GetMenu();
+	return self->GetMenu();
 }
 	
-EWXWEXPORT(void,wxMenuItem_SetId)(void* _obj,int id)
+EWXWEXPORT(void,wxMenuItem_SetId)(wxMenuItem* self,int id)
 {
-	((wxMenuItem*)_obj)->SetId(id);
+	self->SetId(id);
 }
 	
-EWXWEXPORT(int,wxMenuItem_GetId)(void* _obj)
+EWXWEXPORT(int,wxMenuItem_GetId)(wxMenuItem* self)
 {
-	return ((wxMenuItem*)_obj)->GetId();
+	return self->GetId();
 }
 	
-EWXWEXPORT(int,wxMenuItem_IsSeparator)(wxMenuItem* _obj)
+EWXWEXPORT(bool,wxMenuItem_IsSeparator)(wxMenuItem* self)
 {
-	return (int)_obj->IsSeparator();
+	return self->IsSeparator();
 }
 	
-EWXWEXPORT(void,wxMenuItem_SetText)(void* _obj,wxString* str)
+EWXWEXPORT(void,wxMenuItem_SetText)(wxMenuItem* self,wxString* str)
 {
-	((wxMenuItem*)_obj)->SetText(* str);
+	self->SetText(*str);
 }
 	
-EWXWEXPORT(wxString*,wxMenuItem_GetLabel)(void* _obj)
+EWXWEXPORT(wxString*,wxMenuItem_GetLabel)(wxMenuItem* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenuItem*)_obj)->GetLabel();
+	*result = self->GetLabel();
 	return result;
 }
 	
-EWXWEXPORT(wxString*,wxMenuItem_GetText)(void* _obj)
+EWXWEXPORT(wxString*,wxMenuItem_GetText)(wxMenuItem* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenuItem*)_obj)->GetText();
+	*result = self->GetText();
 	return result;
 }
 
@@ -287,60 +286,60 @@ EWXWEXPORT(wxString*,wxMenuItem_GetLabelFromText)(wxString* text)
 	return result;
 }
 
-EWXWEXPORT(void,wxMenuItem_SetCheckable)(void* _obj,int checkable)
+EWXWEXPORT(void,wxMenuItem_SetCheckable)(wxMenuItem* self,bool checkable)
 {
-	((wxMenuItem*)_obj)->SetCheckable(checkable != 0);
+	self->SetCheckable(checkable);
 }
 	
-EWXWEXPORT(int,wxMenuItem_IsCheckable)(wxMenuItem* _obj)
+EWXWEXPORT(bool,wxMenuItem_IsCheckable)(wxMenuItem* self)
 {
-	return (int)_obj->IsCheckable();
+	return self->IsCheckable();
 }
 	
-EWXWEXPORT(int,wxMenuItem_IsSubMenu)(wxMenuItem* _obj)
+EWXWEXPORT(bool,wxMenuItem_IsSubMenu)(wxMenuItem* self)
 {
-	return (int)_obj->IsSubMenu();
+	return self->IsSubMenu();
 }
 	
-EWXWEXPORT(void,wxMenuItem_SetSubMenu)(void* _obj,void* menu)
+EWXWEXPORT(void,wxMenuItem_SetSubMenu)(wxMenuItem* self,wxMenu* menu)
 {
-	((wxMenuItem*)_obj)->SetSubMenu((wxMenu*)menu);
+	self->SetSubMenu(menu);
 }
 	
-EWXWEXPORT(void*,wxMenuItem_GetSubMenu)(void* _obj)
+EWXWEXPORT(wxMenu*,wxMenuItem_GetSubMenu)(wxMenuItem* self)
 {
-	return (void*)((wxMenuItem*)_obj)->GetSubMenu();
+	return self->GetSubMenu();
 }
 	
-EWXWEXPORT(void,wxMenuItem_Enable)(void* _obj,int enable)
+EWXWEXPORT(void,wxMenuItem_Enable)(wxMenuItem* self,bool enable)
 {
-	((wxMenuItem*)_obj)->Enable(enable != 0);
+	self->Enable(enable);
 }
 	
-EWXWEXPORT(int,wxMenuItem_IsEnabled)(wxMenuItem* _obj)
+EWXWEXPORT(bool,wxMenuItem_IsEnabled)(wxMenuItem* self)
 {
-	return (int) _obj->IsEnabled();
+	return self->IsEnabled();
 }
 	
-EWXWEXPORT(void,wxMenuItem_Check)(void* _obj,int check)
+EWXWEXPORT(void,wxMenuItem_Check)(wxMenuItem* self,bool check)
 {
-	((wxMenuItem*)_obj)->Check(check != 0);
+	self->Check(check);
 }
 	
-EWXWEXPORT(int,wxMenuItem_IsChecked)(wxMenuItem* _obj)
+EWXWEXPORT(bool,wxMenuItem_IsChecked)(wxMenuItem* self)
 {
-	return (int)_obj->IsChecked();
+	return self->IsChecked();
 }
 	
-EWXWEXPORT(void,wxMenuItem_SetHelp)(void* _obj,wxString* str)
+EWXWEXPORT(void,wxMenuItem_SetHelp)(wxMenuItem* self,wxString* str)
 {
-	((wxMenuItem*)_obj)->SetHelp(*str);
+	self->SetHelp(*str);
 }
 	
-EWXWEXPORT(wxString*,wxMenuItem_GetHelp)(void* _obj)
+EWXWEXPORT(wxString*,wxMenuItem_GetHelp)(wxMenuItem* self)
 {
 	wxString *result = new wxString();
-	*result = ((wxMenuItem*)_obj)->GetHelp();
+	*result = self->GetHelp();
 	return result;
 }
 

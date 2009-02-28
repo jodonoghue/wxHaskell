@@ -57,14 +57,14 @@ EWXWEXPORT(wxString*,wxRadioBox_GetItemLabel)(void* _obj,int item)
   return result;
 }
 
-EWXWEXPORT(void,wxRadioBox_EnableItem)(void* _obj,int item,int enable)
+EWXWEXPORT(void,wxRadioBox_EnableItem)(void* self,int item,bool enable)
 {
-	((wxRadioBox*)_obj)->Enable(item, enable != 0);
+	((wxRadioBox*)self)->Enable(item, enable);
 }
 
-EWXWEXPORT(void,wxRadioBox_ShowItem)(void* _obj,int item,int show)
+EWXWEXPORT(void,wxRadioBox_ShowItem)(void* self,int item,bool show)
 {
-	((wxRadioBox*)_obj)->Show(item, show != 0);
+	((wxRadioBox*)self)->Show(item, show);
 }
 
 EWXWEXPORT(wxString*,wxRadioBox_GetStringSelection)(void* _obj)

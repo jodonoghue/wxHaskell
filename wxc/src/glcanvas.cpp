@@ -55,14 +55,14 @@ EWXWEXPORT(wxGLCanvas*,wxGLCanvas_CreateShared)(wxWindow* parent, wxGLCanvas* sh
 }
 
 
-EWXWEXPORT(void,wxGLCanvas_SetCurrent)(wxGLCanvas* self)  
+EWXWEXPORT(void,wxGLCanvas_SetCurrent)(wxGLCanvas* self)
 {
 #ifdef wxUSE_GLCANVAS 
   self->SetCurrent();
 #endif
 }
 
-EWXWEXPORT(void,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)  
+EWXWEXPORT(void,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)
 {
 #ifdef wxUSE_GLCANVAS 
   wxString name = wxTheColourDatabase->FindName( *colour );
@@ -73,7 +73,7 @@ EWXWEXPORT(void,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)
 #endif
 }
 
-EWXWEXPORT(void,wxGLCanvas_SwapBuffers)(wxGLCanvas* self)  
+EWXWEXPORT(void,wxGLCanvas_SwapBuffers)(wxGLCanvas* self)
 {
 #ifdef wxUSE_GLCANVAS 
   self->SwapBuffers();

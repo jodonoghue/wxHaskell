@@ -3,45 +3,45 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxPrintDialog_Create) (void* parent, void* data)
+EWXWEXPORT(void*,wxPrintDialog_Create)(wxWindow* parent,wxPrintDialogData* data)
 {
-    return (void*) new wxPrintDialog((wxWindow*)parent, (wxPrintDialogData*)data);
+	return (void*)new wxPrintDialog(parent, data);
 }
 
-EWXWEXPORT(void, wxPrintDialog_GetPrintData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPrintDialog_GetPrintData)(wxPrintDialog* self,wxPrintData* _ref)
 {
-	*((wxPrintData*)_ref) = ((wxPrintDialog*)_obj)->GetPrintData();
+	*_ref = self->GetPrintData();
 }
 
 	
-EWXWEXPORT(void*, wxPrintDialog_GetPrintDC)(void* _obj)
+EWXWEXPORT(void*,wxPrintDialog_GetPrintDC)(wxPrintDialog* self)
 {
-	return (void*)((wxPrintDialog*)_obj)->GetPrintDC();
+	return (void*)self->GetPrintDC();
 }
 	
-EWXWEXPORT(void*, wxPageSetupDialog_Create) (void* parent, void* data)
+EWXWEXPORT(void*,wxPageSetupDialog_Create)(wxWindow* parent,wxPageSetupData* data)
 {
-    return (void*) new wxPageSetupDialog((wxWindow*)parent, (wxPageSetupData*)data);
+	return (void*)new wxPageSetupDialog(parent, data);
 }
 
-EWXWEXPORT(void, wxPageSetupDialog_GetPageSetupData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPageSetupDialog_GetPageSetupData)(wxPageSetupDialog* self,wxPageSetupData* _ref)
 {
-	*((wxPageSetupData*)_ref) = ((wxPageSetupDialog*)_obj)->GetPageSetupData();
+	*_ref = self->GetPageSetupData();
 }
 	
-EWXWEXPORT(void*, wxPageSetupDialogData_Create)()
+EWXWEXPORT(void*,wxPageSetupDialogData_Create)()
 {
-    return (void*) new wxPageSetupDialogData();
+	return (void*)new wxPageSetupDialogData();
 }
 
-EWXWEXPORT(void*, wxPageSetupDialogData_CreateFromData)(void* printData)
+EWXWEXPORT(void*,wxPageSetupDialogData_CreateFromData)(wxPrintData* printData)
 {
-    return (void*) new wxPageSetupDialogData(*((wxPrintData*)printData));
+	return (void*)new wxPageSetupDialogData(*printData);
 }
 
-EWXWEXPORT(void, wxPageSetupDialogData_Delete)(void* _obj)
+EWXWEXPORT(void,wxPageSetupDialogData_Delete)(wxPageSetupDialogData* self)
 {
-    delete (wxPageSetupDialogData*)_obj;
+	delete self;
 }
 
 EWXWEXPORT(void, wxPageSetupDialogData_GetPaperSize)(void* _obj, void* w, void* h)
@@ -51,9 +51,9 @@ EWXWEXPORT(void, wxPageSetupDialogData_GetPaperSize)(void* _obj, void* w, void* 
 	*(int*)h = tmp.y;
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetPaperId)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetPaperId)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetPaperId();
+	return (int)self->GetPaperId();
 }
 	
 EWXWEXPORT(void, wxPageSetupDialogData_GetMinMarginTopLeft)(void* _obj, void* x, void* y)
@@ -84,139 +84,139 @@ EWXWEXPORT(void, wxPageSetupDialogData_GetMarginBottomRight)(void* _obj, void* x
 	*(int*)y = tmp.y;
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetDefaultMinMargins)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetDefaultMinMargins)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetDefaultMinMargins();
+	return (int)self->GetDefaultMinMargins();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetEnableMargins)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetEnableMargins)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetEnableMargins();
+	return (int)self->GetEnableMargins();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetEnableOrientation)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetEnableOrientation)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetEnableOrientation();
+	return (int)self->GetEnableOrientation();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetEnablePaper)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetEnablePaper)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetEnablePaper();
+	return (int)self->GetEnablePaper();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetEnablePrinter)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetEnablePrinter)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetEnablePrinter();
+	return (int)self->GetEnablePrinter();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetDefaultInfo)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetDefaultInfo)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetDefaultInfo();
+	return (int)self->GetDefaultInfo();
 }
 	
-EWXWEXPORT(int, wxPageSetupDialogData_GetEnableHelp)(void* _obj)
+EWXWEXPORT(int,wxPageSetupDialogData_GetEnableHelp)(wxPageSetupDialogData* self)
 {
-	return (int)((wxPageSetupDialogData*)_obj)->GetEnableHelp();
+	return (int)self->GetEnableHelp();
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetPaperSize)(void* _obj, int w, int h)
+EWXWEXPORT(void,wxPageSetupDialogData_SetPaperSize)(wxPageSetupDialogData* self,int w,int h)
 {
-	((wxPageSetupDialogData*)_obj)->SetPaperSize(wxSize(w, h));
+	self->SetPaperSize(wxSize(w, h));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetPaperId)(void* _obj, void* id)
+EWXWEXPORT(void,wxPageSetupDialogData_SetPaperId)(wxPageSetupDialogData* self,void* id)
 {
-	((wxPageSetupDialogData*)_obj)->SetPaperId(*((wxPaperSize*)id));
+	self->SetPaperId(*((wxPaperSize*)id));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetPaperSizeId)(void* _obj, int id)
+EWXWEXPORT(void,wxPageSetupDialogData_SetPaperSizeId)(wxPageSetupDialogData* self,int id)
 {
-	((wxPageSetupDialogData*)_obj)->SetPaperSize((wxPaperSize)id);
+	self->SetPaperSize((wxPaperSize)id);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetMinMarginTopLeft)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxPageSetupDialogData_SetMinMarginTopLeft)(wxPageSetupDialogData* self,int x,int y)
 {
-	((wxPageSetupDialogData*)_obj)->SetMinMarginTopLeft(wxPoint(x, y));
+	self->SetMinMarginTopLeft(wxPoint(x, y));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetMinMarginBottomRight)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxPageSetupDialogData_SetMinMarginBottomRight)(wxPageSetupDialogData* self,int x,int y)
 {
-	((wxPageSetupDialogData*)_obj)->SetMinMarginBottomRight(wxPoint(x, y));
+	self->SetMinMarginBottomRight(wxPoint(x, y));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetMarginTopLeft)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxPageSetupDialogData_SetMarginTopLeft)(wxPageSetupDialogData* self,int x,int y)
 {
-	((wxPageSetupDialogData*)_obj)->SetMarginTopLeft(wxPoint(x, y));
+	self->SetMarginTopLeft(wxPoint(x, y));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetMarginBottomRight)(void* _obj, int x, int y)
+EWXWEXPORT(void,wxPageSetupDialogData_SetMarginBottomRight)(wxPageSetupDialogData* self,int x,int y)
 {
-	((wxPageSetupDialogData*)_obj)->SetMarginBottomRight(wxPoint(x, y));
+	self->SetMarginBottomRight(wxPoint(x, y));
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetDefaultMinMargins)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_SetDefaultMinMargins)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->SetDefaultMinMargins(flag != 0);
+	self->SetDefaultMinMargins(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetDefaultInfo)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_SetDefaultInfo)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->SetDefaultInfo(flag != 0);
+	self->SetDefaultInfo(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_EnableMargins)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_EnableMargins)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->EnableMargins(flag != 0);
+	self->EnableMargins(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_EnableOrientation)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_EnableOrientation)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->EnableOrientation(flag != 0);
+	self->EnableOrientation(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_EnablePaper)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_EnablePaper)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->EnablePaper(flag != 0);
+	self->EnablePaper(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_EnablePrinter)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_EnablePrinter)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->EnablePrinter(flag != 0);
+	self->EnablePrinter(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_EnableHelp)(void* _obj, int flag)
+EWXWEXPORT(void,wxPageSetupDialogData_EnableHelp)(wxPageSetupDialogData* self,bool flag)
 {
-	((wxPageSetupDialogData*)_obj)->EnableHelp(flag != 0);
+	self->EnableHelp(flag);
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_CalculateIdFromPaperSize)(void* _obj)
+EWXWEXPORT(void,wxPageSetupDialogData_CalculateIdFromPaperSize)(wxPageSetupDialogData* self)
 {
-	((wxPageSetupDialogData*)_obj)->CalculateIdFromPaperSize();
+	self->CalculateIdFromPaperSize();
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_CalculatePaperSizeFromId)(void* _obj)
+EWXWEXPORT(void,wxPageSetupDialogData_CalculatePaperSizeFromId)(wxPageSetupDialogData* self)
 {
-	((wxPageSetupDialogData*)_obj)->CalculatePaperSizeFromId();
+	self->CalculatePaperSizeFromId();
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_Assign)(void* _obj, void* data)
+EWXWEXPORT(void,wxPageSetupDialogData_Assign)(wxPageSetupDialogData* self,wxPageSetupDialogData* data)
 {
-	*((wxPageSetupDialogData*)_obj) = *((wxPageSetupDialogData*)data);
+	*self = *data;
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_AssignData)(void* _obj, void* data)
+EWXWEXPORT(void,wxPageSetupDialogData_AssignData)(wxPageSetupDialogData* self,wxPrintData* data)
 {
-	*((wxPageSetupDialogData*)_obj) = *((wxPrintData*)data);
+	*self = *data;
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_GetPrintData)(void* _obj, void* _ref)
+EWXWEXPORT(void,wxPageSetupDialogData_GetPrintData)(wxPageSetupDialogData* self,wxPrintData* _ref)
 {
-	*((wxPrintData*)_ref) = ((wxPageSetupDialogData*)_obj)->GetPrintData();
+	*_ref = self->GetPrintData();
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_SetPrintData)(void* _obj, void* printData)
+EWXWEXPORT(void,wxPageSetupDialogData_SetPrintData)(wxPageSetupDialogData* self,wxPrintData* printData)
 {
-	((wxPageSetupDialogData*)_obj)->SetPrintData(*((wxPrintData*)printData));
+	self->SetPrintData(*printData);
 }
 	
 }

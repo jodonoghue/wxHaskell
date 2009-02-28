@@ -3,48 +3,48 @@
 extern "C"
 {
 
-EWXWEXPORT(void*, wxPalette_CreateDefault) ()
+EWXWEXPORT(void*,wxPalette_CreateDefault)()
 {
-	return (void*) new wxPalette();
+	return (void*)new wxPalette();
 }
 
-EWXWEXPORT(void*, wxPalette_CreateRGB) (int n, void* red, void* green, void* blue)
+EWXWEXPORT(void*,wxPalette_CreateRGB)(int n,void* red,void* green,void* blue)
 {
-	return (void*) new wxPalette(n, (unsigned char*)red, (unsigned char*)green, (unsigned char*)blue);
+	return (void*)new wxPalette(n, (unsigned char*)red, (unsigned char*)green, (unsigned char*)blue);
 }
 
-EWXWEXPORT(void, wxPalette_Delete) (void* _obj)
+EWXWEXPORT(void,wxPalette_Delete)(wxPalette* self)
 {
-	delete (wxPalette*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(int, wxPalette_GetPixel)(void* _obj, char red, char green, char blue)
+EWXWEXPORT(int,wxPalette_GetPixel)(wxPalette* self,wxUint8 red,wxUint8 green,wxUint8 blue)
 {
-	return ((wxPalette*)_obj)->GetPixel((unsigned char)red, (unsigned char)green, (unsigned char)blue);
+	return self->GetPixel(red,green,blue);
 }
 	
-EWXWEXPORT(int, wxPalette_GetRGB)(void* _obj, int pixel, void* red, void* green, void* blue)
+EWXWEXPORT(bool,wxPalette_GetRGB)(wxPalette* self,int pixel,void* red,void* green,void* blue)
 {
-	return (int)((wxPalette*)_obj)->GetRGB(pixel, (unsigned char*)red, (unsigned char*)green, (unsigned char*)blue);
+	return self->GetRGB(pixel, (unsigned char*)red, (unsigned char*)green, (unsigned char*)blue);
 }
 	
-EWXWEXPORT(int, wxPalette_Ok)(void* _obj)
+EWXWEXPORT(bool,wxPalette_IsOk)(wxPalette* self)
 {
-	return (int)((wxPalette*)_obj)->Ok();
+	return self->IsOk();
 }
 	
-EWXWEXPORT(void, wxPalette_Assign)(void* _obj, void* palette)
+EWXWEXPORT(void,wxPalette_Assign)(void* self,void* palette)
 {
-	*((wxPalette*)_obj) = *((wxPalette*)palette);
+	*((wxPalette*)self) = *((wxPalette*)palette);
 }
 
-EWXWEXPORT(int, wxPalette_IsEqual)(void* _obj, void* palette)
+EWXWEXPORT(bool,wxPalette_IsEqual)(wxPalette* self,wxPalette* palette)
 {
 #if (wxVERSION_NUMBER <= 2800)
-	return (int)(*((wxPalette*)_obj) == *((wxPalette*)palette));
+	return *self == *palette;
 #else
-	wxPalette* pal1 = (wxPalette *)_obj;
-	wxPalette* pal2 = (wxPalette *)palette;
+	wxPalette* pal1 = self;
+	wxPalette* pal2 = palette;
 	if (pal1->GetColoursCount() == pal2->GetColoursCount()){
 		bool equal = true;
 		unsigned char red1 = 0;
@@ -58,9 +58,9 @@ EWXWEXPORT(int, wxPalette_IsEqual)(void* _obj, void* palette)
 			pal2->GetRGB(x, &red2, &green2, &blue2);
 			equal = equal && (red1==red2 && green1==green2 && blue1==blue2); 
 		}
-		return (int)equal;
+		return equal;
 	} else {
-		return 0;
+		return false;
 	}
 #endif
 }
