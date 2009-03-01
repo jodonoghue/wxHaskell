@@ -1,5 +1,5 @@
 wxHaskell is a Haskell binding to the portable wxWidgets GUI library.
-See <http://wxhaskell.sourceforge.net> for the latest information.
+See <http://haskell.org/haskellwiki/WxHaskell> for the latest information.
 
 The "Graphics.UI.WX" library is a /middle-level/ Haskell library for writing graphical
 user interfaces. It is build on top the "Graphics.UI.WXCore" library, the core interface

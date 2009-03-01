@@ -411,7 +411,7 @@ macdist: docdist bindist
 	@$(call cp-echo,config/macosx-install.info,$(INFOFILE))
 	# license and readme
 	@$(call cp-echo,license.txt,$(RESOURCEDIR)/License.txt)
-	@echo "See <http://wxhaskell.sourceforge.net> for more information." > $(RESOURCEDIR)/Readme.txt
+	@echo "See <http://haskell.org/haskellwiki/WxHaskell> for more information." > $(RESOURCEDIR)/Readme.txt
 	# create package
 	chmod u+x bin/macosx-package
 	bin/macosx-package $(BINDIST-OUTDIR)/$(WXHASKELLVER) $(INFOFILE) -d $(PACKAGEDIR) -r $(RESOURCEDIR)
