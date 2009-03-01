@@ -346,6 +346,7 @@ dist-clean: srcdist-clean bindist-clean
 srcdist: srcdist-clean dist-dirs wxc-dist wxd-dist wxcore-dist wx-dist
 	@$(call cp-srcdist, $(WXHASKELL-SOURCES))
 	@$(call cp-srcdist, $(SAMPLE-SOURCES))
+	@echo "See <http://haskell.org/haskellwiki/WxHaskell/Building> for installation instructions." > $(SRCDIST-SRCDIR)/Readme.txt
 	@echo zipping: $(DIST-SRC)
 	@$(CD) $(SRCDIST-OUTDIR) && $(call zip-add-rec,$(DIST-SRC),$(WXHASKELLVER))
 	@$(CD) $(SRCDIST-OUTDIR) && $(call tgz-add-rec,$(basename $(DIST-SRC)).tar.gz,$(WXHASKELLVER))
