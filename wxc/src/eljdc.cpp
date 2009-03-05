@@ -626,37 +626,37 @@ EWXWEXPORT(void*,wxMetafile_Create)(wxString* _file)
 #endif
 }
 
-EWXWEXPORT(bool,wxMetafile_SetClipboard)(wxMetafile* self,int width,int height)
+EWXWEXPORT(bool,wxMetafile_SetClipboard)(void* self,int width,int height)
 {
 #if defined(__WXGTK__)
 	return false;
 #else
-	return self->SetClipboard(width, height);
+	return ((wxMetafile*)self)->SetClipboard(width, height);
 #endif
 }
 	
-EWXWEXPORT(bool,wxMetafile_Play)(wxMetafile* self,wxDC* _dc)
+EWXWEXPORT(bool,wxMetafile_Play)(void* self,wxDC* _dc)
 {
 #if defined(__WXGTK__)
 	return false;
 #else
-	return self->Play(_dc);
+	return ((wxMetafile*)self)->Play(_dc);
 #endif
 }
 	
-EWXWEXPORT(bool,wxMetafile_IsOk)(wxMetafile* self)
+EWXWEXPORT(bool,wxMetafile_IsOk)(void* self)
 {
 #if defined(__WXGTK__)
 	return false;
 #else
-	return self->IsOk();
+	return ((wxMetafile*)self)->IsOk();
 #endif
 }
 	
-EWXWEXPORT(void,wxMetafile_Delete)(wxMetafile* self)
+EWXWEXPORT(void,wxMetafile_Delete)(void* self)
 {
 #if !defined(__WXGTK__)
-	delete self;
+	delete (wxMetafile*)self;
 #endif
 }
 
