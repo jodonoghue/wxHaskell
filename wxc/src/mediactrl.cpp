@@ -70,12 +70,12 @@ EWXWEXPORT(void,wxMediaCtrl_Delete)(wxMediaCtrl* self)
 #endif
 }
 
-EWXWEXPORT(void,wxMediaCtrl_GetBestSize)(wxMediaCtrl* self, int* w, int* h)
+EWXWEXPORT(wxSize*,wxMediaCtrl_GetBestSize)(wxMediaCtrl* self)
 {
 #ifdef wxUSE_MEDIACTRL
-  wxSize sz = self->GetBestSize();
-  *w = sz.x;
-  *h = sz.y;
+  wxSize* sz = new wxSize();
+  *sz = self->GetBestSize();
+  return sz;
 #endif
 }
 

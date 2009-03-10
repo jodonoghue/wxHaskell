@@ -278,28 +278,26 @@ EWXWEXPORT(bool,wxListCtrl_SetItemData)(wxListCtrl* self,int item,int data)
 	return self->SetItemData((long)item, (long)data);
 }
 	
-EWXWEXPORT(int, wxListCtrl_GetItemRect)(void* _obj, int item, int code, void* x, void* y, void* w, void* h)
+EWXWEXPORT(wxRect*,wxListCtrl_GetItemRect)(wxListCtrl* self,int item,int code)
 {
-	wxRect rct;
-	int result = (int)((wxListCtrl*)_obj)->GetItemRect((long)item, rct, code);
+	wxRect* rct = new wxRect();
+	bool result = self->GetItemRect((long)item, *rct, code);
 	if (result)
 	{
-		*((int*)x) = rct.x;
-		*((int*)y) = rct.y;
-		*((int*)w) = rct.width;
-		*((int*)h) = rct.height;
-	} 
-	return result;
+		return rct;
+	}
+	return NULL;
 }
 	
-EWXWEXPORT(int, wxListCtrl_GetItemPosition)(void* _obj, int item, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxListCtrl_GetItemPosition)(wxListCtrl* self,int item)
 {
-	wxPoint pos;
-	int result = (int)((wxListCtrl*)_obj)->GetItemPosition((long)item, pos);
-	*((int*)x) = pos.x;
-	*((int*)y) = pos.y;
-
-	return result;
+	wxPoint* pos = new wxPoint();
+	bool result = self->GetItemPosition((long)item, *pos);
+	if (result)
+	{
+		return pos;
+	}
+	return NULL;
 }
 	
 EWXWEXPORT(int,wxListCtrl_SetItemPosition)(wxListCtrl* self,int item,int x,int y)
@@ -317,17 +315,11 @@ EWXWEXPORT(int,wxListCtrl_GetColumnCount)(wxListCtrl* self)
 	return self->GetColumnCount();
 }
 	
-EWXWEXPORT(void,wxListCtrl_GetItemSpacing)(void* _obj,bool isSmall,int* h,int* w)
+EWXWEXPORT(wxSize*,wxListCtrl_GetItemSpacing)(wxListCtrl* self,bool isSmall)
 {
-#if (wxVERSION_NUMBER <= 2600)
-	int x = ((wxListCtrl*)_obj)->GetItemSpacing(isSmall);
-        *h = x;
-        *w = x;
-#else
-	wxSize res = ((wxListCtrl*)_obj)->GetItemSpacing();
-	*h = res.GetHeight();
-	*w = res.GetWidth();
-#endif
+	wxSize* sz = new wxSize();
+	*sz = self->GetItemSpacing();
+	return sz;
 }
 	
 EWXWEXPORT(int,wxListCtrl_GetSelectedItemCount)(wxListCtrl* self)

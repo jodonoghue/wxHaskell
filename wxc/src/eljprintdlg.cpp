@@ -44,11 +44,11 @@ EWXWEXPORT(void,wxPageSetupDialogData_Delete)(wxPageSetupDialogData* self)
 	delete self;
 }
 
-EWXWEXPORT(void, wxPageSetupDialogData_GetPaperSize)(void* _obj, void* w, void* h)
+EWXWEXPORT(wxSize*,wxPageSetupDialogData_GetPaperSize)(wxPageSetupDialogData* self)
 {
-	wxSize tmp = ((wxPageSetupDialogData*)_obj)->GetPaperSize();
-	*(int*)w = tmp.x;
-	*(int*)h = tmp.y;
+	wxSize* s = new wxSize();
+	*s = self->GetPaperSize();
+	return s;
 }
 	
 EWXWEXPORT(int,wxPageSetupDialogData_GetPaperId)(wxPageSetupDialogData* self)
@@ -56,32 +56,32 @@ EWXWEXPORT(int,wxPageSetupDialogData_GetPaperId)(wxPageSetupDialogData* self)
 	return (int)self->GetPaperId();
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_GetMinMarginTopLeft)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxPageSetupDialogData_GetMinMarginTopLeft)(wxPageSetupDialogData* self)
 {
-	wxPoint tmp = ((wxPageSetupDialogData*)_obj)->GetMinMarginTopLeft();
-	*(int*)x = tmp.x;
-	*(int*)y = tmp.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetMinMarginTopLeft();
+	return pt;
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_GetMinMarginBottomRight)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxPageSetupDialogData_GetMinMarginBottomRight)(wxPageSetupDialogData* self)
 {
-	wxPoint tmp = ((wxPageSetupDialogData*)_obj)->GetMinMarginBottomRight();
-	*(int*)x = tmp.x;
-	*(int*)y = tmp.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetMinMarginBottomRight();
+	return pt;
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_GetMarginTopLeft)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxPageSetupDialogData_GetMarginTopLeft)(wxPageSetupDialogData* self)
 {
-	wxPoint tmp = ((wxPageSetupDialogData*)_obj)->GetMarginTopLeft();
-	*(int*)x = tmp.x;
-	*(int*)y = tmp.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetMarginTopLeft();
+	return pt;
 }
 	
-EWXWEXPORT(void, wxPageSetupDialogData_GetMarginBottomRight)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxPageSetupDialogData_GetMarginBottomRight)(wxPageSetupDialogData* self)
 {
-	wxPoint tmp = ((wxPageSetupDialogData*)_obj)->GetMarginBottomRight();
-	*(int*)x = tmp.x;
-	*(int*)y = tmp.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetMarginBottomRight();
+	return pt;
 }
 	
 EWXWEXPORT(int,wxPageSetupDialogData_GetDefaultMinMargins)(wxPageSetupDialogData* self)

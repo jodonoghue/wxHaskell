@@ -48,22 +48,25 @@ EWXWEXPORT(void,wxToolBar_EnableTool)(wxToolBar* self,int id,bool enb)
 	self->EnableTool (id, enb);
 }
 
-EWXWEXPORT(void, wxToolBar_GetToolSize) (void* _obj, void* x, void* y)
+EWXWEXPORT(wxSize*,wxToolBar_GetToolSize)(wxToolBar* self)
 {
-	*((int*)x) = ((wxToolBar*)_obj)->GetToolSize().x;
-	*((int*)y) = ((wxToolBar*)_obj)->GetToolSize().y;
+	wxSize* sz = new wxSize();
+	*sz = self->GetToolSize();
+	return sz;
 }
 
-EWXWEXPORT(void, wxToolBar_GetToolBitmapSize) (void* _obj, void* x, void* y)
+EWXWEXPORT(wxSize*,wxToolBar_GetToolBitmapSize)(wxToolBar* self)
 {
-	*((int*)x) = ((wxToolBar*)_obj)->GetToolBitmapSize().x;
-	*((int*)y) = ((wxToolBar*)_obj)->GetToolBitmapSize().y;
+	wxSize* sz = new wxSize();
+	*sz = self->GetToolBitmapSize();
+	return sz;
 }
 
-EWXWEXPORT(void, wxToolBar_GetMargins) (void* _obj, void* x, void* y)
+EWXWEXPORT(wxSize*,wxToolBar_GetMargins)(wxToolBar* self)
 {
-	*((int*)x) = ((wxToolBar*)_obj)->GetMargins().x;
-	*((int*)y) = ((wxToolBar*)_obj)->GetMargins().y;
+	wxSize* sz = new wxSize();
+	*sz = self->GetMargins();
+	return sz;
 }
 
 EWXWEXPORT(void*,wxToolBar_GetToolClientData)(wxToolBar* self,int id)

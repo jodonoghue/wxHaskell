@@ -16,11 +16,11 @@ EWXWEXPORT(void,wxJoystick_Delete)(wxJoystick* self)
 	delete self;
 }
 
-EWXWEXPORT(void,wxJoystick_GetPosition)(void* _obj, void* _x, void* _y)
+EWXWEXPORT(wxPoint*,wxJoystick_GetPosition)(wxJoystick* self)
 {
-	wxPoint pt = ((wxJoystick*)_obj)->GetPosition();
-	*((int*)_x) = pt.x;
-	*((int*)_y) = pt.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 	
 EWXWEXPORT(int,wxJoystick_GetZPosition)(wxJoystick* self)

@@ -47,20 +47,20 @@ EWXWEXPORT(void*,wxTreeItemId_Create)()
 	return new wxTreeItemId();
 }
 
-EWXWEXPORT(void,wxTreeItemId_Delete)(void* _obj)
+EWXWEXPORT(void,wxTreeItemId_Delete)(wxTreeItemId* self)
 {
-	delete (wxTreeItemId*)_obj;
+	delete self;
 }
 
-EWXWEXPORT(bool,wxTreeItemId_IsOk)(wxTreeItemId* _obj)
+EWXWEXPORT(bool,wxTreeItemId_IsOk)(wxTreeItemId* self)
 {
-	return _obj->IsOk();
+	return self->IsOk();
 }
 
-EWXWEXPORT(wxTreeItemId*,wxTreeItemId_Clone)(wxTreeItemId* _obj)
+EWXWEXPORT(wxTreeItemId*,wxTreeItemId_Clone)(wxTreeItemId* self)
 {
 	wxTreeItemId* clone = new wxTreeItemId();
-	*clone = *_obj;
+	*clone = *self;
 	return clone;
 }
 
@@ -77,248 +77,248 @@ EWXWEXPORT(wxTreeItemId*,wxTreeItemId_Clone)(wxTreeItemId* _obj)
 EWXWEXPORT(wxTreeItemId*,wxTreeItemId_CreateFromValue)(int value)
 {
 #if wxVERSION_NUMBER < 2800
-    return new wxTreeItemId( value );
+	return new wxTreeItemId( value );
 #else
-    // TODO: This function should be removed. No longer any equivalent in wxWidgets
-    wxTreeItemId *item = new wxTreeItemId();
-    item->m_pItem = reinterpret_cast<wxTreeItemIdValue>(value);
-    return item;
+	// TODO: This function should be removed. No longer any equivalent in wxWidgets
+	wxTreeItemId *item = new wxTreeItemId();
+	item->m_pItem = reinterpret_cast<wxTreeItemIdValue>(value);
+	return item;
 #endif
 }
 
-EWXWEXPORT(int,wxTreeItemId_GetValue)(wxTreeItemId* _obj)
+EWXWEXPORT(int,wxTreeItemId_GetValue)(wxTreeItemId* self)
 {
-    return (long)(_obj->m_pItem);
+	return (long)(self->m_pItem);
 }
 
 
-EWXWEXPORT(wxKeyEvent*,wxTreeEvent_GetKeyEvent)(wxTreeEvent* _obj)
+EWXWEXPORT(wxKeyEvent*,wxTreeEvent_GetKeyEvent)(wxTreeEvent* self)
 {
-	return (wxKeyEvent*)&(_obj->GetKeyEvent());
+	return (wxKeyEvent*)&(self->GetKeyEvent());
 }
 
-EWXWEXPORT(bool,wxTreeEvent_IsEditCancelled)(wxTreeEvent* _obj)
+EWXWEXPORT(bool,wxTreeEvent_IsEditCancelled)(wxTreeEvent* self)
 {
-	return _obj->IsEditCancelled();
+	return self->IsEditCancelled();
 }
 
-EWXWEXPORT(void,wxTreeEvent_Allow)(wxTreeEvent* _obj)
+EWXWEXPORT(void,wxTreeEvent_Allow)(wxTreeEvent* self)
 {
-	_obj->Allow();
+	self->Allow();
 }
 
 
-EWXWEXPORT(void*,wxTreeCtrl_Create)(void* _obj,void* _cmp,wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _stl)
+EWXWEXPORT(wxTreeCtrl*,wxTreeCtrl_Create)(void* _obj,void* _cmp,wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _stl)
 {
-	return (void*) new wxTreeCtrl (_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
+	return new wxTreeCtrl (_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
 
-EWXWEXPORT(void*,wxTreeCtrl_Create2)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _stl)
+EWXWEXPORT(wxTreeCtrl*,wxTreeCtrl_Create2)(wxWindow* _prt,int _id,int _lft,int _top,int _wdt,int _hgt,int _stl)
 {
-	return (void*) new wxTreeCtrl (_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
+	return new wxTreeCtrl (_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, wxDefaultValidator);
 }
 
-EWXWEXPORT(int,wxTreeCtrl_GetCount)(void* _obj)
+EWXWEXPORT(int,wxTreeCtrl_GetCount)(wxTreeCtrl* self)
 {
-	int result =(int)((wxTreeCtrl*)_obj)->GetCount();
+	int result =(int)self->GetCount();
 #ifdef __WXGTK__
-	wxTreeItemId t = ((wxTreeCtrl*)_obj)->GetRootItem();
+	wxTreeItemId t = self->GetRootItem();
 	if (t.IsOk()) result++;
 #endif
 	return result;
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetIndent)(void* _obj)
+EWXWEXPORT(int,wxTreeCtrl_GetIndent)(wxTreeCtrl* self)
 {
-	return ((wxTreeCtrl*)_obj)->GetIndent();
+	return self->GetIndent();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetIndent)(void* _obj,int indent)
+EWXWEXPORT(void,wxTreeCtrl_SetIndent)(wxTreeCtrl* self,int indent)
 {
-	((wxTreeCtrl*)_obj)->SetIndent(indent);
+	self->SetIndent(indent);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetSpacing)(void* _obj)
+EWXWEXPORT(int,wxTreeCtrl_GetSpacing)(wxTreeCtrl* self)
 {
-	return (int)((wxTreeCtrl*)_obj)->GetSpacing();
+	return (int)self->GetSpacing();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetSpacing)(void* _obj,int spacing)
+EWXWEXPORT(void,wxTreeCtrl_SetSpacing)(wxTreeCtrl* self,int spacing)
 {
-	((wxTreeCtrl*)_obj)->SetSpacing(spacing);
+	self->SetSpacing(spacing);
 }
 	
-EWXWEXPORT(void*,wxTreeCtrl_GetImageList)(void* _obj)
+EWXWEXPORT(wxImageList*,wxTreeCtrl_GetImageList)(wxTreeCtrl* self)
 {
-	return (void*)((wxTreeCtrl*)_obj)->GetImageList();
+	return self->GetImageList();
 }
 	
-EWXWEXPORT(void*,wxTreeCtrl_GetStateImageList)(void* _obj)
+EWXWEXPORT(wxImageList*,wxTreeCtrl_GetStateImageList)(wxTreeCtrl* self)
 {
-	return (void*)((wxTreeCtrl*)_obj)->GetStateImageList();
+	return self->GetStateImageList();
 }
 
-EWXWEXPORT(void,wxTreeCtrl_AssignImageList)(wxTreeCtrl* _obj,wxImageList* imageList)
+EWXWEXPORT(void,wxTreeCtrl_AssignImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	_obj->AssignImageList(imageList);
+	self->AssignImageList(imageList);
 }
 
-EWXWEXPORT(void,wxTreeCtrl_AssignStateImageList)(wxTreeCtrl* _obj,wxImageList* imageList)
+EWXWEXPORT(void,wxTreeCtrl_AssignStateImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	_obj->AssignStateImageList(imageList);
+	self->AssignStateImageList(imageList);
 }
 
 /*
-EWXWEXPORT(wxImageList*,wxTreeCtrl_GetButtonsImageList)(wxTreeCtrl* _obj)
+EWXWEXPORT(wxImageList*,wxTreeCtrl_GetButtonsImageList)(wxTreeCtrl* self)
 {
-	return _obj->GetButtonsImageList();
+	return self->GetButtonsImageList();
 }
 
-EWXWEXPORT(void,wxTreeCtrl_SetButtonsImageList)(wxTreeCtrl* _obj,wxImageList* imageList)
+EWXWEXPORT(void,wxTreeCtrl_SetButtonsImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	_obj->SetButtonsImageList(imageList);
+	self->SetButtonsImageList(imageList);
 }
 
-EWXWEXPORT(void,wxTreeCtrl_AssignButtonsImageList)(wxTreeCtrl* _obj,wxImageList* imageList)
+EWXWEXPORT(void,wxTreeCtrl_AssignButtonsImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	_obj->AssignButtonsImageList(imageList);
+	self->AssignButtonsImageList(imageList);
 }
 */
 
-EWXWEXPORT(void,wxTreeCtrl_SetImageList)(void* _obj,void* imageList)
+EWXWEXPORT(void,wxTreeCtrl_SetImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	((wxTreeCtrl*)_obj)->SetImageList((wxImageList*) imageList);
+	self->SetImageList(imageList);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetStateImageList)(void* _obj,void* imageList)
+EWXWEXPORT(void,wxTreeCtrl_SetStateImageList)(wxTreeCtrl* self,wxImageList* imageList)
 {
-	((wxTreeCtrl*)_obj)->SetStateImageList((wxImageList*) imageList);
+	self->SetStateImageList(imageList);
 }
 	
-EWXWEXPORT(wxString*,wxTreeCtrl_GetItemText)(void* _obj,void* item)
+EWXWEXPORT(wxString*,wxTreeCtrl_GetItemText)(wxTreeCtrl* self,void* item)
 {
 	wxString *result = new wxString();
-	*result = ((wxTreeCtrl*)_obj)->GetItemText(*(wxTreeItemId*)item);
+	*result = self->GetItemText(*(wxTreeItemId*)item);
 	return result;
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetItemImage)(void* _obj,void* item,int which)
+EWXWEXPORT(int,wxTreeCtrl_GetItemImage)(wxTreeCtrl* self,wxTreeItemId* item,int which)
 {
-	return ((wxTreeCtrl*)_obj)->GetItemImage(*((wxTreeItemId*) item), (wxTreeItemIcon) which);
+	return self->GetItemImage(*item, (wxTreeItemIcon) which);
 }
 	
-EWXWEXPORT(void*,wxTreeCtrl_GetItemData)(void* _obj,void* item)
+EWXWEXPORT(void*,wxTreeCtrl_GetItemData)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return ((wxcTreeItemData*)((wxTreeCtrl*)_obj)->GetItemData(*((wxTreeItemId*) item)))->GetClientClosure();
+	return ((wxcTreeItemData*)self->GetItemData(* item))->GetClientClosure();
 }
 
-EWXWEXPORT(void*,wxTreeCtrl_GetItemClientClosure)(void* _obj,void* item)
+EWXWEXPORT(void*,wxTreeCtrl_GetItemClientClosure)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return ((wxcTreeItemData*)((wxTreeCtrl*)_obj)->GetItemData(*((wxTreeItemId*) item)))->GetClientClosure();
+	return ((wxcTreeItemData*)self->GetItemData(* item))->GetClientClosure();
 }
 
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemText)(void* _obj,void* item,wxString* text)
+EWXWEXPORT(void,wxTreeCtrl_SetItemText)(wxTreeCtrl* self,wxTreeItemId* item,wxString* text)
 {
-	((wxTreeCtrl*)_obj)->SetItemText(*((wxTreeItemId*) item), *text);
+	self->SetItemText(* item,*text);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemImage)(void* _obj,void* item,int image,int which)
+EWXWEXPORT(void,wxTreeCtrl_SetItemImage)(wxTreeCtrl* self,wxTreeItemId* item,int image,int which)
 {
-	((wxTreeCtrl*)_obj)->SetItemImage(*((wxTreeItemId*)item), image, (wxTreeItemIcon)which);
+	self->SetItemImage(*item, image, (wxTreeItemIcon)which);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemData)(void* _obj,void* item,wxClosure* closure)
+EWXWEXPORT(void,wxTreeCtrl_SetItemData)(wxTreeCtrl* self,wxTreeItemId* item,wxClosure* closure)
 {
-	((wxTreeCtrl*)_obj)->SetItemData(*((wxTreeItemId*) item), new wxcTreeItemData (closure));
+	self->SetItemData(*item, new wxcTreeItemData (closure));
 }
 
-EWXWEXPORT(void,wxTreeCtrl_SetItemClientClosure)(wxTreeCtrl* _obj,void* item,wxClosure* closure)
+EWXWEXPORT(void,wxTreeCtrl_SetItemClientClosure)(wxTreeCtrl* self,wxTreeItemId* item,wxClosure* closure)
 {
-        wxTreeItemData* oldData = _obj->GetItemData(*((wxTreeItemId*) item));
+        wxTreeItemData* oldData = self->GetItemData(* item);
         /* bit unsafe: might delete twice but it is definitely ok on MSW 2.4.1 */
         if (oldData) delete oldData;
-	_obj->SetItemData(*((wxTreeItemId*) item), new wxcTreeItemData (closure));
+	self->SetItemData(* item, new wxcTreeItemData (closure));
 }
 
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemHasChildren)(void* _obj,void* item,bool has)
+EWXWEXPORT(void,wxTreeCtrl_SetItemHasChildren)(wxTreeCtrl* self,wxTreeItemId* item,bool has)
 {
-	((wxTreeCtrl*)_obj)->SetItemHasChildren(*((wxTreeItemId*)item), has);
+	self->SetItemHasChildren(*item, has);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemBold)(void* _obj,void* item,bool bold)
+EWXWEXPORT(void,wxTreeCtrl_SetItemBold)(wxTreeCtrl* self,wxTreeItemId* item,bool bold)
 {
-	((wxTreeCtrl*)_obj)->SetItemBold(*((wxTreeItemId*) item), bold);
+	self->SetItemBold(* item, bold);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemDropHighlight)(void* _obj,void* item,bool highlight)
+EWXWEXPORT(void,wxTreeCtrl_SetItemDropHighlight)(wxTreeCtrl* self,wxTreeItemId* item,bool highlight)
 {
 #ifdef __WIN32__
-	((wxTreeCtrl*)_obj)->SetItemDropHighlight(*((wxTreeItemId*) item), highlight);
+	self->SetItemDropHighlight(* item, highlight);
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemTextColour)(void* _obj,void* item,void* col)
+EWXWEXPORT(void,wxTreeCtrl_SetItemTextColour)(wxTreeCtrl* self,wxTreeItemId* item,wxColour* col)
 {
-	((wxTreeCtrl*)_obj)->SetItemTextColour(*((wxTreeItemId*)item), *((wxColour*) col));
+	self->SetItemTextColour(*item,*col);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemBackgroundColour)(void* _obj,void* item,void* col)
+EWXWEXPORT(void,wxTreeCtrl_SetItemBackgroundColour)(wxTreeCtrl* self,wxTreeItemId* item,wxColour* col)
 {
-	((wxTreeCtrl*)_obj)->SetItemBackgroundColour(*((wxTreeItemId*) item), *((wxColour*) col));
+	self->SetItemBackgroundColour(* item,* col);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SetItemFont)(void* _obj,void* item,void* font)
+EWXWEXPORT(void,wxTreeCtrl_SetItemFont)(wxTreeCtrl* self,wxTreeItemId* item,wxFont* font)
 {
-	((wxTreeCtrl*)_obj)->SetItemFont(*((wxTreeItemId*) item), *((wxFont*) font));
+	self->SetItemFont(* item,*font);
 }
 	
-EWXWEXPORT(bool,wxTreeCtrl_IsVisible)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsVisible)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return _obj->IsVisible(*item);
+	return self->IsVisible(*item);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_ItemHasChildren)(void* _obj,void* item)
+EWXWEXPORT(int,wxTreeCtrl_ItemHasChildren)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return (int)((wxTreeCtrl*)_obj)->ItemHasChildren(*((wxTreeItemId*) item));
+	return (int)self->ItemHasChildren(* item);
 }
 	
-EWXWEXPORT(bool,wxTreeCtrl_IsExpanded)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsExpanded)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return _obj->IsExpanded(*item);
+	return self->IsExpanded(*item);
 }
 	
-EWXWEXPORT(bool,wxTreeCtrl_IsSelected)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsSelected)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return _obj->IsSelected(*item);
+	return self->IsSelected(*item);
 }
 	
-EWXWEXPORT(bool,wxTreeCtrl_IsBold)(wxTreeCtrl* _obj,wxTreeItemId* item)
+EWXWEXPORT(bool,wxTreeCtrl_IsBold)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	return _obj->IsBold(*item);
+	return self->IsBold(*item);
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetChildrenCount)(wxTreeCtrl* self,wxTreeItemId* item,bool recursively)
+EWXWEXPORT(int,wxTreeCtrl_GetChildrenCount)(wxTreeCtrl* self,wxTreeItemId* item,int recursively)
 {
 	return self->GetChildrenCount(* item, recursively);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetRootItem)(void* _obj,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetRootItem)(wxTreeCtrl* self,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetRootItem();
+	*_item = self->GetRootItem();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetSelection)(void* _obj,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetSelection)(wxTreeCtrl* self,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetSelection();
+	*_item = self->GetSelection();
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetSelections)(void* _obj,intptr_t* selections)
+EWXWEXPORT(int,wxTreeCtrl_GetSelections)(wxTreeCtrl* self,intptr_t* selections)
 {
 	int result = 0;
 	wxArrayTreeItemIds sel;
-	result = ((wxTreeCtrl*)_obj)->GetSelections(sel);
+	result = self->GetSelections(sel);
 	
 	if (selections)
 	{
@@ -337,212 +337,212 @@ EWXWEXPORT(int,wxTreeCtrl_GetSelections)(void* _obj,intptr_t* selections)
 #endif
 	  }
 	}
-	return result;		
+	return result;
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetParent)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetParent)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
 #if wxVERSION_NUMBER < 2400
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetParent(*((wxTreeItemId*)item));
+	*_item = self->GetParent(*item);
 #else
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetItemParent(*((wxTreeItemId*)item));
+	*_item = self->GetItemParent(*item);
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetFirstChild)(void* _obj,void* item,void* cookie,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetFirstChild)(wxTreeCtrl* self,wxTreeItemId* item,void* cookie,wxTreeItemId* _item)
 {
 #if wxVERSION_NUMBER < 2600
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetFirstChild(*((wxTreeItemId*)item), *((long*)cookie));
+	*_item = self->GetFirstChild(*item,*((long*)cookie));
 #else
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetFirstChild(*((wxTreeItemId*)item), cookie);
+	*_item = self->GetFirstChild(*item, cookie);
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetNextChild)(void* _obj,void* item,void* cookie,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetNextChild)(wxTreeCtrl* self,wxTreeItemId* item,void* cookie,wxTreeItemId* _item)
 {
 #if wxVERSION_NUMBER < 2600
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextChild(*((wxTreeItemId*)item), *((long*)cookie));
+	*_item = self->GetNextChild(*item,*((long*)cookie));
 #else
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextChild(*((wxTreeItemId*)item), cookie);
+	*_item = self->GetNextChild(*item, cookie);
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetLastChild)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetLastChild)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetLastChild(*((wxTreeItemId*)item));
+	*_item = self->GetLastChild(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetNextSibling)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetNextSibling)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextSibling(*((wxTreeItemId*) item));
+	*_item = self->GetNextSibling(* item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetPrevSibling)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetPrevSibling)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetPrevSibling(*((wxTreeItemId*) item));
+	*_item = self->GetPrevSibling(* item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetFirstVisibleItem)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetFirstVisibleItem)(wxTreeCtrl* self,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetFirstVisibleItem();
+	*_item = self->GetFirstVisibleItem();
 }
 
-EWXWEXPORT(void,wxTreeCtrl_GetNextVisible)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetNextVisible)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetNextVisible(*((wxTreeItemId*)item));
+	*_item = self->GetNextVisible(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_GetPrevVisible)(void* _obj,void* item,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_GetPrevVisible)(wxTreeCtrl* self,wxTreeItemId* item,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->GetPrevVisible(*((wxTreeItemId*)item));
+	*_item = self->GetPrevVisible(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_AddRoot)(void* _obj,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_AddRoot)(wxTreeCtrl* self,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AddRoot(* text, image, selectedImage, new wxcTreeItemData(data));
+	*_item = self->AddRoot(*text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_PrependItem)(void* _obj,void* parent,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_PrependItem)(wxTreeCtrl* self,wxTreeItemId* parent,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->PrependItem(*((wxTreeItemId*)parent), *text, image, selectedImage, new wxcTreeItemData(data));
+	*_item = self->PrependItem(*parent,*text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_InsertItem)(void* _obj,void* parent,void* idPrevious,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_InsertItem)(wxTreeCtrl* self,wxTreeItemId* parent,wxTreeItemId* idPrevious,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), *text, image, selectedImage, new wxcTreeItemData(data));
+	*_item = self->InsertItem(*parent,*idPrevious,*text, image, selectedImage, new wxcTreeItemData(data));
 }
 
-EWXWEXPORT(void,wxTreeCtrl_InsertItem2)(void* _obj,void* parent,void* idPrevious,wxString* text,int image,int selectedImage,wxClosure* closure,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_InsertItem2)(wxTreeCtrl* self,wxTreeItemId* parent,wxTreeItemId* idPrevious,wxString* text,int image,int selectedImage,wxClosure* closure,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), *((wxTreeItemId*)idPrevious), *text, image, selectedImage, new wxcTreeItemData(closure));
-}
-
-	
-EWXWEXPORT(void,wxTreeCtrl_InsertItemByIndex)(void* _obj,void* parent,int index,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
-{
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, *text, image, selectedImage, new wxcTreeItemData(data));
-}
-
-EWXWEXPORT(void,wxTreeCtrl_InsertItemByIndex2)(void* _obj,void* parent,int index,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
-{
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->InsertItem(*((wxTreeItemId*)parent), index, *text, image, selectedImage, new wxcTreeItemData(data));
+	*_item = self->InsertItem(*parent,*idPrevious,*text, image, selectedImage, new wxcTreeItemData(closure));
 }
 
 	
-EWXWEXPORT(void,wxTreeCtrl_AppendItem)(void* _obj,void* parent,wxString* text,int image,int selectedImage,wxClosure* data,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_InsertItemByIndex)(wxTreeCtrl* self,wxTreeItemId* parent,int index,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->AppendItem(*((wxTreeItemId*) parent), *text, image, selectedImage, new wxcTreeItemData(data));
+	*_item = self->InsertItem(*parent, index,*text, image, selectedImage, new wxcTreeItemData(data));
+}
+
+EWXWEXPORT(void,wxTreeCtrl_InsertItemByIndex2)(wxTreeCtrl* self,wxTreeItemId* parent,int index,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
+{
+	*_item = self->InsertItem(*parent, index,*text, image, selectedImage, new wxcTreeItemData(data));
+}
+
+	
+EWXWEXPORT(void,wxTreeCtrl_AppendItem)(wxTreeCtrl* self,wxTreeItemId* parent,wxString* text,int image,int selectedImage,wxClosure* data,wxTreeItemId* _item)
+{
+	*_item = self->AppendItem(* parent,*text, image, selectedImage, new wxcTreeItemData(data));
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_Delete)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_Delete)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->Delete(*((wxTreeItemId*)item));
+	self->Delete(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_DeleteChildren)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_DeleteChildren)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->DeleteChildren(*((wxTreeItemId*)item));
+	self->DeleteChildren(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_DeleteAllItems)(void* _obj)
+EWXWEXPORT(void,wxTreeCtrl_DeleteAllItems)(wxTreeCtrl* self)
 {
-	((wxTreeCtrl*)_obj)->DeleteAllItems();
+	self->DeleteAllItems();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_Expand)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_Expand)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->Expand(*((wxTreeItemId*)item));
+	self->Expand(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_Collapse)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_Collapse)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->Collapse(*((wxTreeItemId*)item));
+	self->Collapse(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_CollapseAndReset)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_CollapseAndReset)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->CollapseAndReset(*((wxTreeItemId*)item));
+	self->CollapseAndReset(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_Toggle)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_Toggle)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->Toggle(*((wxTreeItemId*)item));
+	self->Toggle(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_Unselect)(void* _obj)
+EWXWEXPORT(void,wxTreeCtrl_Unselect)(wxTreeCtrl* self)
 {
-	((wxTreeCtrl*)_obj)->Unselect();
+	self->Unselect();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_UnselectAll)(void* _obj)
+EWXWEXPORT(void,wxTreeCtrl_UnselectAll)(wxTreeCtrl* self)
 {
-	((wxTreeCtrl*)_obj)->UnselectAll();
+	self->UnselectAll();
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SelectItem)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_SelectItem)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->SelectItem(*((wxTreeItemId*)item));
+	self->SelectItem(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_EnsureVisible)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_EnsureVisible)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->EnsureVisible(*((wxTreeItemId*)item));
+	self->EnsureVisible(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_ScrollTo)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_ScrollTo)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->ScrollTo(*((wxTreeItemId*)item));
+	self->ScrollTo(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_EditLabel)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_EditLabel)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->EditLabel(*((wxTreeItemId*)item));
+	self->EditLabel(*item);
 }
 	
-EWXWEXPORT(void*,wxTreeCtrl_GetEditControl)(void* _obj)
+EWXWEXPORT(void*,wxTreeCtrl_GetEditControl)(wxTreeCtrl* self)
 {
 #ifdef __WIN32__
-	return (void*)((wxTreeCtrl*)_obj)->GetEditControl();
+	return (void*)self->GetEditControl();
 #else
 	return NULL;
 #endif
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_EndEditLabel)(void* _obj,void* item,bool discardChanges)
+EWXWEXPORT(void,wxTreeCtrl_EndEditLabel)(wxTreeCtrl* self,wxTreeItemId* item,bool discardChanges)
 {
 #ifdef __WIN32__
-	((wxTreeCtrl*)_obj)->EndEditLabel(*((wxTreeItemId*)item), discardChanges);
+	self->EndEditLabel(*item, discardChanges);
 #endif
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_OnCompareItems)(void* _obj,void* item1,void* item2)
+EWXWEXPORT(int,wxTreeCtrl_OnCompareItems)(wxTreeCtrl* self,wxTreeItemId* item1,wxTreeItemId* item2)
 {
-	return ((wxTreeCtrl*)_obj)->OnCompareItems(*((wxTreeItemId*)item1), *((wxTreeItemId*)item2));
+	return self->OnCompareItems(*item1,*item2);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_SortChildren)(void* _obj,void* item)
+EWXWEXPORT(void,wxTreeCtrl_SortChildren)(wxTreeCtrl* self,wxTreeItemId* item)
 {
-	((wxTreeCtrl*)_obj)->SortChildren(*((wxTreeItemId*)item));
+	self->SortChildren(*item);
 }
 	
-EWXWEXPORT(void,wxTreeCtrl_HitTest)(void* _obj,int _x,int _y,void* flags,void* _item)
+EWXWEXPORT(void,wxTreeCtrl_HitTest)(wxTreeCtrl* self,int _x,int _y,void* flags,wxTreeItemId* _item)
 {
-	(*(wxTreeItemId*)_item) = ((wxTreeCtrl*)_obj)->HitTest(wxPoint(_x, _y), *((int*)flags));
+	*_item = self->HitTest(wxPoint(_x, _y),*((int*)flags));
 }
 	
-EWXWEXPORT(int,wxTreeCtrl_GetBoundingRect)(wxTreeCtrl* _obj,wxTreeItemId* item,bool textOnly,void* _x,void* _y,void* _w,void* _h)
+EWXWEXPORT(wxRect*,wxTreeCtrl_GetBoundingRect)(wxTreeCtrl* self,wxTreeItemId* item,bool textOnly)
 {
 #ifdef __WIN32__
 	wxRect rct;
-	int result = ((wxTreeCtrl*)_obj)->GetBoundingRect(*((wxTreeItemId*)item), rct, textOnly);
+	int result = self->GetBoundingRect(*item, rct, textOnly);
 	if (result)
 	{
-		*((int*)_x) = rct.x;
-		*((int*)_y) = rct.y;
-		*((int*)_w) = rct.width;
-		*((int*)_h) = rct.height;
+		wxRect* rt = new wxRect();
+		*rt = self->GetRect();
+		return rt;
 	}
-	return result;
+		wxRect* rt = new wxRect(-1,-1,-1,-1);
+		return rt;
 #else
 	return 0;
 #endif

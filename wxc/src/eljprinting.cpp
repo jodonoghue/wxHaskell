@@ -377,11 +377,11 @@ EWXWEXPORT(int,wxPrintData_GetPaperId)(wxPrintData* self)
 	return (int)self->GetPaperId();
 }
 	
-EWXWEXPORT(void, wxPrintData_GetPaperSize)(void* _obj, void* w, void* h)
+EWXWEXPORT(wxSize*,wxPrintData_GetPaperSize)(wxPrintData* self)
 {
-	wxSize tmp = ((wxPrintData*)_obj)->GetPaperSize();
-	*((int*)w) = tmp.x;
-	*((int*)h) = tmp.y;
+	wxSize* s = new wxSize();
+	*s = self->GetPaperSize();
+	return s;
 }
 	
 EWXWEXPORT(int,wxPrintData_GetQuality)(wxPrintData* self)
@@ -863,14 +863,15 @@ EWXWEXPORT(void,wxPrinterDC_Delete)(void* self)
 #endif
 }
 
-EWXWEXPORT(void, wxPrinterDC_GetPaperRect) (void* _obj, int* x, int* y, int* w, int* h)
+
+EWXWEXPORT(wxRect*,wxPrinterDC_GetPaperRect)(void* self)
 {
 #if !defined(__WXGTK__)
-	wxRect rct = ((wxPrinterDC*)_obj)->GetPaperRect();
-	*x = rct.x;
-	*y = rct.y;
-	*w = rct.width;
-	*h = rct.height;
+	wxRect* rct = new wxRect();
+	*rct = ((wxPrinterDC*)self)->GetPaperRect();
+	return rct;
+#else
+	return 0;
 #endif
 }
 

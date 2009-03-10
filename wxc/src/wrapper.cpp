@@ -317,7 +317,7 @@ EWXWEXPORT(int,ELJApp_MainLoop)()
 EWXWEXPORT(bool,ELJApp_Initialized)()
 {
 #if WXWIN_COMPATIBILITY_2_6
-        return (int)wxGetApp().Initialized();
+        return wxGetApp().Initialized();
 #else
         return true;
 #endif
@@ -456,9 +456,11 @@ EWXWEXPORT(void,ELJApp_Bell)()
         wxBell();
 }
 
-EWXWEXPORT(void, ELJApp_DisplaySize)(void* w, void* h)
+EWXWEXPORT(wxSize*,ELJApp_DisplaySize)()
 {
-        wxDisplaySize((int*)w, (int*)h);
+	wxSize* sz = new wxSize();
+	*sz = wxGetDisplaySize();
+	return sz;
 }
 
 EWXWEXPORT(void,ELJApp_EnableTopLevelWindows)(bool _enb)
@@ -471,9 +473,11 @@ EWXWEXPORT(void,ELJApp_Exit)()
         wxExit();
 }
 
-EWXWEXPORT(void, ELJApp_MousePosition)(void* x, void* y)
+EWXWEXPORT(wxPoint*,ELJApp_MousePosition)()
 {
-        wxGetMousePosition((int*)x, (int*)y);
+	wxPoint* pt = new wxPoint();
+	*pt = wxGetMousePosition();
+	return pt;
 }
 
 EWXWEXPORT(void*,ELJApp_FindWindowByLabel)(wxString* _lbl,wxWindow* _prt)
@@ -585,63 +589,63 @@ EWXWEXPORT(int,Quantize)(void* src,void* dest,int desiredNoColours,void* eightBi
 
 EWXWEXPORT(void*,wxEvtHandler_Create)()
 {
-        return (void*) new wxEvtHandler();
+        return (void*)new wxEvtHandler();
 }
 
-EWXWEXPORT(void,wxEvtHandler_Delete)(void* _obj)
+EWXWEXPORT(void,wxEvtHandler_Delete)(wxEvtHandler* self)
 {
-        delete (wxEvtHandler*)_obj;
+        delete self;
 }
 
 
-EWXWEXPORT(int,wxEvtHandler_Disconnect)(void* _obj,int first,int last,int type,int data)
+EWXWEXPORT(int,wxEvtHandler_Disconnect)(wxEvtHandler* self,int first,int last,int type,wxObject* data)
 {
-        return (int)((wxEvtHandler*)_obj)->Disconnect(first, last, type, (wxObjectEventFunction)&ELJApp::HandleEvent, (wxObject*) data);
+        return (int)self->Disconnect(first, last, type, (wxObjectEventFunction)&ELJApp::HandleEvent, data);
 }
 
-EWXWEXPORT(void*,wxEvtHandler_GetNextHandler)(void* _obj)
+EWXWEXPORT(void*,wxEvtHandler_GetNextHandler)(wxEvtHandler* self)
 {
-        return (void*)((wxEvtHandler*)_obj)->GetNextHandler();
+        return (void*)self->GetNextHandler();
 }
 
-EWXWEXPORT(void*,wxEvtHandler_GetPreviousHandler)(void* _obj)
+EWXWEXPORT(void*,wxEvtHandler_GetPreviousHandler)(wxEvtHandler* self)
 {
-        return (void*)((wxEvtHandler*)_obj)->GetPreviousHandler();
+        return (void*)self->GetPreviousHandler();
 }
 
-EWXWEXPORT(void,wxEvtHandler_SetNextHandler)(void* _obj,void* handler)
+EWXWEXPORT(void,wxEvtHandler_SetNextHandler)(wxEvtHandler* self,void* handler)
 {
-        ((wxEvtHandler*)_obj)->SetNextHandler((wxEvtHandler*)handler);
+        self->SetNextHandler((wxEvtHandler*)handler);
 }
 
-EWXWEXPORT(void,wxEvtHandler_SetPreviousHandler)(void* _obj,void* handler)
+EWXWEXPORT(void,wxEvtHandler_SetPreviousHandler)(wxEvtHandler* self,void* handler)
 {
-        ((wxEvtHandler*)_obj)->SetPreviousHandler((wxEvtHandler*)handler);
+        self->SetPreviousHandler((wxEvtHandler*)handler);
 }
 
-EWXWEXPORT(void,wxEvtHandler_SetEvtHandlerEnabled)(void* _obj,bool enabled)
+EWXWEXPORT(void,wxEvtHandler_SetEvtHandlerEnabled)(wxEvtHandler* self,bool enabled)
 {
-        ((wxEvtHandler*)_obj)->SetEvtHandlerEnabled(enabled);
+        self->SetEvtHandlerEnabled(enabled);
 }
 
-EWXWEXPORT(int,wxEvtHandler_GetEvtHandlerEnabled)(void* _obj)
+EWXWEXPORT(bool,wxEvtHandler_GetEvtHandlerEnabled)(wxEvtHandler* self)
 {
-        return (int)((wxEvtHandler*)_obj)->GetEvtHandlerEnabled();
+        return self->GetEvtHandlerEnabled();
 }
 
-EWXWEXPORT(int,wxEvtHandler_ProcessEvent)(void* _obj,void* event)
+EWXWEXPORT(bool,wxEvtHandler_ProcessEvent)(wxEvtHandler* self,wxEvent* event)
 {
-        return (int)((wxEvtHandler*)_obj)->ProcessEvent(*((wxEvent*)event));
+        return self->ProcessEvent(*event);
 }
 
-EWXWEXPORT(void,wxEvtHandler_AddPendingEvent)(void* _obj,void* event)
+EWXWEXPORT(void,wxEvtHandler_AddPendingEvent)(wxEvtHandler* self,wxEvent* event)
 {
-        ((wxEvtHandler*)_obj)->AddPendingEvent(*((wxEvent*)event));
+        self->AddPendingEvent(*event);
 }
 
-EWXWEXPORT(void,wxEvtHandler_ProcessPendingEvents)(void* _obj)
+EWXWEXPORT(void,wxEvtHandler_ProcessPendingEvents)(wxEvtHandler* self)
 {
-        ((wxEvtHandler*)_obj)->ProcessPendingEvents();
+        self->ProcessPendingEvents();
 }
 
 EWXWEXPORT(void*,Null_AcceleratorTable)()
@@ -689,7 +693,7 @@ EWXWEXPORT(void*,Null_Colour)()
         return (void*)&wxNullColour;
 }
 /*
-EWXWEXPORT(int,wxDllLoader_LoadLibrary)(void* _name,int* _success)
+EWXWEXPORT(bool,wxDllLoader_LoadLibrary)(void* _name,int* _success)
 {
         bool success;
 
@@ -700,7 +704,7 @@ EWXWEXPORT(int,wxDllLoader_LoadLibrary)(void* _name,int* _success)
         else
                 *_success = 0;
 
-        return (int) result;
+        return result;
 }
 
 EWXWEXPORT(void,wxDllLoader_UnloadLibrary)(int _handle)
@@ -726,19 +730,19 @@ EWXWEXPORT(void*,wxClassInfo_CreateClassByName)(wxString* _inf)
         return NULL;
 }
 
-EWXWEXPORT(void*,wxClassInfo_GetClassName)(void* _obj)
+EWXWEXPORT(void*,wxClassInfo_GetClassName)(wxObject* self)
 {
-        wxClassInfo* inf = ((wxObject*)_obj)->GetClassInfo();
+        wxClassInfo* inf = self->GetClassInfo();
         if (inf)
                 return (void*)inf->GetClassName();
         return NULL;
 }
 
-EWXWEXPORT(bool,wxClassInfo_IsKindOf)(wxObject* _obj,wxString* _name)
+EWXWEXPORT(bool,wxClassInfo_IsKindOf)(wxObject* self,wxString* _name)
 {
         wxClassInfo* inf = wxClassInfo::FindClass (*_name);
         if (inf)
-                return _obj->IsKindOf(inf);
+                return self->IsKindOf(inf);
         return false;
 }
 

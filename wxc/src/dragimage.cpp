@@ -6,114 +6,106 @@ extern "C" {
 /*-----------------------------------------------------------------------------
   DragImage
 -----------------------------------------------------------------------------*/
-EWXWEXPORT(wxDragImage*,wxDragImage_Create)( const wxBitmap* image, int x, int y )
+EWXWEXPORT(wxDragImage*,wxDragImage_Create)(wxBitmap* image,int x,int y)
 {
   return new wxDragImage(*image, wxNullCursor, wxPoint(x, y));
 }
 
-EWXWEXPORT(wxDragImage*,wxDragIcon)( const wxIcon* icon, int x, int y )
+EWXWEXPORT(wxDragImage*,wxDragIcon)(wxIcon* icon,int x,int y)
 {
   return new wxDragImage(*icon, wxNullCursor, wxPoint(x, y));
 }
 
-EWXWEXPORT(wxDragImage*,wxDragString)( const wxString* text, int x, int y )
+EWXWEXPORT(wxDragImage*,wxDragString)(wxString* text,int x,int y)
 {
   return new wxDragImage(*text, wxNullCursor, wxPoint(x, y));
 }
 
-EWXWEXPORT(wxDragImage*,wxDragTreeItem)( const wxTreeCtrl* treeCtrl, wxTreeItemId* id )
+EWXWEXPORT(wxDragImage*,wxDragTreeItem)(wxTreeCtrl* treeCtrl,wxTreeItemId* id)
 {
-  return new wxDragImage(*treeCtrl, *id);
+  return new wxDragImage(*treeCtrl,*id);
 }
 
-EWXWEXPORT(wxDragImage*,wxDragListItem)( const wxListCtrl* listCtrl, long id )
+EWXWEXPORT(wxDragImage*,wxDragListItem)(wxListCtrl* listCtrl,long id)
 {
   return new wxDragImage(*listCtrl, id);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragImage_Create)( const wxCursor* cursor )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragImage_Create)(wxCursor* cursor)
 {
   return new wxGenericDragImage(*cursor);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragIcon)( const wxIcon* icon )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragIcon)(wxIcon* icon)
 {
   return new wxGenericDragImage(*icon, wxNullCursor);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragString)( const wxString* text )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragString)(wxString* text)
 {
   return new wxGenericDragImage(*text, wxNullCursor);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragTreeItem)( const wxTreeCtrl* treeCtrl, wxTreeItemId* id )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragTreeItem)(wxTreeCtrl* treeCtrl,wxTreeItemId* id)
 {
-  return new wxGenericDragImage(*treeCtrl, *id);
+  return new wxGenericDragImage(*treeCtrl,*id);
 }
 
-EWXWEXPORT(wxGenericDragImage*,wxGenericDragListItem)( const wxListCtrl* listCtrl, long id )
+EWXWEXPORT(wxGenericDragImage*,wxGenericDragListItem)(wxListCtrl* listCtrl,long id)
 {
   return new wxGenericDragImage(*listCtrl, id);
 }
 
-EWXWEXPORT(void,wxDragImage_Delete)(wxDragImage* self)  
+EWXWEXPORT(void,wxDragImage_Delete)(wxDragImage* self)
 {
   if (self) delete self;
 }
 
-EWXWEXPORT(bool,wxDragImage_BeginDragFullScreen)( wxDragImage* self, int x_pos, int y_pos,
-                                                  wxWindow* window, bool fullScreen,
-                                                  wxRect* rect)
+EWXWEXPORT(bool,wxDragImage_BeginDragFullScreen)(wxDragImage* self,int x_pos,int y_pos,wxWindow* window,bool fullScreen,wxRect* rect)
 {
   return self->BeginDrag(wxPoint(x_pos, y_pos), window, fullScreen, rect);
 }
 
-EWXWEXPORT(bool,wxDragImage_BeginDrag)( wxDragImage* self, int x, int y,
-                                        wxWindow* window, wxWindow* boundingWindow)
+EWXWEXPORT(bool,wxDragImage_BeginDrag)(wxDragImage* self,int x,int y,wxWindow* window,wxWindow* boundingWindow)
 {
   return self->BeginDrag(wxPoint(x, y), window, boundingWindow);
 }
 
-EWXWEXPORT(bool,wxGenericDragImage_DoDrawImage)( wxGenericDragImage* self, wxDC* dc, int x, int y)
+EWXWEXPORT(bool,wxGenericDragImage_DoDrawImage)(wxGenericDragImage* self,wxDC* dc,int x,int y)
 {
   return self->DoDrawImage(*dc, wxPoint(x, y));
 }
 
-EWXWEXPORT(bool,wxDragImage_EndDrag)( wxDragImage* self)
+EWXWEXPORT(bool,wxDragImage_EndDrag)(wxDragImage* self)
 {
   return self->EndDrag();
 }
 
-EWXWEXPORT(void,wxGenericDragImage_GetImageRect)( wxGenericDragImage* self, int x_pos, int y_pos,
-                                                  int* x, int* y, int* w, int* h)
+EWXWEXPORT(wxRect*,wxGenericDragImage_GetImageRect)(wxGenericDragImage* self,int x_pos,int y_pos)
 {
-  wxRect rc = self->GetImageRect(wxPoint(x_pos, y_pos));
-  *x = rc.x;
-  *y = rc.y;
-  *w = rc.width;
-  *h = rc.height;
+  wxRect* r = new wxRect();
+  *r = self->GetImageRect(wxPoint(x_pos, y_pos));
+  return r;
 }
 
-EWXWEXPORT(bool,wxDragImage_Hide)( wxDragImage* self)
+EWXWEXPORT(bool,wxDragImage_Hide)(wxDragImage* self)
 {
   return self->Hide();
 }
 
-EWXWEXPORT(bool,wxDragImage_Move)( wxDragImage* self, int x, int y)
+EWXWEXPORT(bool,wxDragImage_Move)(wxDragImage* self,int x,int y)
 {
   return self->Move(wxPoint(x, y));
 }
 
-EWXWEXPORT(bool,wxDragImage_Show)( wxDragImage* self)
+EWXWEXPORT(bool,wxDragImage_Show)(wxDragImage* self)
 {
   return self->Show();
 }
 
-EWXWEXPORT(bool,wxGenericDragImage_UpdateBackingFromWindow)( wxGenericDragImage* self, wxDC* windowDC, wxMemoryDC* destDC,
-                                                             int x, int y, int w, int h,
-                                                             int xdest, int ydest, int width, int height)
+EWXWEXPORT(bool,wxGenericDragImage_UpdateBackingFromWindow)(wxGenericDragImage* self,wxDC* windowDC,wxMemoryDC* destDC,int x,int y,int w,int h,int xdest,int ydest,int width,int height)
 {
-  return self->UpdateBackingFromWindow(*windowDC, *destDC,
+  return self->UpdateBackingFromWindow(*windowDC,*destDC,
                                        wxRect(x, y, w, h),
                                        wxRect(xdest, ydest, width, height));
 }

@@ -18,7 +18,7 @@ TBool  wxDragImage_BeginDragFullScreen(TSelf(wxDragImage) self, int x_pos, int y
 TBool  wxDragImage_BeginDrag(TSelf(wxDragImage) self, int x, int y, TClass(wxWindow) window, TClass(wxWindow) boundingWindow );
 TBool  wxGenericDragImage_DoDrawImage(TSelf(wxGenericDragImage) self, TClass(wxDC) dc, int x, int y );
 void  wxDragImage_EndDrag(TSelf(wxDragImage) self );
-void  wxGenericDragImage_GetImageRect(TSelf(wxGenericDragImage) self, int x_pos, int y_pos, int* x, int* y, int* w, int* h );
+TClass(wxRect) wxGenericDragImage_GetImageRect(TSelf(wxGenericDragImage) self, int x_pos, int y_pos );
 TBool  wxDragImage_Hide(TSelf(wxDragImage) self );
 TBool  wxDragImage_Move(TSelf(wxDragImage) self, int x, int y );
 TBool  wxDragImage_Show(TSelf(wxDragImage) self );

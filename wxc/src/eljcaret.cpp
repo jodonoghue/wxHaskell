@@ -19,14 +19,18 @@ EWXWEXPORT(bool,wxCaret_IsVisible)(wxCaret* self)
 	return self->IsVisible();
 }
 	
-EWXWEXPORT(void,wxCaret_GetPosition)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxCaret_GetPosition)(wxCaret* self)
 {
-	((wxCaret*)_obj)->GetPosition((int*)x, (int*)y);
+	wxPoint* p = new wxPoint();
+	*p = self->GetPosition();
+	return p;
 }
 	
-EWXWEXPORT(void,wxCaret_GetSize)(void* _obj, void* width, void* height)
+EWXWEXPORT(wxSize*,wxCaret_GetSize)(wxCaret* self)
 {
-	((wxCaret*)_obj)->GetSize((int*)width, (int*)height);
+	wxSize* s = new wxSize();
+	*s = self->GetSize();
+	return s;
 }
 	
 EWXWEXPORT(wxWindow*,wxCaret_GetWindow)(wxCaret* self)

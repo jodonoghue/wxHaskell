@@ -166,6 +166,12 @@ managedClasses
                      "withRefColour" "const (return ())" (const "Color")
     , ClassInfo "wxString" (affix "withStringRef") "withStringPtr" "withManagedStringResult"
                      "withRefString" "const (return ())" (const "String")
+    , ClassInfo "wxPoint" (affix "withPointRef") "withPointPtr" "withWxPointResult"
+                     "withRefPoint" "const (return ())" (const "Point")
+    , ClassInfo "wxSize" (affix "withSizeRef") "withSizePtr" "withWxSizeResult"
+                     "withRefSize" "const (return ())" (const "Size")
+    , ClassInfo "wxRect" (affix "withWxRectRef") "withWxRectPtr" "withWxRectResult"
+                     "withRefRect" "const (return ())" (const "Rect")
     , ClassInfo "wxTreeItemId" (affix "withTreeItemIdRef") "withTreeItemIdPtr" "withManagedTreeItemIdResult"
                      "withRefTreeItemId" "const (return ())" (const "TreeItem")
     ]

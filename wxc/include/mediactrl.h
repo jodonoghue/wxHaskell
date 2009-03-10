@@ -5,7 +5,7 @@ TClassDefExtend(wxMediaCtrl,wxWindow);
 
 TClass(wxMediaCtrl)  wxMediaCtrl_Create( TClass(wxWindow) parent, int windowID, TClass(wxString) fileName, int x, int y, int w, int h, long style, TClass(wxString) szBackend, TClass(wxString) name );
 void  wxMediaCtrl_Delete(TSelf(wxMediaCtrl) self);
-void  wxMediaCtrl_GetBestSize(TSelf(wxMediaCtrl) self, int* w, int* h );
+TClass(wxSize) wxMediaCtrl_GetBestSize(TSelf(wxMediaCtrl) self );
 double  wxMediaCtrl_GetPlaybackRate(TSelf(wxMediaCtrl) self);
 double  wxMediaCtrl_GetVolume(TSelf(wxMediaCtrl) self);
 int  wxMediaCtrl_GetState(TSelf(wxMediaCtrl) self);

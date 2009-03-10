@@ -52,13 +52,13 @@ module Graphics.UI.WXCore.WxcTypes(
 
             -- * Marshalling
             -- ** Basic types
-            , withPointResult, toCIntPointX, toCIntPointY, fromCPoint, withCPoint
+            , withPointResult, withWxPointResult, toCIntPointX, toCIntPointY, fromCPoint, withCPoint
             , withPointDoubleResult, toCDoublePointX, toCDoublePointY, fromCPointDouble, withCPointDouble
-            , withSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
+            , withSizeResult, withWxSizeResult, toCIntSizeW, toCIntSizeH, fromCSize, withCSize
             , withSizeDoubleResult, toCDoubleSizeW, toCDoubleSizeH, fromCSizeDouble, withCSizeDouble
-            , withVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
+            , withVectorResult, withWxVectorResult, toCIntVectorX, toCIntVectorY, fromCVector, withCVector
             , withVectorDoubleResult, toCDoubleVectorX, toCDoubleVectorY, fromCVectorDouble, withCVectorDouble
-            , withRectResult, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
+            , withRectResult, withWxRectResult, withWxRectPtr, toCIntRectX, toCIntRectY, toCIntRectW, toCIntRectH, fromCRect, withCRect
             , withRectDoubleResult, toCDoubleRectX, toCDoubleRectY, toCDoubleRectW, toCDoubleRectH, fromCRectDouble, withCRectDouble
             , withArray, withArrayString, withArrayWString, withArrayInt, withArrayObject
             , withArrayIntResult, withArrayStringResult, withArrayWStringResult, withArrayObjectResult
@@ -292,6 +292,25 @@ fromCPointDouble :: CDouble -> CDouble -> Point2 Double
 fromCPointDouble x y
   = Point (fromCDouble x) (fromCDouble y)
 
+{-
+-- | A @wxPoint@ object.
+type WxPointObject a   = Ptr (CWxPointObject a)
+type TWxPointObject a  = CWxPointObject a
+data CWxPointObject a  = CWxPointObject
+-}
+
+withWxPointResult :: IO (Ptr (TWxPoint a)) -> IO (Point2 Int)
+withWxPointResult io
+  = do pt <- io
+       x  <- wxPoint_GetX pt
+       y  <- wxPoint_GetY pt
+       wxPoint_Delete pt
+       return (fromCPoint x y)
+
+foreign import ccall wxPoint_Delete :: Ptr (TWxPoint a) -> IO ()
+foreign import ccall wxPoint_GetX   :: Ptr (TWxPoint a) -> IO CInt
+foreign import ccall wxPoint_GetY   :: Ptr (TWxPoint a) -> IO CInt
+
 
 {-----------------------------------------------------------------------------------------
   Size
@@ -376,6 +395,26 @@ fromCSizeDouble w h
 toCDoubleSizeW, toCDoubleSizeH :: Size2D Double -> CDouble
 toCDoubleSizeW (Size w h)  = toCDouble w
 toCDoubleSizeH (Size w h)  = toCDouble h
+
+{-
+-- | A @wxSize@ object.
+type WxSizeObject a   = Ptr (CWxSizeObject a)
+type TWxSizeObject a  = CWxSizeObject a
+data CWxSizeObject a  = CWxSizeObject
+-}
+
+withWxSizeResult :: IO (Ptr (TWxSize a)) -> IO Size
+withWxSizeResult io
+  = do sz <- io
+       w  <- wxSize_GetWidth  sz
+       h  <- wxSize_GetHeight sz
+       wxSize_Delete sz
+       return (fromCSize w h)
+
+foreign import ccall wxSize_Delete    :: Ptr (TWxSize a) -> IO ()
+foreign import ccall wxSize_GetWidth  :: Ptr (TWxSize a) -> IO CInt
+foreign import ccall wxSize_GetHeight :: Ptr (TWxSize a) -> IO CInt
+
 
 {-----------------------------------------------------------------------------------------
   Vector
@@ -462,6 +501,15 @@ fromCVectorDouble x y
   = Vector (fromCDouble x) (fromCDouble y)
 
 
+withWxVectorResult :: IO (Ptr (TWxPoint a)) -> IO Vector
+withWxVectorResult io
+  = do pt <- io
+       x  <- wxPoint_GetX pt
+       y  <- wxPoint_GetY pt
+       wxPoint_Delete pt
+       return (fromCVector x y)
+
+
 {-----------------------------------------------------------------------------------------
   Rectangle
 -----------------------------------------------------------------------------------------}
@@ -526,7 +574,7 @@ rectIsEmpty (Rect l t w h)
 
 
 
--- marshalling
+-- marshalling 1
 withCRect :: Rect -> (CInt -> CInt -> CInt -> CInt -> IO a) -> IO a
 withCRect (Rect x0 y0 x1 y1) f
   = f (toCInt (x0)) (toCInt (y0)) (toCInt (x1)) (toCInt (y1))
@@ -580,6 +628,42 @@ toCDoubleRectX (Rect x y w h)  = toCDouble x
 toCDoubleRectY (Rect x y w h)  = toCDouble y
 toCDoubleRectW (Rect x y w h)  = toCDouble w
 toCDoubleRectH (Rect x y w h)  = toCDouble h
+
+-- marshalling 2
+{-
+-- | A @wxRect@ object.
+type WxRectObject a   = Ptr (CWxRectObject a)
+type TWxRectObject a  = CWxRectObject a
+data CWxRectObject a  = CWxRectObject
+-}
+
+withWxRectRef :: String -> Rect -> (Ptr (TWxRect r) -> IO a) -> IO a
+withWxRectRef msg r f
+  = withWxRectPtr r $ \p -> withValidPtr msg p f
+
+withWxRectPtr :: Rect -> (Ptr (TWxRect r) -> IO a) -> IO a
+withWxRectPtr r f
+  = bracket (withCRect r wxRect_Create)
+            (wxRect_Delete)
+            f
+
+withWxRectResult :: IO (Ptr (TWxRect a)) -> IO Rect
+withWxRectResult io
+  = do rt <- io
+       x  <- wxRect_GetX  rt
+       y  <- wxRect_GetY  rt
+       w  <- wxRect_GetWidth  rt
+       h  <- wxRect_GetHeight rt
+       wxRect_Delete rt
+       return (fromCRect x y w h)
+
+foreign import ccall wxRect_Create    :: CInt -> CInt -> CInt -> CInt -> IO (Ptr (TWxRect a))
+foreign import ccall wxRect_Delete    :: Ptr (TWxRect a) -> IO ()
+foreign import ccall wxRect_GetX      :: Ptr (TWxRect a) -> IO CInt
+foreign import ccall wxRect_GetY      :: Ptr (TWxRect a) -> IO CInt
+foreign import ccall wxRect_GetWidth  :: Ptr (TWxRect a) -> IO CInt
+foreign import ccall wxRect_GetHeight :: Ptr (TWxRect a) -> IO CInt
+
 
 {-----------------------------------------------------------------------------------------
   CInt

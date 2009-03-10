@@ -347,16 +347,18 @@ EWXWEXPORT(bool,wxMouseEvent_Leaving)(wxMouseEvent* self)
         return self->Leaving();
 }
 
-EWXWEXPORT(void, wxMouseEvent_GetPosition)(void* _obj, int* xpos, int* ypos)
+EWXWEXPORT(wxPoint*,wxMouseEvent_GetPosition)(wxMouseEvent* self)
 {
-        ((wxMouseEvent*)_obj)->GetPosition((wxCoord*)xpos, (wxCoord*)ypos);
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 
-EWXWEXPORT(void, wxMouseEvent_GetLogicalPosition)(void* _obj, void* dc, int* xpos, int* ypos)
+EWXWEXPORT(wxPoint*,wxMouseEvent_GetLogicalPosition)(wxMouseEvent* self,wxDC* dc)
 {
-        wxPoint pt = ((wxMouseEvent*)_obj)->GetLogicalPosition(*((wxDC*)dc));
-        *xpos = pt.x;
-        *ypos = pt.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetLogicalPosition(*dc);
+	return pt;
 }
 
 EWXWEXPORT(int,wxMouseEvent_GetX)(wxMouseEvent* self)
@@ -391,9 +393,11 @@ EWXWEXPORT(void,wxSetCursorEvent_SetCursor)(wxSetCursorEvent* self,wxCursor* cur
         self->SetCursor(*cursor);
 }
 
-EWXWEXPORT(void*,wxSetCursorEvent_GetCursor)(void* self)
+EWXWEXPORT(wxCursor*,wxSetCursorEvent_GetCursor)(wxSetCursorEvent* self)
 {
-        return (void*)(&((wxSetCursorEvent*)self)->GetCursor());
+        wxCursor* cur = new wxCursor;
+        *cur = self->GetCursor();
+        return cur;
 }
 
 EWXWEXPORT(bool,wxSetCursorEvent_HasCursor)(wxSetCursorEvent* self)
@@ -441,9 +445,11 @@ EWXWEXPORT(void,wxKeyEvent_SetKeyCode)(wxKeyEvent* self,int code)
         self->m_keyCode = code;
 }
 
-EWXWEXPORT(void, wxKeyEvent_GetPosition)(void* _obj, int* xpos, int* ypos)
+EWXWEXPORT(wxPoint*,wxKeyEvent_GetPosition)(wxKeyEvent* self)
 {
-        ((wxKeyEvent*)_obj)->GetPosition((wxCoord*) xpos, (wxCoord*) ypos);
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 
 EWXWEXPORT(wxCoord,wxKeyEvent_GetX)(wxKeyEvent* self)
@@ -463,11 +469,11 @@ EWXWEXPORT(void,wxKeyEvent_CopyObject)(wxKeyEvent* self,wxObject* obj)
 #endif
 }
 
-EWXWEXPORT(void, wxSizeEvent_GetSize)(void* _obj, int* w, int* h)
+EWXWEXPORT(wxSize*,wxSizeEvent_GetSize)(wxSizeEvent* self)
 {
-        wxSize sz = ((wxSizeEvent*)_obj)->GetSize();
-        *w = sz.x;
-        *h = sz.y;
+	wxSize* s = new wxSize();
+	*s = self->GetSize();
+	return s;
 }
 
 EWXWEXPORT(void,wxSizeEvent_CopyObject)(wxSizeEvent* self,wxObject* obj)
@@ -477,11 +483,11 @@ EWXWEXPORT(void,wxSizeEvent_CopyObject)(wxSizeEvent* self,wxObject* obj)
 #endif
 }
 
-EWXWEXPORT(void, wxMoveEvent_GetPosition)(void* _obj, int* x, int* y)
+EWXWEXPORT(wxPoint*,wxMoveEvent_GetPosition)(wxMoveEvent* self)
 {
-        wxPoint pt = ((wxMoveEvent*)_obj)->GetPosition();
-        *x = pt.x;
-        *y = pt.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 
 EWXWEXPORT(void,wxMoveEvent_CopyObject)(wxMoveEvent* self,wxObject* obj)
@@ -491,9 +497,9 @@ EWXWEXPORT(void,wxMoveEvent_CopyObject)(wxMoveEvent* self,wxObject* obj)
 #endif
 }
 
-EWXWEXPORT(void*,wxEraseEvent_GetDC)(void* self)
+EWXWEXPORT(wxDC*,wxEraseEvent_GetDC)(wxEraseEvent* self)
 {
-        return (void*)((wxEraseEvent*)self)->GetDC();
+        return self->GetDC();
 }
 
 EWXWEXPORT(void,wxEraseEvent_CopyObject)(wxEraseEvent* self,wxObject* obj)
@@ -581,11 +587,11 @@ EWXWEXPORT(void,wxShowEvent_CopyObject)(wxShowEvent* self,wxObject* obj)
 #endif
 }
 
-EWXWEXPORT(void, wxJoystickEvent_GetPosition)(void* _obj, int* x, int* y)
+EWXWEXPORT(wxPoint*,wxJoystickEvent_GetPosition)(wxJoystickEvent* self)
 {
-        wxPoint pt = ((wxJoystickEvent*)_obj)->GetPosition();
-        *x = pt.x;
-        *y = pt.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 
 EWXWEXPORT(int,wxJoystickEvent_GetZPosition)(wxJoystickEvent* self)
@@ -623,9 +629,10 @@ EWXWEXPORT(void,wxJoystickEvent_SetButtonChange)(wxJoystickEvent* self,int chang
         self->SetButtonChange(change);
 }
 
-EWXWEXPORT(void,wxJoystickEvent_SetPosition)(wxJoystickEvent* self,void* pos)
+EWXWEXPORT(void,wxJoystickEvent_SetPosition)(wxJoystickEvent* self,int x,int y)
 {
-        self->SetPosition(*((wxPoint*)pos));
+	wxPoint pos(x,y);
+	self->SetPosition(pos);
 }
 
 EWXWEXPORT(void,wxJoystickEvent_SetZPosition)(wxJoystickEvent* self,int zPos)
@@ -847,11 +854,11 @@ EWXWEXPORT(bool,wxListEvent_Cancelled)(wxListEvent* self)
 #endif
 }
 
-EWXWEXPORT(void, wxListEvent_GetPoint)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxListEvent_GetPoint)(wxListEvent* self)
 {
-        wxPoint pos = ((wxListEvent*)_obj)->GetPoint();
-        *((int*)x) = pos.x;
-        *((int*)y) = pos.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPoint();
+	return pt;
 }
 
 EWXWEXPORT(wxString*,wxListEvent_GetLabel)(wxListEvent* self)
@@ -903,11 +910,11 @@ EWXWEXPORT(void,wxTreeEvent_GetOldItem)(wxTreeEvent* self,wxTreeItemId* _ref)
         *_ref = self->GetOldItem();
 }
 
-EWXWEXPORT(void, wxTreeEvent_GetPoint)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxTreeEvent_GetPoint)(wxTreeEvent* self)
 {
-        wxPoint pos = ((wxTreeEvent*)_obj)->GetPoint();
-        *((int*)x) = pos.x;
-        *((int*)y) = pos.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPoint();
+	return pt;
 }
 
 EWXWEXPORT(int,wxTreeEvent_GetCode)(wxTreeEvent* self)
@@ -958,11 +965,11 @@ EWXWEXPORT(int,wxScrollEvent_GetPosition)(wxScrollEvent* self)
         return self->GetPosition();
 }
 
-EWXWEXPORT(void,wxHelpEvent_GetPosition)(void* _obj, void* x, void* y)
+EWXWEXPORT(wxPoint*,wxHelpEvent_GetPosition)(wxHelpEvent* self)
 {
-        wxPoint pos = ((wxHelpEvent*)_obj)->GetPosition();
-        *((int*)x) = pos.x;
-        *((int*)y) = pos.y;
+	wxPoint* pt = new wxPoint();
+	*pt = self->GetPosition();
+	return pt;
 }
 
 EWXWEXPORT(void,wxHelpEvent_SetPosition)(wxHelpEvent* self,int x,int y)

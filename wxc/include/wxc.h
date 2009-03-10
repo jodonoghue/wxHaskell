@@ -80,7 +80,7 @@ int   wxMouseEvent_GetWheelRotation( TSelf(wxMouseEvent) _obj );
 int   wxMouseEvent_GetButton( TSelf(wxMouseEvent) _obj );
 int   expEVT_MOUSEWHEEL(  );
 
-void wxcGetMousePosition( TPointOut(x,y) );
+TClass(wxPoint) wxcGetMousePosition( );
 
 
 /* wxDC */
@@ -88,9 +88,9 @@ double wxDC_GetUserScaleX( TSelf(wxDC) dc );
 double wxDC_GetUserScaleY( TSelf(wxDC) dc );
 
 /* wxWindow */
-void  wxWindow_ConvertDialogToPixelsEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );
-void  wxWindow_ConvertPixelsToDialogEx( TSelf(wxWindow) _obj, TPoint(x,y), TPointOut(_x,_y) );
-void  wxWindow_ScreenToClient2(TSelf(wxWindow) self, TPoint(x,y), TPointOut(cx,cy));
+TClass(wxPoint) wxWindow_ConvertDialogToPixelsEx( TSelf(wxWindow) _obj );
+TClass(wxPoint) wxWindow_ConvertPixelsToDialogEx( TSelf(wxWindow) _obj );
+TClass(wxPoint) wxWindow_ScreenToClient2( TSelf(wxWindow) _obj, TPoint(x,y) );
 
 /* wxString helpers */
 TClass(wxString) wxString_Create( TString buffer );
@@ -118,7 +118,7 @@ int wxListEvent_GetCacheTo( TSelf(wxListEvent) _obj);
 void wxListCtrl_AssignImageList( TSelf(wxListCtrl) _obj, TClass(wxImageList) images, int which );
 void wxListCtrl_GetColumn2( TSelf(wxListCtrl) _obj, int col, TClassRef(wxListItem) item);
 void wxListCtrl_GetItem2( TSelf(wxListCtrl) _obj, TClassRef(wxListItem) info);
-void wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item, TPointOut(x,y));
+TClass(wxPoint) wxListCtrl_GetItemPosition2( TSelf(wxListCtrl) _obj, int item );
 /** Sort items in a list control. Takes a closure that is called with a 'CommandEvent' where the @Int@ is the item data of the first item and the @ExtraLong@ the item data of the second item. The event handler should set the @Int@ to 0 when the items are equal, -1 when the first is less, and 1 when the second is less. */
 TBool wxListCtrl_SortItems2(TSelf(wxListCtrl) _obj, TClass(wxClosure) closure );
 
@@ -197,8 +197,8 @@ void wxToolBar_AddTool2( TSelf(wxToolBar) _obj, int toolId, TClass(wxString) lab
 
 /* Progress dialog */
 TClass(wxProgressDialog) wxProgressDialog_Create( TClass(wxString) title, TClass(wxString) message, int max, TClass(wxWindow) parent, int style );
-int  wxProgressDialog_Update(TSelf(wxProgressDialog) obj, int value );
-int  wxProgressDialog_UpdateWithMessage( TSelf(wxProgressDialog) obj, int value, TClass(wxString) message );
+TBool wxProgressDialog_Update(TSelf(wxProgressDialog) obj, int value );
+TBool wxProgressDialog_UpdateWithMessage( TSelf(wxProgressDialog) obj, int value, TClass(wxString) message );
 void wxProgressDialog_Resume( TSelf(wxProgressDialog) obj );
 
 /** Get the version number of wxWindows as a number composed of the major version times 1000, minor version times 100, and the release number. For example, release 2.1.15 becomes 2115. */
@@ -246,7 +246,7 @@ TClass(wxString)     wxcHtmlEvent_GetHtmlCellId( TSelf(wxcHtmlEvent) self );
 /** Return the /href/ attribute of the associated html anchor (if applicable) */
 TClass(wxString)     wxcHtmlEvent_GetHref( TSelf(wxcHtmlEvent) self );
 TClass(wxString)     wxcHtmlEvent_GetTarget( TSelf(wxcHtmlEvent) self );
-void                 wxcHtmlEvent_GetLogicalPosition( TSelf(wxcHtmlEvent) self, TPointOut(x,y) );
+TClass(wxPoint)      wxcHtmlEvent_GetLogicalPosition( TSelf(wxcHtmlEvent) self );
 
 /* html window */
 TClassDefExtend(wxcHtmlWindow,wxHtmlWindow)
@@ -282,7 +282,7 @@ TClass(wxLogStderr)   wxLogStderr_Create();
 TClass(wxLogStderr)   wxLogStderr_CreateStdOut();
 TClass(wxLogNull)     wxLogNull_Create();
 TClass(wxLogTextCtrl) wxLogTextCtrl_Create( TClass(wxTextCtrl) text );
-TClass(wxLogWindow)   wxLogWindow_Create( TClass(wxWindow) parent, TString title, TBoolInt showit, TBoolInt passthrough );
+TClass(wxLogWindow)   wxLogWindow_Create( TClass(wxWindow) parent, TString title, TBool showit, TBool passthrough );
 TClass(wxFrame)       wxLogWindow_GetFrame( TSelf(wxLogWindow) obj );
 
 void   LogError(TClass(wxString) _msg);

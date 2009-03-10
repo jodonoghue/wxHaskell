@@ -8,9 +8,9 @@ EWXWEXPORT(void*,wxWizard_Create)(wxWindow* _prt,int _id,wxString* _txt,wxBitmap
 	wxBitmap bmp = wxNullBitmap;
 	if (_bmp) bmp = *_bmp;
 #if wxVERSION_NUMBER >= 2400
-	return (void*) new wxWizard (_prt, _id, *_txt, bmp, wxPoint(_lft, _top));
+	return (void*)new wxWizard (_prt, _id,*_txt, bmp, wxPoint(_lft, _top));
 #else
-	return (void*) wxWizard::Create (_prt, _id, *_txt, bmp, wxPoint(_lft, _top), wxSize(_wdt, _hgt));
+	return (void*)wxWizard::Create (_prt, _id,*_txt, bmp, wxPoint(_lft, _top), wxSize(_wdt, _hgt));
 #endif
 }
 
@@ -34,16 +34,16 @@ EWXWEXPORT(void,wxWizard_SetPageSize)(wxWizard* self,int w,int h)
 	self->SetPageSize(wxSize(w, h));
 }
 	
-EWXWEXPORT(void, wxWizard_GetPageSize)(void* _obj, void* w, void* h)
+EWXWEXPORT(wxSize*,wxWizard_GetPageSize)(wxWizard* self)
 {
-	wxSize tmp = ((wxWizard*)_obj)->GetPageSize();
-	*((int*)w) = tmp.x;
-	*((int*)h) = tmp.y;
+	wxSize* sz = new wxSize();
+	*sz = self->GetPageSize();
+	return sz;
 }
 	
-EWXWEXPORT(void*,wxWizardPageSimple_Create)(void* _prt)
+EWXWEXPORT(void*,wxWizardPageSimple_Create)(wxWizard* _prt)
 {
-	return (void*)new wxWizardPageSimple ((wxWizard*)_prt);
+	return (void*)new wxWizardPageSimple(_prt);
 }
 
 EWXWEXPORT(void*,wxWizardPageSimple_GetPrev)(void* self)

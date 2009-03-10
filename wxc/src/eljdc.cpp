@@ -236,14 +236,18 @@ EWXWEXPORT(void,wxDC_GetMultiLineTextExtent)(wxDC* self,wxString* string,wxCoord
 	self->GetMultiLineTextExtent(*string, w, h, heightLine, theFont);
 }
 
-EWXWEXPORT(void, wxDC_GetSize)(void* _obj, void* width, void* height)
+EWXWEXPORT(wxSize*,wxDC_GetSize)(wxDC* self)
 {
-	((wxDC*)_obj)->GetSize((int*)width, (int*)height);
+	wxSize* s = new wxSize();
+	*s = self->GetSize();
+	return s;
 }
 	
-EWXWEXPORT(void, wxDC_GetSizeMM)(void* _obj, void* width, void* height)
+EWXWEXPORT(wxSize*,wxDC_GetSizeMM)(wxDC* self)
 {
-	((wxDC*)_obj)->GetSizeMM((int*)width, (int*)height);
+	wxSize* s = new wxSize();
+	*s = self->GetSizeMM();
+	return s;
 }
 	
 EWXWEXPORT(wxCoord,wxDC_DeviceToLogicalX)(wxDC* self,wxCoord x)
@@ -301,11 +305,11 @@ EWXWEXPORT(int,wxDC_GetDepth)(wxDC* self)
 	return self->GetDepth();
 }
 	
-EWXWEXPORT(void, wxDC_GetPPI)(void* _obj, void* width, void* height)
+EWXWEXPORT(wxSize*,wxDC_GetPPI)(wxDC* self)
 {
-	wxSize result = ((wxDC*)_obj)->GetPPI();
-	*((int*)width)  = result.x;
-	*((int*)height) = result.y;
+	wxSize* s = new wxSize();
+	*s = self->GetPPI();
+	return s;
 }
 	
 EWXWEXPORT(bool,wxDC_IsOk)(wxDC* self)
@@ -661,26 +665,24 @@ EWXWEXPORT(void,wxMetafile_Delete)(void* self)
 }
 
 #if wxCHECK_VERSION (2,8,0)
-EWXWEXPORT(void,wxDC_DrawLabel)(void* _obj,wxString* str,int x,int y,int w,int h,int align,int indexAccel)
+
+EWXWEXPORT(void,wxDC_DrawLabel)(wxDC* self,wxString* str,int x,int y,int w,int h,int align,int indexAccel)
 {
   wxRect rect(x, y, w, h);
-  ((wxDC*)_obj)->DrawLabel(*str, rect, align, indexAccel);
+  self->DrawLabel(*str, rect, align, indexAccel);
 }
 
-EWXWEXPORT(void, wxDC_DrawLabelBitmap)(void* _obj, wxString* str, void *bmp, int x, int y, int w, int h, int align, int indexAccel, int *_x, int *_y, int *_w, int *_h)
+EWXWEXPORT(wxRect*,wxDC_DrawLabelBitmap)(wxDC* self,wxString* str,wxBitmap* bmp,int x,int y,int w,int h,int align,int indexAccel)
 {
   wxRect rect(x, y, w, h);
-  wxRect bound;
-  ((wxDC*)_obj)->DrawLabel(*str, *((wxBitmap *)bmp), rect, align, indexAccel, &bound);
-  *_x = bound.GetX();
-  *_y = bound.GetY();
-  *_w = bound.GetWidth();
-  *_h = bound.GetHeight();
+  wxRect* r = new wxRect();
+  self->DrawLabel(*str,*bmp, rect, align, indexAccel, r);
+  return r;
 }
 
-EWXWEXPORT(void, wxDC_DrawPolyPolygon)(void* _obj, int n, void *count, void* x, void* y, int xoffset, int yoffset, int fillStyle)
+EWXWEXPORT(void,wxDC_DrawPolyPolygon)(wxDC* self,int n,int* count,void* x,void* y,int xoffset,int yoffset,int fillStyle)
 {
-    int     *tmp = (int *) count;
+    int     *tmp = count;
     int     *cnt = new int[n];
     int      i, j;
     int      totalItems = 0;
@@ -703,7 +705,7 @@ EWXWEXPORT(void, wxDC_DrawPolyPolygon)(void* _obj, int n, void *count, void* x, 
       }
     }
 	
-	((wxDC*)_obj)->DrawPolyPolygon(n, cnt, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
+	self->DrawPolyPolygon(n, cnt, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
 	
 	free (lst);
     delete cnt;
