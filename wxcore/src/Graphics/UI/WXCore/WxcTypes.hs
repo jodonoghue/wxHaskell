@@ -48,7 +48,7 @@ module Graphics.UI.WXCore.WxcTypes(
 
             -- ** Color
             , Color(..), rgb, colorRGB, rgba, colorRGBA, colorRed, colorGreen, colorBlue, colorAlpha
-            , intFromColor, colorFromInt, wordFromColor, colorFromWord, colorOk
+            , intFromColor, colorFromInt, fromColor, toColor, colorOk, colorIsOk
 
             -- * Marshalling
             -- ** Basic types
@@ -65,7 +65,6 @@ module Graphics.UI.WXCore.WxcTypes(
 
             , colourFromColor, colorFromColour
             , colourCreate, colourSafeDelete -- , colourCreateRGB, colourRed, colourGreen, colourBlue colourAlpha
-            , toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue, toWord8ColorAlpha
 
   
             -- ** Managed object types
@@ -1259,19 +1258,19 @@ instance Show Color where
                           showChar   ')' )
 
 -- | Create a color from a red\/green\/blue triple.
-colorRGB :: Int -> Int -> Int -> Color
+colorRGB :: (Integral a) => a -> a -> a -> Color
 colorRGB r g b = Color (shiftL (fromIntegral r) 24 .|. shiftL (fromIntegral g) 16 .|. shiftL (fromIntegral b) 8 .|. 255)
 
 -- | Create a color from a red\/green\/blue triple.
-rgb :: Int -> Int -> Int -> Color
+rgb :: (Integral a) => a -> a -> a -> Color
 rgb r g b = colorRGB r g b
 
 -- | Create a color from a red\/green\/blue\/alpha quadruple.
-colorRGBA :: Int -> Int -> Int -> Int -> Color
+colorRGBA :: (Integral a) => a -> a -> a -> a -> Color
 colorRGBA r g b a = Color (shiftL (fromIntegral r) 24 .|. shiftL (fromIntegral g) 16 .|. shiftL (fromIntegral b) 8 .|. (fromIntegral a))
 
 -- | Create a color from a red\/green\/blue\/alpha quadruple.
-rgba :: Int -> Int -> Int -> Int -> Color
+rgba :: (Integral a) => a -> a -> a -> a -> Color
 rgba r g b a = colorRGBA r g b a
 
 
@@ -1292,31 +1291,33 @@ colorFromInt rgb
         b = rgb .&. 0xFF
     in colorRGB r g b
 
--- | Return an 'Int' where the three least significant bytes contain
--- the red, green, and blue component of a color.
-wordFromColor :: Color -> Word
-wordFromColor (Color rgb)
-  = rgb
+-- | Return an 'Num' class's numeric representation where the three
+-- least significant the red, green, and blue component of a color.
+fromColor :: (Num a) => Color -> a
+fromColor (Color rgb)
+  = fromIntegral rgb
 
--- | Set the color according to an rgba unsigned integer. (see 'rgbaIntFromColor').
-colorFromWord :: Word -> Color
-colorFromWord rgb
-  = Color rgb
+-- | Set the color according to 'Integral' class's numeric representation.
+-- (see 'rgbaIntFromColor').
+toColor :: (Integral a) => a -> Color
+toColor
+  = Color . fromIntegral
 
+-- marshalling 1
 -- | Returns a red color component
-colorRed   :: Color -> Int
+colorRed   :: (Num a) => Color -> a
 colorRed   (Color rgba) = fromIntegral ((shiftR rgba 24) .&. 0xFF)
 
 -- | Returns a green color component
-colorGreen :: Color -> Int
+colorGreen :: (Num a) => Color -> a
 colorGreen (Color rgba) = fromIntegral ((shiftR rgba 16) .&. 0xFF)
 
 -- | Returns a blue color component
-colorBlue  :: Color -> Int
+colorBlue  :: (Num a) => Color -> a
 colorBlue  (Color rgba) = fromIntegral ((shiftR rgba 8) .&. 0xFF)
 
 -- | Returns a alpha channel component
-colorAlpha  :: Color -> Int
+colorAlpha  :: (Num a) => Color -> a
 colorAlpha  (Color rgba) = fromIntegral (rgba .&. 0xFF)
 
 
@@ -1325,18 +1326,16 @@ colorNull :: Color
 colorNull
   = Color (-1)
 
--- | Check of a color is valid (@Colour::Ok@)
+{-# DEPRECATED colorOk "Use colorIsOk instead" #-}
+-- | deprecated: use 'colorIsOk' instead.
 colorOk :: Color -> Bool
-colorOk (Color rgb)
+colorOk = colorIsOk
+
+-- | Check of a color is valid (@Colour::IsOk@)
+colorIsOk :: Color -> Bool
+colorIsOk (Color rgb)
   = (rgb >= 0)
 
-
--- marshalling 1
-toWord8ColorRed, toWord8ColorGreen, toWord8ColorBlue, toWord8ColorAlpha :: Color -> Word8
-toWord8ColorRed c    = fromIntegral (colorRed c)
-toWord8ColorGreen c  = fromIntegral (colorGreen c)
-toWord8ColorBlue c   = fromIntegral (colorBlue c)
-toWord8ColorAlpha c  = fromIntegral (colorAlpha c)
 
 -- marshalling 2
 {-
@@ -1357,7 +1356,7 @@ withManagedColourResult io
                    if (ok==0)
                     then return colorNull
                     else do rgba <- colourGetUnsignedInt pcolour
-                            return (colorFromWord rgba)
+                            return (toColor rgba)
        colourSafeDelete pcolour
        return color
 
@@ -1368,7 +1367,7 @@ withColourRef msg c f
 
 withColourPtr :: Color -> (Ptr (TColour a) -> IO b) -> IO b
 withColourPtr c f
-  = do pcolour <- colourCreateFromUnsignedInt (wordFromColor c)
+  = do pcolour <- colourCreateFromUnsignedInt (fromColor c)
        x <- f pcolour
        colourSafeDelete pcolour
        return x
@@ -1376,7 +1375,7 @@ withColourPtr c f
 colourFromColor :: Color -> IO (Colour ())
 colourFromColor c
   = if (colorOk c)
-     then do p <- colourCreateFromUnsignedInt (wordFromColor c)
+     then do p <- colourCreateFromUnsignedInt (fromColor c)
              if (colourIsStatic p)
               then return (objectFromPtr p)
               else do mp <- wxManagedPtr_CreateFromColour p
@@ -1391,7 +1390,7 @@ colorFromColour c
        if (ok==0)
         then return colorNull
         else do rgba <- colourGetUnsignedInt pcolour
-                return (colorFromWord rgba)
+                return (toColor rgba)
 
 
 foreign import ccall "wxColour_CreateEmpty" colourCreate    :: IO (Ptr (TColour a))

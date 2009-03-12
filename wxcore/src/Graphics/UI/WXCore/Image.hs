@@ -241,14 +241,8 @@ pixelBufferGetPixels (PixelBuffer owned (Size w h) buffer)
        return (convert rgbs)
   where
     convert :: [Word8] -> [Color]
-    convert (r:g:b:xs)  = colorRGB (intFromWord8 r) (intFromWord8 g) (intFromWord8 b): convert xs
+    convert (r:g:b:xs)  = colorRGB r g b : convert xs
     convert []          = []
-
-intFromWord8 :: Word8 -> Int                                          
-intFromWord8 c  = fromIntegral c
-
-intToWord8 :: Int -> Word8
-intToWord8 i    = fromIntegral i
 
 -- | Set all the pixels of a pixel buffer.
 pixelBufferSetPixels :: PixelBuffer -> [Color] -> IO ()
@@ -257,7 +251,7 @@ pixelBufferSetPixels (PixelBuffer owned (Size w h) buffer) colors
        pokeArray buffer (convert (take count colors))
   where
     convert :: [Color] -> [Word8]
-    convert (c:cs) = intToWord8 (colorRed c) : intToWord8 (colorGreen c) : intToWord8 (colorBlue c) : convert cs
+    convert (c:cs) = colorRed c : colorGreen c : colorBlue c : convert cs
     convert []     = []
 
 -- | Initialize the pixel buffer with a grey color. The second argument
@@ -271,9 +265,9 @@ pixelBufferSetPixel :: PixelBuffer -> Point -> Color -> IO ()
 pixelBufferSetPixel (PixelBuffer owned size buffer) point color
   = {-
     do let idx = 3*(y*w + x)
-           r   = intToWord8 (colorRed color)
-           g   = intToWord8 (colorGreen color)
-           b   = intToWord8 (colorBlue color)
+           r   = colorRed color
+           g   = colorGreen color
+           b   = colorBlue color
        pokeByteOff buffer idx r
        pokeByteOff buffer (idx+1) g
        pokeByteOff buffer (idx+2) b
@@ -289,7 +283,7 @@ pixelBufferGetPixel (PixelBuffer owned size buffer) point
        r   <- peekByteOff buffer idx
        g   <- peekByteOff buffer (idx+1)
        b   <- peekByteOff buffer (idx+2)
-       return (colorRGB (intFromWord8 r) (intFromWord8 g) (intFromWord8 b))
+       return (colorRGB r g b)
     -}
     do rgb <- wxcGetPixelRGB buffer (sizeW size) point
        return (colorFromInt rgb)

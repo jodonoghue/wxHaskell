@@ -179,7 +179,7 @@ fontDialog parent fontStyle
 colorDialog :: Window a -> Color -> IO (Maybe Color)
 colorDialog parent color
   = do c <- getColourFromUser parent color
-       if (colorOk c)
+       if (colorIsOk c)
         then return (Just c)
         else return Nothing
 

@@ -465,9 +465,9 @@ haskellToCArg decl arg
                    ++ pparens ("toCDoubleRectW " ++ name) ++ " " ++ pparens( "toCDoubleRectH " ++ name)
       Rect _   -> pparens ("toCIntRectX " ++ name) ++ " " ++ pparens( "toCIntRectY " ++ name)
                   ++ pparens ("toCIntRectW " ++ name) ++ " " ++ pparens( "toCIntRectH " ++ name)
-      ColorRGB _ ->    pparens ("toWord8ColorRed " ++ name) ++ " " 
-                    ++ pparens ("toWord8ColorGreen " ++ name) ++ " "
-                    ++ pparens ("toWord8ColorBlue " ++ name) 
+      ColorRGB _ ->    pparens ("colorRed " ++ name) ++ " " 
+                    ++ pparens ("colorGreen " ++ name) ++ " "
+                    ++ pparens ("colorBlue " ++ name) 
 
       ArrayString _     -> haskellArrayLenName name ++ " " ++ haskellArrayName name
       ArrayObject tp _  -> haskellArrayLenName name ++ " " ++ haskellArrayName name

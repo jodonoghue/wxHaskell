@@ -50,7 +50,7 @@ module Graphics.UI.WXCore.Types(
             , toCBool, fromCBool
 
             -- ** Colors
-            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorOk
+            , Color, rgb, colorRGB, colorRed, colorGreen, colorBlue, intFromColor, colorFromInt, colorIsOk, colorOk
             , black, darkgrey, dimgrey, mediumgrey, grey, lightgrey, white
             , red, green, blue
             , cyan, magenta, yellow
