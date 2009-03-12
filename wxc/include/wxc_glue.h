@@ -2209,7 +2209,7 @@ TBool      wxGrid_CanDragColSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragGridSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragRowSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanEnableCellControl( TSelf(wxGrid) _obj );
-TClass(wxRect) wxGrid_CellToRect( TSelf(wxGrid) _obj, int row, int col )
+TClass(wxRect) wxGrid_CellToRect( TSelf(wxGrid) _obj, int row, int col );
 void       wxGrid_ClearGrid( TSelf(wxGrid) _obj );
 void       wxGrid_ClearSelection( TSelf(wxGrid) _obj );
 TClass(wxGrid) wxGrid_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
@@ -4927,9 +4927,9 @@ TClassDefExtend(wxWizard,wxDialog)
 void       wxWizard_Chain( TClass(wxWizardPageSimple) f, TClass(wxWizardPageSimple) s );
 TClass(wxWizard) wxWizard_Create( TClass(wxWindow) _prt, int _id, TClass(wxString) _txt, TClass(wxBitmap) _bmp, TRect(_lft,_top,_wdt,_hgt) );
 TClass(wxWizardPage) wxWizard_GetCurrentPage( TSelf(wxWizard) _obj );
-void       wxWizard_GetPageSize( TSelf(wxWizard) _obj, TSizeOutVoid(_w,_h) );
-int        wxWizard_RunWizard( TSelf(wxWizard) _obj, TClass(wxWizardPage) firstPage );
 TClass(wxSize) wxWizard_GetPageSize( TSelf(wxWizard) _obj );
+int        wxWizard_RunWizard( TSelf(wxWizard) _obj, TClass(wxWizardPage) firstPage );
+void       wxWizard_SetPageSize( TSelf(wxWizard) _obj, TSize(w,h) );
 
 /* wxWizardEvent */
 TClassDefExtend(wxWizardEvent,wxNotifyEvent)
