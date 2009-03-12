@@ -19,6 +19,7 @@ module Graphics.UI.WXCore.Defines(
             ) where
 
 import System.Directory
+import System.FilePath
 import Graphics.UI.WXCore.WxcClasses
 import System.IO.Unsafe( unsafePerformIO )
 
@@ -89,25 +90,27 @@ getAbsoluteFilePath fname
        if exist
         then return fname
         else do appdir <- getApplicationDir
-                let appdirfname = appdir ++ dirSep ++ fname
+                let appdirfname = appdir </> fname
                 exist  <- doesFileExist appdirfname
                 if exist
                  then return appdirfname
                  else do cwd <- getCurrentDirectory 
-                         let cwdfname = cwd ++ dirSep ++ fname
+                         let cwdfname = cwd </> fname
                          exist <- doesFileExist cwdfname
                          if exist
                           then return cwdfname
                           else return fname
 
--- | Native directory separator (@\\@ on windows, @\/@ on unix's)
+{-# DEPRECATED dirSep "Use System.FilePath module and/or its module's pathSeparator instead" #-}
+-- | deprecated: Use System.FilePath module and/or its module\'s 'pathSeparator' instead.
 dirSep :: String
 dirSep
   = case wxToolkit of
       WxMSW   -> "\\"
       other   -> "/"
 
--- | Native path separator (@;@ on windows, @:@ on unix's)
+{-# DEPRECATED pathSep "Use System.FilePath module's searchPathSeparator instead" #-}
+-- | deprecated: Use System.FilePath module\'s 'searchPathSeparator' instead.
 pathSep :: String
 pathSep
   = case wxToolkit of

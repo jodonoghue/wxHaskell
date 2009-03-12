@@ -12,6 +12,7 @@ module Main where
 
 import Directory
 import List( zip3 )
+import System.FilePath
 import Graphics.UI.WX
 import Graphics.UI.WXCore 
 
@@ -223,10 +224,9 @@ getSubdirs fpath
 getRootDir :: IO (FilePath,FilePath)
 getRootDir
   = do current <- getCurrentDirectory
-       let isDirSep c = (c == '\\' || c == '/')
-           rootName  = takeWhile (not . isDirSep) current
+       let rootName  = takeWhile (not . isPathSeparator) current
            rootPath  = rootName ++ "/"
        exist <- do{ getDirectoryContents rootPath; return True } `catch` \err -> return False
        if exist
         then return (rootPath,rootName)
-        else return (current ++ "/", reverse (takeWhile (not . isDirSep) (reverse current)))
+        else return (current ++ "/", reverse (takeWhile (not . isPathSeparator) (reverse current)))

@@ -690,6 +690,14 @@ fi
 basepkgversion=`ghc-pkg latest base`
 haskell98pkgversion=`ghc-pkg latest haskell98`
 
+# Test if we can include the filepath package explicitly
+$hcpkg describe filepath > /dev/null 2> /dev/null
+case $? in
+  0) filepathpkgversion=`ghc-pkg latest filepath`
+     pkgfilepath="-package $filepathpkgversion";;
+  *) pkgfilepath="";;
+esac
+
 # Test if we can include the bytestring package explicitly
 $hcpkg describe bytestring > /dev/null 2> /dev/null
 case $? in
@@ -963,6 +971,7 @@ HC-PROF-FLAGS=-hisuf p_hi $hcprof
 # Packages
 PKG-BYTESTRING=$pkgbytestring
 PKG-CONTAINERS=$pkgcontainers
+PKG-FILEPATH=$pkgfilepath
 PKG-PARSEC=$pkgparsec
 PKG-TIME=$pkgtime
 PKG-STM=$pkgstm
@@ -1071,7 +1080,7 @@ exposed-modules: Graphics.UI.WXCore,
 	Graphics.UI.WXCore.WxcClassesMZ
 hs-libraries:wxcore,wxcore0,wxcore1,wxcore2
 extra-libraries:${wxclibname}-${binversion}
-depends: ${wxcoredepends}, $haskell98pkgversion, $bytestringpkgversion, $stmpkgversion
+depends: ${wxcoredepends}, $haskell98pkgversion, $filepathpkgversion, $bytestringpkgversion, $stmpkgversion
 extra-ld-opts:$extraldopts
 EOF
 tr -d \\r < config/wxcore-partial.pkg > config/wxcore.pkg
