@@ -145,8 +145,9 @@ WXD-SOURCES = \
 WXC-CORE= \
 	ewxw_main extra wrapper \
 	eljevent eljmime \
-	treectrl image apppath db dragimage glcanvas graphicscontext sound managed \
-	mediactrl printout previewframe taskbaricon textstream stc \
+	treectrl image apppath db dragimage glcanvas graphicscontext \
+	sound managed mediactrl printout previewframe taskbaricon \
+	textstream stc socket sckaddr \
 	std
 
 WXC-EWXW= \

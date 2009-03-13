@@ -46,6 +46,7 @@ typedef int intptr_t;
 #include "wx/minifram.h"
 #include "wx/mstream.h"
 #include "wx/wizard.h"
+#include "wx/socket.h"
 
 
 extern "C"

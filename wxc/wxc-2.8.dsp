@@ -254,6 +254,14 @@ SOURCE=.\src\wrapper.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\socket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\sckaddr.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\std.cpp
 # End Source File
 # End Group

@@ -22,4 +22,18 @@
   #endif
 #endif
 
+#define EWXWCONSTANTINT(NAME,VAL) \
+  EWXWEXPORT(int,exp##NAME)() \
+    { return (int)VAL;};
+#define EWXWCONSTANTSTR(NAME,VAL) \
+  EWXWEXPORT(wxString*,exp##NAME)() \
+    { return new wxString((const wchar_t*)VAL,wxConvLocal);};
+#ifdef __EWX_PREPROCESS
+# undef EWXWEXPORT
+# undef EWXWCONSTANTINT
+# undef EWXWCONSTANTSTR
+# define EWXWCONSTANTINT(NAME,VAL) def_const_int(#NAME,VAL);
+# define EWXWCONSTANTSTR(NAME,VAL) def_const_str(#NAME,VAL);
+#endif
+
 #endif /* #ifndef __EWXW_DEF_H */
