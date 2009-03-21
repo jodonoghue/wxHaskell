@@ -124,7 +124,8 @@ import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 import Foreign.Marshal.Utils (fromBool, toBool)
 
-{- note: for GHC 5.04, replace the following two imports by "import Foreign.ForeignPtr" -}
+{- note: for GHC 6.10.2 or higher, recommends to use "import Foreign.Concurrent"
+   See http://www.haskell.org/pipermail/cvs-ghc/2009-January/047120.html -}
 import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
 

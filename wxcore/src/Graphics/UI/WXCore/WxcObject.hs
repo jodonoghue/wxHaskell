@@ -30,12 +30,10 @@ import Foreign.Storable
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 
-{- note: for GHC 5.04, replace the following two imports by "import Foreign.ForeignPtr" -}
-import Foreign.ForeignPtr 
-{-
-hiding (newForeignPtr,addForeignPtrFinalizer)
+{- note: for GHC 6.10.2 or higher, recommends to use "import Foreign.Concurrent"
+   See http://www.haskell.org/pipermail/cvs-ghc/2009-January/047120.html -}
+import Foreign.ForeignPtr hiding (newForeignPtr,addForeignPtrFinalizer)
 import Foreign.Concurrent
--}
 
 {-----------------------------------------------------------------------------------------
     Objects
@@ -176,16 +174,16 @@ objectFromPtr p
 -- | Create a managed object with a given finalizer.
 objectFromManagedPtr :: ManagedPtr a -> IO (Object a)
 objectFromManagedPtr mp
-  = do -- wxManagedPtr_NoFinalize mp    {- turn off finalization -}
-       -- GHC 6.0.1 switches the parameters, use: 
-       --   fp <- newForeignPtr mp wxManagedPtrDeleteFunction 
-       fp <- newForeignPtr wxManagedPtrDeleteFunction mp
+  = do fun <- wxManagedPtrDeleteFunction
+       -- wxManagedPtr_NoFinalize mp    {- turn off finalization -}
+       fp <- newForeignPtr mp (fun mp)
        return (Managed fp)
 
 
-wxManagedPtrDeleteFunction :: FunPtr (ManagedPtr a -> IO ())
+wxManagedPtrDeleteFunction :: IO (ManagedPtr a -> IO ())
 wxManagedPtrDeleteFunction
-  = unsafePerformIO $ wxManagedPtr_GetDeleteFunction
+  = do fun <- wxManagedPtr_GetDeleteFunction
+       return $ wxManagedPtr_CallbackFunction fun
 
 {--------------------------------------------------------------------------
   Managed pointers
@@ -194,3 +192,4 @@ foreign import ccall wxManagedPtr_GetPtr     :: Ptr (TManagedPtr a) -> IO (Ptr a
 foreign import ccall wxManagedPtr_Finalize   :: ManagedPtr a -> IO ()
 foreign import ccall wxManagedPtr_NoFinalize :: ManagedPtr a -> IO ()
 foreign import ccall wxManagedPtr_GetDeleteFunction :: IO (FunPtr (ManagedPtr a -> IO ()))
+foreign import ccall "dynamic" wxManagedPtr_CallbackFunction :: FunPtr (ManagedPtr a -> IO ()) -> ManagedPtr a -> IO ()
