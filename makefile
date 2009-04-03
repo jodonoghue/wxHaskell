@@ -680,7 +680,7 @@ endif
 $(WXCORE-CORE-A-PROF-OBJS) $(WXCORE-CORE-B-PROF-OBJS) $(WXCORE-CORE-C-PROF-OBJS) $(WXCORE-PROF-OBJS): $(WXCORE-IMPORTSDIR)/%.p_o: $(WXCORE-SRCDIR)/%.hs
 	@$(call compile-prof-hs,$@,$<,$(WXCORE-HCFLAGS) $(HC-PROF-FLAGS) -Iwxc/include,$(WXCORE-IMPORTSDIR),$(WXCORE-HSDIRS) )
 $(WXCORE-STUB-PROF-OBJS): $(WXCORE-IMPORTSDIR)/%_stub.p_o: $(WXCORE-SRCDIR)/%.hs
-	$(HC) -c $(basename $@).c
+	$(HC) -c $(basename $@).c -osuf p_o
 
 # automatically include all dependency information.
 -include $(WXCORE-DEPS)
