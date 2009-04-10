@@ -532,7 +532,9 @@ else
 wxcore: wxcore-only
 endif
 
-wxcore-only: wxd wxc wxcore-dirs $(WXCORE-LIBS)
+wxcore-only: wxcore-gen $(WXCORE-LIBS)
+
+wxcore-gen: wxd wxc wxcore-dirs $(WXCORE-GEN-HS)
 
 wxcore-dirs:
 	@$(call ensure-dirs-of-files,$(WXCORE-OBJS))
