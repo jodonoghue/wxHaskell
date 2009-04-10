@@ -539,6 +539,8 @@ endif
 
 wxcore-only: wxcore-gen $(WXCORE-LIBS)
 
+wxcore-install: wxcore-install-files wxcore-register
+
 wxcore-gen: wxd wxc wxcore-dirs $(WXCORE-GEN-HS)
 
 wxcore-dirs:
