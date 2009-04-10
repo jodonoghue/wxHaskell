@@ -8,7 +8,7 @@ RPM-SOURCE-DIR=$(HOME)/rpm/SOURCES
 endif
 
 # main target
-all:	wxcore
+all:	wxcore-gen
 
 #--------------------------------------------------------------------------
 # Help
@@ -279,11 +279,16 @@ realclean: wxcore-realclean
 #--------------------------------------------------------------------------
 register:  wxcore-register
 
-install:	wxcore-install-files wxcore-register
+install:	wxc-install-files
 	@echo ------------------------------------------
-	@echo Done with wxcore...
+	@echo Done with wxc...
 	@echo
 	@echo Now please
+	@echo  cd wxcore
+	@echo  runhaskell Setup configure
+	@echo  runhaskell Setup build
+	@echo  runhaskell Setup install
+	@echo  cd ..
 	@echo  cd wx
 	@echo  runhaskell Setup configure
 	@echo  runhaskell Setup build
