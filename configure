@@ -164,7 +164,7 @@ preprocess_args ()
 	lib=""
 	dll=".dll"
 	wxtoolkit="msw"
-	wxversion="2.8.9";;  # guess?
+	wxversion="2.8.10";;  # guess?
      *)
         arguments="$arguments $1";;    # save argument
     esac
