@@ -30,7 +30,7 @@ EWXWEXPORT(wxString*,wxFindReplaceData_GetFindString)(void* _obj)
 EWXWEXPORT(wxString*,wxFindReplaceData_GetReplaceString)(void* _obj)
 {
 	wxString *result = new wxString();
-	*result = ((wxFindReplaceData*)_obj)->GetFindString();
+	*result = ((wxFindReplaceData*)_obj)->GetReplaceString();
 	return result;
 }
 	
