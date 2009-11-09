@@ -36,7 +36,6 @@ module Graphics.UI.WXCore
         , module Graphics.UI.WXCore.Dialogs
         , module Graphics.UI.WXCore.Controls
         , module Graphics.UI.WXCore.Db
-        , module Graphics.UI.WXCore.OpenGL
         , module Graphics.UI.WXCore.Layout
         , module Graphics.UI.WXCore.Image
 
@@ -48,11 +47,6 @@ import System.Mem( performGC )
 
 import Graphics.UI.WXCore.WxcDefs
 import Graphics.UI.WXCore.WxcClasses 
-  hiding ( GLCanvas
-         , glCanvasSetCurrent
-         , glCanvasSwapBuffers
-         , glCanvasSetColour )
-
 import Graphics.UI.WXCore.WxcClassInfo
   
 import Graphics.UI.WXCore.Types
@@ -68,7 +62,6 @@ import Graphics.UI.WXCore.Controls
 import Graphics.UI.WXCore.Layout
 import Graphics.UI.WXCore.Image
 import Graphics.UI.WXCore.Db
-import Graphics.UI.WXCore.OpenGL
 
 -- | Start the event loop. Takes an initialisation action as argument.
 -- Except for 'run', the functions in the WXH library can only be called

@@ -91,7 +91,7 @@ EWXWEXPORT(int,wxJoystick_GetProductId)(wxJoystick* self)
 EWXWEXPORT(wxString*,wxJoystick_GetProductName)(wxJoystick* _obj)
 {
 	wxString *result = new wxString();
-	*result = self->GetProductName();
+	*result = _obj->GetProductName();
 	return result;
 }
 	

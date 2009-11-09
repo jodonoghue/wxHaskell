@@ -1,3 +1,5 @@
+#include <wx/string.h>
+
 #include "wrapper.h"
 #include "wx/gizmos/dynamicsash.h"
 #include "wx/gizmos/editlbox.h"
@@ -57,15 +59,17 @@ EWXWEXPORT(void*,wxDynamicSashWindow_GetVScrollBar)(void* _obj, void* child)
 	
 EWXWEXPORT(void*,wxEditableListBox_Create)(void* parent, int id, void* label, int x, int y, int w, int h, int style)
 {
-	return (void*) new wxEditableListBox((wxWindow*)parent, (wxWindowID)id, (char*)label, wxPoint(x, y), wxSize(w, h), (long)style);
+	return (void*) new wxEditableListBox((wxWindow*)parent, (wxWindowID)id, wxString::FromAscii((char*)label), wxPoint(x, y), wxSize(w, h), (long)style);
 }
 	
 EWXWEXPORT(void,wxEditableListBox_SetStrings)(void* _obj, void* strings, int _n)
 {
 	wxArrayString list;
 
-	for (int i = 0; i < _n; i++)
-		list.Add(((char**)strings)[i]);
+	for (int i = 0; i < _n; i++) {
+		wxString s = wxString::FromAscii(((char**)strings)[i]);
+		list.Add(s);
+	}
 
 	((wxEditableListBox*)_obj)->SetStrings(list);
 }
@@ -78,7 +82,7 @@ EWXWEXPORT(int,wxEditableListBox_GetStrings)(void* _obj, void* _ref)
 	if (_ref)
 	{
 		for (unsigned int i = 0; i < list.GetCount(); i++)
-			((char**)_ref)[i] = strdup (list.Item(i).c_str());
+			((char**)_ref)[i] = strdup (list.Item(i).mb_str());
 	}
 
 	return list.GetCount();
@@ -147,7 +151,7 @@ EWXWEXPORT(void,wxLEDNumberCtrl_SetDrawFaded)(void* _obj, int DrawFaded, int Red
 	
 EWXWEXPORT(void,wxLEDNumberCtrl_SetValue)(void* _obj, void* Value, int Redraw)
 {
-	((wxLEDNumberCtrl*)_obj)->SetValue((char*)Value, Redraw != 0);
+	((wxLEDNumberCtrl*)_obj)->SetValue(wxString::FromAscii((char*)Value), Redraw != 0);
 }
 	
 EWXWEXPORT(void*,wxMultiCellItemHandle_Create)(int row, int column, int height, int width, int sx, int sy, int style, int wx, int wy, int align)

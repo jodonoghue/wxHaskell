@@ -22,7 +22,6 @@
 #include "db.h"
 #include "dragimage.h"
 #include "graphicscontext.h"
-#include "glcanvas.h"
 #include "sound.h"
 #include "managed.h"
 #include "mediactrl.h"
