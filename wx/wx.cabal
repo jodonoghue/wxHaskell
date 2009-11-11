@@ -1,5 +1,5 @@
 Name:           wx
-Version:        0.11.1.3
+Version:        0.12.1.1
 License:        LGPL
 License-file:   license.txt
 Homepage:       http://haskell.org/haskellwiki/WxHaskell
@@ -17,9 +17,9 @@ Flag splitBase
 
 Library
     if flag(splitBase)
-        build-depends: base >= 3, wxcore >= 0.10.4, stm
+        build-depends: base >= 3, wxcore >= 0.12.1.1, stm
     else
-        build-depends: base <  3, wxcore >= 0.10.4, stm
+        build-depends: base <  3, wxcore >= 0.12.1.1, stm
 
  Exposed-Modules:
   Graphics.UI.WX.Draw
