@@ -24,6 +24,28 @@ extra-tmp-files:
   src/haskell/Graphics/UI/WXCore/WxcClassesMZ.hs
   src/haskell/Graphics/UI/WXCore/WxcDefs.hs
 
+extra-source-files:
+  src/eiffel/wx_defs.e
+  src/eiffel/wxc_defs.e
+  src/eiffel/stc.e
+  src/include/db.h
+  src/include/dragimage.h
+  src/include/eljgrid.h
+  src/include/ewxw_def.h
+  src/include/graphicscontext.h
+  src/include/managed.h
+  src/include/mediactrl.h
+  src/include/previewframe.h
+  src/include/printout.h
+  src/include/sound.h
+  src/include/stc.h
+  src/include/stc_gen.h
+  src/include/textstream.h
+  src/include/wrapper.h
+  src/include/wxc.h
+  src/include/wxc_glue.h
+  src/include/wxc_types.h
+
 Flag splitBase
   description: Choose the new smaller, split-up base package.
 
@@ -33,7 +55,7 @@ library
 
   include-dirs:
     src/include
-
+  
   c-sources:
     src/cpp/apppath.cpp
     src/cpp/db.cpp
@@ -177,7 +199,7 @@ library
   if flag(splitBase)
     build-depends:
       array,
-      base >= 3,
+      base >= 3 && < 5,
       containers,
       directory,
       old-time,

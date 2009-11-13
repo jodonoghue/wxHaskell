@@ -22,10 +22,9 @@ includeDirectory :: FilePath
 wxcoreDirectory  :: FilePath
 
 sourceDirectory  = "src"
-autogenDirectory = "dist/build/autogen"
-eiffelDirectory  = sourceDirectory  </> "eiffel"
-includeDirectory = sourceDirectory  </> "include"
-wxcoreDirectory  = autogenDirectory </> "Graphics/UI/WXCore"
+eiffelDirectory  = sourceDirectory </> "eiffel"
+includeDirectory = sourceDirectory </> "include"
+wxcoreDirectory  = sourceDirectory </> "haskell/Graphics/UI/WXCore"
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
