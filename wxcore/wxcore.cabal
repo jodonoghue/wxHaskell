@@ -1,5 +1,5 @@
 name:         wxcore
-version:      0.12.1.1
+version:      0.12.1.2
 license:      LGPL
 license-file: LICENSE
 author:       Daan Leijen
@@ -25,6 +25,7 @@ extra-tmp-files:
   src/haskell/Graphics/UI/WXCore/WxcDefs.hs
 
 extra-source-files:
+  src/cpp/stc_gen.cpp
   src/eiffel/wx_defs.e
   src/eiffel/wxc_defs.e
   src/eiffel/stc.e
