@@ -1,5 +1,5 @@
 name:         wxdirect
-version:      0.12.1.1
+version:      0.12.1.3
 license:      BSD3
 license-file: LICENSE
 author:       Daan Leijen
@@ -17,14 +17,19 @@ cabal-version: >= 1.2
 build-type:    Simple
 
 flag splitBase
-  description: Choose the new smaller, split-up base package.
+    description:    use new split base
+    default:        True
 
 library
   hs-source-dirs:
     src
 
-  build-depends:
-    base >= 3 && <= 5
+  if flag(splitBase)
+    build-depends:
+        base >= 4 && < 5
+  else
+    build-depends:
+        base >= 3 && < 4
 
   exposed-modules:
     Application.Wxdirect
@@ -53,17 +58,18 @@ executable wxdirect
   hs-source-dirs:
     src
 
+  build-depends:
+    parsec     >= 2.1.0 && < 4,
+    time       >= 1.0   && < 1.2
+
   if flag(splitBase)
     build-depends:
-      base       >= 3     && < 5,
-      containers >= 0.1   && < 0.3,
-      parsec     >= 2.1.0 && < 4,
-      time       >= 1.0   && < 1.2
+        base       >= 4     && < 5,
+        containers >= 0.2   && < 0.4
   else
     build-depends:
-      base               < 3,
-      parsec >= 2.1   && < 4,
-      time   >= 1.0.0 && < 1.1
+        base       >= 3     && < 4,
+        containers >= 0.1   && < 0.3
 
 --  ghc-options: -Wall
   if impl(ghc >= 6.8)
