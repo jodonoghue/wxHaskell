@@ -84,7 +84,7 @@ EWXWEXPORT(double,wxMediaCtrl_GetPlaybackRate)(wxMediaCtrl* self)
 #ifdef wxUSE_MEDIACTRL
   return self->GetPlaybackRate();
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -93,7 +93,7 @@ EWXWEXPORT(double,wxMediaCtrl_GetVolume)(wxMediaCtrl* self)
 #ifdef wxUSE_MEDIACTRL
   return self->GetVolume();
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -102,7 +102,7 @@ EWXWEXPORT(int,wxMediaCtrl_GetState)(wxMediaCtrl* self)
 #ifdef wxUSE_MEDIACTRL
   return self->GetState();
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -111,7 +111,7 @@ EWXWEXPORT(wxFileOffset,wxMediaCtrl_Length)(wxMediaCtrl* self)
 #ifdef wxUSE_MEDIACTRL
   return self->Length();
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -120,7 +120,7 @@ EWXWEXPORT(bool,wxMediaCtrl_Load)(wxMediaCtrl* self, const wxString* fileName)
 #ifdef wxUSE_MEDIACTRL
   return self->Load(*fileName);
 #else
-  return NULL;
+  return false;
 #endif
 }
 
@@ -129,7 +129,7 @@ EWXWEXPORT(bool,wxMediaCtrl_LoadURI)(wxMediaCtrl* self, const wxString* uri)
 #ifdef wxUSE_MEDIACTRL
   return self->LoadURI(*uri);
 #else
-  return NULL;
+  return false;
 #endif
 }
 
@@ -210,7 +210,7 @@ EWXWEXPORT(wxFileOffset, wxMediaCtrl_Tell) (wxMediaCtrl* self)
 #ifdef wxUSE_MEDIACTRL
   return self->Tell();
 #else
-  return NULL;
+  return 0;
 #endif
 }
 
@@ -223,7 +223,7 @@ EWXWEXPORT(int,expEVT_MEDIA_LOADED)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_LOADED;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
@@ -232,7 +232,7 @@ EWXWEXPORT(int,expEVT_MEDIA_STOP)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_STOP;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
@@ -241,7 +241,7 @@ EWXWEXPORT(int,expEVT_MEDIA_FINISHED)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_FINISHED;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
@@ -250,7 +250,7 @@ EWXWEXPORT(int,expEVT_MEDIA_STATECHANGED)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_STATECHANGED;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
@@ -259,7 +259,7 @@ EWXWEXPORT(int,expEVT_MEDIA_PLAY)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_PLAY;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
@@ -268,7 +268,7 @@ EWXWEXPORT(int,expEVT_MEDIA_PAUSE)()
 #ifdef wxUSE_MEDIACTRL
     return (int)wxEVT_MEDIA_PAUSE;
 #else
-    return NULL;
+    return 0;
 #endif
 }
 
