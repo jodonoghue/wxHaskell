@@ -1,5 +1,5 @@
 Name:           wx
-Version:        0.12.1.2
+Version:        0.12.1.5
 License:        LGPL
 License-file:   license.txt
 Homepage:       http://haskell.org/haskellwiki/WxHaskell
@@ -15,14 +15,22 @@ Data-Files:     wx.cabal
 Flag splitBase
     Description: Choose the new smaller, split-up base package.
 
+Flag newBase
+    Description: pick base >= 4
+
 Library
     if flag(splitBase)
-        build-depends: base >= 3 && < 5, 
-                       wxcore >= 0.12.1.2,
+        build-depends: wxcore >= 0.12.1.4,
                        stm
+        if flag(newBase)
+            build-depends:
+                base >= 4 && < 5
+        else
+            build-depends:
+                base >= 3 && < 4
     else
         build-depends: base <  3, 
-                       wxcore >= 0.12.1.2, 
+                       wxcore >= 0.12.1.4,
                        stm
 
  Exposed-Modules:

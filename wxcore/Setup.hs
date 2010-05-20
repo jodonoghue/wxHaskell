@@ -39,7 +39,7 @@ eiffelFiles =
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-myConfHook :: (Either GenericPackageDescription PackageDescription, HookedBuildInfo) -> ConfigFlags -> IO LocalBuildInfo
+-- Comment out type signature because of a Cabal API change from 1.6 to 1.7
 myConfHook (pkg0, pbi) flags = do
     createDirectoryIfMissing True wxcoreDirectory
     system $ "wxdirect -t --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
