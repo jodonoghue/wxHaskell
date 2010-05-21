@@ -318,7 +318,7 @@ instance Able (TextCtrl a) where
 --
 entry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 entry parent props
-  = textCtrlEx parent 0 props
+  = textCtrlEx parent wxTE_RICH props
 
 -- | Create a single-line text entry control. Note: 'alignment' has to
 -- be set at creation time (or the entry has default alignment (=left) ).
@@ -328,7 +328,7 @@ entry parent props
 --
 textEntry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textEntry parent props
-  = textCtrlEx parent 0 props
+  = textCtrlEx parent wxTE_RICH props
 
 -- | Create a multi-line text control. Note: the 'wrap' and 'alignment'
 -- have to be set at creation time or the default to 'WrapNone' and 'AlignLeft' respectively.
@@ -338,7 +338,7 @@ textEntry parent props
 --
 textCtrl :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrl parent props
-  = textCtrlEx parent wxTE_MULTILINE props
+  = textCtrlEx parent (wxTE_MULTILINE .+. wxTE_RICH) props
 
 
 -- | Create a multi-line text rich-text control with a certain wrap mode
@@ -362,10 +362,9 @@ textCtrlEx :: Window a -> Style -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlEx parent stl props
   = feed2 props stl $
     initialWindow    $ \id rect ->
-    initialText      $ \txt ->
     initialWrap      $
     initialAlignment $ \props flags ->
-    do e <- textCtrlCreate parent id txt rect flags
+    do e <- textCtrlCreate parent id "" rect flags
        set e props
        return e
 
