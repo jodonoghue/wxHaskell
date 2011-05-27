@@ -394,31 +394,135 @@ EWXWEXPORT(void,wxDateTime_SubtractDate)(wxDateTime* self,wxDateSpan* diff,wxDat
 {
 	*_ref = self->Subtract(*diff);
 }
-	
+
+#if (wxVERSION_NUMBER < 2900)	
 EWXWEXPORT(void*,wxDateTime_ParseRfc822Date)(wxDateTime* self,void* date)
 {
 	return (void*)self->ParseRfc822Date((const wxChar*)date);
 }
+#else
+EWXWEXPORT(void*,wxDateTime_ParseRfc822Date)(wxDateTime* self,void* date)
+{
+    wxString dateStr((const wxChar*)date);
+    wxString::const_iterator parseOut;
+    wxString remainStr;
+
+    if (self->ParseRfc822Date(dateStr, &parseOut))
+    {
+        // The iterator points to the first character after the string
+        // We should return a pointer to the remainder, but this is complicated
+        // in Unicode by the fact that code points are not simple pointers...
+        for (; parseOut != dateStr.end(); ++parseOut)
+            remainStr += *parseOut;
+
+        delete ((const wxChar*) date);
+        return (void*) remainStr.wchar_str();
+    }
+    else
+        return NULL;
+}
+#endif
 	
+#if (wxVERSION_NUMBER < 2900)	
 EWXWEXPORT(void*,wxDateTime_ParseFormat)(wxDateTime* self,void* date,void* format,wxDateTime* dateDef)
 {
 	return (void*)self->ParseFormat((const wxChar*)date, (const wxChar*)format,*dateDef);
+}	
+#else
+EWXWEXPORT(void*,wxDateTime_ParseFormat)(wxDateTime* self,void* date,void* format,wxDateTime* dateDef)
+{
+    wxString dateStr((const wxChar*)date);
+    wxString parseFmt((const wxChar*)format);
+    wxString::const_iterator parseOut;
+    wxString remainStr;
+
+    if (self->ParseFormat(dateStr, parseFmt, *dateDef, &parseOut))
+    {
+        for (; parseOut != dateStr.end(); ++parseOut)
+            remainStr += *parseOut;
+
+        delete ((const wxChar*) date);
+        return (void*) remainStr.wchar_str();
+    }
+    else
+        return NULL;
 }
+#endif
 	
+#if (wxVERSION_NUMBER < 2900)	
 EWXWEXPORT(void*,wxDateTime_ParseDateTime)(wxDateTime* self,void* datetime)
 {
 	return (void*)self->ParseDateTime((const wxChar*)datetime);
+}	
+#else
+EWXWEXPORT(void*,wxDateTime_ParseDateTime)(wxDateTime* self,void* datetime)
+{
+    wxString dateStr((const wxChar*)datetime);
+    wxString::const_iterator parseOut;
+    wxString remainStr;
+
+    if (self->ParseDateTime(dateStr, &parseOut))
+    {
+        for (; parseOut != dateStr.end(); ++parseOut)
+            remainStr += *parseOut;
+
+        delete ((const wxChar*) datetime);
+        return (void*) remainStr.wchar_str();
+    }
+    else
+        return NULL;
 }
+#endif
 	
+#if (wxVERSION_NUMBER < 2900)	
 EWXWEXPORT(void*,wxDateTime_ParseDate)(wxDateTime* self,void* date)
 {
 	return (void*)self->ParseDate((const wxChar*)date);
 }
+#else
+EWXWEXPORT(void*,wxDateTime_ParseDate)(wxDateTime* self,void* date)
+{
+    wxString dateStr((const wxChar*)date);
+    wxString::const_iterator parseOut;
+    wxString remainStr;
+
+    if (self->ParseDate(dateStr, &parseOut))
+    {
+        for (; parseOut != dateStr.end(); ++parseOut)
+            remainStr += *parseOut;
+
+        delete ((const wxChar*) date);
+        return (void*) remainStr.wchar_str();
+    }
+    else
+        return NULL;
+}
+#endif
 	
+#if (wxVERSION_NUMBER < 2900)	
 EWXWEXPORT(void*,wxDateTime_ParseTime)(wxDateTime* self,void* time)
 {
 	return (void*)self->ParseTime((const wxChar*)time);
 }
+#else
+EWXWEXPORT(void*,wxDateTime_ParseTime)(wxDateTime* self,void* time)
+{
+    wxString timeStr((const wxChar*)time);
+    wxString::const_iterator parseOut;
+    wxString remainStr;
+
+    if (self->ParseTime(timeStr, &parseOut))
+    {
+        for (; parseOut != timeStr.end(); ++parseOut)
+            remainStr += *parseOut;
+
+        delete ((const wxChar*) time);
+        return (void*) remainStr.wchar_str();
+    }
+    else
+        return NULL;
+}
+#endif
 	
 EWXWEXPORT(wxString*,wxDateTime_Format)(wxDateTime* self,void* format,int tz)
 {

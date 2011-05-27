@@ -397,11 +397,5 @@ EWXWEXPORT(bool,wxPrintout_IsPreview)(wxPrintout* _obj)
 {
 	return _obj->IsPreview();
 }
-	
-EWXWEXPORT(void,wxPrintout_SetIsPreview)(void* _obj,bool p)
-{
-	((wxPrintout*)_obj)->SetIsPreview(p);
-}
- 
-    
+	    
 }

@@ -18,11 +18,6 @@ EWXWEXPORT(void,wxCalendarCtrl_GetDate)(wxCalendarCtrl* self,wxDateTime* date)
 	*date = self->GetDate();
 }
 	
-EWXWEXPORT(void,wxCalendarCtrl_EnableYearChange)(wxCalendarCtrl* self,bool enable)
-{
-	self->EnableYearChange(enable);
-}
-	
 EWXWEXPORT(void,wxCalendarCtrl_EnableMonthChange)(wxCalendarCtrl* self,bool enable)
 {
 	self->EnableMonthChange(enable);

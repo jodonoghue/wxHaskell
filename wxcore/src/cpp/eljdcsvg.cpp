@@ -1,7 +1,14 @@
 #include "wrapper.h"
 
-#ifdef wxUSE_SVG
-# include "wx/svg/dcsvg.h"
+#if (wxVERSION_NUMBER < 2900)
+# ifdef wxUSE_SVG
+#  include "wx/svg/dcsvg.h"
+# endif
+#else
+# ifndef wxUSE_SVG
+#  define wxUSE_SVG 1
+# endif
+# include "wx/dcsvg.h"
 #endif
 
 extern "C"

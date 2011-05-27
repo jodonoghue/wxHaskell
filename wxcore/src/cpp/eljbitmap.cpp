@@ -3,13 +3,9 @@
 extern "C"
 {
 
-EWXWEXPORT(void*,wxBitmap_Create)(void* _data,int _type,int _width,int _height,int _depth)
+EWXWEXPORT(void*,wxBitmap_Create)(void* _data,int _width,int _height,int _depth)
 {
-#ifdef __WIN32__
-	return (void*) new wxBitmap(_data, _type, _width, _height, _depth);
-#else
 	return (void*) new wxBitmap((const char*)_data, _width, _height, _depth);
-#endif
 }
 
 EWXWEXPORT(void*,wxBitmap_CreateFromXPM)(void* _data)

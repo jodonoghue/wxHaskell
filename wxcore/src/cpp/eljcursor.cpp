@@ -15,12 +15,12 @@ EWXWEXPORT(wxCursor*,Cursor_CreateFromImage)(wxImage* image)
 
 EWXWEXPORT(wxCursor*,Cursor_CreateLoad)(wxString* name,long type,int width,int height)
 {
-#ifdef __WXGTK__
-// See http://thread.gmane.org/gmane.comp.lib.wxwidgets.general/45999
-	return NULL;
+#if (wxVERSION_NUMBER >= 2900)
+    wxBitmapType bm_type = (wxBitmapType) type;
 #else
-	return new wxCursor(*name, type, width, height);
+    long bm_type = type;
 #endif
+	return new wxCursor(*name, bm_type, width, height);
 }
 
 }

@@ -46,23 +46,6 @@ EWXWEXPORT(wxMediaCtrl*,wxMediaCtrl_Create)( void* parent, int id,
 #endif
 }
 
-/* we don't need this.
-EWXWEXPORT(wxMediaCtrl*,wxMediaCtrl_Create)( void* parent, int id,
-                                             wxString* fileName, int x, int y, int w, int h,
-                                             long style, wxString* szBackend, wxString* name)
-{
-#ifdef wxUSE_MEDIACTRL
-  return wxMediaCtrl->Create((wxWindow*)parent,(wxWindowID)id,
-    (fileName ? *fileName : wxString(wxT(""))),
-    wxPoint(x,y),wxSize(w,h),style,
-    (szBackend ? *szBackend : wxString(wxT(""))), wxDefaultValidator,
-    (name ? *name : wxString(wxT("MediaCtrl"))));
-#else
-  return NULL;
-#endif
-}
-*/
-
 EWXWEXPORT(void,wxMediaCtrl_Delete)(wxMediaCtrl* self)  
 {
 #ifdef wxUSE_MEDIACTRL
@@ -165,7 +148,7 @@ EWXWEXPORT(wxFileOffset,wxMediaCtrl_Seek)(wxMediaCtrl* self, wxFileOffset offset
 #ifdef wxUSE_MEDIACTRL
   return self->Seek(offsetWhere, static_cast<wxSeekMode>(mode));
 #else
-  return NULL;
+  return (wxFileOffset) 0;
 #endif
 }
 

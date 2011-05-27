@@ -65,12 +65,16 @@ EWXWEXPORT(void,wxGridCellEditor_BeginEdit)(wxGridCellEditor* self,int row,int c
 {
 	self->BeginEdit(row, col, (wxGrid*)grid);
 }
-	
-EWXWEXPORT(bool,wxGridCellEditor_EndEdit)(wxGridCellEditor* self,int row,int col,wxGrid* grid)
+
+EWXWEXPORT(bool,wxGridCellEditor_EndEdit)(wxGridCellEditor* self,int row,int col,wxGrid* grid, wxString* oldCell, wxString* newCell)
 {
+#if (wxVERSION_NUMBER < 2900)
 	return self->EndEdit(row, col,  grid);
+#else
+  return self->EndEdit(row, col, grid, *oldCell, newCell);
+#endif
 }
-	
+
 EWXWEXPORT(void,wxGridCellEditor_Reset)(wxGridCellEditor* self)
 {
 	self->Reset();
@@ -281,63 +285,11 @@ EWXWEXPORT(int,wxGrid_GetNumberCols)(wxGrid* self)
 	return self->GetNumberCols();
 }
 	
-EWXWEXPORT(void,wxGrid_CalcRowLabelsExposed)(wxGrid* self,wxRegion* reg)
-{
-	self->CalcRowLabelsExposed(*reg);
-}
-	
-EWXWEXPORT(void,wxGrid_CalcColLabelsExposed)(wxGrid* self,wxRegion* reg)
-{
-	self->CalcColLabelsExposed(*reg);
-}
-	
-EWXWEXPORT(void,wxGrid_CalcCellsExposed)(wxGrid* self,wxRegion* reg)
-{
-	self->CalcCellsExposed(*reg);
-}
-	
-EWXWEXPORT(void,wxGrid_NewCalcCellsExposed)(wxGrid* self,wxRegion* reg,wxGridCellCoordsArray* arr)
-{
-#if wxVERSION_NUMBER >= 2400
-	*arr = self->CalcCellsExposed(*reg);
-#endif
-}
-	
-EWXWEXPORT(void,wxGrid_ProcessRowLabelMouseEvent)(wxGrid* self,wxMouseEvent* event)
-{
-	self->ProcessRowLabelMouseEvent(*event);
-}
-	
-EWXWEXPORT(void,wxGrid_ProcessColLabelMouseEvent)(wxGrid* self,wxMouseEvent* event)
-{
-	self->ProcessColLabelMouseEvent(*event);
-}
-	
-EWXWEXPORT(void,wxGrid_ProcessCornerLabelMouseEvent)(wxGrid* self,wxMouseEvent* event)
-{
-	self->ProcessCornerLabelMouseEvent(*event);
-}
-	
-EWXWEXPORT(void,wxGrid_ProcessGridCellMouseEvent)(wxGrid* self,wxMouseEvent* event)
-{
-	self->ProcessGridCellMouseEvent(*event);
-}
-	
 EWXWEXPORT(bool,wxGrid_ProcessTableMessage)(wxGrid* self,wxGridTableMessage* evt)
 {
 	return self->ProcessTableMessage(*evt);
 }
-	
-EWXWEXPORT(void,wxGrid_DoEndDragResizeRow)(wxGrid* self)
-{
-	self->DoEndDragResizeRow();
-}
-	
-EWXWEXPORT(void,wxGrid_DoEndDragResizeCol)(wxGrid* self)
-{
-	self->DoEndDragResizeCol();
-}
-	
+
 EWXWEXPORT(void*,wxGrid_GetTable)(wxGrid* self)
 {
 	return (void*)self->GetTable();
@@ -383,23 +335,6 @@ EWXWEXPORT(bool,wxGrid_DeleteCols)(wxGrid* self,int pos,int numCols,bool updateL
 	return self->DeleteCols(pos, numCols, updateLabels);
 }
 	
-EWXWEXPORT(void,wxGrid_DrawGridCellArea)(void* self,wxDC* dc)
-{
-#if wxVERSION_NUMBER >= 2400
-	wxGridCellCoordsArray arr;
-	((wxGrid*)self)->DrawGridCellArea(*dc, arr);
-#else
-	((wxGrid*)self)->DrawGridCellArea(*dc);
-#endif
-}
-	
-EWXWEXPORT(void,wxGrid_NewDrawGridCellArea)(wxGrid* self,wxDC* dc,wxGridCellCoordsArray* arr)
-{
-#if wxVERSION_NUMBER >= 2400
-	self->DrawGridCellArea(*dc,*arr);
-#endif
-}
-	
 EWXWEXPORT(void,wxGrid_DrawGridSpace)(wxGrid* self,wxDC* dc)
 {
 	self->DrawGridSpace(*dc);
@@ -418,23 +353,6 @@ EWXWEXPORT(void,wxGrid_DrawAllGridLines)(wxGrid* self,wxDC* dc,void* reg)
 EWXWEXPORT(void,wxGrid_DrawCell)(wxGrid* self,wxDC* dc,int _row,int _col)
 {
 	self->DrawCell(*dc, wxGridCellCoords(_row, _col));
-}
-	
-EWXWEXPORT(void,wxGrid_DrawHighlight)(wxGrid* self,wxDC* dc)
-{
-#if wxVERSION_NUMBER >= 2400
-	wxGridCellCoordsArray arr;
-	self->DrawHighlight(*dc, arr);
-#else
-	self->DrawHighlight(*dc);
-#endif
-}
-	
-EWXWEXPORT(void,wxGrid_NewDrawHighlight)(wxGrid* self,wxDC* dc,wxGridCellCoordsArray* arr)
-{
-#if wxVERSION_NUMBER >= 2400
-	self->DrawHighlight(*dc,*arr);
-#endif
 }
 	
 EWXWEXPORT(void,wxGrid_DrawCellHighlight)(wxGrid* self,wxDC* dc,void* attr)

@@ -15,11 +15,7 @@ EWXWEXPORT(void*,wxPen_CreateFromColour)(wxColour* col,int width,int style)
 
 EWXWEXPORT(void*,wxPen_CreateFromBitmap)(wxBitmap* stipple,int width)
 {
-#ifdef __WIN32__
 	return new wxPen(*stipple, width);
-#else
-	return NULL;
-#endif
 }
 
 EWXWEXPORT(void*,wxPen_CreateFromStock)(int id)
@@ -93,9 +89,7 @@ EWXWEXPORT(void,wxPen_SetStyle)(void* self,int style)
 	
 EWXWEXPORT(void,wxPen_SetStipple)(void* self,wxBitmap* stipple)
 {
-#ifdef __WIN32__
 	((wxPen*)self)->SetStipple(*stipple);
-#endif
 }
 	
 EWXWEXPORT(void,wxPen_SetDashes)(void* self,int nb_dashes,void* dash)
@@ -105,12 +99,22 @@ EWXWEXPORT(void,wxPen_SetDashes)(void* self,int nb_dashes,void* dash)
 	
 EWXWEXPORT(void,wxPen_SetJoin)(void* self,int join)
 {
-	((wxPen*)self)->SetJoin(join);
+#if (wxVERSION_NUMBER < 2900)
+    int _join = join;
+#else
+    wxPenJoin _join = (wxPenJoin) join;
+#endif
+	((wxPen*)self)->SetJoin(_join);
 }
 	
 EWXWEXPORT(void,wxPen_SetCap)(void* self,int cap)
 {
-	((wxPen*)self)->SetCap(cap);
+#if (wxVERSION_NUMBER < 2900)
+    int _cap = cap;
+#else
+    wxPenCap _cap = (wxPenCap) cap;
+#endif
+	((wxPen*)self)->SetCap(_cap);
 }
 	
 EWXWEXPORT(void,wxPen_GetColour)(void* self,wxColour* _ref)
@@ -130,12 +134,12 @@ EWXWEXPORT(int,wxPen_GetStyle)(void* self)
 	
 EWXWEXPORT(int,wxPen_GetJoin)(void* self)
 {
-	return ((wxPen*)self)->GetJoin();
+  return (int) ((wxPen*)self)->GetJoin();
 }
 	
 EWXWEXPORT(int,wxPen_GetCap)(void* self)
 {
-	return ((wxPen*)self)->GetCap();
+  return (int) ((wxPen*)self)->GetCap();
 }
 	
 EWXWEXPORT(int,wxPen_GetDashes)(void* self,void* ptr)
@@ -145,9 +149,7 @@ EWXWEXPORT(int,wxPen_GetDashes)(void* self,void* ptr)
 	
 EWXWEXPORT(void,wxPen_GetStipple)(void* self,wxBitmap* _ref)
 {
-#ifdef __WIN32__
 	*_ref = *(((wxPen*)self)->GetStipple());
-#endif
 }
 	
 }

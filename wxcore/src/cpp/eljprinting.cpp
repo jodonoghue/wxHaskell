@@ -138,11 +138,6 @@ EWXWEXPORT(bool,ELJPrintout_IsPreview)(ELJPrintout* self)
 {
 	return self->IsPreview();
 }
-	
-EWXWEXPORT(void,ELJPrintout_SetIsPreview)(ELJPrintout* self,bool p)
-{
-	self->SetIsPreview(p);
-}
 
 EWXWEXPORT(void*,wxPreviewCanvas_Create)(void* preview,wxWindow* parent,int x,int y,int w,int h,int style)
 {

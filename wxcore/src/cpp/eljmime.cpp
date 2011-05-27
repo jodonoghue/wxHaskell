@@ -19,16 +19,6 @@ EWXWEXPORT(void*,wxMimeTypesManager_GetFileTypeFromMimeType)(wxMimeTypesManager*
         return (void*)self->GetFileTypeFromMimeType(*_name);
 }
 
-EWXWEXPORT(bool,wxMimeTypesManager_ReadMailcap)(wxMimeTypesManager* self,wxString* _file,bool _fb)
-{
-        return self->ReadMailcap(*_file, _fb);
-}
-
-EWXWEXPORT(bool,wxMimeTypesManager_ReadMimeTypes)(wxMimeTypesManager* self,wxString* _file)
-{
-        return self->ReadMimeTypes(*_file);
-}
-
 EWXWEXPORT(int,wxMimeTypesManager_EnumAllFileTypes)(wxMimeTypesManager* self,void* _lst)
 {
         wxArrayString arr;

@@ -367,7 +367,11 @@ EWXWEXPORT(void,wxDropTarget_SetDataObject)(void* self,void* _dat)
 
 EWXWEXPORT(void*,ELJDragDataObject_Create)(void* self,wxString* _fmt,void* _func1,void* _func2,void* _func3)
 {
+#if (wxVERSION_NUMBER < 2900)
 	return (void*)new ELJDragDataObject(self, const_cast<wxChar*>(_fmt->c_str()), (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
+#else
+	return (void*)new ELJDragDataObject(self, *(_fmt), (DataGetDataSize)_func1, (DataGetDataHere)_func2, (DataSetData)_func3);
+#endif
 }
 
 EWXWEXPORT(void,ELJDragDataObject_Delete)(void* self)

@@ -11,25 +11,14 @@ EWXWEXPORT(void,wxDC_Delete)(wxDC* self)
 	delete  self;
 }
 
-  // deprecated
-EWXWEXPORT(void,wxDC_BeginDrawing)(wxDC* self)
-{
-#if WXWIN_COMPATIBILITY_2_6
-	self->BeginDrawing();
-#endif
-}
-	
-  // deprecated
-EWXWEXPORT(void,wxDC_EndDrawing)(wxDC* self)
-{
-#if WXWIN_COMPATIBILITY_2_6
-	self->EndDrawing();
-#endif
-}
-	
 EWXWEXPORT(void,wxDC_FloodFill)(wxDC* self,int x,int y,wxColour* col,int style)
 {
-	self->FloodFill((wxCoord)x, (wxCoord)y,*col, style);
+#if (wxVERSION_NUMBER < 2900)
+    int _style = style;
+#else
+    wxFloodFillStyle _style = (wxFloodFillStyle) style;
+#endif
+	self->FloodFill((wxCoord)x, (wxCoord)y,*col, _style);
 }
 	
 EWXWEXPORT(int,wxDC_GetPixel)(wxDC* self,int x,int y,wxColour* col)
@@ -81,12 +70,17 @@ EWXWEXPORT(void,wxDC_DrawLines)(wxDC* self,int n,void* x,void* y,int xoffset,int
 	
 EWXWEXPORT(void,wxDC_DrawPolygon)(wxDC* self,int n,void* x,void* y,int xoffset,int yoffset,int fillStyle)
 {
+#if (wxVERSION_NUMBER < 2900)
+    int _style = fillStyle;
+#else
+    wxPolygonFillMode _style = (wxPolygonFillMode) fillStyle;
+#endif
 	wxPoint* lst = (wxPoint*)malloc (n * sizeof(wxPoint));
 	
 	for (int i = 0; i < n; i++)
 		lst[i] = wxPoint(((intptr_t*)x)[i], ((intptr_t*)y)[i]);
 	
-	self->DrawPolygon(n, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
+	self->DrawPolygon(n, lst, (wxCoord)xoffset, (wxCoord)yoffset, _style);
 	
 	free (lst);
 }
@@ -133,7 +127,12 @@ EWXWEXPORT(void,wxDC_DrawRotatedText)(wxDC* self,wxString* text,int x,int y,doub
 	
 EWXWEXPORT(bool,wxDC_Blit)(wxDC* self,int xdest,int ydest,int width,int height,wxDC* source,int xsrc,int ysrc,int rop,bool useMask)
 {
-	return self->Blit((wxCoord)xdest, (wxCoord)ydest, (wxCoord)width, (wxCoord)height, source, (wxCoord)xsrc, (wxCoord)ysrc, rop, useMask);
+#if (wxVERSION_NUMBER < 2900)
+    int _rop = rop;
+#else
+    wxRasterOperationMode _rop = (wxRasterOperationMode) rop;
+#endif
+	return self->Blit((wxCoord)xdest, (wxCoord)ydest, (wxCoord)width, (wxCoord)height, source, (wxCoord)xsrc, (wxCoord)ysrc, _rop, useMask);
 }
 	
 EWXWEXPORT(void,wxDC_Clear)(wxDC* self)
@@ -143,7 +142,9 @@ EWXWEXPORT(void,wxDC_Clear)(wxDC* self)
 	
 EWXWEXPORT(void,wxDC_ComputeScaleAndOrigin)(wxDC* dc)
 {
+#if (wxVERSION_NUMBER < 2900)
 	dc->ComputeScaleAndOrigin();
+#endif
 }
 	
 EWXWEXPORT(bool,wxDC_StartDoc)(wxDC* self,wxString* msg)
@@ -369,7 +370,12 @@ EWXWEXPORT(int,wxDC_GetMapMode)(wxDC* self)
 	
 EWXWEXPORT(void,wxDC_SetMapMode)(wxDC* self,int mode)
 {
-	self->SetMapMode(mode);
+#if (wxVERSION_NUMBER < 2900)
+    int _mode = mode;
+#else
+    wxMappingMode _mode = (wxMappingMode) mode;
+#endif
+	self->SetMapMode(_mode);
 }
 	
 EWXWEXPORT(void,wxDC_GetUserScale)(wxDC* self,double* x,double* y)
@@ -424,7 +430,12 @@ EWXWEXPORT(int,wxDC_GetLogicalFunction)(wxDC* self)
 	
 EWXWEXPORT(void,wxDC_SetLogicalFunction)(wxDC* self,int function)
 {
-	self->SetLogicalFunction(function);
+#if (wxVERSION_NUMBER < 2900)
+    int _function = function;
+#else
+    wxRasterOperationMode _function = (wxRasterOperationMode) function;
+#endif
+	self->SetLogicalFunction(_function);
 }
 	
 EWXWEXPORT(void,wxDC_CalcBoundingBox)(wxDC* self,int x,int y)
@@ -682,6 +693,11 @@ EWXWEXPORT(wxRect*,wxDC_DrawLabelBitmap)(wxDC* self,wxString* str,wxBitmap* bmp,
 
 EWXWEXPORT(void,wxDC_DrawPolyPolygon)(wxDC* self,int n,int* count,void* x,void* y,int xoffset,int yoffset,int fillStyle)
 {
+#if (wxVERSION_NUMBER < 2900)
+    int _fillStyle = fillStyle;
+#else
+    wxPolygonFillMode _fillStyle = (wxPolygonFillMode) fillStyle;
+#endif
     int     *tmp = count;
     int     *cnt = new int[n];
     int      i, j;
@@ -705,7 +721,7 @@ EWXWEXPORT(void,wxDC_DrawPolyPolygon)(wxDC* self,int n,int* count,void* x,void* 
       }
     }
 	
-	self->DrawPolyPolygon(n, cnt, lst, (wxCoord)xoffset, (wxCoord)yoffset, fillStyle);
+	self->DrawPolyPolygon(n, cnt, lst, (wxCoord)xoffset, (wxCoord)yoffset, _fillStyle);
 	
 	free (lst);
     delete cnt;
