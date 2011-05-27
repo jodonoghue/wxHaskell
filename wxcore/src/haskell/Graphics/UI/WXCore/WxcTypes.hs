@@ -216,8 +216,8 @@ type Point = Point2 Int
 -- upper-left corner of their view frame, where a positive x goes to the right and
 -- a positive y to the bottom of the view.
 data (Num a) => Point2 a = Point
-        { pointX :: {-# UNPACK #-} !a -- ^ x component of a point.
-        , pointY :: {-# UNPACK #-} !a -- ^ y component of a point.
+        { pointX :: !a -- ^ x component of a point.
+        , pointY :: !a -- ^ y component of a point.
         }
         deriving (Eq,Show,Read,Typeable)
 
@@ -319,8 +319,8 @@ type Size = Size2D Int
 
 -- | A @Size@ has a width and height.
 data (Num a) => Size2D a = Size
-        { sizeW :: {-# UNPACK #-} !a -- ^ the width  of a size
-        , sizeH :: {-# UNPACK #-} !a -- ^ the height of a size
+        { sizeW :: !a -- ^ the width  of a size
+        , sizeH :: !a -- ^ the height of a size
         }
         deriving (Eq,Show,Typeable)
 
@@ -423,8 +423,8 @@ type Vector = Vector2 Int
 
 -- | A vector with an x and y delta.
 data (Num a) => Vector2 a = Vector
-        { vecX :: {-# UNPACK #-} !a -- ^ delta-x component of a vector
-        , vecY :: {-# UNPACK #-} !a -- ^ delta-y component of a vector
+        { vecX :: !a -- ^ delta-x component of a vector
+        , vecY :: !a -- ^ delta-y component of a vector
         }
         deriving (Eq,Show,Read,Typeable)
 
@@ -518,10 +518,10 @@ type Rect = Rect2D Int
 -- | A rectangle is defined by the left x coordinate, the top y coordinate,
 -- the width and the height.
 data (Num a) => Rect2D a = Rect
-        { rectLeft   :: {-# UNPACK #-} !a
-        , rectTop    :: {-# UNPACK #-} !a
-        , rectWidth  :: {-# UNPACK #-} !a
-        , rectHeight :: {-# UNPACK #-} !a
+        { rectLeft   :: !a
+        , rectTop    :: !a
+        , rectWidth  :: !a
+        , rectHeight :: !a
         }
         deriving (Eq,Show,Read,Typeable)
 
