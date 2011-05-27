@@ -1,4 +1,3 @@
-{-# INCLUDE "wxc.h" #-}
 {-# LANGUAGE ForeignFunctionInterface, FlexibleInstances #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Types

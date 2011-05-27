@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Draw
 	Copyright   :  (c) Daan Leijen 2003
@@ -60,15 +59,13 @@ import Foreign.Marshal.Alloc
 {--------------------------------------------------------------------------------
   DC creation
 --------------------------------------------------------------------------------}
--- | Encloses the computation with 'dcBeginDrawing' and 'dcEndDrawing'.
+-- | Safely perform a drawing operation on a DC.
 dcDraw :: DC a -> IO b -> IO b
 dcDraw dc io
-  = bracket_ (do dcBeginDrawing dc
-                 dcSetPenStyle dc penDefault
+  = bracket_ (do dcSetPenStyle dc penDefault
                  dcSetBrushStyle dc brushDefault) 
              (do dcSetPen dc nullPen
-                 dcSetBrush dc nullBrush
-                 dcEndDrawing dc) 
+                 dcSetBrush dc nullBrush) 
              io
 
 -- | Use a 'PaintDC'.

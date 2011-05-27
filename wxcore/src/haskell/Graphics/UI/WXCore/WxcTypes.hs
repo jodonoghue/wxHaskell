@@ -1,4 +1,3 @@
-{-# INCLUDE "wxc.h" #-}
 {-# LANGUAGE CPP, ForeignFunctionInterface, DeriveDataTypeable #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 -----------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Layout
 	Copyright   :  (c) Daan Leijen & Wijnand van Suijlen 2003

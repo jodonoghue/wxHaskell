@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Events
 	Copyright   :  (c) Daan Leijen 2003
@@ -2062,7 +2062,6 @@ gridEvents
     ,(wxEVT_GRID_LABEL_LEFT_DCLICK,  gridMouse GridLabelMouse MouseLeftDClick)
     ,(wxEVT_GRID_LABEL_RIGHT_CLICK,  gridMouse GridLabelMouse MouseRightDown)
     ,(wxEVT_GRID_LABEL_RIGHT_DCLICK, gridMouse GridLabelMouse MouseRightDClick)
-    ,(wxEVT_GRID_CELL_CHANGE,        gridVeto  GridCellChange)
     ,(wxEVT_GRID_SELECT_CELL,        gridSelect)
     ,(wxEVT_GRID_EDITOR_SHOWN,       gridVeto GridEditorShown)
     ,(wxEVT_GRID_EDITOR_HIDDEN,      gridVeto GridEditorHidden)
@@ -2101,7 +2100,7 @@ gridOnGridEvent grid eventHandler
 -- | Get the current grid event handler of a window.
 gridGetOnGridEvent :: Grid a -> IO (EventGrid -> IO ())
 gridGetOnGridEvent grid
-  = unsafeWindowGetHandlerState grid wxEVT_GRID_CELL_CHANGE (\event -> skipCurrentEvent)
+  = unsafeWindowGetHandlerState grid wxEVT_GRID_CELL_CHANGED (\event -> skipCurrentEvent)
 
 
 {-----------------------------------------------------------------------------------------

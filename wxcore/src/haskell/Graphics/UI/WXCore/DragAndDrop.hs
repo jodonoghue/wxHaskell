@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  DragAndDrop
 	Copyright   :  (c) shelarcy 2007
