@@ -1,5 +1,5 @@
 name:         wxcore
-version:      0.12.1.7
+version:      0.13.1
 license:      OtherLicense
 license-file: LICENSE
 author:       Daan Leijen
@@ -34,7 +34,6 @@ extra-source-files:
   src/eiffel/wx_defs.e
   src/eiffel/wxc_defs.e
   src/eiffel/stc.e
-  src/include/db.h
   src/include/dragimage.h
   src/include/eljgrid.h
   src/include/ewxw_def.h
@@ -65,7 +64,6 @@ library
   
   c-sources:
     src/cpp/apppath.cpp
-    src/cpp/db.cpp
     src/cpp/dragimage.cpp
     src/cpp/eljaccelerator.cpp
     src/cpp/eljartprov.cpp
@@ -175,7 +173,6 @@ library
   exposed-modules:
     Graphics.UI.WXCore
     Graphics.UI.WXCore.Controls
-    Graphics.UI.WXCore.Db
     Graphics.UI.WXCore.Defines
     Graphics.UI.WXCore.Dialogs
     Graphics.UI.WXCore.DragAndDrop
@@ -201,7 +198,7 @@ library
     filepath,
     parsec,
     stm,
-    wxdirect >= 0.12.1.3,
+    wxdirect > 0.12.1.2,
     directory,
     old-time,
     time
