@@ -13,6 +13,26 @@
 #include <wx/taskbar.h>
 
 extern "C" {
+
+////////////////////////////////////////////////////////////////////////////////
+// Event Handlers
+////////////////////////////////////////////////////////////////////////////////
+
+#pragma message "wxWidgets taskbar event wrappers generated"
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_MOVE)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_LEFT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_LEFT_UP)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_RIGHT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_RIGHT_UP)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_BALLOON_TIMEOUT)
+MAKE_EVENT_WRAPPER(EVT_TASKBAR_BALLOON_CLICK)
+
+////////////////////////////////////////////////////////////////////////////////
+// Wrappers
+////////////////////////////////////////////////////////////////////////////////
+
 /*-----------------------------------------------------------------------------
   TaskBarIcon
 -----------------------------------------------------------------------------*/
@@ -53,31 +73,6 @@ EWXWEXPORT(bool,wxTaskBarIcon_SetIcon)(wxTaskBarIcon* self,wxIcon* icon,wxString
 #else
   return tooltip ? self->SetIcon(*icon, *tooltip) : self->SetIcon(*icon);
 #endif
-}
-
-EWXWEXPORT(int,expEVT_TASKBAR_LEFT_UP)()
-{
-    return (int)wxEVT_TASKBAR_LEFT_UP;
-}
-
-EWXWEXPORT(int,expEVT_TASKBAR_RIGHT_DOWN)()
-{
-    return (int)wxEVT_TASKBAR_RIGHT_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_TASKBAR_RIGHT_UP)()
-{
-    return (int)wxEVT_TASKBAR_RIGHT_UP;
-}
-
-EWXWEXPORT(int,expEVT_TASKBAR_LEFT_DCLICK)()
-{
-    return (int)wxEVT_TASKBAR_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_TASKBAR_RIGHT_DCLICK)()
-{
-    return (int)wxEVT_TASKBAR_RIGHT_DCLICK;
 }
 
 }

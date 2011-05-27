@@ -1,9 +1,33 @@
+/*==============================================================================
+ * eljfindrepdlg.cpp
+ *
+ * C wrapper for wxFindReplaceData
+ *
+ * (C) 2002-2011 wxEiffel and wxHaskell contributors. See contributors.txt
+ * 
+ *==============================================================================*/
+
 #include "wrapper.h"
 #if wxVERSION_NUMBER >= 2400
 #include "wx/fdrepdlg.h"
 
 extern "C"
 {
+
+////////////////////////////////////////////////////////////////////////////////
+// Event Handlers
+////////////////////////////////////////////////////////////////////////////////
+
+#pragma message "wxWidgets find/replace dialog event wrappers generated"
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FIND)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FIND_NEXT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FIND_REPLACE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FIND_REPLACE_ALL)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FIND_CLOSE)
+
+////////////////////////////////////////////////////////////////////////////////
+// Wrappers
+////////////////////////////////////////////////////////////////////////////////
 
 EWXWEXPORT(void*,wxFindReplaceData_CreateDefault)()
 {
@@ -90,31 +114,5 @@ EWXWEXPORT(void,wxFindReplaceDialog_SetData)(void* _obj,void* data)
 	((wxFindReplaceDialog*)_obj)->SetData((wxFindReplaceData*)data);
 }
 	
-
-EWXWEXPORT(int,expEVT_COMMAND_FIND)()
-{
-	return (int)wxEVT_COMMAND_FIND;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_FIND_NEXT)()
-{
-	return (int)wxEVT_COMMAND_FIND_NEXT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_FIND_REPLACE)()
-{
-	return (int)wxEVT_COMMAND_FIND_REPLACE;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_FIND_REPLACE_ALL)()
-{
-	return (int)wxEVT_COMMAND_FIND_REPLACE_ALL;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_FIND_CLOSE)()
-{
-	return (int)wxEVT_COMMAND_FIND_CLOSE;
-}
-
 }
 #endif

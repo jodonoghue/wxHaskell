@@ -36,6 +36,23 @@
 #endif
 
 extern "C" {
+
+////////////////////////////////////////////////////////////////////////////////
+// Event Handlers
+////////////////////////////////////////////////////////////////////////////////
+
+#pragma message "wxWidgets mediacontrol event wrappers generated"
+MAKE_EVENT_WRAPPER(EVT_MEDIA_FINISHED)
+MAKE_EVENT_WRAPPER(EVT_MEDIA_STOP)
+MAKE_EVENT_WRAPPER(EVT_MEDIA_LOADED)
+MAKE_EVENT_WRAPPER(EVT_MEDIA_STATECHANGED)
+MAKE_EVENT_WRAPPER(EVT_MEDIA_PLAY)
+MAKE_EVENT_WRAPPER(EVT_MEDIA_PAUSE)
+
+////////////////////////////////////////////////////////////////////////////////
+// Wrappers
+////////////////////////////////////////////////////////////////////////////////
+
 /*-----------------------------------------------------------------------------
   MediaCtrl
 -----------------------------------------------------------------------------*/
@@ -202,64 +219,6 @@ EWXWEXPORT(wxFileOffset, wxMediaCtrl_Tell) (wxMediaCtrl* self)
   return self->Tell();
 #else
   return 0;
-#endif
-}
-
-
-/*-----------------------------------------------------------------------------
-  MediaEvent
------------------------------------------------------------------------------*/
-EWXWEXPORT(int,expEVT_MEDIA_LOADED)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_LOADED;
-#else
-    return 0;
-#endif
-}
-
-EWXWEXPORT(int,expEVT_MEDIA_STOP)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_STOP;
-#else
-    return 0;
-#endif
-}
-
-EWXWEXPORT(int,expEVT_MEDIA_FINISHED)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_FINISHED;
-#else
-    return 0;
-#endif
-}
-
-EWXWEXPORT(int,expEVT_MEDIA_STATECHANGED)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_STATECHANGED;
-#else
-    return 0;
-#endif
-}
-
-EWXWEXPORT(int,expEVT_MEDIA_PLAY)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_PLAY;
-#else
-    return 0;
-#endif
-}
-
-EWXWEXPORT(int,expEVT_MEDIA_PAUSE)()
-{
-#ifdef wxUSE_MEDIACTRL
-    return (int)wxEVT_MEDIA_PAUSE;
-#else
-    return 0;
 #endif
 }
 

@@ -1,12 +1,61 @@
-#ifdef wxUSE_STC
-#include "wx/stc/stc.h"
-#endif
+/*==============================================================================
+ * stc.cpp
+ *
+ * C wrapper for wxStyledTextCtrl
+ *
+ * (C) 2002-2011 wxEiffel and wxHaskell contributors. See contributors.txt
+ * 
+ *==============================================================================*/
 
 #include "wrapper.h"
 
+#ifdef wxUSE_STC
+# include "wx/stc/stc.h"
+#endif
 
 extern "C"
 {
+
+////////////////////////////////////////////////////////////////////////////////
+// Event Handlers
+////////////////////////////////////////////////////////////////////////////////
+
+#pragma message "wxWidgets styled text control event wrappers generated"
+MAKE_EVENT_WRAPPER(EVT_STC_CHANGE)
+MAKE_EVENT_WRAPPER(EVT_STC_STYLENEEDED)
+MAKE_EVENT_WRAPPER(EVT_STC_CHARADDED)
+MAKE_EVENT_WRAPPER(EVT_STC_SAVEPOINTREACHED)
+MAKE_EVENT_WRAPPER(EVT_STC_SAVEPOINTLEFT)
+MAKE_EVENT_WRAPPER(EVT_STC_ROMODIFYATTEMPT)
+MAKE_EVENT_WRAPPER(EVT_STC_KEY)
+MAKE_EVENT_WRAPPER(EVT_STC_DOUBLECLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_UPDATEUI)
+MAKE_EVENT_WRAPPER(EVT_STC_MODIFIED)
+MAKE_EVENT_WRAPPER(EVT_STC_MACRORECORD)
+MAKE_EVENT_WRAPPER(EVT_STC_MARGINCLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_NEEDSHOWN)
+MAKE_EVENT_WRAPPER(EVT_STC_PAINTED)
+MAKE_EVENT_WRAPPER(EVT_STC_USERLISTSELECTION)
+MAKE_EVENT_WRAPPER(EVT_STC_URIDROPPED)
+MAKE_EVENT_WRAPPER(EVT_STC_DWELLSTART)
+MAKE_EVENT_WRAPPER(EVT_STC_DWELLEND)
+MAKE_EVENT_WRAPPER(EVT_STC_START_DRAG)
+MAKE_EVENT_WRAPPER(EVT_STC_DRAG_OVER)
+MAKE_EVENT_WRAPPER(EVT_STC_DO_DROP)
+MAKE_EVENT_WRAPPER(EVT_STC_ZOOM)
+MAKE_EVENT_WRAPPER(EVT_STC_HOTSPOT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_HOTSPOT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_CALLTIP_CLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_AUTOCOMP_SELECTION)
+MAKE_EVENT_WRAPPER(EVT_STC_INDICATOR_CLICK)
+MAKE_EVENT_WRAPPER(EVT_STC_INDICATOR_RELEASE)
+MAKE_EVENT_WRAPPER(EVT_STC_AUTOCOMP_CANCELLED)
+MAKE_EVENT_WRAPPER(EVT_STC_AUTOCOMP_CHAR_DELETED)
+
+////////////////////////////////////////////////////////////////////////////////
+// Wrappers
+////////////////////////////////////////////////////////////////////////////////
+
 #include "stc_gen.cpp"
 
 /* wxStyledTextCtrl */
@@ -534,228 +583,6 @@ EWXWEXPORT(void,wxStyledTextEvent_SetDragResult)(void* _obj,int val)
 {
 #ifdef wxUSE_STC
   ((wxStyledTextEvent*) _obj)->SetDragResult(*(wxDragResult*)val);
-#endif
-}
-
-/*************************************/
-/* wxStyledTextEvent events          */
-/*************************************/
-EWXWEXPORT(int,expEVT_STC_CHANGE)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_CHANGE;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_STYLENEEDED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_STYLENEEDED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_CHARADDED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_CHARADDED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_SAVEPOINTREACHED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_SAVEPOINTREACHED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_SAVEPOINTLEFT)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_SAVEPOINTLEFT;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_ROMODIFYATTEMPT)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_ROMODIFYATTEMPT;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_KEY)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_KEY;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_DOUBLECLICK)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_DOUBLECLICK;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_UPDATEUI)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_UPDATEUI;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_MODIFIED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_MODIFIED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_MACRORECORD)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_MACRORECORD;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_MARGINCLICK)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_MARGINCLICK;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_NEEDSHOWN)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_NEEDSHOWN;
-#else
-  return false;
-#endif
-}
-/* expEVT_STC_POSCHANGED is removed in wxWidgets-2.6.x.
-EWXWEXPORT(int,expEVT_STC_POSCHANGED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_POSCHANGED;
-#else
-  return false;
-#endif
-}
-*/
-EWXWEXPORT(int,expEVT_STC_PAINTED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_PAINTED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_USERLISTSELECTION)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_USERLISTSELECTION;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_URIDROPPED)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_URIDROPPED;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_DWELLSTART)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_DWELLSTART;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_DWELLEND)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_DWELLEND;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_START_DRAG)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_START_DRAG;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_DRAG_OVER)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_DRAG_OVER;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_DO_DROP)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_DO_DROP;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_ZOOM)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_ZOOM;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_HOTSPOT_CLICK)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_HOTSPOT_CLICK;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_HOTSPOT_DCLICK)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_HOTSPOT_DCLICK;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_CALLTIP_CLICK)()
-{
-#ifdef wxUSE_STC
-  return wxEVT_STC_CALLTIP_CLICK;
-#else
-  return false;
-#endif
-}
-EWXWEXPORT(int,expEVT_STC_AUTOCOMP_SELECTION)()
-{
-#if (wxVERSION_NUMBER >= 2600) && wxUSE_STC
-  return wxEVT_STC_AUTOCOMP_SELECTION;
-#else
-  return false;
 #endif
 }
 

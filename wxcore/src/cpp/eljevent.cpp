@@ -1,11 +1,11 @@
 #include "wrapper.h"
 #include "wx/process.h"
 #include "wx/dialup.h"
-#include "wx/tabctrl.h"
-
-#if (wxVERSION_NUMBER >= 2800)
-#include "wx/power.h"
+#if (wxVERSION_NUMBER < 2900)
+# include "wx/tabctrl.h"
 #endif
+
+#include "wx/power.h"
 
 #if defined(wxUSE_TAB_DIALOG) && (wxUSE_TAB_DIALOG==0)
 # undef wxUSE_TAB_DIALOG
@@ -15,6 +15,38 @@
 #include "wx/plot/plot.h"
 #include "wx/gizmos/dynamicsash.h"
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+// Included as we need event wrappers. All have guards in the headers
+// so don't repeat them here...
+////////////////////////////////////////////////////////////////////////////////
+#include "wx/aui/aui.h"
+#include "wx/choicebk.h"
+#include "wx/clrpicker.h"
+#include "wx/collpane.h"
+#include "wx/dataview.h"
+#include "wx/fdrepdlg.h"
+#include "wx/filectrl.h"
+#include "wx/filepicker.h"
+#include "wx/fontpicker.h"
+#include "wx/fswatcher.h"
+#include "wx/headerctrl.h"
+#include "wx/hyperlink.h"
+#include "wx/listbook.h"
+#include "wx/mediactrl.h"
+#include "wx/propgrid/propgrid.h"
+#include "wx/ribbon/bar.h"
+#include "wx/ribbon/buttonbar.h"
+#include "wx/ribbon/gallery.h"
+#include "wx/ribbon/toolbar.h"
+#include "wx/richtext/richtextctrl.h"
+#include "wx/srchctrl.h"
+#include "wx/stc/stc.h"
+#include "wx/taskbar.h"
+#include "wx/textctrl.h"
+#include "wx/tglbtn.h"
+#include "wx/toolbook.h"
+#include "wx/treebook.h"
 
 extern "C"
 {
@@ -224,27 +256,52 @@ EWXWEXPORT(bool,wxMouseEvent_IsButton)(wxMouseEvent* self)
 
 EWXWEXPORT(bool,wxMouseEvent_ButtonDown)(wxMouseEvent* self,int but)
 {
-        return self->ButtonDown(but);
+#if (wxVERSION_NUMBER < 2900)
+        int _but = but;
+#else
+        wxMouseButton _but = (wxMouseButton) but;
+#endif
+        return self->ButtonDown(_but);
 }
 
 EWXWEXPORT(bool,wxMouseEvent_ButtonDClick)(wxMouseEvent* self,int but)
 {
-        return self->ButtonDClick(but);
+#if (wxVERSION_NUMBER < 2900)
+        int _but = but;
+#else
+        wxMouseButton _but = (wxMouseButton) but;
+#endif
+        return self->ButtonDClick(_but);
 }
 
 EWXWEXPORT(bool,wxMouseEvent_ButtonUp)(wxMouseEvent* self,int but)
 {
-        return self->ButtonUp(but);
+#if (wxVERSION_NUMBER < 2900)
+        int _but = but;
+#else
+        wxMouseButton _but = (wxMouseButton) but;
+#endif
+        return self->ButtonUp(_but);
 }
 
 EWXWEXPORT(bool,wxMouseEvent_Button)(wxMouseEvent* self,int but)
 {
-        return self->Button(but);
+#if (wxVERSION_NUMBER < 2900)
+        int _but = but;
+#else
+        wxMouseButton _but = (wxMouseButton) but;
+#endif
+        return self->Button(_but);
 }
 
 EWXWEXPORT(bool,wxMouseEvent_ButtonIsDown)(wxMouseEvent* self,int but)
 {
-        return self->ButtonIsDown(but);
+#if (wxVERSION_NUMBER < 2900)
+        int _but = but;
+#else
+        wxMouseButton _but = (wxMouseButton) but;
+#endif
+        return self->ButtonIsDown(_but);
 }
 
 EWXWEXPORT(bool,wxMouseEvent_ControlDown)(wxMouseEvent* self)
@@ -575,9 +632,13 @@ EWXWEXPORT(void,wxShowEvent_SetShow)(wxShowEvent* self,bool show)
         self->SetShow(show);
 }
 
-EWXWEXPORT(bool,wxShowEvent_GetShow)(wxShowEvent* self)
+EWXWEXPORT(bool,wxShowEvent_IsShown)(wxShowEvent* self)
 {
+#if (wxVERSION_NUMBER < 2900)
         return self->GetShow();
+#else
+        return self->IsShown();
+#endif
 }
 
 EWXWEXPORT(void,wxShowEvent_CopyObject)(wxShowEvent* self,wxObject* obj)
@@ -1001,1724 +1062,651 @@ EWXWEXPORT(void,wxHelpEvent_SetTarget)(wxHelpEvent* self,wxString* target)
         self->SetTarget(*target);
 }
 
-EWXWEXPORT(int,expEVT_COMMAND_BUTTON_CLICKED)()
-{
-        return (int)wxEVT_COMMAND_BUTTON_CLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_CHECKBOX_CLICKED)()
-{
-        return (int)wxEVT_COMMAND_CHECKBOX_CLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_CHOICE_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_CHOICE_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LISTBOX_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_LISTBOX_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LISTBOX_DOUBLECLICKED)()
-{
-        return (int)wxEVT_COMMAND_LISTBOX_DOUBLECLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_CHECKLISTBOX_TOGGLED)()
-{
-        return (int)wxEVT_COMMAND_CHECKLISTBOX_TOGGLED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TEXT_UPDATED)()
-{
-        return (int)wxEVT_COMMAND_TEXT_UPDATED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TEXT_ENTER)()
-{
-        return (int)wxEVT_COMMAND_TEXT_ENTER;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_MENU_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_MENU_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TOOL_CLICKED)()
-{
-        return (int)wxEVT_COMMAND_TOOL_CLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SLIDER_UPDATED)()
-{
-        return (int)wxEVT_COMMAND_SLIDER_UPDATED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_RADIOBOX_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_RADIOBOX_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_RADIOBUTTON_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_RADIOBUTTON_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SCROLLBAR_UPDATED)()
-{
-        return (int)wxEVT_COMMAND_SCROLLBAR_UPDATED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_VLBOX_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_VLBOX_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_COMBOBOX_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_COMBOBOX_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TOOL_RCLICKED)()
-{
-        return (int)wxEVT_COMMAND_TOOL_RCLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TOOL_ENTER)()
-{
-        return (int)wxEVT_COMMAND_TOOL_ENTER;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SPINCTRL_UPDATED)()
-{
-        return (int)wxEVT_COMMAND_SPINCTRL_UPDATED;
-}
-
-EWXWEXPORT(int,expEVT_SOCKET)()
-{
-        return (int)wxEVT_SOCKET;
-}
-
-EWXWEXPORT(int,expEVT_TIMER )()
-{
-        return (int)wxEVT_TIMER ;
-}
-
-EWXWEXPORT(int,expEVT_LEFT_DOWN)()
-{
-        return (int)wxEVT_LEFT_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_LEFT_UP)()
-{
-        return (int)wxEVT_LEFT_UP;
-}
-
-EWXWEXPORT(int,expEVT_MIDDLE_DOWN)()
-{
-        return (int)wxEVT_MIDDLE_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_MIDDLE_UP)()
-{
-        return (int)wxEVT_MIDDLE_UP;
-}
-
-EWXWEXPORT(int,expEVT_RIGHT_DOWN)()
-{
-        return (int)wxEVT_RIGHT_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_RIGHT_UP)()
-{
-        return (int)wxEVT_RIGHT_UP;
-}
-
-EWXWEXPORT(int,expEVT_MOTION)()
-{
-        return (int)wxEVT_MOTION;
-}
-
-EWXWEXPORT(int,expEVT_ENTER_WINDOW)()
-{
-        return (int)wxEVT_ENTER_WINDOW;
-}
-
-EWXWEXPORT(int,expEVT_LEAVE_WINDOW)()
-{
-        return (int)wxEVT_LEAVE_WINDOW;
-}
-
-EWXWEXPORT(int,expEVT_LEFT_DCLICK)()
-{
-        return (int)wxEVT_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_MIDDLE_DCLICK)()
-{
-        return (int)wxEVT_MIDDLE_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_RIGHT_DCLICK)()
-{
-        return (int)wxEVT_RIGHT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_SET_FOCUS)()
-{
-        return (int)wxEVT_SET_FOCUS;
-}
-
-EWXWEXPORT(int,expEVT_KILL_FOCUS)()
-{
-        return (int)wxEVT_KILL_FOCUS;
-}
-
-EWXWEXPORT(int,expEVT_NC_LEFT_DOWN)()
-{
-        return (int)wxEVT_NC_LEFT_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_NC_LEFT_UP)()
-{
-        return (int)wxEVT_NC_LEFT_UP;
-}
-
-EWXWEXPORT(int,expEVT_NC_MIDDLE_DOWN)()
-{
-        return (int)wxEVT_NC_MIDDLE_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_NC_MIDDLE_UP)()
-{
-        return (int)wxEVT_NC_MIDDLE_UP;
-}
-
-EWXWEXPORT(int,expEVT_NC_RIGHT_DOWN)()
-{
-        return (int)wxEVT_NC_RIGHT_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_NC_RIGHT_UP)()
-{
-        return (int)wxEVT_NC_RIGHT_UP;
-}
-
-EWXWEXPORT(int,expEVT_NC_MOTION)()
-{
-        return (int)wxEVT_NC_MOTION;
-}
-
-EWXWEXPORT(int,expEVT_NC_ENTER_WINDOW)()
-{
-        return (int)wxEVT_NC_ENTER_WINDOW;
-}
-
-EWXWEXPORT(int,expEVT_NC_LEAVE_WINDOW)()
-{
-        return (int)wxEVT_NC_LEAVE_WINDOW;
-}
-
-EWXWEXPORT(int,expEVT_NC_LEFT_DCLICK)()
-{
-        return (int)wxEVT_NC_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_NC_MIDDLE_DCLICK)()
-{
-        return (int)wxEVT_NC_MIDDLE_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_NC_RIGHT_DCLICK)()
-{
-        return (int)wxEVT_NC_RIGHT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_CHAR)()
-{
-        return (int)wxEVT_CHAR;
-}
-
-EWXWEXPORT(int,expEVT_CHAR_HOOK)()
-{
-        return (int)wxEVT_CHAR_HOOK;
-}
-
-EWXWEXPORT(int,expEVT_NAVIGATION_KEY)()
-{
-        return (int)wxEVT_NAVIGATION_KEY;
-}
-
-EWXWEXPORT(int,expEVT_KEY_DOWN)()
-{
-        return (int)wxEVT_KEY_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_KEY_UP)()
-{
-        return (int)wxEVT_KEY_UP;
-}
-
-EWXWEXPORT(int,expEVT_SET_CURSOR)()
-{
-        return (int)wxEVT_SET_CURSOR;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_TOP)()
-{
-        return (int)wxEVT_SCROLL_TOP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_BOTTOM)()
-{
-        return (int)wxEVT_SCROLL_BOTTOM;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_LINEUP)()
-{
-        return (int)wxEVT_SCROLL_LINEUP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_LINEDOWN)()
-{
-        return (int)wxEVT_SCROLL_LINEDOWN;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_PAGEUP)()
-{
-        return (int)wxEVT_SCROLL_PAGEUP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_PAGEDOWN)()
-{
-        return (int)wxEVT_SCROLL_PAGEDOWN;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_THUMBTRACK)()
-{
-        return (int)wxEVT_SCROLL_THUMBTRACK;
-}
-
-EWXWEXPORT(int,expEVT_SCROLL_THUMBRELEASE)()
-{
-        return (int)wxEVT_SCROLL_THUMBRELEASE;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_TOP)()
-{
-        return (int)wxEVT_SCROLLWIN_TOP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_BOTTOM)()
-{
-        return (int)wxEVT_SCROLLWIN_BOTTOM;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_LINEUP)()
-{
-        return (int)wxEVT_SCROLLWIN_LINEUP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_LINEDOWN)()
-{
-        return (int)wxEVT_SCROLLWIN_LINEDOWN;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_PAGEUP)()
-{
-        return (int)wxEVT_SCROLLWIN_PAGEUP;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_PAGEDOWN)()
-{
-        return (int)wxEVT_SCROLLWIN_PAGEDOWN;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_THUMBTRACK)()
-{
-        return (int)wxEVT_SCROLLWIN_THUMBTRACK;
-}
-
-EWXWEXPORT(int,expEVT_SCROLLWIN_THUMBRELEASE)()
-{
-        return (int)wxEVT_SCROLLWIN_THUMBRELEASE;
-}
-
-EWXWEXPORT(int,expEVT_SIZE)()
-{
-        return (int)wxEVT_SIZE;
-}
-
-EWXWEXPORT(int,expEVT_MOVE)()
-{
-        return (int)wxEVT_MOVE;
-}
-
-EWXWEXPORT(int,expEVT_CLOSE_WINDOW)()
-{
-        return (int)wxEVT_CLOSE_WINDOW;
-}
-
-EWXWEXPORT(int,expEVT_END_SESSION)()
-{
-        return (int)wxEVT_END_SESSION;
-}
-
-EWXWEXPORT(int,expEVT_QUERY_END_SESSION)()
-{
-        return (int)wxEVT_QUERY_END_SESSION;
-}
-
-EWXWEXPORT(int,expEVT_ACTIVATE_APP)()
-{
-        return (int)wxEVT_ACTIVATE_APP;
-}
-
-EWXWEXPORT(int,expEVT_POWER)()
-{
-#if (wxVERSION_NUMBER <= 2800)
-	return (int)wxEVT_POWER;
-#else
-	return 1;
+////////////////////////////////////////////////////////////////////////////////
+// Event wrappers
+////////////////////////////////////////////////////////////////////////////////
+
+#if wxUSE_AUI
+// from aui/auibar.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUITOOLBAR_TOOL_DROPDOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUITOOLBAR_OVERFLOW_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUITOOLBAR_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUITOOLBAR_MIDDLE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUITOOLBAR_BEGIN_DRAG)
+
+// from aui/auibook.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_PAGE_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_PAGE_CLOSED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_BUTTON)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_END_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_DRAG_MOTION)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_ALLOW_DND)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_DRAG_DONE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_AUINOTEBOOK_BG_DCLICK)
+
+// from aui/framemanager.h
+MAKE_EVENT_WRAPPER(EVT_AUI_PANE_BUTTON)
+MAKE_EVENT_WRAPPER(EVT_AUI_PANE_CLOSE)
+MAKE_EVENT_WRAPPER(EVT_AUI_PANE_MAXIMIZE)
+MAKE_EVENT_WRAPPER(EVT_AUI_PANE_RESTORE)
+MAKE_EVENT_WRAPPER(EVT_AUI_RENDER)
+MAKE_EVENT_WRAPPER(EVT_AUI_FIND_MANAGER)
+#endif // wxUSE_AUI
+
+// from calctrl.h
+#if wxUSE_CALENDARCTRL
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_SEL_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_DOUBLECLICKED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_WEEKDAY_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_WEEK_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_DAY_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_MONTH_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_CALENDAR_YEAR_CHANGED)
+#endif //wxUSE_CALENDARCTRL
+
+// from choicebook.h
+#if wxUSE_CHOICEBOOK
+MAKE_EVENT_WRAPPER(EVT_COMMAND_CHOICEBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_CHOICEBOOK_PAGE_CHANGING)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_POWER_SUSPENDING)()
-{
-#ifdef wxHAS_POWER_EVENTS
-        return (int)wxEVT_POWER_SUSPENDING;
-#else
-	return 0;
+// from clipbrd.h
+#if wxUSE_CLIPBOARD
+MAKE_EVENT_WRAPPER(EVT_CLIPBOARD_CHANGED)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_POWER_SUSPENDED)()
-{
-#ifdef wxHAS_POWER_EVENTS
-        return (int)wxEVT_POWER_SUSPENDED;
-#else
-	return 0;
+// from clrpicker.h
+#if wxUSE_COLOURPICKERCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_COLOURPICKER_CHANGED)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_POWER_SUSPEND_CANCEL)()
-{
-#ifdef wxHAS_POWER_EVENTS
-        return (int)wxEVT_POWER_SUSPEND_CANCEL;
-#else
-	return 0;
+// from collpane.h
+#if wxUSE_COLLPANE
+MAKE_EVENT_WRAPPER(EVT_COMMAND_COLLPANE_CHANGED)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_POWER_RESUME)()
-{
-#ifdef wxHAS_POWER_EVENTS
-        return (int)wxEVT_POWER_RESUME;
-#else
-	return 0;
+// from dataview.h
+#if wxUSE_DATAVIEWCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_SELECTION_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_ACTIVATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_COLLAPSED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_EXPANDED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_COLLAPSING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_EXPANDING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_START_EDITING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_EDITING_STARTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_EDITING_DONE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_CONTEXT_MENU)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_COLUMN_HEADER_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_COLUMN_SORTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_COLUMN_REORDERED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_CACHE_HINT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_DROP_POSSIBLE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DATAVIEW_ITEM_DROP)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_ACTIVATE)()
-{
-        return (int)wxEVT_ACTIVATE;
-}
+// from dateevt.h
+MAKE_EVENT_WRAPPER(EVT_DATE_CHANGED)
 
-EWXWEXPORT(int,expEVT_CREATE)()
-{
-        return (int)wxEVT_CREATE;
-}
+// from dialog.h
+MAKE_EVENT_WRAPPER(EVT_WINDOW_MODAL_DIALOG_CLOSED)
 
-EWXWEXPORT(int,expEVT_DESTROY)()
-{
-        return (int)wxEVT_DESTROY;
-}
-
-EWXWEXPORT(int,expEVT_SHOW)()
-{
-        return (int)wxEVT_SHOW;
-}
-
-EWXWEXPORT(int,expEVT_ICONIZE)()
-{
-        return (int)wxEVT_ICONIZE;
-}
-
-EWXWEXPORT(int,expEVT_MAXIMIZE)()
-{
-        return (int)wxEVT_MAXIMIZE;
-}
-
-EWXWEXPORT(int,expEVT_MOUSE_CAPTURE_CHANGED)()
-{
-        return (int)wxEVT_MOUSE_CAPTURE_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_PAINT)()
-{
-        return (int)wxEVT_PAINT;
-}
-
-EWXWEXPORT(int,expEVT_ERASE_BACKGROUND)()
-{
-        return (int)wxEVT_ERASE_BACKGROUND;
-}
-
-EWXWEXPORT(int,expEVT_NC_PAINT)()
-{
-        return (int)wxEVT_NC_PAINT;
-}
-
-EWXWEXPORT(int,expEVT_PAINT_ICON)()
-{
-        return (int)wxEVT_PAINT_ICON;
-}
-
-EWXWEXPORT(int,expEVT_MENU_CHAR)()
-{
-        return -1;
-}
-
-EWXWEXPORT(int,expEVT_MENU_INIT)()
-{
-        return -1;
-}
-
-EWXWEXPORT(int,expEVT_MENU_HIGHLIGHT)()
-{
-        return (int)wxEVT_MENU_HIGHLIGHT;
-}
-
-EWXWEXPORT(int,expEVT_POPUP_MENU_INIT)()
-{
-        return -1;
-}
-
-EWXWEXPORT(int,expEVT_CONTEXT_MENU)()
-{
-        return (int)wxEVT_CONTEXT_MENU;
-}
-
-EWXWEXPORT(int,expEVT_SYS_COLOUR_CHANGED)()
-{
-        return (int)wxEVT_SYS_COLOUR_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_SETTING_CHANGED)()
-{
-        return (int)wxEVT_SETTING_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_QUERY_NEW_PALETTE)()
-{
-        return (int)wxEVT_QUERY_NEW_PALETTE;
-}
-
-EWXWEXPORT(int,expEVT_PALETTE_CHANGED)()
-{
-        return (int)wxEVT_PALETTE_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_JOY_BUTTON_DOWN)()
-{
-        return (int)wxEVT_JOY_BUTTON_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_JOY_BUTTON_UP)()
-{
-        return (int)wxEVT_JOY_BUTTON_UP;
-}
-
-EWXWEXPORT(int,expEVT_JOY_MOVE)()
-{
-        return (int)wxEVT_JOY_MOVE;
-}
-
-EWXWEXPORT(int,expEVT_JOY_ZMOVE)()
-{
-        return (int)wxEVT_JOY_ZMOVE;
-}
-
-EWXWEXPORT(int,expEVT_DROP_FILES)()
-{
-        return (int)wxEVT_DROP_FILES;
-}
-
-EWXWEXPORT(int,expEVT_DRAW_ITEM)()
-{
-        return (int)wxEVT_DRAW_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_MEASURE_ITEM)()
-{
-        return (int)wxEVT_MEASURE_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_COMPARE_ITEM)()
-{
-        return (int)wxEVT_COMPARE_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_INIT_DIALOG)()
-{
-        return (int)wxEVT_INIT_DIALOG;
-}
-
-EWXWEXPORT(int,expEVT_IDLE)()
-{
-        return (int)wxEVT_IDLE;
-}
-
-EWXWEXPORT(int,expEVT_UPDATE_UI)()
-{
-        return (int)wxEVT_UPDATE_UI;
-}
-
-EWXWEXPORT(int,expEVT_END_PROCESS)()
-{
-        return (int)wxEVT_END_PROCESS;
-}
-
-EWXWEXPORT(int,expEVT_DIALUP_CONNECTED)()
-{
-#if defined(__WXMAC__)
-    return -1;
-#else
-        return (int)wxEVT_DIALUP_CONNECTED;
+// from dialup.h - does anyone even care about this stuff these days?
+#if wxUSE_DIALUP_MANAGER
+MAKE_EVENT_WRAPPER(EVT_DIALUP_CONNECTED)
+MAKE_EVENT_WRAPPER(EVT_DIALUP_DISCONNECTED)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_DIALUP_DISCONNECTED)()
-{
-#if defined(__WXMAC__)
-    return -1;
-#else
-        return (int)wxEVT_DIALUP_DISCONNECTED;
+// from event.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_BUTTON_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_CHECKBOX_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_CHOICE_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LISTBOX_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LISTBOX_DOUBLECLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_CHECKLISTBOX_TOGGLED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_MENU_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SLIDER_UPDATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RADIOBOX_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RADIOBUTTON_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_VLBOX_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_COMBOBOX_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOL_RCLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOL_DROPDOWN_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOL_ENTER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_COMBOBOX_DROPDOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_COMBOBOX_CLOSEUP)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_THREAD)
+MAKE_EVENT_WRAPPER(EVT_LEFT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_LEFT_UP)
+MAKE_EVENT_WRAPPER(EVT_MIDDLE_DOWN)
+MAKE_EVENT_WRAPPER(EVT_MIDDLE_UP)
+MAKE_EVENT_WRAPPER(EVT_RIGHT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_RIGHT_UP)
+MAKE_EVENT_WRAPPER(EVT_MOTION)
+MAKE_EVENT_WRAPPER(EVT_ENTER_WINDOW)
+MAKE_EVENT_WRAPPER(EVT_LEAVE_WINDOW)
+MAKE_EVENT_WRAPPER(EVT_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_MIDDLE_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_SET_FOCUS)
+MAKE_EVENT_WRAPPER(EVT_KILL_FOCUS)
+MAKE_EVENT_WRAPPER(EVT_CHILD_FOCUS)
+MAKE_EVENT_WRAPPER(EVT_MOUSEWHEEL)
+MAKE_EVENT_WRAPPER(EVT_AUX1_DOWN)
+MAKE_EVENT_WRAPPER(EVT_AUX1_UP)
+MAKE_EVENT_WRAPPER(EVT_AUX1_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_AUX2_DOWN)
+MAKE_EVENT_WRAPPER(EVT_AUX2_UP)
+MAKE_EVENT_WRAPPER(EVT_AUX2_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_CHAR)
+MAKE_EVENT_WRAPPER(EVT_CHAR_HOOK)
+MAKE_EVENT_WRAPPER(EVT_NAVIGATION_KEY)
+MAKE_EVENT_WRAPPER(EVT_KEY_DOWN)
+MAKE_EVENT_WRAPPER(EVT_KEY_UP)
+
+#if wxUSE_HOTKEY
+MAKE_EVENT_WRAPPER(EVT_HOTKEY)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_COMMAND_LEFT_CLICK)()
-{
-        return (int)wxEVT_COMMAND_LEFT_CLICK;
-}
+MAKE_EVENT_WRAPPER(EVT_SET_CURSOR)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_TOP)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_BOTTOM)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_LINEUP)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_LINEDOWN)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_PAGEUP)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_PAGEDOWN)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_THUMBTRACK)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_THUMBRELEASE)
+MAKE_EVENT_WRAPPER(EVT_SCROLL_CHANGED)
 
-EWXWEXPORT(int,expEVT_COMMAND_LEFT_DCLICK)()
-{
-        return (int)wxEVT_COMMAND_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_RIGHT_CLICK)()
-{
-        return (int)wxEVT_COMMAND_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_RIGHT_DCLICK)()
-{
-        return (int)wxEVT_COMMAND_RIGHT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SET_FOCUS)()
-{
-        return (int)wxEVT_COMMAND_SET_FOCUS;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_KILL_FOCUS)()
-{
-        return (int)wxEVT_COMMAND_KILL_FOCUS;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_ENTER)()
-{
-        return (int)wxEVT_COMMAND_ENTER;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_BEGIN_DRAG)()
-{
-        return (int)wxEVT_COMMAND_TREE_BEGIN_DRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_BEGIN_RDRAG)()
-{
-        return (int)wxEVT_COMMAND_TREE_BEGIN_RDRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_BEGIN_LABEL_EDIT)()
-{
-        return (int)wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_END_LABEL_EDIT)()
-{
-        return (int)wxEVT_COMMAND_TREE_END_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_DELETE_ITEM)()
-{
-        return (int)wxEVT_COMMAND_TREE_DELETE_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_GET_INFO)()
-{
-        return (int)wxEVT_COMMAND_TREE_GET_INFO;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_SET_INFO)()
-{
-        return (int)wxEVT_COMMAND_TREE_SET_INFO;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_EXPANDED)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_EXPANDED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_EXPANDING)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_EXPANDING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_COLLAPSED)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_COLLAPSED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_COLLAPSING)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_COLLAPSING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_SEL_CHANGED)()
-{
-        return (int)wxEVT_COMMAND_TREE_SEL_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_SEL_CHANGING)()
-{
-        return (int)wxEVT_COMMAND_TREE_SEL_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_KEY_DOWN)()
-{
-        return (int)wxEVT_COMMAND_TREE_KEY_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_ACTIVATED)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_ACTIVATED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK)()
-{
-        return (int)wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TREE_END_DRAG)()
-{
-        return (int)wxEVT_COMMAND_TREE_END_DRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_BEGIN_DRAG)()
-{
-        return (int)wxEVT_COMMAND_LIST_BEGIN_DRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_BEGIN_RDRAG)()
-{
-        return (int)wxEVT_COMMAND_LIST_BEGIN_RDRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_BEGIN_LABEL_EDIT)()
-{
-        return (int)wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_END_LABEL_EDIT)()
-{
-        return (int)wxEVT_COMMAND_LIST_END_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_DELETE_ITEM)()
-{
-        return (int)wxEVT_COMMAND_LIST_DELETE_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_DELETE_ALL_ITEMS)()
-{
-        return (int)wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_SELECTED)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_SELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_DESELECTED)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_DESELECTED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_KEY_DOWN)()
-{
-        return (int)wxEVT_COMMAND_LIST_KEY_DOWN;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_INSERT_ITEM)()
-{
-        return (int)wxEVT_COMMAND_LIST_INSERT_ITEM;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_CLICK)()
-{
-        return (int)wxEVT_COMMAND_LIST_COL_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_RIGHT_CLICK)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_ACTIVATED)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_ACTIVATED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_ITEM_FOCUSED)()
-{
-        return (int)wxEVT_COMMAND_LIST_ITEM_FOCUSED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_TAB_SEL_CHANGED)()
-{
-#if ((wxVERSION_NUMBER > 2800) && !defined(wxUSE_TAB_DIALOG)) || defined(__WXGTK__) || defined(__WXMAC__)
-        return -1;
-#else
-        return (int)wxEVT_COMMAND_TAB_SEL_CHANGED;
+#if wxUSE_SPINBTN
+MAKE_EVENT_WRAPPER(EVT_SPIN_UP)
+MAKE_EVENT_WRAPPER(EVT_SPIN_DOWN)
+MAKE_EVENT_WRAPPER(EVT_SPIN)
 #endif
-}
 
-EWXWEXPORT(int,expEVT_COMMAND_TAB_SEL_CHANGING)()
-{
-#if ((wxVERSION_NUMBER > 2800) && !defined(wxUSE_TAB_DIALOG)) || defined(__WXGTK__) || defined(__WXMAC__)
-        return -1;
-#else
-        return (int)wxEVT_COMMAND_TAB_SEL_CHANGING;
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_TOP)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_BOTTOM)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_LINEUP)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_LINEDOWN)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_PAGEUP)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_PAGEDOWN)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_THUMBTRACK)
+MAKE_EVENT_WRAPPER(EVT_SCROLLWIN_THUMBRELEASE)
+MAKE_EVENT_WRAPPER(EVT_SIZE)
+MAKE_EVENT_WRAPPER(EVT_MOVE)
+MAKE_EVENT_WRAPPER(EVT_CLOSE_WINDOW)
+MAKE_EVENT_WRAPPER(EVT_END_SESSION)
+MAKE_EVENT_WRAPPER(EVT_QUERY_END_SESSION)
+MAKE_EVENT_WRAPPER(EVT_ACTIVATE_APP)
+MAKE_EVENT_WRAPPER(EVT_ACTIVATE)
+MAKE_EVENT_WRAPPER(EVT_CREATE)
+MAKE_EVENT_WRAPPER(EVT_DESTROY)
+MAKE_EVENT_WRAPPER(EVT_SHOW)
+MAKE_EVENT_WRAPPER(EVT_ICONIZE)
+MAKE_EVENT_WRAPPER(EVT_MAXIMIZE)
+MAKE_EVENT_WRAPPER(EVT_MOUSE_CAPTURE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_MOUSE_CAPTURE_LOST)
+MAKE_EVENT_WRAPPER(EVT_PAINT)
+MAKE_EVENT_WRAPPER(EVT_ERASE_BACKGROUND)
+MAKE_EVENT_WRAPPER(EVT_NC_PAINT)
+MAKE_EVENT_WRAPPER(EVT_MENU_OPEN)
+MAKE_EVENT_WRAPPER(EVT_MENU_CLOSE)
+MAKE_EVENT_WRAPPER(EVT_MENU_HIGHLIGHT)
+MAKE_EVENT_WRAPPER(EVT_CONTEXT_MENU)
+MAKE_EVENT_WRAPPER(EVT_SYS_COLOUR_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_DISPLAY_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_QUERY_NEW_PALETTE)
+MAKE_EVENT_WRAPPER(EVT_PALETTE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_JOY_BUTTON_DOWN)
+MAKE_EVENT_WRAPPER(EVT_JOY_BUTTON_UP)
+MAKE_EVENT_WRAPPER(EVT_JOY_MOVE)
+MAKE_EVENT_WRAPPER(EVT_JOY_ZMOVE)
+MAKE_EVENT_WRAPPER(EVT_DROP_FILES)
+MAKE_EVENT_WRAPPER(EVT_INIT_DIALOG)
+MAKE_EVENT_WRAPPER(EVT_IDLE)
+MAKE_EVENT_WRAPPER(EVT_UPDATE_UI)
+MAKE_EVENT_WRAPPER(EVT_SIZING)
+MAKE_EVENT_WRAPPER(EVT_MOVING)
+MAKE_EVENT_WRAPPER(EVT_MOVE_START)
+MAKE_EVENT_WRAPPER(EVT_MOVE_END)
+MAKE_EVENT_WRAPPER(EVT_HIBERNATE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_COPY)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_CUT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_PASTE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LEFT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SET_FOCUS)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_KILL_FOCUS)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_ENTER)
+MAKE_EVENT_WRAPPER(EVT_HELP)
+MAKE_EVENT_WRAPPER(EVT_DETAILED_HELP)
+
+// these 2 events are the same
+#define wxEVT_COMMAND_TOOL_CLICKED wxEVT_COMMAND_MENU_SELECTED
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOL_CLICKED)
+
+// from filectrl.h
+#if wxUSE_FILECTRL
+MAKE_EVENT_WRAPPER(EVT_FILECTRL_SELECTIONCHANGED)
+MAKE_EVENT_WRAPPER(EVT_FILECTRL_FILEACTIVATED)
+MAKE_EVENT_WRAPPER(EVT_FILECTRL_FOLDERCHANGED)
+MAKE_EVENT_WRAPPER(EVT_FILECTRL_FILTERCHANGED)
 #endif
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_NOTEBOOK_PAGE_CHANGED)()
-{
-        return (int)wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_NOTEBOOK_PAGE_CHANGING)()
-{
-        return (int)wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SPLITTER_SASH_POS_CHANGED)()
-{
-        return (int)wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SPLITTER_SASH_POS_CHANGING)()
-{
-        return (int)wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SPLITTER_DOUBLECLICKED)()
-{
-        return (int)wxEVT_COMMAND_SPLITTER_DOUBLECLICKED;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_SPLITTER_UNSPLIT)()
-{
-        return (int)wxEVT_COMMAND_SPLITTER_UNSPLIT;
-}
-
-EWXWEXPORT(int,expEVT_WIZARD_PAGE_CHANGED)()
-{
-        return (int)wxEVT_WIZARD_PAGE_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_WIZARD_PAGE_CHANGING)()
-{
-        return (int)wxEVT_WIZARD_PAGE_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_WIZARD_CANCEL)()
-{
-        return (int)wxEVT_WIZARD_CANCEL;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_SEL_CHANGED)()
-{
-        return (int)wxEVT_CALENDAR_SEL_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_DAY_CHANGED)()
-{
-        return (int)wxEVT_CALENDAR_DAY_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_MONTH_CHANGED)()
-{
-        return (int)wxEVT_CALENDAR_MONTH_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_YEAR_CHANGED)()
-{
-        return (int)wxEVT_CALENDAR_YEAR_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_DOUBLECLICKED)()
-{
-        return (int)wxEVT_CALENDAR_DOUBLECLICKED;
-}
-
-EWXWEXPORT(int,expEVT_CALENDAR_WEEKDAY_CLICKED)()
-{
-        return (int)wxEVT_CALENDAR_WEEKDAY_CLICKED;
-}
-
-
-#ifdef USE_CONTRIB
-EWXWEXPORT(int,expEVT_PLOT_SEL_CHANGING)()
-{
-        return (int)wxEVT_PLOT_SEL_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_SEL_CHANGED)()
-{
-        return (int)wxEVT_PLOT_SEL_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_CLICKED)()
-{
-        return (int)wxEVT_PLOT_CLICKED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_DOUBLECLICKED)()
-{
-        return (int)wxEVT_PLOT_DOUBLECLICKED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_ZOOM_IN)()
-{
-        return (int)wxEVT_PLOT_ZOOM_IN;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_ZOOM_OUT)()
-{
-        return (int)wxEVT_PLOT_ZOOM_OUT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_VALUE_SEL_CREATING)()
-{
-        return (int)wxEVT_PLOT_VALUE_SEL_CREATING;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_VALUE_SEL_CREATED)()
-{
-        return (int)wxEVT_PLOT_VALUE_SEL_CREATED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_VALUE_SEL_CHANGING)()
-{
-        return (int)wxEVT_PLOT_VALUE_SEL_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_VALUE_SEL_CHANGED)()
-{
-        return (int)wxEVT_PLOT_VALUE_SEL_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_AREA_SEL_CREATING)()
-{
-        return (int)wxEVT_PLOT_AREA_SEL_CREATING;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_AREA_SEL_CREATED)()
-{
-        return (int)wxEVT_PLOT_AREA_SEL_CREATED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_AREA_SEL_CHANGING)()
-{
-        return (int)wxEVT_PLOT_AREA_SEL_CHANGING;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_AREA_SEL_CHANGED)()
-{
-        return (int)wxEVT_PLOT_AREA_SEL_CHANGED;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_BEGIN_X_LABEL_EDIT)()
-{
-        return (int)wxEVT_PLOT_BEGIN_X_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_END_X_LABEL_EDIT)()
-{
-        return (int)wxEVT_PLOT_END_X_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_BEGIN_Y_LABEL_EDIT)()
-{
-        return (int)wxEVT_PLOT_BEGIN_Y_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_END_Y_LABEL_EDIT)()
-{
-        return (int)wxEVT_PLOT_END_Y_LABEL_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_BEGIN_TITLE_EDIT)()
-{
-        return (int)wxEVT_PLOT_BEGIN_TITLE_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_END_TITLE_EDIT)()
-{
-        return (int)wxEVT_PLOT_END_TITLE_EDIT;
-}
-
-EWXWEXPORT(int,expEVT_PLOT_AREA_CREATE)()
-{
-        return (int)wxEVT_PLOT_AREA_CREATE;
-}
-
-EWXWEXPORT(int,expEVT_USER_FIRST)()
-{
-        return (int)wxEVT_USER_FIRST;
-}
-
-EWXWEXPORT(int,expEVT_DYNAMIC_SASH_SPLIT)()
-{
-        return (int)wxEVT_DYNAMIC_SASH_SPLIT;
-}
-
-EWXWEXPORT(int,expEVT_DYNAMIC_SASH_UNIFY)()
-{
-        return (int)wxEVT_DYNAMIC_SASH_UNIFY;
-}
-#endif /* USE_CONTRIB */
-
-EWXWEXPORT(int,expEVT_HELP)()
-{
-        return (int)wxEVT_HELP;
-}
-
-EWXWEXPORT(int,expEVT_DETAILED_HELP)()
-{
-        return (int)wxEVT_DETAILED_HELP;
-}
-
-
-EWXWEXPORT(int,expEVT_GRID_CELL_LEFT_CLICK)()
-{
-        return (int)wxEVT_GRID_CELL_LEFT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_CELL_RIGHT_CLICK)()
-{
-        return (int)wxEVT_GRID_CELL_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_CELL_LEFT_DCLICK)()
-{
-        return (int)wxEVT_GRID_CELL_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_CELL_RIGHT_DCLICK)()
-{
-        return (int)wxEVT_GRID_CELL_RIGHT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_LABEL_LEFT_CLICK)()
-{
-        return (int)wxEVT_GRID_LABEL_LEFT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_LABEL_RIGHT_CLICK)()
-{
-        return (int)wxEVT_GRID_LABEL_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_LABEL_LEFT_DCLICK)()
-{
-        return (int)wxEVT_GRID_LABEL_LEFT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_LABEL_RIGHT_DCLICK)()
-{
-        return (int)wxEVT_GRID_LABEL_RIGHT_DCLICK;
-}
-
-EWXWEXPORT(int,expEVT_GRID_ROW_SIZE)()
-{
-        return (int)wxEVT_GRID_ROW_SIZE;
-}
-
-EWXWEXPORT(int,expEVT_GRID_COL_SIZE)()
-{
-        return (int)wxEVT_GRID_COL_SIZE;
-}
-
-EWXWEXPORT(int,expEVT_GRID_RANGE_SELECT)()
-{
-        return (int)wxEVT_GRID_RANGE_SELECT;
-}
-
-EWXWEXPORT(int,expEVT_GRID_CELL_CHANGE)()
-{
-        return (int)wxEVT_GRID_CELL_CHANGE;
-}
-
-EWXWEXPORT(int,expEVT_GRID_SELECT_CELL)()
-{
-        return (int)wxEVT_GRID_SELECT_CELL;
-}
-
-EWXWEXPORT(int,expEVT_GRID_EDITOR_SHOWN)()
-{
-        return (int)wxEVT_GRID_EDITOR_SHOWN;
-}
-
-EWXWEXPORT(int,expEVT_GRID_EDITOR_HIDDEN)()
-{
-        return (int)wxEVT_GRID_EDITOR_HIDDEN;
-}
-
-EWXWEXPORT(int,expEVT_GRID_EDITOR_CREATED)()
-{
-        return (int)wxEVT_GRID_EDITOR_CREATED;
-}
-
-EWXWEXPORT(int,expK_BACK)()
-{
-        return (int)WXK_BACK;
-}
-
-EWXWEXPORT(int,expK_TAB)()
-{
-        return (int)WXK_TAB;
-}
-
-EWXWEXPORT(int,expK_RETURN)()
-{
-        return (int)WXK_RETURN;
-}
-
-EWXWEXPORT(int,expK_ESCAPE)()
-{
-        return (int)WXK_ESCAPE;
-}
-
-EWXWEXPORT(int,expK_SPACE)()
-{
-        return (int)WXK_SPACE;
-}
-
-EWXWEXPORT(int,expK_DELETE)()
-{
-        return (int)WXK_DELETE;
-}
-
-EWXWEXPORT(int,expK_START)()
-{
-        return (int)WXK_START;
-}
-
-EWXWEXPORT(int,expK_LBUTTON)()
-{
-        return (int)WXK_LBUTTON;
-}
-
-EWXWEXPORT(int,expK_RBUTTON)()
-{
-        return (int)WXK_RBUTTON;
-}
-
-EWXWEXPORT(int,expK_CANCEL)()
-{
-        return (int)WXK_CANCEL;
-}
-
-EWXWEXPORT(int,expK_MBUTTON)()
-{
-        return (int)WXK_MBUTTON;
-}
-
-EWXWEXPORT(int,expK_CLEAR)()
-{
-        return (int)WXK_CLEAR;
-}
-
-EWXWEXPORT(int,expK_SHIFT)()
-{
-        return (int)WXK_SHIFT;
-}
-
-EWXWEXPORT(int,expK_ALT)()
-{
-        return (int)WXK_ALT;
-}
-
-EWXWEXPORT(int,expK_CONTROL)()
-{
-        return (int)WXK_CONTROL;
-}
-
-EWXWEXPORT(int,expK_MENU)()
-{
-        return (int)WXK_MENU;
-}
-
-EWXWEXPORT(int,expK_PAUSE)()
-{
-        return (int)WXK_PAUSE;
-}
-
-EWXWEXPORT(int,expK_CAPITAL)()
-{
-        return (int)WXK_CAPITAL;
-}
-
-EWXWEXPORT(int,expK_END)()
-{
-        return (int)WXK_END;
-}
-
-EWXWEXPORT(int,expK_HOME)()
-{
-        return (int)WXK_HOME;
-}
-
-EWXWEXPORT(int,expK_LEFT)()
-{
-        return (int)WXK_LEFT;
-}
-
-EWXWEXPORT(int,expK_UP)()
-{
-        return (int)WXK_UP;
-}
-
-EWXWEXPORT(int,expK_RIGHT)()
-{
-        return (int)WXK_RIGHT;
-}
-
-EWXWEXPORT(int,expK_DOWN)()
-{
-        return (int)WXK_DOWN;
-}
-
-EWXWEXPORT(int,expK_SELECT)()
-{
-        return (int)WXK_SELECT;
-}
-
-EWXWEXPORT(int,expK_PRINT)()
-{
-        return (int)WXK_PRINT;
-}
-
-EWXWEXPORT(int,expK_EXECUTE)()
-{
-        return (int)WXK_EXECUTE;
-}
-
-EWXWEXPORT(int,expK_SNAPSHOT)()
-{
-        return (int)WXK_SNAPSHOT;
-}
-
-EWXWEXPORT(int,expK_INSERT)()
-{
-        return (int)WXK_INSERT;
-}
-
-EWXWEXPORT(int,expK_HELP)()
-{
-        return (int)WXK_HELP;
-}
-
-EWXWEXPORT(int,expK_NUMPAD0)()
-{
-        return (int)WXK_NUMPAD0;
-}
-
-EWXWEXPORT(int,expK_NUMPAD1)()
-{
-        return (int)WXK_NUMPAD1;
-}
-
-EWXWEXPORT(int,expK_NUMPAD2)()
-{
-        return (int)WXK_NUMPAD2;
-}
-
-EWXWEXPORT(int,expK_NUMPAD3)()
-{
-        return (int)WXK_NUMPAD3;
-}
-
-EWXWEXPORT(int,expK_NUMPAD4)()
-{
-        return (int)WXK_NUMPAD4;
-}
-
-EWXWEXPORT(int,expK_NUMPAD5)()
-{
-        return (int)WXK_NUMPAD5;
-}
-
-EWXWEXPORT(int,expK_NUMPAD6)()
-{
-        return (int)WXK_NUMPAD6;
-}
-
-EWXWEXPORT(int,expK_NUMPAD7)()
-{
-        return (int)WXK_NUMPAD7;
-}
-
-EWXWEXPORT(int,expK_NUMPAD8)()
-{
-        return (int)WXK_NUMPAD8;
-}
-
-EWXWEXPORT(int,expK_NUMPAD9)()
-{
-        return (int)WXK_NUMPAD9;
-}
-
-EWXWEXPORT(int,expK_MULTIPLY)()
-{
-        return (int)WXK_MULTIPLY;
-}
-
-EWXWEXPORT(int,expK_ADD)()
-{
-        return (int)WXK_ADD;
-}
-
-EWXWEXPORT(int,expK_SEPARATOR)()
-{
-        return (int)WXK_SEPARATOR;
-}
-
-EWXWEXPORT(int,expK_SUBTRACT)()
-{
-        return (int)WXK_SUBTRACT;
-}
-
-EWXWEXPORT(int,expK_DECIMAL)()
-{
-        return (int)WXK_DECIMAL;
-}
-
-EWXWEXPORT(int,expK_DIVIDE)()
-{
-        return (int)WXK_DIVIDE;
-}
-
-EWXWEXPORT(int,expK_F1)()
-{
-        return (int)WXK_F1;
-}
-
-EWXWEXPORT(int,expK_F2)()
-{
-        return (int)WXK_F2;
-}
-
-EWXWEXPORT(int,expK_F3)()
-{
-        return (int)WXK_F3;
-}
-
-EWXWEXPORT(int,expK_F4)()
-{
-        return (int)WXK_F4;
-}
-
-EWXWEXPORT(int,expK_F5)()
-{
-        return (int)WXK_F5;
-}
-
-EWXWEXPORT(int,expK_F6)()
-{
-        return (int)WXK_F6;
-}
-
-EWXWEXPORT(int,expK_F7)()
-{
-        return (int)WXK_F7;
-}
-
-EWXWEXPORT(int,expK_F8)()
-{
-        return (int)WXK_F8;
-}
-
-EWXWEXPORT(int,expK_F9)()
-{
-        return (int)WXK_F9;
-}
-
-EWXWEXPORT(int,expK_F10)()
-{
-        return (int)WXK_F10;
-}
-
-EWXWEXPORT(int,expK_F11)()
-{
-        return (int)WXK_F11;
-}
-
-EWXWEXPORT(int,expK_F12)()
-{
-        return (int)WXK_F12;
-}
-
-EWXWEXPORT(int,expK_F13)()
-{
-        return (int)WXK_F13;
-}
-
-EWXWEXPORT(int,expK_F14)()
-{
-        return (int)WXK_F14;
-}
-
-EWXWEXPORT(int,expK_F15)()
-{
-        return (int)WXK_F15;
-}
-
-EWXWEXPORT(int,expK_F16)()
-{
-        return (int)WXK_F16;
-}
-
-EWXWEXPORT(int,expK_F17)()
-{
-        return (int)WXK_F17;
-}
-
-EWXWEXPORT(int,expK_F18)()
-{
-        return (int)WXK_F18;
-}
-
-EWXWEXPORT(int,expK_F19)()
-{
-        return (int)WXK_F19;
-}
-
-EWXWEXPORT(int,expK_F20)()
-{
-        return (int)WXK_F20;
-}
-
-EWXWEXPORT(int,expK_F21)()
-{
-        return (int)WXK_F21;
-}
-
-EWXWEXPORT(int,expK_F22)()
-{
-        return (int)WXK_F22;
-}
-
-EWXWEXPORT(int,expK_F23)()
-{
-        return (int)WXK_F23;
-}
-
-EWXWEXPORT(int,expK_F24)()
-{
-        return (int)WXK_F24;
-}
-
-EWXWEXPORT(int,expK_NUMLOCK)()
-{
-        return (int)WXK_NUMLOCK;
-}
-
-EWXWEXPORT(int,expK_SCROLL)()
-{
-        return (int)WXK_SCROLL;
-}
-
-EWXWEXPORT(int,expK_PAGEUP)()
-{
-        return (int)WXK_PAGEUP;
-}
-
-EWXWEXPORT(int,expK_PAGEDOWN)()
-{
-        return (int)WXK_PAGEDOWN;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_SPACE)()
-{
-        return (int)WXK_NUMPAD_SPACE;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_TAB)()
-{
-        return (int)WXK_NUMPAD_TAB;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_ENTER)()
-{
-        return (int)WXK_NUMPAD_ENTER;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_F1)()
-{
-        return (int)WXK_NUMPAD_F1;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_F2)()
-{
-        return (int)WXK_NUMPAD_F2;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_F3)()
-{
-        return (int)WXK_NUMPAD_F3;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_F4)()
-{
-        return (int)WXK_NUMPAD_F4;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_HOME)()
-{
-        return (int)WXK_NUMPAD_HOME;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_LEFT)()
-{
-        return (int)WXK_NUMPAD_LEFT;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_UP)()
-{
-        return (int)WXK_NUMPAD_UP;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_RIGHT)()
-{
-        return (int)WXK_NUMPAD_RIGHT;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_DOWN)()
-{
-        return (int)WXK_NUMPAD_DOWN;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_PAGEUP)()
-{
-        return (int)WXK_NUMPAD_PAGEUP;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_PAGEDOWN)()
-{
-        return (int)WXK_NUMPAD_PAGEDOWN;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_END)()
-{
-        return (int)WXK_NUMPAD_END;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_BEGIN)()
-{
-        return (int)WXK_NUMPAD_BEGIN;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_INSERT)()
-{
-        return (int)WXK_NUMPAD_INSERT;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_DELETE)()
-{
-        return (int)WXK_NUMPAD_DELETE;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_EQUAL)()
-{
-        return (int)WXK_NUMPAD_EQUAL;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_MULTIPLY)()
-{
-        return (int)WXK_NUMPAD_MULTIPLY;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_ADD)()
-{
-        return (int)WXK_NUMPAD_ADD;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_SEPARATOR)()
-{
-        return (int)WXK_NUMPAD_SEPARATOR;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_SUBTRACT)()
-{
-        return (int)WXK_NUMPAD_SUBTRACT;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_DECIMAL)()
-{
-        return (int)WXK_NUMPAD_DECIMAL;
-}
-
-EWXWEXPORT(int,expK_NUMPAD_DIVIDE)()
-{
-        return (int)WXK_NUMPAD_DIVIDE;
-}
-
-EWXWEXPORT(int,expK_WINDOWS_LEFT)()
-{
-        return (int)WXK_WINDOWS_LEFT;
-}
-
-EWXWEXPORT(int,expK_WINDOWS_RIGHT)()
-{
-        return (int)WXK_WINDOWS_RIGHT;
-}
-
-EWXWEXPORT(int,expK_WINDOWS_MENU)()
-{
-        return (int)WXK_WINDOWS_MENU;
-}
-
-EWXWEXPORT(int,expK_COMMAND)()
-{
-        return (int)WXK_COMMAND;
-}
-
-EWXWEXPORT(int,expK_SPECIAL1)()
-{
-        return (int)WXK_SPECIAL1;
-}
-
-EWXWEXPORT(int,expK_SPECIAL2)()
-{
-        return (int)WXK_SPECIAL2;
-}
-
-EWXWEXPORT(int,expK_SPECIAL3)()
-{
-        return (int)WXK_SPECIAL3;
-}
-
-EWXWEXPORT(int,expK_SPECIAL4)()
-{
-        return (int)WXK_SPECIAL4;
-}
-
-EWXWEXPORT(int,expK_WXK_SPECIAL5)()
-{
-        return (int)WXK_SPECIAL5;
-}
-
-EWXWEXPORT(int,expK_SPECIAL6)()
-{
-        return (int)WXK_SPECIAL6;
-}
-
-EWXWEXPORT(int,expK_SPECIAL7)()
-{
-        return (int)WXK_SPECIAL7;
-}
-
-EWXWEXPORT(int,expK_SPECIAL8)()
-{
-        return (int)WXK_SPECIAL8;
-}
-
-EWXWEXPORT(int,expK_SPECIAL9)()
-{
-        return (int)WXK_SPECIAL9;
-}
-
-EWXWEXPORT(int,expK_SPECIAL10)()
-{
-        return (int)WXK_SPECIAL10;
-}
-
-EWXWEXPORT(int,expK_SPECIAL11)()
-{
-        return (int)WXK_SPECIAL11;
-}
-
-EWXWEXPORT(int,expK_SPECIAL12)()
-{
-        return (int)WXK_SPECIAL12;
-}
-
-EWXWEXPORT(int,expK_SPECIAL13)()
-{
-        return (int)WXK_SPECIAL13;
-}
-
-EWXWEXPORT(int,expK_SPECIAL14)()
-{
-        return (int)WXK_SPECIAL14;
-}
-
-EWXWEXPORT(int,expK_SPECIAL15)()
-{
-        return (int)WXK_SPECIAL15;
-}
-
-EWXWEXPORT(int,expK_SPECIAL16)()
-{
-        return (int)WXK_SPECIAL16;
-}
-
-EWXWEXPORT(int,expK_SPECIAL17)()
-{
-        return (int)WXK_SPECIAL17;
-}
-
-EWXWEXPORT(int,expK_SPECIAL18)()
-{
-        return (int)WXK_SPECIAL18;
-}
-
-EWXWEXPORT(int,expK_SPECIAL19)()
-{
-        return (int)WXK_SPECIAL19;
-}
-
-EWXWEXPORT(int,expK_SPECIAL20)()
-{
-        return (int)WXK_SPECIAL20;
-}
 
+// from filepicker.h
+#if wxUSE_FILEPICKERCTRL || wxUSE_DIRPICKERCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FILEPICKER_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_DIRPICKER_CHANGED)
+#endif
+
+// from fontpicker.h
+#if wxUSE_FONTPICKERCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_FONTPICKER_CHANGED)
+#endif
+
+// from fswatcher.h
+#if wxUSE_FSWATCHER
+MAKE_EVENT_WRAPPER(EVT_FSWATCHER)
+#endif
+
+// from generic/grid.h
+#if wxUSE_GRID
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_LEFT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_LABEL_LEFT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_LABEL_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_LABEL_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_LABEL_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_GRID_ROW_SIZE)
+MAKE_EVENT_WRAPPER(EVT_GRID_COL_SIZE)
+MAKE_EVENT_WRAPPER(EVT_GRID_RANGE_SELECT)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_GRID_SELECT_CELL)
+MAKE_EVENT_WRAPPER(EVT_GRID_EDITOR_SHOWN)
+MAKE_EVENT_WRAPPER(EVT_GRID_EDITOR_HIDDEN)
+MAKE_EVENT_WRAPPER(EVT_GRID_EDITOR_CREATED)
+MAKE_EVENT_WRAPPER(EVT_GRID_CELL_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_GRID_COL_MOVE)
+MAKE_EVENT_WRAPPER(EVT_GRID_COL_SORT)
+#endif
+
+// from laywin.h
+MAKE_EVENT_WRAPPER(EVT_QUERY_LAYOUT_INFO)
+MAKE_EVENT_WRAPPER(EVT_CALCULATE_LAYOUT)
+
+// from sashwin.h
+#if wxUSE_SASH
+MAKE_EVENT_WRAPPER(EVT_SASH_DRAGGED)
+#endif
+
+// from headerctrl.h
+#if wxUSE_HEADERCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_MIDDLE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_RIGHT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_MIDDLE_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_SEPARATOR_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_BEGIN_RESIZE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_RESIZING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_END_RESIZE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_BEGIN_REORDER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_END_REORDER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HEADER_DRAGGING_CANCELLED)
+#endif
+
+// from html/htmlwin.h
+#if wxUSE_HTML
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HTML_CELL_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HTML_CELL_HOVER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HTML_LINK_CLICKED)
+#endif
+
+// from html/webkit.h
+#if wxUSE_WEBKIT
+MAKE_EVENT_WRAPPER(EVT_WEBKIT_STATE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_WEBKIT_BEFORE_LOAD)
+MAKE_EVENT_WRAPPER(EVT_WEBKIT_NEW_WINDOW)
+#endif
+
+// from hyperlink.h
+#if wxUSE_HYPERLINKCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_HYPERLINK)
+#endif
+
+// from listbase.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_BEGIN_RDRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_BEGIN_LABEL_EDIT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_END_LABEL_EDIT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_DELETE_ITEM)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_DELETE_ALL_ITEMS)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_DESELECTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_KEY_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_INSERT_ITEM)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_COL_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_MIDDLE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_ACTIVATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_CACHE_HINT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_COL_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_COL_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_COL_DRAGGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_COL_END_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LIST_ITEM_FOCUSED)
+
+// from listbook.h
+#if wxUSE_LISTBOOK
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LISTBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_LISTBOOK_PAGE_CHANGING)
+#endif
+
+// from notebook.h
+#if wxUSE_NOTEBOOK
+MAKE_EVENT_WRAPPER(EVT_COMMAND_NOTEBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_NOTEBOOK_PAGE_CHANGING)
+#endif
+
+// from power.h
+MAKE_EVENT_WRAPPER(EVT_POWER_SUSPENDING)
+MAKE_EVENT_WRAPPER(EVT_POWER_SUSPENDED)
+MAKE_EVENT_WRAPPER(EVT_POWER_SUSPEND_CANCEL)
+MAKE_EVENT_WRAPPER(EVT_POWER_RESUME)
+
+// from process.h
+MAKE_EVENT_WRAPPER(EVT_END_PROCESS)
+
+// from propgrid/propgrid.h
+#if wxUSE_PROPGRID
+MAKE_EVENT_WRAPPER(EVT_PG_SELECTED)
+MAKE_EVENT_WRAPPER(EVT_PG_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_PG_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_PG_HIGHLIGHTED)
+MAKE_EVENT_WRAPPER(EVT_PG_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_PG_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_PG_ITEM_COLLAPSED)
+MAKE_EVENT_WRAPPER(EVT_PG_ITEM_EXPANDED)
+MAKE_EVENT_WRAPPER(EVT_PG_DOUBLE_CLICK)
+#endif
+
+// from ribbon/bar.h
+#if wxUSE_RIBBON
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_PAGE_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_TAB_MIDDLE_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_TAB_MIDDLE_UP)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_TAB_RIGHT_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBAR_TAB_RIGHT_UP)
+
+// from ribbon/buttonbar.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBUTTON_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONBUTTON_DROPDOWN_CLICKED)
+
+// from ribbon/gallery.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONGALLERY_HOVER_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONGALLERY_SELECTED)
+
+// from ribbon/toolbar.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONTOOL_CLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RIBBONTOOL_DROPDOWN_CLICKED)
+#endif
+
+// from richtext/richtextctrl.h
+#if wxUSE_RICHTEXT
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_LEFT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_MIDDLE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_LEFT_DCLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_RETURN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_CHARACTER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_DELETE)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_STYLESHEET_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_STYLESHEET_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_STYLESHEET_REPLACING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_STYLESHEET_REPLACED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_CONTENT_INSERTED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_CONTENT_DELETED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_STYLE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_SELECTION_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_RICHTEXT_BUFFER_RESET)
+#endif
+
+// from socket.h
+#if wxUSE_SOCKETS
+MAKE_EVENT_WRAPPER(EVT_SOCKET)
+#endif
+
+// from spinctrl.h
+#if wxUSE_SPINCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPINCTRL_UPDATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPINCTRLDOUBLE_UPDATED)
+#endif
+
+// from splitter.h
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPLITTER_SASH_POS_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPLITTER_SASH_POS_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPLITTER_DOUBLECLICKED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SPLITTER_UNSPLIT)
+
+// from srchctrl.h
+#if wxUSE_SEARCHCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
+#endif
+
+// from textctrl.h
+#if wxUSE_TEXTCTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_UPDATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_ENTER)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_URL)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TEXT_MAXLEN)
+#endif
+
+// from tglbtn.h
+#if wxUSE_TOGGLEBTN
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOGGLEBUTTON_CLICKED)
+#endif
+
+// from timer.h
+#if wxUSE_TIMER
+MAKE_EVENT_WRAPPER(EVT_TIMER)
+#endif
+
+// from toolbook.h
+#if wxUSE_TOOLBOOK
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOLBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TOOLBOOK_PAGE_CHANGING)
+#endif
+
+// from treebase.h
+#if wxUSE_TREECTRL
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_BEGIN_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_BEGIN_RDRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_BEGIN_LABEL_EDIT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_END_LABEL_EDIT)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_DELETE_ITEM)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_GET_INFO)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_SET_INFO)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_EXPANDED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_EXPANDING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_COLLAPSED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_COLLAPSING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_SEL_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_SEL_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_KEY_DOWN)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_ACTIVATED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_MIDDLE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_END_DRAG)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_STATE_IMAGE_CLICK)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_GETTOOLTIP)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREE_ITEM_MENU)
+#endif
+
+// from treebook.h
+#if wxUSE_TREEBOOK
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREEBOOK_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREEBOOK_PAGE_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREEBOOK_NODE_COLLAPSED)
+MAKE_EVENT_WRAPPER(EVT_COMMAND_TREEBOOK_NODE_EXPANDED)
+#endif
+
+// from wizard.h
+#if wxUSE_WIZARDDLG
+MAKE_EVENT_WRAPPER(EVT_WIZARD_PAGE_CHANGED)
+MAKE_EVENT_WRAPPER(EVT_WIZARD_PAGE_CHANGING)
+MAKE_EVENT_WRAPPER(EVT_WIZARD_CANCEL)
+MAKE_EVENT_WRAPPER(EVT_WIZARD_HELP)
+MAKE_EVENT_WRAPPER(EVT_WIZARD_FINISHED)
+MAKE_EVENT_WRAPPER(EVT_WIZARD_PAGE_SHOWN)
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+// Keypress wrappers
+////////////////////////////////////////////////////////////////////////////////
+
+#define MAKE_KEYPRESS_WRAPPER(key) EWXWEXPORT(int,exp##key)() { return (int)WX##key; }
+
+MAKE_KEYPRESS_WRAPPER(K_BACK)
+MAKE_KEYPRESS_WRAPPER(K_TAB)
+MAKE_KEYPRESS_WRAPPER(K_RETURN)
+MAKE_KEYPRESS_WRAPPER(K_ESCAPE)
+MAKE_KEYPRESS_WRAPPER(K_SPACE)
+MAKE_KEYPRESS_WRAPPER(K_DELETE)
+MAKE_KEYPRESS_WRAPPER(K_START)
+MAKE_KEYPRESS_WRAPPER(K_LBUTTON)
+MAKE_KEYPRESS_WRAPPER(K_RBUTTON)
+MAKE_KEYPRESS_WRAPPER(K_CANCEL)
+MAKE_KEYPRESS_WRAPPER(K_MBUTTON)
+MAKE_KEYPRESS_WRAPPER(K_CLEAR)
+MAKE_KEYPRESS_WRAPPER(K_SHIFT)
+MAKE_KEYPRESS_WRAPPER(K_ALT)
+MAKE_KEYPRESS_WRAPPER(K_CONTROL)
+MAKE_KEYPRESS_WRAPPER(K_MENU)
+MAKE_KEYPRESS_WRAPPER(K_PAUSE)
+MAKE_KEYPRESS_WRAPPER(K_CAPITAL)
+MAKE_KEYPRESS_WRAPPER(K_END)
+MAKE_KEYPRESS_WRAPPER(K_HOME)
+MAKE_KEYPRESS_WRAPPER(K_LEFT)
+MAKE_KEYPRESS_WRAPPER(K_UP)
+MAKE_KEYPRESS_WRAPPER(K_RIGHT)
+MAKE_KEYPRESS_WRAPPER(K_DOWN)
+MAKE_KEYPRESS_WRAPPER(K_SELECT)
+MAKE_KEYPRESS_WRAPPER(K_PRINT)
+MAKE_KEYPRESS_WRAPPER(K_EXECUTE)
+MAKE_KEYPRESS_WRAPPER(K_SNAPSHOT)
+MAKE_KEYPRESS_WRAPPER(K_INSERT)
+MAKE_KEYPRESS_WRAPPER(K_HELP)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD0)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD1)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD2)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD3)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD4)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD5)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD6)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD7)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD8)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD9)
+MAKE_KEYPRESS_WRAPPER(K_MULTIPLY)
+MAKE_KEYPRESS_WRAPPER(K_ADD)
+MAKE_KEYPRESS_WRAPPER(K_SEPARATOR)
+MAKE_KEYPRESS_WRAPPER(K_SUBTRACT)
+MAKE_KEYPRESS_WRAPPER(K_DECIMAL)
+MAKE_KEYPRESS_WRAPPER(K_DIVIDE)
+MAKE_KEYPRESS_WRAPPER(K_F1)
+MAKE_KEYPRESS_WRAPPER(K_F2)
+MAKE_KEYPRESS_WRAPPER(K_F3)
+MAKE_KEYPRESS_WRAPPER(K_F4)
+MAKE_KEYPRESS_WRAPPER(K_F5)
+MAKE_KEYPRESS_WRAPPER(K_F6)
+MAKE_KEYPRESS_WRAPPER(K_F7)
+MAKE_KEYPRESS_WRAPPER(K_F8)
+MAKE_KEYPRESS_WRAPPER(K_F9)
+MAKE_KEYPRESS_WRAPPER(K_F10)
+MAKE_KEYPRESS_WRAPPER(K_F11)
+MAKE_KEYPRESS_WRAPPER(K_F12)
+MAKE_KEYPRESS_WRAPPER(K_F13)
+MAKE_KEYPRESS_WRAPPER(K_F14)
+MAKE_KEYPRESS_WRAPPER(K_F15)
+MAKE_KEYPRESS_WRAPPER(K_F16)
+MAKE_KEYPRESS_WRAPPER(K_F17)
+MAKE_KEYPRESS_WRAPPER(K_F18)
+MAKE_KEYPRESS_WRAPPER(K_F19)
+MAKE_KEYPRESS_WRAPPER(K_F20)
+MAKE_KEYPRESS_WRAPPER(K_F21)
+MAKE_KEYPRESS_WRAPPER(K_F22)
+MAKE_KEYPRESS_WRAPPER(K_F23)
+MAKE_KEYPRESS_WRAPPER(K_F24)
+MAKE_KEYPRESS_WRAPPER(K_NUMLOCK)
+MAKE_KEYPRESS_WRAPPER(K_SCROLL)
+MAKE_KEYPRESS_WRAPPER(K_PAGEUP)
+MAKE_KEYPRESS_WRAPPER(K_PAGEDOWN)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_SPACE)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_TAB)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_ENTER)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_F1)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_F2)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_F3)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_F4)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_HOME)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_LEFT)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_UP)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_RIGHT)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_DOWN)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_PAGEUP)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_PAGEDOWN)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_END)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_BEGIN)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_INSERT)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_DELETE)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_EQUAL)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_MULTIPLY)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_ADD)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_SEPARATOR)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_SUBTRACT)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_DECIMAL)
+MAKE_KEYPRESS_WRAPPER(K_NUMPAD_DIVIDE)
+MAKE_KEYPRESS_WRAPPER(K_WINDOWS_LEFT)
+MAKE_KEYPRESS_WRAPPER(K_WINDOWS_RIGHT)
+MAKE_KEYPRESS_WRAPPER(K_WINDOWS_MENU)
+MAKE_KEYPRESS_WRAPPER(K_COMMAND)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL1)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL2)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL3)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL4)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL5)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL6)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL7)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL8)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL9)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL10)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL11)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL12)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL13)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL14)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL15)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL16)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL17)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL18)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL19)
+MAKE_KEYPRESS_WRAPPER(K_SPECIAL20)
 }

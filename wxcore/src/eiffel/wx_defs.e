@@ -1103,66 +1103,6 @@ feature {NONE}
 		alias "expEVT_KILL_FOCUS"
 		end
 
-    wxEVT_NC_LEFT_DOWN : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_LEFT_DOWN"
-		end
-
-    wxEVT_NC_LEFT_UP : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_LEFT_UP"
-		end
-
-    wxEVT_NC_MIDDLE_DOWN : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_MIDDLE_DOWN"
-		end
-
-    wxEVT_NC_MIDDLE_UP : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_MIDDLE_UP"
-		end
-
-    wxEVT_NC_RIGHT_DOWN : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_RIGHT_DOWN"
-		end
-
-    wxEVT_NC_RIGHT_UP : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_RIGHT_UP"
-		end
-
-    wxEVT_NC_MOTION : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_MOTION"
-		end
-
-    wxEVT_NC_ENTER_WINDOW : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_ENTER_WINDOW"
-		end
-
-    wxEVT_NC_LEAVE_WINDOW : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_LEAVE_WINDOW"
-		end
-
-    wxEVT_NC_LEFT_DCLICK : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_LEFT_DCLICK"
-		end
-
-    wxEVT_NC_MIDDLE_DCLICK : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_MIDDLE_DCLICK"
-		end
-
-    wxEVT_NC_RIGHT_DCLICK : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_NC_RIGHT_DCLICK"
-		end
-
     wxEVT_CHAR : INTEGER is
 		external "C use %"ewxw_glue.h%""
 		alias "expEVT_CHAR"
@@ -1358,11 +1298,6 @@ feature {NONE}
 		alias "expEVT_NC_PAINT"
 		end
 
-    wxEVT_PAINT_ICON : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_PAINT_ICON"
-		end
-
     wxEVT_MENU_CHAR : INTEGER is
 		external "C use %"ewxw_glue.h%""
 		alias "expEVT_MENU_CHAR"
@@ -1391,11 +1326,6 @@ feature {NONE}
     wxEVT_SYS_COLOUR_CHANGED : INTEGER is
 		external "C use %"ewxw_glue.h%""
 		alias "expEVT_SYS_COLOUR_CHANGED"
-		end
-
-    wxEVT_SETTING_CHANGED : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_SETTING_CHANGED"
 		end
 
     wxEVT_QUERY_NEW_PALETTE : INTEGER is
@@ -1431,21 +1361,6 @@ feature {NONE}
     wxEVT_DROP_FILES : INTEGER is
 		external "C use %"ewxw_glue.h%""
 		alias "expEVT_DROP_FILES"
-		end
-
-    wxEVT_DRAW_ITEM : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_DRAW_ITEM"
-		end
-
-    wxEVT_MEASURE_ITEM : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_MEASURE_ITEM"
-		end
-
-    wxEVT_COMPARE_ITEM : INTEGER is
-		external "C use %"ewxw_glue.h%""
-		alias "expEVT_COMPARE_ITEM"
 		end
 
     wxEVT_INIT_DIALOG : INTEGER is

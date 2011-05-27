@@ -12,9 +12,10 @@
 #include <wx/power.h>
 #endif
 
-/*-----------------------------------------------------------------------------
-  new events
------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+// wxc specific events
+////////////////////////////////////////////////////////////////////////////////
+
 BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_DELETE, 1000)
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_HTML_CELL_CLICKED, 1001 )
@@ -25,7 +26,6 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_LOCAL_EVENT_TYPE(wxEVT_SORT, 1006 )
 END_DECLARE_EVENT_TYPES()
 
-
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_DELETE )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_CELL_CLICKED )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_CELL_MOUSE_HOVER )
@@ -34,78 +34,16 @@ DEFINE_LOCAL_EVENT_TYPE( wxEVT_HTML_SET_TITLE )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_INPUT_SINK )
 DEFINE_LOCAL_EVENT_TYPE( wxEVT_SORT )
 
-/*-----------------------------------------------------------------------------
-  event exports
------------------------------------------------------------------------------*/
-extern "C"
-{
-
-EWXWEXPORT(int,expEVT_DELETE)()
-{
-  return (int)wxEVT_DELETE;
+// Exported wxC event wrappers - must be C linkage
+extern "C" {
+  MAKE_EVENT_WRAPPER(EVT_DELETE)
+  MAKE_EVENT_WRAPPER(EVT_HTML_CELL_CLICKED)
+  MAKE_EVENT_WRAPPER(EVT_HTML_CELL_MOUSE_HOVER)
+  MAKE_EVENT_WRAPPER(EVT_HTML_LINK_CLICKED)
+  MAKE_EVENT_WRAPPER(EVT_HTML_SET_TITLE)
+  MAKE_EVENT_WRAPPER(EVT_INPUT_SINK)
+  MAKE_EVENT_WRAPPER(EVT_SORT)
 }
-
-EWXWEXPORT(int,expEVT_HTML_CELL_CLICKED)()
-{
-  return (int)wxEVT_HTML_CELL_CLICKED;
-}
-
-EWXWEXPORT(int,expEVT_HTML_CELL_MOUSE_HOVER)()
-{
-  return (int)wxEVT_HTML_CELL_MOUSE_HOVER;
-}
-
-EWXWEXPORT(int,expEVT_HTML_LINK_CLICKED)()
-{
-  return (int)wxEVT_HTML_LINK_CLICKED;
-}
-
-
-EWXWEXPORT(int,expEVT_HTML_SET_TITLE)()
-{
-  return (int)wxEVT_HTML_SET_TITLE;
-}
-
-
-EWXWEXPORT(int,expEVT_INPUT_SINK)()
-{
-  return (int)wxEVT_INPUT_SINK;
-}
-
-
-EWXWEXPORT(int,expEVT_SORT)()
-{
-  return (int)wxEVT_SORT;
-}
-
-/* list control */
-EWXWEXPORT(int,expEVT_COMMAND_LIST_CACHE_HINT)()
-{
-  return (int)wxEVT_COMMAND_LIST_CACHE_HINT;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_RIGHT_CLICK)()
-{
-  return (int)wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_BEGIN_DRAG)()
-{
-  return (int)wxEVT_COMMAND_LIST_COL_BEGIN_DRAG;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_DRAGGING)()
-{
-  return (int)wxEVT_COMMAND_LIST_COL_DRAGGING;
-}
-
-EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_END_DRAG)()
-{
-  return (int)wxEVT_COMMAND_LIST_COL_END_DRAG;
-}
-
-} /* extern "C" */
-
 
 /*-----------------------------------------------------------------------------
   Timers
