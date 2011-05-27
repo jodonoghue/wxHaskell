@@ -249,7 +249,7 @@ partition p (MultiSet m)
 -- | /O(n)/. Fold over each element in the multi set.
 fold :: (a -> b -> b) -> b -> MultiSet a -> b
 fold f z (MultiSet m)
-  = M.foldWithKey apply z m
+  = M.foldrWithKey apply z m
   where
     apply x n z  | n > 0     = apply x (n-1) (f x z)
                  | otherwise = z
@@ -257,7 +257,7 @@ fold f z (MultiSet m)
 -- | /O(n)/. Fold over all occurrences of an element at once.
 foldOccur :: (a -> Int -> b -> b) -> b -> MultiSet a -> b
 foldOccur f z (MultiSet m)
-  = M.foldWithKey f z m
+  = M.foldrWithKey f z m
 
 {--------------------------------------------------------------------
   Minimal, Maximal

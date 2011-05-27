@@ -91,10 +91,7 @@ getDefaultEiffelFiles
 getDefaultHeaderFiles :: IO [FilePath]
 getDefaultHeaderFiles
   = do wxcdir <- getWxcDir
-       return [wxcdir ++ "/include/wxc.h"
-              -- , wxcdir ++ "/ewxw/eiffel/ewxw_glue.h"
-              -- , wxcdir ++ "/ewxw/eiffel/wxc_glue.h"
-              ]
+       return [wxcdir ++ "/include/wxc.h"]
 
 getDefaultSTCHeaderFile :: IO [FilePath]
 getDefaultSTCHeaderFile

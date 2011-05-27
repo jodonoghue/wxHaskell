@@ -65,23 +65,16 @@ ignoreClasses
 classes :: [Class]
 classes
   = unsafePerformIO $
-    do {-
-       xs <- parseClassHierarchy "ClassHierarchy.txt"
-       ys <- parseClassHierarchy "ClassHierarchyExtra.txt"
-       -}
+    do 
        -- urk, ugly hack.
        wxcdir <- getWxcDir
        cs <- parseClassDefs (wxcdir ++ "/include/wxc.h")
-                           -- ,wxcdir ++ "/include/ewxw/wxc_glue.h"
-                           -- ,wxcdir ++ "/include/db.h"
-                            
-       -- writeFile "wxclasses.def" (showClasses cs)
        return cs
-       -- return (mergeClasses xs ys) -- (mergeClasses zs (mergeClasses ys xs))
 
 
 mergeClasses xs ys
   = foldr (\c cs -> mergeClass c cs) xs ys
+
 
 mergeClass cls []   = [cls]
 mergeClass cls1@(Class name1 subs1)  (cls2@(Class name2 subs2) : cs)
@@ -214,8 +207,7 @@ isClassName s
 objectClassNames :: [String]
 objectClassNames
   = case filter isObject classes of
-      [classObject] -> -- filter (/="wxColour") $ 
-                       flatten classObject
+      [classObject] -> flatten classObject
       other         -> []
   where
     flatten (Class name derived)
@@ -258,22 +250,13 @@ haskellClassDefs
 haskellClass parents (Class name derived)
 --  | isBuiltin name = []   -- handled as a basic type
 --  | otherwise
-    = ( (tname,[tname,inheritName tname,className tname]) -- ++ (if isBuiltin name then [tname ++ "Object"] else []))
-      ,   ({-
-           if isBuiltin name
-            then ("-- | Pointer to a managed object of type '" ++ tname ++ "'" ++
-                  (if null parents then "" else ", derived from '" ++ head parents ++ "'") ++
-                  ".\n" ++
-                  "type " ++ tname ++ " a  = " ++
-                  "Managed " ++ pparens (inheritName tname ++ " a") ++ "\n" ++
-                  "-- | Pointer to an (unmanaged) object of type " ++ tname ++ ".\n" ++
-                  "type " ++ tname ++ "Object" ++ " a  = " ++ "Object " ++ pparens (inheritName tname ++ " a"))
-            else  -}
-                  ("-- | Pointer to an object of type '" ++ tname ++ "'" ++
-                  (if null parents then "" else ", derived from '" ++ head parents ++ "'") ++
-                  ".\n" ++
-                  "type " ++ tname ++ " a  = " ++  inheritance)
-          ) ++ "\n" ++
+    = ( (tname,[tname,inheritName tname,className tname])
+      , (
+          ("-- | Pointer to an object of type '" ++ tname ++ "'" ++
+          (if null parents then "" else ", derived from '" ++ head parents ++ "'") ++
+          ".\n" ++
+          "type " ++ tname ++ " a  = " ++  inheritance)
+        ) ++ "\n" ++
         "-- | Inheritance type of the " ++ tname ++ " class.\n" ++
         "type " ++ inheritName tname ++ " a  = " ++ inheritanceType ++ "\n" ++
         "-- | Abstract type of the " ++ tname ++ " class.\n" ++
