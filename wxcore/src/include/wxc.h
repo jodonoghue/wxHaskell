@@ -19,7 +19,6 @@
 /*-----------------------------------------------------------------------------
   Modular extra exports
 -----------------------------------------------------------------------------*/
-#include "db.h"
 #include "dragimage.h"
 #include "graphicscontext.h"
 #include "sound.h"
@@ -77,7 +76,6 @@ void  wxDateTime_Delete(TSelf(wxDateTime) _obj);
 int   wxMouseEvent_GetWheelDelta( TSelf(wxMouseEvent) _obj );
 int   wxMouseEvent_GetWheelRotation( TSelf(wxMouseEvent) _obj );
 int   wxMouseEvent_GetButton( TSelf(wxMouseEvent) _obj );
-int   expEVT_MOUSEWHEEL(  );
 
 TClass(wxPoint) wxcGetMousePosition( );
 
@@ -102,14 +100,6 @@ size_t           wxString_Length( TSelf(wxString) s );
 /* menu */
 TClass(wxMenuBar) wxMenu_GetMenuBar( TSelf(wxMenu) _obj );
 TClass(wxFrame)   wxMenuBar_GetFrame( TSelf(wxMenuBar) _obj );
-
-/* listctrl */
-int expEVT_SORT();
-int expEVT_COMMAND_LIST_CACHE_HINT();
-int expEVT_COMMAND_LIST_COL_RIGHT_CLICK();
-int expEVT_COMMAND_LIST_COL_BEGIN_DRAG();
-int expEVT_COMMAND_LIST_COL_DRAGGING();
-int expEVT_COMMAND_LIST_COL_END_DRAG();
 
 int wxListEvent_GetCacheFrom( TSelf(wxListEvent) _obj);
 int wxListEvent_GetCacheTo( TSelf(wxListEvent) _obj);
@@ -204,15 +194,6 @@ void wxProgressDialog_Resume( TSelf(wxProgressDialog) obj );
 int wxVersionNumber();
 /** Check if a preprocessor macro is defined. For example, @wxIsDefined("__WXGTK__")@ or @wxIsDefined("wxUSE_GIF")@. */
 TBoolInt wxIsDefined( TString s );
-
-
-/* new Events */
-int expEVT_DELETE();
-int expEVT_HTML_CELL_CLICKED();
-int expEVT_HTML_CELL_MOUSE_HOVER();
-int expEVT_HTML_LINK_CLICKED();
-int expEVT_HTML_SET_TITLE();
-int expEVT_INPUT_SINK();
 
 /* Input sink */
 TClassDefExtend(wxInputSink,wxThread)

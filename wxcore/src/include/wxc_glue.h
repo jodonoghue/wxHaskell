@@ -540,26 +540,6 @@ void       ELJPreviewFrame_SetControlBar( TSelf(ELJPreviewFrame) _obj, void* obj
 void       ELJPreviewFrame_SetPreviewCanvas( TSelf(ELJPreviewFrame) _obj, TClass(wxPreviewCanvas) obj );
 void       ELJPreviewFrame_SetPrintPreview( TSelf(ELJPreviewFrame) _obj, TClass(wxPrintPreview) obj );
 
-/* ELJPrintout */
-/*
-TClassDefExtend(ELJPrintout,wxPrintout)
-TClass(ELJPrintout) ELJPrintout_Create( void* title, void* _obj, void* _DoOnBeginDocument, void* _DoOnEndDocument, void* _DoOnBeginPrinting, void* _DoOnEndPrinting, void* _DoOnPreparePrinting, void* _DoOnPrintPage, void* _DoOnHasPage, void* _DoOnPageInfo );
-void       ELJPrintout_Delete( TSelf(ELJPrintout) _obj );
-TClass(wxDC) ELJPrintout_GetDC( TSelf(ELJPrintout) _obj );
-void       ELJPrintout_GetPPIPrinter( TSelf(ELJPrintout) _obj, TPointOutVoid(_x,_y) );
-void       ELJPrintout_GetPPIScreen( TSelf(ELJPrintout) _obj, TPointOutVoid(_x,_y) );
-void       ELJPrintout_GetPageSizeMM( TSelf(ELJPrintout) _obj, TSizeOutVoid(_w,_h) );
-void       ELJPrintout_GetPageSizePixels( TSelf(ELJPrintout) _obj, TSizeOutVoid(_w,_h) );
-TClass(wxString) ELJPrintout_GetTitle( TSelf(ELJPrintout) _obj );
-TBool      ELJPrintout_IsPreview( TSelf(ELJPrintout) _obj );
-void       ELJPrintout_SetDC( TSelf(ELJPrintout) _obj, TClass(wxDC) dc );
-void       ELJPrintout_SetIsPreview( TSelf(ELJPrintout) _obj, int p );
-void       ELJPrintout_SetPPIPrinter( TSelf(ELJPrintout) _obj, TPoint(x,y) );
-void       ELJPrintout_SetPPIScreen( TSelf(ELJPrintout) _obj, TPoint(x,y) );
-void       ELJPrintout_SetPageSizeMM( TSelf(ELJPrintout) _obj, TSize(w,h) );
-void       ELJPrintout_SetPageSizePixels( TSelf(ELJPrintout) _obj, TSize(w,h) );
-*/
-
 /* ELJServer */
 TClassDefExtend(ELJServer,wxServer)
 TClass(ELJServer) ELJServer_Create( void* _eobj, void* _cnct );
@@ -1085,7 +1065,6 @@ TClassDefExtend(wxCalendarCtrl,wxControl)
 TClass(wxCalendarCtrl) wxCalendarCtrl_Create( TClass(wxWindow) _prt, int _id, TClass(wxDateTime) _dat, TRect(_lft,_top,_wdt,_hgt), int _stl );
 void       wxCalendarCtrl_EnableHolidayDisplay( TSelf(wxCalendarCtrl) _obj, int display );
 void       wxCalendarCtrl_EnableMonthChange( TSelf(wxCalendarCtrl) _obj, TBool enable );
-void       wxCalendarCtrl_EnableYearChange( TSelf(wxCalendarCtrl) _obj, TBool enable );
 void*      wxCalendarCtrl_GetAttr( TSelf(wxCalendarCtrl) _obj, int day );
 void       wxCalendarCtrl_GetDate( TSelf(wxCalendarCtrl) _obj, void* date );
 void       wxCalendarCtrl_GetHeaderColourBg( TSelf(wxCalendarCtrl) _obj, TClassRef(wxColour) _ref );
@@ -1234,7 +1213,6 @@ TClass(wxColour) wxColour_CreateEmpty(  );
 TClass(wxColour) wxColour_CreateFromStock( int id );
 TClass(wxColour) wxColour_CreateRGB( TUInt8 _red, TUInt8 _green, TUInt8 _blue, TUInt8 _alpha );
 void       wxColour_Delete( TSelf(wxColour) _obj );
-//WXCOLORREF wxColour_GetPixel( TSelf(wxColour) _obj );
 TUInt8     wxColour_Green( TSelf(wxColour) _obj );
 TBool      wxColour_IsOk( TSelf(wxColour) _obj );
 TUInt8     wxColour_Red( TSelf(wxColour) _obj );
@@ -1430,7 +1408,6 @@ TClassDefExtend(wxCustomDataObject,wxDataObjectSimple)
 
 /* wxDC */
 TClassDefExtend(wxDC,wxObject)
-void       wxDC_BeginDrawing( TSelf(wxDC) _obj );
 TBool      wxDC_Blit( TSelf(wxDC) _obj, TRect(xdest,ydest,width,height), TClass(wxDC) source, TPoint(xsrc,ysrc), int rop, TBool useMask );
 void       wxDC_CalcBoundingBox( TSelf(wxDC) _obj, TPoint(x,y) );
 TBool      wxDC_CanDrawBitmap( TSelf(wxDC) _obj );
@@ -1463,7 +1440,6 @@ void       wxDC_DrawRotatedText( TSelf(wxDC) _obj, TClass(wxString) text, TPoint
 void       wxDC_DrawRoundedRectangle( TSelf(wxDC) _obj, TRect(x,y,width,height), double radius );
 void       wxDC_DrawText( TSelf(wxDC) _obj, TClass(wxString) text, TPoint(x,y) );
 void       wxDC_EndDoc( TSelf(wxDC) _obj );
-void       wxDC_EndDrawing( TSelf(wxDC) _obj );
 void       wxDC_EndPage( TSelf(wxDC) _obj );
 void       wxDC_FloodFill( TSelf(wxDC) _obj, TPoint(x,y), TClass(wxColour) col, int style );
 void       wxDC_GetBackground( TSelf(wxDC) _obj, TClassRef(wxBrush) _ref );
@@ -2202,9 +2178,6 @@ void       wxGrid_AutoSizeRow( TSelf(wxGrid) _obj, int row, TBoolInt setAsMin );
 void       wxGrid_AutoSizeRows( TSelf(wxGrid) _obj, TBoolInt setAsMin );
 void       wxGrid_BeginBatch( TSelf(wxGrid) _obj );
 TClass(wxRect) wxGrid_BlockToDeviceRect( TSelf(wxGrid) _obj, int top, int left, int bottom, int right );
-void       wxGrid_CalcCellsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
-void       wxGrid_CalcColLabelsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
-void       wxGrid_CalcRowLabelsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg );
 TBool      wxGrid_CanDragColSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragGridSize( TSelf(wxGrid) _obj );
 TBool      wxGrid_CanDragRowSize( TSelf(wxGrid) _obj );
@@ -2220,17 +2193,13 @@ void       wxGrid_DisableCellEditControl( TSelf(wxGrid) _obj );
 void       wxGrid_DisableDragColSize( TSelf(wxGrid) _obj );
 void       wxGrid_DisableDragGridSize( TSelf(wxGrid) _obj );
 void       wxGrid_DisableDragRowSize( TSelf(wxGrid) _obj );
-void       wxGrid_DoEndDragResizeCol( TSelf(wxGrid) _obj );
-void       wxGrid_DoEndDragResizeRow( TSelf(wxGrid) _obj );
 void       wxGrid_DrawAllGridLines( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxRegion) reg );
 void       wxGrid_DrawCell( TSelf(wxGrid) _obj, TClass(wxDC) dc, int _row, int _col );
 void       wxGrid_DrawCellBorder( TSelf(wxGrid) _obj, TClass(wxDC) dc, int _row, int _col );
 void       wxGrid_DrawCellHighlight( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxGridCellAttr) attr );
 void       wxGrid_DrawColLabel( TSelf(wxGrid) _obj, TClass(wxDC) dc, int col );
 void       wxGrid_DrawColLabels( TSelf(wxGrid) _obj, TClass(wxDC) dc );
-void       wxGrid_DrawGridCellArea( TSelf(wxGrid) _obj, TClass(wxDC) dc );
 void       wxGrid_DrawGridSpace( TSelf(wxGrid) _obj, TClass(wxDC) dc );
-void       wxGrid_DrawHighlight( TSelf(wxGrid) _obj, TClass(wxDC) dc );
 void       wxGrid_DrawRowLabel( TSelf(wxGrid) _obj, TClass(wxDC) dc, int row );
 void       wxGrid_DrawRowLabels( TSelf(wxGrid) _obj, TClass(wxDC) dc );
 void       wxGrid_DrawTextRectangle( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxString) txt, TRect(x,y,w,h), int horizontalAlignment, int verticalAlignment );
@@ -2307,10 +2276,6 @@ TBool      wxGrid_MoveCursorUp( TSelf(wxGrid) _obj, TBool expandSelection );
 TBool      wxGrid_MoveCursorUpBlock( TSelf(wxGrid) _obj, TBool expandSelection );
 TBool      wxGrid_MovePageDown( TSelf(wxGrid) _obj );
 TBool      wxGrid_MovePageUp( TSelf(wxGrid) _obj );
-void       wxGrid_ProcessColLabelMouseEvent( TSelf(wxGrid) _obj, TClass(wxMouseEvent) event );
-void       wxGrid_ProcessCornerLabelMouseEvent( TSelf(wxGrid) _obj, TClass(wxMouseEvent) event );
-void       wxGrid_ProcessGridCellMouseEvent( TSelf(wxGrid) _obj, TClass(wxMouseEvent) event );
-void       wxGrid_ProcessRowLabelMouseEvent( TSelf(wxGrid) _obj, TClass(wxMouseEvent) event );
 TBool      wxGrid_ProcessTableMessage( TSelf(wxGrid) _obj, TClass(wxEvent) evt );
 void       wxGrid_RegisterDataType( TSelf(wxGrid) _obj, TClass(wxString) typeName, TClass(wxGridCellRenderer) renderer, TClass(wxGridCellEditor) editor );
 void       wxGrid_SaveEditControlValue( TSelf(wxGrid) _obj );
@@ -2368,9 +2333,6 @@ int        wxGrid_XToEdgeOfCol( TSelf(wxGrid) _obj, int x );
 void       wxGrid_XYToCell( TSelf(wxGrid) _obj, TPoint(x,y), TPointOut(row,col) );
 int        wxGrid_YToEdgeOfRow( TSelf(wxGrid) _obj, int y );
 int        wxGrid_YToRow( TSelf(wxGrid) _obj, int y );
-void       wxGrid_NewCalcCellsExposed( TSelf(wxGrid) _obj, TClass(wxRegion) reg, TClassRef(wxGridCellCoordsArray) arr );
-void       wxGrid_NewDrawGridCellArea( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxGridCellCoordsArray) arr );
-void       wxGrid_NewDrawHighlight( TSelf(wxGrid) _obj, TClass(wxDC) dc, TClass(wxGridCellCoordsArray) arr );
 void       wxGrid_GetSelectedCells(TSelf(wxGrid) _obj, TClassRef(wxGridCellCoordsArray) _arr);
 void       wxGrid_GetSelectionBlockTopLeft(TSelf(wxGrid) _obj, TClassRef(wxGridCellCoordsArray) _arr);
 void       wxGrid_GetSelectionBlockBottomRight(TSelf(wxGrid) _obj, TClassRef(wxGridCellCoordsArray) _arr);
@@ -2427,7 +2389,7 @@ TClassDefExtend(wxGridCellEditor,wxGridCellWorker)
 void       wxGridCellEditor_BeginEdit( TSelf(wxGridCellEditor) _obj, int row, int col, TClass(wxGrid) grid );
 void       wxGridCellEditor_Create( TSelf(wxGridCellEditor) _obj, TClass(wxWindow) parent, int id, TClass(wxEvtHandler) evtHandler );
 void       wxGridCellEditor_Destroy( TSelf(wxGridCellEditor) _obj );
-int        wxGridCellEditor_EndEdit( TSelf(wxGridCellEditor) _obj, int row, int col, TClass(wxGrid) grid );
+int        wxGridCellEditor_EndEdit( TSelf(wxGridCellEditor) _obj, int row, int col, TClass(wxGrid) grid, TClass(wxString) oldStr, TClass(wxString) newStr );
 TClass(wxControl) wxGridCellEditor_GetControl( TSelf(wxGridCellEditor) _obj );
 void       wxGridCellEditor_HandleReturn( TSelf(wxGridCellEditor) _obj, TClass(wxEvent) event );
 TBool      wxGridCellEditor_IsAcceptedKey( TSelf(wxGridCellEditor) _obj, TClass(wxEvent) event );
@@ -3286,8 +3248,6 @@ int        wxMimeTypesManager_EnumAllFileTypes( TSelf(wxMimeTypesManager) _obj, 
 TClass(wxFileType) wxMimeTypesManager_GetFileTypeFromExtension( TSelf(wxMimeTypesManager) _obj, TClass(wxString) _ext );
 TClass(wxFileType) wxMimeTypesManager_GetFileTypeFromMimeType( TSelf(wxMimeTypesManager) _obj, TClass(wxString) _name );
 TBool      wxMimeTypesManager_IsOfType( TSelf(wxMimeTypesManager) _obj, TClass(wxString) _type, TClass(wxString) _wildcard );
-TBool      wxMimeTypesManager_ReadMailcap( TSelf(wxMimeTypesManager) _obj, TClass(wxString) _file, int _fb );
-TBool      wxMimeTypesManager_ReadMimeTypes( TSelf(wxMimeTypesManager) _obj, TClass(wxString) _file );
 
 /* wxMiniFrame */
 TClassDefExtend(wxMiniFrame,wxFrame)
@@ -4090,7 +4050,7 @@ void       wxSetCursorEvent_SetCursor( TSelf(wxSetCursorEvent) _obj, TClass(wxCu
 /* wxShowEvent */
 TClassDefExtend(wxShowEvent,wxEvent)
 void       wxShowEvent_CopyObject( TSelf(wxShowEvent) _obj, TClass(wxObject) obj );
-TBool      wxShowEvent_GetShow( TSelf(wxShowEvent) _obj );
+TBool      wxShowEvent_IsShown( TSelf(wxShowEvent) _obj );
 void       wxShowEvent_SetShow( TSelf(wxShowEvent) _obj, TBool show );
 
 /* wxSimpleHelpProvider */

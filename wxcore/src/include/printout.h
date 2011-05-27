@@ -20,7 +20,6 @@ void       wxPrintout_GetPageSizePixels( TSelf(wxPrintout) _obj, TSizeOutVoid(_w
 TClass(wxString) wxPrintout_GetTitle( TSelf(wxPrintout) _obj );
 TBool      wxPrintout_IsPreview( TSelf(wxPrintout) _obj );
 void       wxPrintout_SetDC( TSelf(wxPrintout) _obj, TClass(wxDC) dc );
-void       wxPrintout_SetIsPreview( TSelf(wxPrintout) _obj, TBoolInt p );
 void       wxPrintout_SetPPIPrinter( TSelf(wxPrintout) _obj, TPoint(x,y) );
 void       wxPrintout_SetPPIScreen( TSelf(wxPrintout) _obj, TPoint(x,y) );
 void       wxPrintout_SetPageSizeMM( TSelf(wxPrintout) _obj, TSize(w,h) );

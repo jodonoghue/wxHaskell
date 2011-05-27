@@ -112,16 +112,16 @@ EWXWEXPORT(int,expEVT_COMMAND_LIST_COL_END_DRAG)()
 -----------------------------------------------------------------------------*/
 class wxTimerEx : public wxTimer
 {
-private:
-  wxClosure* m_closure;
-public:
-  wxTimerEx();
-  ~wxTimerEx();
+  private:
+    wxClosure* m_closure;
 
-  void     Connect( wxClosure* closure );
-  wxClosure* GetClosure();
+  public:
+    wxTimerEx();
+    ~wxTimerEx();
 
-  void Notify();
+    void Connect( wxClosure* closure );
+    wxClosure* GetClosure();
+    void Notify();
 };
 
 wxTimerEx::wxTimerEx()
@@ -151,8 +151,13 @@ wxClosure* wxTimerEx::GetClosure()
 
 void wxTimerEx::Notify()
 {
+#if (wxVERSION_NUMBER < 2900)
   wxTimerEvent timerEvent(0,this->GetInterval());
-  if (m_closure) m_closure->Invoke(&timerEvent);
+#else
+  wxTimerEvent timerEvent(*this);
+#endif
+  if (m_closure)
+    m_closure->Invoke(&timerEvent);
 }
 
 /*-----------------------------------------------------------------------------
@@ -1756,12 +1761,6 @@ EWXWEXPORT(int,wxMouseEvent_GetButton)(wxMouseEvent* self)
   return self->GetButton();
 }
 
-EWXWEXPORT(int,expEVT_MOUSEWHEEL)()
-{
-    return (int)wxEVT_MOUSEWHEEL;
-}
-
-
 /*-----------------------------------------------------------------------------
   DC
 -----------------------------------------------------------------------------*/
@@ -2413,7 +2412,7 @@ EWXWEXPORT(bool,wxLog_IsAllowedTraceMask)(wxLog* self,void* mask)
 
 EWXWEXPORT(void*,wxLog_GetTimestamp)(wxLog* self)
 {
-	return (void*)self->GetTimestamp();
+  return (void*)wxStrdup((self->GetTimestamp()).wchar_str());
 }
 
 

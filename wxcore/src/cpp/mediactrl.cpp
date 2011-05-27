@@ -1,10 +1,18 @@
+/*==============================================================================
+ * mediactrl.cpp
+ *
+ * C wrapper for wxMediaCtrl
+ *
+ * (C) 2002-2011 wxEiffel and wxHaskell contributors. See contributors.txt
+ * 
+ * Licensed under the wxWidgets library license. see LICENSE.
+ * 
+ *==============================================================================*/
+
 #include "wrapper.h"
 #ifdef wxUSE_MEDIACTRL
 #include "wx/mediactrl.h"
 #endif
-
-/* testing */
-// #define wxUSE_MEDIACTRL 0
 
 /*-----------------------------------------------------------------------------
   We want to include the function signatures always -- even on 
