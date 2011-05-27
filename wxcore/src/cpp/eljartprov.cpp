@@ -18,7 +18,7 @@ class ELJArtProv: public wxArtProvider
 		{
 			if (EiffelObject)
 			{
-				void* res = cb (EiffelObject, (void*)id.c_str(), (void*)client.c_str(), size.GetWidth(), size.GetHeight());
+				void* res = cb (EiffelObject, (void*)id.wchar_str(), (void*)client.wchar_str(), size.GetWidth(), size.GetHeight());
 				
 				if (res)
 					return (*((wxBitmap*)res));

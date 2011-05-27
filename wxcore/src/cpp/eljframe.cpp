@@ -136,7 +136,9 @@ EWXWEXPORT(bool,wxFrame_IsIconized)(wxFrame* self)
 	
 EWXWEXPORT(void*,wxFrame_GetIcon)(wxFrame* self)
 {
-	return (void*)(&self->GetIcon());
+    static wxIcon icon;
+    icon = self->GetIcon();
+    return (void*) &icon;
 }
 	
 EWXWEXPORT(void,wxFrame_SetIcon)(wxFrame* self,wxIcon* _icon)

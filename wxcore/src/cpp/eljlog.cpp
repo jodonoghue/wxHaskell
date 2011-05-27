@@ -139,7 +139,12 @@ EWXWEXPORT(bool,ELJLog_IsAllowedTraceMask)(ELJLog* self,void* mask)
 	
 EWXWEXPORT(void*,ELJLog_GetTimestamp)(ELJLog* self)
 {
+#if (wxVERSION_NUMBER < 2900)
 	return (void*)self->GetTimestamp();
+#else
+    wxString retVal = self->GetTimestamp();
+    return (void*) retVal.wchar_str();
+#endif
 }
 
 EWXWEXPORT(int,ELJSysErrorCode)()

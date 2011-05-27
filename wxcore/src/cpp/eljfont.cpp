@@ -24,11 +24,11 @@ class ELJFontEnumerator : public wxFontEnumerator
 		
 	    virtual bool OnFacename(const wxString& facename)
         { 
-			return func(EiffelObject, (void*)facename.c_str()) != 0;
+			return func(EiffelObject, (void*)facename.wchar_str()) != 0;
 		}
 		virtual bool OnFontEncoding(const wxString& WXUNUSED(facename), const wxString& encoding)
         {
-			return func(EiffelObject, (void*)encoding.c_str()) != 0;
+			return func(EiffelObject, (void*)encoding.wchar_str()) != 0;
 		}
 
 };

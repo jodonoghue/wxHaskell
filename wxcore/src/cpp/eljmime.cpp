@@ -37,7 +37,7 @@ EWXWEXPORT(int,wxMimeTypesManager_EnumAllFileTypes)(wxMimeTypesManager* self,voi
         if (_lst)
         {
                 for (unsigned int i = 0; i < arr.GetCount(); i++)
-                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
         }
 
         return result;
@@ -69,7 +69,7 @@ EWXWEXPORT(int,wxFileType_GetMimeTypes)(void* self,void* _lst)
         if (((wxFileType*)self)->GetMimeTypes(arr) && _lst)
         {
                 for (unsigned int i = 0; i < arr.GetCount(); i++)
-                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
         }
 
         return arr.GetCount();
@@ -82,7 +82,7 @@ EWXWEXPORT(int,wxFileType_GetExtensions)(void* self,void* _lst)
         if (((wxFileType*)self)->GetExtensions(arr) && _lst)
         {
                 for (unsigned int i = 0; i < arr.GetCount(); i++)
-                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
         }
 
         return arr.GetCount();

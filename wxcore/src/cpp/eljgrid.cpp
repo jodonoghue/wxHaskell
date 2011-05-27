@@ -489,7 +489,7 @@ EWXWEXPORT(int,wxGrid_StringToLines)(wxGrid* self,wxString* value,void* lines)
 	if (lines)
 	{
 		for (int i = 0; i < result; i++)
-			((const wxChar**)lines)[i] = wxStrdup (arr[i].c_str());
+			((const wxChar**)lines)[i] = wxStrdup (arr[i].wchar_str());
 	}
 	return result;
 }

@@ -151,11 +151,11 @@ EWXWEXPORT(void*,wxTextValidator_GetIncludes)(void* self,int* _nitems)
   if (_nitems != NULL)
   {
     wxArrayString items = ((wxTextValidator*)self)->GetIncludes();
-    wxChar **items_copy = (wxChar **)malloc(sizeof(wxChar *)* items.GetCount());
+    wxChar **items_copy = (wxChar**) malloc(sizeof(wxChar*) * items.GetCount());
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
-      items_copy[i] = wxStrdup(items.Item(i).GetData());
+      items_copy[i] = wxStrdup(items.Item(i).wchar_str());
     }
     retval = (void*)items_copy;
     *_nitems = items.GetCount();
@@ -184,7 +184,7 @@ EWXWEXPORT(void*,wxTextValidator_GetExcludes)(void* self,int* _nitems)
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
-      items_copy[i] = wxStrdup(items.Item(i).GetData());
+      items_copy[i] = wxStrdup(items.Item(i).wchar_str());
     }
     retval = (void*)items_copy;
     *_nitems = items.GetCount();

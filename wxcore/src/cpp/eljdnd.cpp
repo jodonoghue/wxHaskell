@@ -139,7 +139,7 @@ bool ELJFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& f
 
 bool ELJTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& text)
 {
-	return func(obj, (long)x, (long)y, (void*)text.c_str()) != 0;
+  return func(obj, (long)x, (long)y, (void*)text.wchar_str()) != 0;
 }
 
 extern "C"
@@ -219,7 +219,7 @@ EWXWEXPORT(int,FileDataObject_GetFilenames)(void* self,void* _lst)
 	if (_lst)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
 	}
 	return arr.GetCount();
 }
