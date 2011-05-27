@@ -17,7 +17,7 @@ extern int APPTerminating;
 
 #if wxCHECK_VERSION(2,5,0)
  #define wxHANDLE  HINSTANCE
- extern int wxEntry(wxHANDLE hInstance, wxHANDLE hPrevInstance, char *pCmdLine, int nCmdShow);
+ extern int WXDLLIMPEXP_BASE wxEntry(wxHANDLE hInstance, wxHANDLE hPrevInstance, char *pCmdLine, int nCmdShow);
 #else
  #define wxHANDLE  WXHINSTANCE
 #endif
