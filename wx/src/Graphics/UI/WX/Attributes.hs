@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE ExistentialQuantification #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Attributes
 	Copyright   :  (c) Daan Leijen 2003

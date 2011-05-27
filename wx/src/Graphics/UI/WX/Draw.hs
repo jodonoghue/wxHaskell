@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Draw
 	Copyright   :  (c) Daan Leijen 2003

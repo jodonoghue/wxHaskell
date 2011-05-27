@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Menu
 	Copyright   :  (c) Daan Leijen 2003

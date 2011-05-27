@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+
 --------------------------------------------------------------------------------
 {-|	Module      :  Events
 	Copyright   :  (c) Daan Leijen 2003

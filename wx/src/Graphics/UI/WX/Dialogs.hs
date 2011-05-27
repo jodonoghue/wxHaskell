@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Dialogs
 	Copyright   :  (c) Daan Leijen 2003

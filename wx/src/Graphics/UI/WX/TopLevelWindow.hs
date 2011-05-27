@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  TopLevelWindow
 	Copyright   :  (c) Jeremy O'Donoghue, 2007

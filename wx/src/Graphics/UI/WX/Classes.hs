@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, DeriveDataTypeable, ScopedTypeVariables #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Classes
 	Copyright   :  (c) Daan Leijen 2003

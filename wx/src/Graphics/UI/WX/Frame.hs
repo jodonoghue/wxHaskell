@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+
 --------------------------------------------------------------------------------
 {-|	Module      :  Frame
 	Copyright   :  (c) Daan Leijen 2003
