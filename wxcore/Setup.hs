@@ -47,9 +47,14 @@ myConfHook (pkg0, pbi) flags = do
     system $ "wxdirect -c --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
     system $ "wxdirect -d --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ intercalate " " eiffelFiles
 
-    let extra_wx_libs = [ "-lwxmsw29ud_xrc", "-lwxmsw29ud_stc", "-lwxmsw29ud_aui", "-lwxmsw29ud_media", "-lwxmsw29ud_ribbon"
-                        , "-lwxmsw29ud_propgrid", "-lwxmsw29ud_richtext", "-lwxmsw29ud_gl" ]
-    wx <- fmap parseWxConfig (readProcess "wx-config" ["--libs", "--cppflags"] "")
+    ver <- fmap (head . drop 1 . splitBy (== '.')) (readProcess "wx-config" ["--version"] "")
+    let extra_wx_libs = if ver == "9"
+                        then [ "-lwxmsw29ud_xrc", "-lwxmsw29ud_stc", "-lwxmsw29ud_aui", "-lwxmsw29ud_media"
+                             , "-lwxmsw29ud_ribbon", "-lwxmsw29ud_propgrid", "-lwxmsw29ud_richtext"
+                             , "-lwxmsw29ud_gl" , "-lstdc++"]
+                        else [ "-lwxmsw28ud_media", "-lwxmsw28ud_richtext", "-lwxmsw28ud_aui"
+                             , "-lwxmsw28ud_xrc", "-lstdc++" ]
+    wx  <- fmap parseWxConfig (readProcess "wx-config" ["--libs", "--cppflags"] "")
     lbi <- confHook simpleUserHooks (pkg0, pbi) flags
 
     let lpd   = localPkgDescr lbi
@@ -59,7 +64,7 @@ myConfHook (pkg0, pbi) flags = do
     let libbi' = libbi
           { extraLibDirs = extraLibDirs libbi ++ extraLibDirs wx
           , extraLibs    = extraLibs    libbi ++ extraLibs    wx
-          , ldOptions    = ldOptions    libbi ++ ldOptions    wx ++ ["-lstdc++"] ++ extra_wx_libs
+          , ldOptions    = ldOptions    libbi ++ ldOptions    wx ++ extra_wx_libs
           , frameworks   = frameworks   libbi ++ frameworks   wx
           , includeDirs  = includeDirs  libbi ++ includeDirs  wx
           , ccOptions    = ccOptions    libbi ++ ccOptions    wx ++ ["-DwxcREFUSE_MEDIACTRL"]
@@ -86,3 +91,11 @@ parseWxConfig s =
           ('-':'I':v) -> b { includeDirs  = v : includeDirs b }
           ('-':'D':_) -> b { ccOptions    = w : ccOptions b }
           _           -> b
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+splitBy :: (a -> Bool) -> [a] -> [[a]]
+splitBy pred l = case dropWhile pred l of
+                   [] -> []
+                   l' -> x : splitBy pred xs
+                       where (x, xs) = break pred l'

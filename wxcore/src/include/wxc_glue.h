@@ -15,6 +15,8 @@ TClass(wxPalette) Null_Palette(  );
 TClass(wxPen) Null_Pen(  );
 
 /* Events */
+int expEVT_NULL();
+int expEVT_FIRST();
 int expEVT_COMMAND_AUITOOLBAR_TOOL_DROPDOWN();
 int expEVT_COMMAND_AUITOOLBAR_OVERFLOW_CLICK();
 int expEVT_COMMAND_AUITOOLBAR_RIGHT_CLICK();

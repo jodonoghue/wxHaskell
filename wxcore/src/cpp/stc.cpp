@@ -20,7 +20,7 @@ extern "C"
 // Event Handlers
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma message "wxWidgets styled text control event wrappers generated"
+#ifdef wxUSE_STC
 MAKE_EVENT_WRAPPER(EVT_STC_CHANGE)
 MAKE_EVENT_WRAPPER(EVT_STC_STYLENEEDED)
 MAKE_EVENT_WRAPPER(EVT_STC_CHARADDED)
@@ -51,6 +51,38 @@ MAKE_EVENT_WRAPPER(EVT_STC_INDICATOR_CLICK)
 MAKE_EVENT_WRAPPER(EVT_STC_INDICATOR_RELEASE)
 MAKE_EVENT_WRAPPER(EVT_STC_AUTOCOMP_CANCELLED)
 MAKE_EVENT_WRAPPER(EVT_STC_AUTOCOMP_CHAR_DELETED)
+#else
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_CHANGE)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_STYLENEEDED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_CHARADDED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_SAVEPOINTREACHED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_SAVEPOINTLEFT)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_ROMODIFYATTEMPT)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_KEY)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_DOUBLECLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_UPDATEUI)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_MODIFIED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_MACRORECORD)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_MARGINCLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_NEEDSHOWN)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_PAINTED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_USERLISTSELECTION)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_URIDROPPED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_DWELLSTART)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_DWELLEND)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_START_DRAG)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_DRAG_OVER)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_DO_DROP)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_ZOOM)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_HOTSPOT_CLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_HOTSPOT_DCLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_CALLTIP_CLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_AUTOCOMP_SELECTION)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_INDICATOR_CLICK)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_INDICATOR_RELEASE)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_AUTOCOMP_CANCELLED)
+MAKE_UNDEFEVENT_WRAPPER(EVT_STC_AUTOCOMP_CHAR_DELETED)
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wrappers
@@ -78,7 +110,7 @@ EWXWEXPORT(void*,wxStyledTextCtrl_Create)(wxWindow* _prt,int _id, wxString* _txt
     wxColour* cc = new wxColour(c);
     return cc;
 #else
-    return false;
+    return NULL;
 #endif
   }
   EWXWEXPORT(void*,wxStyledTextCtrl_GetCaretLineBackground)(void* _obj)
@@ -92,7 +124,7 @@ EWXWEXPORT(void*,wxStyledTextCtrl_Create)(wxWindow* _prt,int _id, wxString* _txt
     wxColour* cc = new wxColour(c);
     return cc;
 #else
-    return false;
+    return NULL;
 #endif
   }
 EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,int back_g,int back_b)
@@ -124,7 +156,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxString* ss = new wxString(s);
     return ss;
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -135,7 +167,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxString* ss = new wxString(s);
     return ss;
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -146,7 +178,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxString* ss = new wxString(s);
     return ss;
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -157,7 +189,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxString* ss = new wxString(s);
     return ss;
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -166,7 +198,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
 #ifdef wxUSE_STC
     return ((wxStyledTextCtrl*) _obj)->CreateDocument();
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -177,7 +209,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxColour* cc = new wxColour(c);
     return cc;
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -186,7 +218,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
 #ifdef wxUSE_STC
     return ((wxStyledTextCtrl*) _obj)->GetDocPointer();
 #else
-    return false;
+    return NULL;
 #endif
   }
 
@@ -197,26 +229,9 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxPoint* pp = new wxPoint(p);
     return pp;
 #else
-    return false;
+    return NULL;
 #endif
   }
-
-  /*
-("wxMemoryBuffer","GetStyledText",[("int","startPos"),("int","endPos")])
-("wxString","GetCurLine",[("int*","linePos")]) #returns both line and pos, hur göra?
---("wxColour","IndicatorGetForeground",[("int","indic")])
---("wxColour","GetCaretLineBack",[])
---("wxColour","GetCaretForeground",[])
---("wxString","GetLine",[("int","line")])
---("wxString","GetSelectedText",[])
---("wxString","GetTextRange",[("int","startPos"),("int","endPos")])
---("wxString","GetText",[])
---("wxSTCDoc*","GetDocPointer",[])
---("wxColour","GetEdgeColour",[])
---("wxSTCDoc*","CreateDocument",[])
---("wxPoint","PointFromPosition",[("int","pos")])
-*/
-
 
 /*************************************/
 /* wxStyledTextEvent's get functions */
@@ -227,16 +242,16 @@ EWXWEXPORT(int,wxStyledTextEvent_GetPosition)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetPosition();
 #else
-  return false;
+  return 0;
 #endif
 }
 
 EWXWEXPORT(int,wxStyledTextEvent_GetKey)(void* _obj)
 {
 #ifdef wxUSE_STC
-  return (char)((wxStyledTextEvent*) _obj)->GetKey();
+  return ((wxStyledTextEvent*) _obj)->GetKey();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -245,7 +260,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetModifiers)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetModifiers();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -254,7 +269,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetModificationType)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetModificationType();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -263,7 +278,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetLength)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetLength();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -272,7 +287,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetLinesAdded)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetLinesAdded();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -281,7 +296,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetLine)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetLine();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -290,7 +305,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetFoldLevelNow)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetFoldLevelNow();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -299,7 +314,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetFoldLevelPrev)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetFoldLevelPrev();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -308,7 +323,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetMargin)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetMargin();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -317,7 +332,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetMessage)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetMessage();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -326,7 +341,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetWParam)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetWParam();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -335,7 +350,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetLParam)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetLParam();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -344,7 +359,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetListType)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetListType();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -353,7 +368,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetX)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetX();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -362,7 +377,7 @@ EWXWEXPORT(int,wxStyledTextEvent_GetY)(void* _obj)
 #ifdef wxUSE_STC
   return ((wxStyledTextEvent*) _obj)->GetY();
 #else
-  return false;
+  return 0;
 #endif
 }
 
@@ -373,7 +388,7 @@ EWXWEXPORT(void*,wxStyledTextEvent_GetDragText)(void* _obj)
     wxString* ss = new wxString(s);
     return ss;
 #else
-  return false;
+  return NULL;
 #endif
 }
 
@@ -429,7 +444,7 @@ EWXWEXPORT(void*,wxStyledTextEvent_GetText)(void* _obj)
     wxString* ss = new wxString(s);
     return ss;
 #else
-  return false;
+  return NULL;
 #endif
 }
 
@@ -438,7 +453,7 @@ EWXWEXPORT(void*,wxStyledTextEvent_Clone)(void* _obj)
 #ifdef wxUSE_STC
   return (void*) ((wxStyledTextEvent*) _obj)->Clone();
 #else
-  return false;
+  return NULL;
 #endif
 }
 

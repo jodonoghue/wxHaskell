@@ -2350,7 +2350,11 @@ EWXWEXPORT(bool,wxLog_IsAllowedTraceMask)(wxLog* self,void* mask)
 
 EWXWEXPORT(void*,wxLog_GetTimestamp)(wxLog* self)
 {
+# if (wxVERSION_NUMBER >= 2900)
   return (void*)wxStrdup((self->GetTimestamp()).wchar_str());
+#else
+  return (void*)wxStrdup(self->GetTimestamp());
+#endif
 }
 
 

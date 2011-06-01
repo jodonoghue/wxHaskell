@@ -1,9 +1,5 @@
 #include "wrapper.h"
 
-#if wxUSE_ODBC
-#include "wx/db.h"
-#endif
-
 extern int APPTerminating;
 
 
@@ -81,9 +77,6 @@ EWXWEXPORT(void, ELJApp_initialize)(void* _obj, AppInitFunc _func, char* _cmd, v
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
   wxPendingEvents = NULL;
 #endif
-#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
-  wxDbCloseConnections();
-#endif
 }
 
 }
@@ -118,9 +111,6 @@ EWXWEXPORT(void, ELJApp_InitializeC) (wxClosure* closure, int _argc, char** _arg
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
   wxPendingEvents = NULL;
 #endif
-#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
-  wxDbCloseConnections();
-#endif
 }
 
 EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, void* _argv)
@@ -131,9 +121,6 @@ EWXWEXPORT(void, ELJApp_initialize) (void* _obj, AppInitFunc _func, int _argc, v
   /* wxPendingEvents is deleted but not set to NULL -> disaster when restarted from an interpreter */
 #if !defined(WXMAKINGDLL) && !defined(WXUSINGDLL)
   wxPendingEvents = NULL;
-#endif
-#if defined(wxUSE_ODBC) && (wxUSE_ODBC != 0)
-  wxDbCloseConnections();
 #endif
 }
 

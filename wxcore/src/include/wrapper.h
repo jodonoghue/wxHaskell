@@ -53,6 +53,7 @@ typedef int intptr_t;
 #include "wx/sound.h"
 
 #define MAKE_EVENT_WRAPPER(evt) EWXWEXPORT(int,exp##evt)() { return (int)wx##evt; }
+#define MAKE_UNDEFEVENT_WRAPPER(evt) EWXWEXPORT(int, exp##evt)() { return (int) wxEVT_NULL; }
 
 extern "C"
 {
