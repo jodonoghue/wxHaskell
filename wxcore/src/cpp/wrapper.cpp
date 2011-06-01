@@ -229,7 +229,11 @@ EWXWEXPORT(wxClosure*,wxEvtHandler_GetClosure)(wxEvtHandler* evtHandler,int id,i
   //knows we just want to know the closure. Unfortunately, this
   //seems the cleanest way to retrieve the callback in wxWindows.
   getCallback = &callback;
-  found = evtHandler->SearchDynamicEventTable( event );
+  // Bugfix: see www.mail-archive.com/wxhaskell-devel@lists.sourceforge.net/msg00577.html
+  // On entry, Dynamic event table may have no bound events
+  // Bug reproduces only on Debug builds, and seems to be ignorable
+  if (evtHandler->GetDynamicEventTable() != NULL)
+    found = evtHandler->SearchDynamicEventTable( event );
   getCallback = NULL;
 
   if (found && callback)
