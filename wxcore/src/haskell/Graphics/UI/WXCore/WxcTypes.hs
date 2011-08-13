@@ -1333,8 +1333,7 @@ colorOk = colorIsOk
 
 -- | Check of a color is valid (@Colour::IsOk@)
 colorIsOk :: Color -> Bool
-colorIsOk (Color rgb)
-  = (rgb >= 0)
+colorIsOk = (/= colorNull)
 
 
 -- marshalling 2

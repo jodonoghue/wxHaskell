@@ -55,8 +55,11 @@ EWXWEXPORT(void,wxColour_Assign)(wxColour* self,wxColour* other)
 {
 	*self = *other;
 }
-	
-EWXWEXPORT(bool,wxColour_IsOk)(wxColour* self)
+
+// Returning int instead of bool, due bool not being supported out of the box
+// by Foreign.C.Types, and size of bool varying between platforms and compiler
+// implementations.
+EWXWEXPORT(int,wxColour_IsOk)(wxColour* self)
 {
 	return self->IsOk();
 }
