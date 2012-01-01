@@ -828,7 +828,7 @@ EWXWEXPORT(void,wxPostScriptDC_Delete)(wxPostScriptDC* self)
 
 EWXWEXPORT(void,wxPostScriptDC_SetResolution)(wxPostScriptDC* self,int ppi)
 {
-#ifdef wxUSE_POSTSCRIPT
+#if (defined(wxUSE_POSTSCRIPT)) && (wxVERSION_NUMBER < 2900)
 	self->SetResolution(ppi);
 #endif
 }

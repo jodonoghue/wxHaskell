@@ -19,6 +19,7 @@ import Types
 import HaskellNames
 import Classes( isClassName, haskellClassDefs )
 import DeriveTypes( ClassName )
+import IOExtra
 
 {-----------------------------------------------------------------------------------------
   Compile
@@ -51,7 +52,7 @@ compileClassTypes showIgnore moduleRoot moduleName outputFile inputFiles
        let output  = unlines (prologue ++ export ++ classDecls)
 
        putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile output
+       writeFileLazy outputFile output
        putStrLn ("generated " ++ show classCount ++ " class definitions.")
        putStrLn ("ok.")
 

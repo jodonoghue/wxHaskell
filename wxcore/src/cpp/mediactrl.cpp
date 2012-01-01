@@ -41,6 +41,7 @@ extern "C" {
 // Event Handlers
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifdef wxUSE_MEDIACTRL
 #pragma message "wxWidgets mediacontrol event wrappers generated"
 MAKE_EVENT_WRAPPER(EVT_MEDIA_FINISHED)
 MAKE_EVENT_WRAPPER(EVT_MEDIA_STOP)
@@ -48,6 +49,7 @@ MAKE_EVENT_WRAPPER(EVT_MEDIA_LOADED)
 MAKE_EVENT_WRAPPER(EVT_MEDIA_STATECHANGED)
 MAKE_EVENT_WRAPPER(EVT_MEDIA_PLAY)
 MAKE_EVENT_WRAPPER(EVT_MEDIA_PAUSE)
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wrappers

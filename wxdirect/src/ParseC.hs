@@ -75,7 +75,7 @@ pairComments lines
 parseDecl :: FilePath -> (String,String) -> IO [Decl]
 parseDecl fname (comment,line)
   = case parse pdecl fname line of
-      Left err  -> do putStrLn ("ignore: parse error : " ++ line)
+      Left err  -> do putStrLn ("ignore: parse error : " ++ show err ++ ", on : " ++ line)
                       return []
       Right mbd -> case mbd of
                      Just d  -> return [d{ declComment = comment }]

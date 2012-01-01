@@ -22,7 +22,7 @@ helloWorld
        -- create top frame
        f  <- frameCreate objectNull idAny "Hello world" rectZero frameDefaultStyle
        windowSetBackgroundColour f white
-       windowSetClientSize f (sz 300 250)
+       windowSetClientSize f (sz 600 250)
 
        -- set status bar with 1 field
        frameCreateStatusBar f 1 0
@@ -39,7 +39,8 @@ helloWorld
        return ()
   where
     onAbout f
-      = do messageDialog f "About 'Hello World'" "This is a wxHaskell sample" (wxOK + wxICON_INFORMATION)
+      = do version <- versionNumber
+           messageDialog f "About 'Hello World'" ("This is a wxHaskell " ++ show version ++ " sample") (wxOK + wxICON_INFORMATION)
            return ()
 
     onQuit f

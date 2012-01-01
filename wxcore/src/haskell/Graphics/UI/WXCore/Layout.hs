@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 -----------------------------------------------------------------------------------------
 {-|	Module      :  Layout
 	Copyright   :  (c) Daan Leijen & Wijnand van Suijlen 2003

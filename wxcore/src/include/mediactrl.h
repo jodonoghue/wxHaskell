@@ -25,9 +25,3 @@ TInt64 wxMediaCtrl_Tell(TSelf(wxMediaCtrl) self);
 TClassDefExtend(wxMediaEvent,wxNotifyEvent);
 
 /* The wxMediaEvent's events */
-int expEVT_MEDIA_LOADED();
-int expEVT_MEDIA_STOP();
-int expEVT_MEDIA_FINISHED();
-int expEVT_MEDIA_STATECHANGED();
-int expEVT_MEDIA_PLAY();
-int expEVT_MEDIA_PAUSE(); 

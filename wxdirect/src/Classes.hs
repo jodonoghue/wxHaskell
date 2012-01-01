@@ -23,10 +23,12 @@ module Classes( isClassName, isBuiltin, haskellClassDefs
               ) where
 
 import System.Environment ( getEnv )
+import Control.Exception ( catch, SomeException(..) )
 import Data.Char( isUpper )
 import Data.List( sort, sortBy )
 import qualified Data.Set as Set
 import qualified Data.Map as Map
+import Prelude hiding ( catch )
 import HaskellNames( haskellTypeName, isBuiltin )
 import Types
 
@@ -300,7 +302,7 @@ parseClassHierarchy fname
          Left err  -> do putStrLn ("parse error in class hierarchy: " ++ show err)
                          return []
          Right cs -> return cs
-    `catch` \err ->
+    `catch` \(SomeException err) ->
      do putStrLn ("exception while parsing: " ++ fname)
         print err
         return []

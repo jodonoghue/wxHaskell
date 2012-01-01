@@ -15,7 +15,11 @@ EWXWEXPORT(void*,wxPen_CreateFromColour)(wxColour* col,int width,int style)
 
 EWXWEXPORT(void*,wxPen_CreateFromBitmap)(wxBitmap* stipple,int width)
 {
+#ifdef __WXGTK__
+        return 0;
+#else
 	return new wxPen(*stipple, width);
+#endif
 }
 
 EWXWEXPORT(void*,wxPen_CreateFromStock)(int id)

@@ -7,6 +7,7 @@ import Distribution.Simple.Setup          (ConfigFlags)
 import System.Cmd                         (system)
 import System.FilePath.Posix              ((</>), (<.>))
 import System.Directory                   (createDirectoryIfMissing)
+import System.Info                        (os)
 import System.Process                     (readProcess)
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -48,13 +49,14 @@ myConfHook (pkg0, pbi) flags = do
     system $ "wxdirect -d --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ intercalate " " eiffelFiles
 
     ver <- fmap (head . drop 1 . splitBy (== '.')) (readProcess "wx-config" ["--version"] "")
-    let extra_wx_libs = if ver == "9"
-                        then [ "-lwxmsw29ud_xrc", "-lwxmsw29ud_stc", "-lwxmsw29ud_aui", "-lwxmsw29ud_media"
-                             , "-lwxmsw29ud_ribbon", "-lwxmsw29ud_propgrid", "-lwxmsw29ud_richtext"
-                             , "-lwxmsw29ud_gl" , "-lstdc++"]
-                        else [ "-lwxmsw28ud_media", "-lwxmsw28ud_richtext", "-lwxmsw28ud_aui"
+    let extra_wx_libs = if os == "mingw32"
+                        then [ "-lwxmsw28ud_media", "-lwxmsw28ud_richtext", "-lwxmsw28ud_aui"
                              , "-lwxmsw28ud_xrc", "-lstdc++" ]
-    wx  <- fmap parseWxConfig (readProcess "wx-config" ["--libs", "--cppflags"] "")
+                        else [ "-lstdc++" ]
+        wx_cfg_parms = if os == "mingw32"
+                       then [ "--libs", "gl,stc", "--cppflags" ]
+                       else [ "--libs", "all", "--cppflags" ]
+    wx  <- fmap parseWxConfig (readProcess "wx-config" wx_cfg_parms "")
     lbi <- confHook simpleUserHooks (pkg0, pbi) flags
 
     let lpd   = localPkgDescr lbi

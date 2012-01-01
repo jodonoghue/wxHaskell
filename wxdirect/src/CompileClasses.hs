@@ -19,13 +19,14 @@ import qualified MultiSet
 
 import Data.Time( getCurrentTime)
 import Data.Char( toUpper, isUpper, toLower ) --toLower, toUpper, isSpace, isLower, isUpper )
-import Data.List( isPrefixOf, sort, sortBy, intersperse, zipWith4 )
+import Data.List( isPrefixOf, sort, sortBy, intersperse, zipWith4, elemIndex )
 
 import Types
 import HaskellNames
 import Classes( isClassName, haskellClassDefs, objectClassNames, ClassInfo(..), classInfo, classIsManaged )
 import ParseC( parseC )
 import DeriveTypes( deriveTypes, classifyName, Name(..), Method(..), ClassName, MethodName, PropertyName )
+import IOExtra
 
 {-----------------------------------------------------------------------------------------
   Compile
@@ -45,10 +46,8 @@ compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile 
            module2        = moduleRoot ++ moduleName ++ postfix2
 
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
-                                , "    ( -- * Version"
-                                , "      version" ++ moduleName
-                                , "      -- * Re-export" 
-                                , "    , module " ++ module1
+                                , "    ( -- * Re-export" 
+                                , "      module " ++ module1
                                 , "    , module " ++ module2
                                 , "    , module " ++ moduleRoot ++ moduleClassTypesName
                                 , "    ) where"
@@ -56,9 +55,6 @@ compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile 
                                 , "import " ++ module1
                                 , "import " ++ module2
                                 , "import " ++ moduleRoot ++ moduleClassTypesName
-                                , ""
-                                , "version" ++ moduleName ++ " :: String"
-                                , "version" ++ moduleName ++ "  = \"" ++ show time ++ "\""
                                 , ""
                                 ]
                               ]
@@ -76,7 +72,7 @@ compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile 
        
        let output  = unlines (prologue ++ export)
        putStrLn ("generating: " ++ outputFile ++ ".hs")
-       writeFile (outputFile ++ ".hs") output
+       writeFileLazy (outputFile ++ ".hs") output
        putStrLn ("generated " ++ show methodCount ++ " total methods for " ++ show classCount ++ " total classes.")
        putStrLn ("ok.")
 
@@ -96,10 +92,8 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
            ghcoptions   = [ "{-# LANGUAGE ForeignFunctionInterface #-}"]
 
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
-                                , "    ( -- * Version"
-                                , "      version" ++ moduleName
-                                , "      -- * Global" ]
-                              , exportsStatic
+                                , "    ( -- * Global" ]
+                              , (let es1 : es2 : estail = exportsStatic in es1 : dropFirstComma es2 : estail)
                                 , [ "      -- * Classes" ]
                               , exportsClassClasses
                               , [ "    ) where"
@@ -110,9 +104,6 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
                                 , "import " ++ moduleRoot ++ "WxcTypes"
                                 , "import " ++ moduleRoot ++ moduleClassTypesName
                                 , ""
-                                , "version" ++ moduleName ++ " :: String"
-                                , "version" ++ moduleName ++ "  = \"" ++ show time ++ "\""
-                                , ""
                                 ]
                               ]
 
@@ -122,7 +113,7 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
        let output  = unlines (ghcoptions ++ prologue ++ export ++ marshalDecls)
 
        putStrLn ("generating: " ++ outputFile ++ ".hs")
-       writeFile (outputFile ++ ".hs") output
+       writeFileLazy (outputFile ++ ".hs") output
        putStrLn ("generated " ++ show methodCount ++ " methods for " ++ show classCount ++ " classes.")
        return (methodCount,classCount)
 
@@ -135,6 +126,8 @@ cmpDecl decl1 decl2
 exportComma  = exportSpaces ++ ","
 exportSpaces = "     "
 
+dropFirstComma str = maybe str replaceNthWithSpace (elemIndex ',' str)
+    where replaceNthWithSpace n = let (front,back) = splitAt n str in front ++ " " ++ tail back
 
 {-----------------------------------------------------------------------------------------
    Create export definitions

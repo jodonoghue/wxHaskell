@@ -18,6 +18,7 @@ import Data.List( sortBy, sort )
 import Types
 import HaskellNames
 import Classes
+import IOExtra
 
 
 {-----------------------------------------------------------------------------------------
@@ -102,11 +103,10 @@ compileClassInfo verbose moduleRoot moduleClassesName moduleClassTypesName modul
                                 , ""
                                 ]
                               ]
-       prologue  <- getPrologue moduleName "class info"
-                                    (show defCount ++ " class info definitions.") []
+       prologue <- getPrologue moduleName "class info" (show defCount ++ " class info definitions.") []
 
        putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile (unlines (prologue ++ export ++ classDefs ++ downcDefs))
+       writeFileLazy outputFile (unlines (prologue ++ export ++ classDefs ++ downcDefs))
        putStrLn ("generated " ++ show defCount ++ " class info definitions")
        putStrLn "ok."
 

@@ -1,3 +1,4 @@
+
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Controls
@@ -48,7 +49,8 @@ module Graphics.UI.WX.Controls
       -- ** Tree control
       , TreeCtrl, treeCtrl, treeCtrlEx, treeEvent, treeCtrlRes
       -- ** List control
-      , ListCtrl, listCtrl, listCtrlEx, listCtrlRes, listEvent, columns
+      , ListCtrl, listCtrl, listCtrlEx, listCtrlRes, listCtrlSetColumnWidths, listEvent, columns
+      , ListView(..), listViewLayout, listViewSetHandler, listViewSelectHandle, listViewSetItems, listViewGetItems, listViewAddItem, listView
       -- ** Static text
       , StaticText, staticText, staticTextRes
       -- ** SplitterWindow
@@ -69,8 +71,10 @@ import Graphics.UI.WX.Classes
 import Graphics.UI.WX.Events
 import Graphics.UI.WX.Layout
 import Graphics.UI.WX.Media (Media(..))
+import Graphics.UI.WX.Variable (variable)
 import Graphics.UI.WX.Window
 
+import Control.Monad (forM_)
 import Data.Dynamic  -- for "alignment"
 
 
@@ -1100,6 +1104,60 @@ listCtrlRes parent name props =
     do l <- xmlResourceGetListCtrl parent name
        set l props
        return l
+
+-- TODO: figure out how to set a resize handler in addition to the
+-- default one. this will allow us to expand as needed upon resize
+-- events.
+listCtrlSetColumnWidths :: ListCtrl () -> Int -> IO ()
+listCtrlSetColumnWidths ctrl w = do
+--  size <- (realToFrac.sizeW) `fmap` get ctrl clientSize
+  cols <- listCtrlGetColumnCount ctrl
+--  let w = 65 --ceiling $ size / realToFrac cols
+  forM_ [0 .. cols - 1] $ \i -> listCtrlSetColumnWidth ctrl i w
+
+-- | A small wrapper over WX's ListCtrl, allowing us to keep the data
+--   we're representing as well as its string form (shown to the user as
+--   rows).
+data ListView a = ListView {
+  listViewCtrl  :: ListCtrl (),
+  listViewItems :: Var [a],
+  listViewToRow :: a -> [String]
+}
+
+listViewLayout :: ListView a -> Layout
+listViewLayout = fill . widget . listViewCtrl
+
+listViewSetHandler :: ListView a -> (EventList -> IO ()) -> IO ()
+listViewSetHandler list handler =
+  set (listViewCtrl list) [on listEvent := handler]
+
+listViewSelectHandle :: ListView a -> (Maybe a -> IO ()) -> EventList -> IO ()
+listViewSelectHandle _    _   (ListItemActivated (-1)) = propagateEvent
+listViewSelectHandle list end (ListItemActivated   n ) = end . Just =<< (!! n) `fmap` listViewGetItems list
+listViewSelectHandle _    _   _                        = propagateEvent
+
+listViewSetItems :: ListView a -> [a] -> IO ()
+listViewSetItems list its = do
+  set (listViewItems list) [value := its]
+  set (listViewCtrl list)  [items := map (listViewToRow list) its]
+
+listViewGetItems :: ListView a -> IO [a]
+listViewGetItems list = get (listViewItems list) value
+
+listViewAddItem :: ListView a -> a -> IO ()
+listViewAddItem list it = do
+  its <- (it:) `fmap` get (listViewItems list) value
+  listViewSetItems list its
+
+listViewSetColumnWidths :: ListView a -> Int -> IO ()
+listViewSetColumnWidths list w = do
+  listCtrlSetColumnWidths (listViewCtrl list) w
+
+listView :: Window b -> [String] -> (a -> [String]) -> IO (ListView a)
+listView parent cols toRow = do
+  ctrl <- listCtrl parent [columns := map (\n -> (n, AlignLeft, -1)) cols]
+  var  <- variable [value := []]
+  return $ ListView ctrl var toRow
 
 {--------------------------------------------------------------------------------
   SplitterWindow

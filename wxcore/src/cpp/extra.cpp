@@ -1210,7 +1210,7 @@ EWXWEXPORT(void,wxString_Delete)(wxString* s)
 
 EWXWEXPORT(int,wxString_GetString)(wxString* s,wxChar* buffer)
 {
-  if (buffer) memcpy (buffer, s->c_str(), s->Length() * sizeof(wxChar));
+  if (buffer) memcpy (buffer, s->wc_str(), s->Length() * sizeof(wxChar));
   return s->Length();
 }
 

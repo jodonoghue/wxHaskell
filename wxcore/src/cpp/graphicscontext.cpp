@@ -223,7 +223,13 @@ EWXWEXPORT(void,wxGraphicsContext_DrawLines)( wxGraphicsContext* self, size_t n,
   for (size_t i = 0; i < n; i++)
     points[i] = wxPoint2DDouble(x[i], y[i]);
 
-  self->DrawLines(n, points, fillStyle);
+  #if (wxVERSION_NUMBER >= 2900)
+      wxPolygonFillMode pfm_fillStyle = (wxPolygonFillMode) fillStyle;
+  #else
+      int pfm_fillStyle = fillStyle;
+  #endif
+
+  self->DrawLines(n, points, pfm_fillStyle);
 
   free (points);
 #endif
@@ -233,7 +239,13 @@ EWXWEXPORT(void,wxGraphicsContext_DrawPath)( wxGraphicsContext* self,
                                              const wxGraphicsPath* path, int fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
-  self->DrawPath(*path, fillStyle);
+  #if (wxVERSION_NUMBER >= 2900)
+      wxPolygonFillMode pfm_fillStyle = (wxPolygonFillMode) fillStyle;
+  #else
+      int pfm_fillStyle = fillStyle;
+  #endif
+
+  self->DrawPath(*path, pfm_fillStyle);
 #endif
 }
 
@@ -274,7 +286,13 @@ EWXWEXPORT(void,wxGraphicsContext_FillPath)( wxGraphicsContext* self,
                                              const wxGraphicsPath* path, int fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
-  self->FillPath(*path, fillStyle);
+  #if (wxVERSION_NUMBER >= 2900)
+      wxPolygonFillMode pfm_fillStyle = (wxPolygonFillMode) fillStyle;
+  #else
+      int pfm_fillStyle = fillStyle;
+  #endif
+
+  self->FillPath(*path, pfm_fillStyle);
 #endif
 }
 
@@ -722,7 +740,13 @@ EWXWEXPORT(void,wxGraphicsPath_CloseSubpath)( wxGraphicsPath* self )
 EWXWEXPORT(void,wxGraphicsPath_Contains)( wxGraphicsPath* self, wxDouble x, wxDouble y, int fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
-  self->Contains(x, y, fillStyle);
+  #if (wxVERSION_NUMBER >= 2900)
+      wxPolygonFillMode pfm_fillStyle = (wxPolygonFillMode) fillStyle;
+  #else
+      int pfm_fillStyle = fillStyle;
+  #endif
+
+  self->Contains(x, y, pfm_fillStyle);
 #endif
 }
 

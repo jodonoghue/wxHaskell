@@ -8,17 +8,17 @@ extern "C" {
 -----------------------------------------------------------------------------*/
 EWXWEXPORT(wxDragImage*,wxDragImage_Create)(wxBitmap* image,int x,int y)
 {
-  return new wxDragImage(*image, wxNullCursor, wxPoint(x, y));
+  return new wxDragImage(*image, wxNullCursor);
 }
 
 EWXWEXPORT(wxDragImage*,wxDragIcon)(wxIcon* icon,int x,int y)
 {
-  return new wxDragImage(*icon, wxNullCursor, wxPoint(x, y));
+  return new wxDragImage(*icon, wxNullCursor);
 }
 
 EWXWEXPORT(wxDragImage*,wxDragString)(wxString* text,int x,int y)
 {
-  return new wxDragImage(*text, wxNullCursor, wxPoint(x, y));
+  return new wxDragImage(*text, wxNullCursor);
 }
 
 EWXWEXPORT(wxDragImage*,wxDragTreeItem)(wxTreeCtrl* treeCtrl,wxTreeItemId* id)

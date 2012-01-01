@@ -58,3 +58,6 @@
 (^|/)\.waf-[[:digit:].]+-[[:digit:]]+($|/)
 (^|/)\.lock-wscript$
 ^\.darcs-temp-mail$
+(^|/)dist$
+(^|/)cabal-dev$
+(^|/)patches$

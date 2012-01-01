@@ -45,8 +45,10 @@ gui
                                     ,("Size", AlignRight, -1)
                                     ,("Date", AlignRight, -1)]
                         ,items := [[name,size,date] | (name,size,date) <- entries]
-                        ,on listEvent := onListEvent
                         ]
+
+
+       set l [on listEvent := onListEvent l]
 
        -- specify layout
        set f [layout     := container p $ margin 10 $ 
@@ -56,9 +58,10 @@ gui
              ,clientSize := sz 400 300
              ]
        return ()
-  where
-    onListEvent eventList
-      = case eventList of
-          ListItemSelected idx    -> logMessage ("item selected: " ++ show idx)
-          ListItemDeselected idx  -> logMessage ("item de-selected: " ++ show idx)
-          other                   -> logMessage ("list control event.")
+
+onListEvent list eventList
+  = case eventList of
+      ListItemSelected idx    -> listCtrlGetItemText list idx >>= logMessage . (++) "item selected: " 
+      ListItemDeselected idx  -> logMessage ("item de-selected: " ++ show idx)
+      other                   -> logMessage ("list control event.")
+

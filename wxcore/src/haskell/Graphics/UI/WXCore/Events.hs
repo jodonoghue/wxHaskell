@@ -190,6 +190,7 @@ module Graphics.UI.WXCore.Events
         -- * TaskBar icon events
         , EventTaskBarIcon(..)
 
+
         -- * Current event
         , propagateEvent
         , skipCurrentEvent
@@ -241,7 +242,7 @@ import Foreign.Marshal.Array
 import Foreign.Marshal.Utils
 
 import Data.Char ( chr ) -- used in stc
-import Data.Maybe ( fromMaybe )
+import Data.Maybe ( fromMaybe, fromJust )
 import Control.Concurrent.MVar
 import System.IO.Unsafe( unsafePerformIO )
 
@@ -2369,7 +2370,6 @@ evtHandlerGetOnTaskBarIconEvent window id evt
       (fromMaybe wxEVT_TASKBAR_MOVE
           $ lookup evt $ uncurry (flip zip) . unzip $ taskBarIconEvents)
       skipCurrentEvent
-
 
 
 ------------------------------------------------------------------------------------------
