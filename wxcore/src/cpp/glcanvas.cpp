@@ -15,7 +15,9 @@
 #endif
 
 #ifndef wxUSE_GLCANVAS
+# pragma message "No GLCanvas"
 # define wxGLCanvas      void
+# define wxGLContext     void
 #endif
 
 extern "C" {

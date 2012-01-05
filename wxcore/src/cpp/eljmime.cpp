@@ -27,7 +27,13 @@ EWXWEXPORT(int,wxMimeTypesManager_EnumAllFileTypes)(wxMimeTypesManager* self,voi
         if (_lst)
         {
                 for (unsigned int i = 0; i < arr.GetCount(); i++)
+                {
+#if wxVERSION_NUMBER >= 2900
                         ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
+#else
+                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+#endif
+                }
         }
 
         return result;
@@ -59,7 +65,13 @@ EWXWEXPORT(int,wxFileType_GetMimeTypes)(void* self,void* _lst)
         if (((wxFileType*)self)->GetMimeTypes(arr) && _lst)
         {
                 for (unsigned int i = 0; i < arr.GetCount(); i++)
+                {
+#if wxVERSION_NUMBER >= 2900
                         ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
+#else
+                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+#endif
+                }
         }
 
         return arr.GetCount();
@@ -71,8 +83,14 @@ EWXWEXPORT(int,wxFileType_GetExtensions)(void* self,void* _lst)
 
         if (((wxFileType*)self)->GetExtensions(arr) && _lst)
         {
-                for (unsigned int i = 0; i < arr.GetCount(); i++)
-                        ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
+            for (unsigned int i = 0; i < arr.GetCount(); i++)                
+            {
+#if wxVERSION_NUMBER >= 2900
+                 ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
+#else
+                 ((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).c_str());
+#endif
+            }
         }
 
         return arr.GetCount();

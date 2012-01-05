@@ -155,7 +155,11 @@ EWXWEXPORT(void*,wxTextValidator_GetIncludes)(void* self,int* _nitems)
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
+#if wxVERSION_NUMBER >= 2900
       items_copy[i] = wxStrdup(items.Item(i).wchar_str());
+#else
+      items_copy[i] = wxStrdup(items.Item(i).c_str());
+#endif
     }
     retval = (void*)items_copy;
     *_nitems = items.GetCount();
@@ -184,7 +188,11 @@ EWXWEXPORT(void*,wxTextValidator_GetExcludes)(void* self,int* _nitems)
 
     for (unsigned int i = 0; i < items.GetCount(); i++)
     {
+#if wxVERSION_NUMBER >= 2900
       items_copy[i] = wxStrdup(items.Item(i).wchar_str());
+#else
+      items_copy[i] = wxStrdup(items.Item(i).c_str());
+#endif
     }
     retval = (void*)items_copy;
     *_nitems = items.GetCount();

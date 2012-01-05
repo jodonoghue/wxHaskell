@@ -54,7 +54,7 @@ myConfHook (pkg0, pbi) flags = do
                              , "-lwxmsw28ud_xrc", "-lstdc++" ]
                         else [ "-lstdc++" ]
         wx_cfg_parms = if os == "mingw32"
-                       then [ "--libs", "gl,stc", "--cppflags" ]
+                       then [ "--unicode", "--libs", "gl,stc", "--cppflags" ]
                        else [ "--libs", "std,gl,stc,xrc,richtext,aui,media", "--cppflags" ]
     wx  <- fmap parseWxConfig (readProcess "wx-config" wx_cfg_parms "")
     lbi <- confHook simpleUserHooks (pkg0, pbi) flags
