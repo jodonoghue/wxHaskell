@@ -97,7 +97,7 @@ EWXWEXPORT(void*,wxStyledTextCtrl_Create)(wxWindow* _prt,int _id, wxString* _txt
 #ifdef wxUSE_STC
   return (void*) new wxStyledTextCtrl(_prt, _id, wxPoint(_lft, _top), wxSize(_wdt, _hgt), _stl, *_txt);
 #else
-  return false;
+  return NULL;
 #endif
 }
 
@@ -146,7 +146,7 @@ EWXWEXPORT(void,wxStyledTextCtrl_SetCaretLineBackground)(void* _obj,int back_r,i
     wxColour* cc = new wxColour(c);
     return cc;
 #else
-    return false;
+    return NULL;
 #endif
   }
   EWXWEXPORT(void*,wxStyledTextCtrl_GetLine)(void* _obj,int line)

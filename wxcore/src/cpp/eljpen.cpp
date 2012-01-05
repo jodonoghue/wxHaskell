@@ -93,7 +93,9 @@ EWXWEXPORT(void,wxPen_SetStyle)(void* self,int style)
 	
 EWXWEXPORT(void,wxPen_SetStipple)(void* self,wxBitmap* stipple)
 {
-	((wxPen*)self)->SetStipple(*stipple);
+#if !defined(__WXGTK__)
+    ((wxPen*)self)->SetStipple(*stipple);
+#endif
 }
 	
 EWXWEXPORT(void,wxPen_SetDashes)(void* self,int nb_dashes,void* dash)
@@ -153,7 +155,11 @@ EWXWEXPORT(int,wxPen_GetDashes)(void* self,void* ptr)
 	
 EWXWEXPORT(void,wxPen_GetStipple)(void* self,wxBitmap* _ref)
 {
-	*_ref = *(((wxPen*)self)->GetStipple());
+#if defined(__WXGTK__)
+    *_ref = NULL;
+#else
+    *_ref = *(((wxPen*)self)->GetStipple());
+#endif
 }
 	
 }
