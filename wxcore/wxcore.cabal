@@ -38,6 +38,7 @@ extra-source-files:
   src/include/eljgrid.h
   src/include/ewxw_def.h
   src/include/graphicscontext.h
+  src/include/glcanvas.h
   src/include/managed.h
   src/include/mediactrl.h
   src/include/previewframe.h
@@ -155,6 +156,7 @@ library
     src/cpp/ewxw_main.cpp
     src/cpp/extra.cpp
     src/cpp/graphicscontext.cpp
+    src/cpp/glcanvas.cpp
     src/cpp/image.cpp
     src/cpp/managed.cpp
     src/cpp/mediactrl.cpp
@@ -181,6 +183,7 @@ library
     Graphics.UI.WXCore.Frame
     Graphics.UI.WXCore.Image
     Graphics.UI.WXCore.Layout
+    Graphics.UI.WXCore.OpenGL
     Graphics.UI.WXCore.Print
     Graphics.UI.WXCore.Process
     Graphics.UI.WXCore.Types

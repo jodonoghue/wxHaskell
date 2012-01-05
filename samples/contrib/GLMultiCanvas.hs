@@ -23,48 +23,48 @@ defaultHeight = 200
 
 gui = do
    f <- frame [ text := "Simple OpenGL" ]
-
--- We just create two glCanvas
-
-   glCanvas <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight)
+   p <- panel f []
+   -- We just create two glCanvas
+   glCanvas  <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight)
         0 "GLCanvas" [GL_RGBA] nullPalette
    glCanvas2 <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight)
         0 "GLCanvas" [GL_RGBA] nullPalette
+   -- With two contexts
+   glContext  <- glContextCreateFromNull glCanvas
+   glContext2 <- glContextCreateFromNull glCanvas2
 
-   let glWidgetLayout = fill $ row 5 [widget glCanvas2,  widget glCanvas]
-
--- Hint: You have to use the paintRaw event. For switching between the two
---   glwindows you can give both of them as parameter
-   WX.set f [ layout := glWidgetLayout
-            , on paintRaw := paintGL glCanvas glCanvas2
+   -- Hint: You have to use the paintRaw event. For switching between the two
+   --   glwindows you can give both of them as parameter
+   WX.set f [ layout := container p $
+                        fill $
+                        column 5 $
+                        [ label "Two OpenGL canvases"
+                        , widget glCanvas2
+                        , widget glCanvas
+                        ]
+            , on paintRaw := paintGL glCanvas glCanvas2 glContext glContext2
             ]
 
 
 convWG (WX.Size w h) = (GL.Size (convInt32  w) (convInt32  h))
 convInt32 = fromInteger . toInteger
 
-paintGL :: GLCanvas a -> GLCanvas a -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
-paintGL gl1 gl2 dc myrect _ = do
-
--- Now we switch to the first one
--- and do all init and painting stuff
--- Hint: I changed the backgroundcolor for clearance
-
-   glCanvasSetCurrent gl1
+paintGL :: GLCanvas a -> GLCanvas a -> GLContext b -> GLContext b -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
+paintGL gl1 gl2 c1 c2 dc myrect _ = do
+   -- Now we switch to the first one
+   -- and do all init and painting stuff
+   -- Hint: I changed the backgroundcolor for clearance
+   glCanvasSetCurrent gl1 c1
    myInit
    reshape $ convWG $ rectSize myrect
-   -- Or not reshape the size.
-   reshape (GL.Size 320 200)
    GL.clearColor GL.$= GL.Color4 1 0 0 0
    display
    glCanvasSwapBuffers gl1
 
--- All the same for the second one
-   glCanvasSetCurrent gl2
+   -- All the same for the second one
+   glCanvasSetCurrent gl2 c2
    myInit
    reshape $ convWG $ rectSize myrect
-   -- Or not reshape the size.
-   reshape (GL.Size 320 200)
    GL.clearColor GL.$= GL.Color4 0 2 0 0
    display
    glCanvasSwapBuffers gl2
