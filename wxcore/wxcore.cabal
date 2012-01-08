@@ -203,7 +203,6 @@ library
     stm,
     wxdirect > 0.12.1.2,
     directory,
-    old-time,
     time
 
   if flag(splitBase)

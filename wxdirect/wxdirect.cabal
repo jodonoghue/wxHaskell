@@ -50,6 +50,7 @@ executable wxdirect
                , CompileSTC
                , DeriveTypes
                , HaskellNames
+               , IOExtra
                , MultiSet
                , ParseC
                , ParseEiffel
