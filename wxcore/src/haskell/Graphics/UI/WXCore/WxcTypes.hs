@@ -567,7 +567,7 @@ rectFromSize :: (Num a) => Size2D a -> Rect2D a
 rectFromSize (Size w h)
   = Rect 0 0 w h
 
-rectIsEmpty :: (Num a) => Rect2D a -> Bool
+rectIsEmpty :: (Num a, Eq a) => Rect2D a -> Bool
 rectIsEmpty (Rect l t w h)
   = (w==0 && h==0)
 
@@ -849,7 +849,7 @@ toCChar :: Char -> CChar
 toCChar = castCharToCChar
 
 -- generalised to work with Char and CChar
-withCharResult :: (Num a, Integral a) => IO a -> IO Char
+withCharResult :: (Num a, Integral a, Show a) => IO a -> IO Char
 withCharResult io
   = do x <- io
        if (x < 0)
