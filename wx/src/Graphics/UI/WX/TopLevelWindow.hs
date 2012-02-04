@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  TopLevelWindow
 	Copyright   :  (c) Jeremy O'Donoghue, 2007
