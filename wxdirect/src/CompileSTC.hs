@@ -19,6 +19,7 @@ import Data.List
 import Control.Monad
 
 import Types
+import IOExtra
 
 compileSTC :: Bool       -- ^ Verbose
            -> FilePath   -- ^ Outputdir
@@ -32,9 +33,9 @@ compileSTC verbose outputDir inputs = do
       h_target = outputDir ++ "include/stc_gen.h"
       cpp_target = outputDir ++ "src/stc_gen.cpp"
   putStrLn $ "generating: " ++ h_target
-  writeFile h_target $ (glue "\n\n" $ map headerfunc f) ++ "\n"
+  writeFileLazy h_target $ (glue "\n\n" $ map headerfunc f) ++ "\n"
   putStrLn $ "generating: " ++ cpp_target
-  writeFile cpp_target $ (glue "\n" $ map cppfunc f) ++ "\n"
+  writeFileLazy cpp_target $ (glue "\n" $ map cppfunc f) ++ "\n"
   when verbose $
        putStrLn $ "Wrote type macros and c wrappers for " ++ show (length f) ++ " functions."
 

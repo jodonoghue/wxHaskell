@@ -103,7 +103,8 @@ compileClassInfo verbose moduleRoot moduleClassesName moduleClassTypesName modul
                                 , ""
                                 ]
                               ]
-       prologue <- getPrologue moduleName "class info" (show defCount ++ " class info definitions.") []
+           prologue = getPrologue moduleName "class info"
+                                        (show defCount ++ " class info definitions.") []
 
        putStrLn ("generating: " ++ outputFile)
        writeFileLazy outputFile (unlines (prologue ++ export ++ classDefs ++ downcDefs))

@@ -1,5 +1,5 @@
 name:         wxdirect
-version:      0.13.1.2
+version:      0.15
 license:      BSD3
 license-file: LICENSE
 author:       Daan Leijen
@@ -45,7 +45,6 @@ executable wxdirect
                , CompileClasses
                , CompileClassInfo
                , CompileClassTypes
-               , CompileDefs
                , CompileHeader
                , CompileSTC
                , DeriveTypes
@@ -53,17 +52,16 @@ executable wxdirect
                , IOExtra
                , MultiSet
                , ParseC
-               , ParseEiffel
                , Types
 
   hs-source-dirs:
     src
 
   build-depends:
+    directory,
     parsec     >= 2.1.0 && < 4,
-    time       >= 1.0   && < 1.5,
-    strict     >= 0.3   && < 1.0,
-    directory  >= 1.0   && < 2.0
+    strict,
+    time       >= 1.0   && < 1.3
 
   if flag(splitBase)
     build-depends:

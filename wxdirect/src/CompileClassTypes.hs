@@ -33,23 +33,18 @@ compileClassTypes showIgnore moduleRoot moduleName outputFile inputFiles
            classCount   = length exportsClass
            
            export   = concat  [ ["module " ++ moduleRoot ++ moduleName
-                                , "    ( -- * Version"
-                                , "      classTypesVersion"
-                                , "      -- * Classes" ]
+                                , "    ( -- * Classes" ]
                               , exportsClassClasses
                               , [ "    ) where"
                                 , ""
                                 , "import " ++ moduleRoot ++ "WxcObject"
-                                , ""
-                                , "classTypesVersion :: String"
-                                , "classTypesVersion  = \"" ++ show time ++ "\""
                                 , "" ]
                               ]
 
-       prologue <- getPrologue moduleName "class"
-                               (show classCount ++ " class definitions.")
-                               inputFiles
-       let output  = unlines (prologue ++ export ++ classDecls)
+           prologue = getPrologue moduleName "class"
+                                   (show classCount ++ " class definitions.")
+                                   inputFiles
+           output = unlines (prologue ++ export ++ classDecls)
 
        putStrLn ("generating: " ++ outputFile)
        writeFileLazy outputFile output
@@ -63,17 +58,17 @@ compileClassTypes showIgnore moduleRoot moduleName outputFile inputFiles
 exportDefs :: [(ClassName,[String])] -> [String]
 exportDefs classExports 
   = let classMap = Map.fromListWith (++) classExports         
-    in  concatMap exportDef (Map.toAscList classMap)
+    in  concatMap exportDef $ zip [0..] (Map.toAscList classMap)
   where
-    exportDef (className,exports)
-      = [heading 2 className] ++ commaSep exports
+    exportDef (n, (className,exports))
+      = [heading 2 className] ++ (commaSep n) exports
 
-    commaSep xs
-      = map (exportComma++) xs
+    commaSep n xs
+      = zipWith (exportComma n) [0..] xs
 
     heading i name
       = exportSpaces ++ "-- " ++ replicate i '*' ++ " " ++ name
 
-    exportComma  = exportSpaces ++ ","
+    exportComma n m str = exportSpaces ++ (if n == 0 && m == 0 then " " else ",") ++ str
     exportSpaces = "     "
 

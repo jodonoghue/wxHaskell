@@ -26,6 +26,7 @@ import HaskellNames
 import Classes( isClassName, classNames, classExtends )
 import ParseC( parseC )
 import DeriveTypes( deriveTypesAll, classifyName, Name(..), Method(..), ClassName, MethodName, PropertyName )
+import IOExtra
 
 {-----------------------------------------------------------------------------------------
   Compile
@@ -49,7 +50,7 @@ compileHeader showIgnore outputFile inputFiles
                               )
 
        putStrLn ("generating: " ++ outputFile)
-       writeFile outputFile output
+       writeFileLazy outputFile output
        putStrLn ("generated " ++ show methodCount ++ " declarations.")
        putStrLn ("ok.\n")
 

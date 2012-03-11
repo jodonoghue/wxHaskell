@@ -24,7 +24,6 @@ import System.Console.GetOpt
 
 import CompileClasses   ( compileClasses)
 import CompileHeader    ( compileHeader )
-import CompileDefs      ( compileDefs )
 import CompileClassTypes( compileClassTypes )
 import CompileClassInfo ( compileClassInfo )
 import CompileSTC       ( compileSTC )
@@ -45,9 +44,6 @@ main
          ModeClassTypes outputDir inputFiles verbose
           -> compileClassTypes verbose moduleRootWxCore moduleClassTypesName
                                 (outputDir ++ moduleClassTypesName ++ ".hs") inputFiles
-         ModeDefs outputDir inputFiles verbose
-          -> compileDefs verbose moduleRootWxCore moduleDefsName
-                             (outputDir ++ moduleDefsName ++ ".hs") inputFiles
          ModeClassInfo outputDir verbose
           -> compileClassInfo verbose moduleRootWxCore moduleClassesName moduleClassTypesName moduleClassInfoName
                              (outputDir ++ moduleClassInfoName ++ ".hs")
@@ -76,17 +72,7 @@ moduleRootDir moduleRoot
 defaultOutputDirWxh
   = "../wxcore/src/" ++ moduleRootDir moduleRootWxCore
 
-getDefaultFiles
-  = do hs <- getDefaultHeaderFiles
-       es <- getDefaultEiffelFiles
-       return (hs++es)
-
-getDefaultEiffelFiles :: IO [FilePath]
-getDefaultEiffelFiles
-  = do wxcdir <- getWxcDir
-       return [wxcdir ++ "/include/wxc_defs.e"
-              ,wxcdir ++ "/ewxw/eiffel/spec/r_2_4/wx_defs.e"]
-
+getDefaultFiles = getDefaultHeaderFiles
 
 getDefaultHeaderFiles :: IO [FilePath]
 getDefaultHeaderFiles
@@ -110,13 +96,12 @@ data Flag
 
 
 data Target
-  = TDefs | TClasses | TClassTypes | THeader | TClassInfo | TSTC
+  = TClasses | TClassTypes | THeader | TClassInfo | TSTC
 
 data Mode
   = ModeHelp
   | ModeClasses   { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
   | ModeClassTypes{ outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
-  | ModeDefs      { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
   | ModeClassInfo { outputDir :: FilePath, verbose :: Bool }
   | ModeCHeader { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
   | ModeSTC { outputDir :: FilePath, inputFiles :: [FilePath], verbose :: Bool }
@@ -136,8 +121,7 @@ isTarget _          = False
 
 options :: [OptDescr Flag]
 options =
- [ Option ['d'] ["definitions"] (NoArg (Target TDefs))    "generate constant definitions from .e files"
- , Option ['c'] ["classes"]     (NoArg (Target TClasses)) "generate class method definitions from .h files"
+ [ Option ['c'] ["classes"]     (NoArg (Target TClasses)) "generate class method definitions from .h files"
  , Option ['t'] ["classtypes"]   (NoArg (Target TClassTypes)) "generate class type definitions from .h files"
  , Option ['i'] ["classinfo"]   (NoArg (Target TClassInfo)) "generate class info definitions"
  , Option ['h'] ["header"]      (NoArg (Target THeader))  "generate typed C header file -- development use only"
@@ -158,10 +142,6 @@ compileOpts
                  then return ModeHelp
                  else case filter isTarget flags of
                    []     -> invokeError ["you need to specify a target: methods, definitions or classes.\n"]
-                   [Target TDefs]    -> do defaultEiffelFiles <- getDefaultEiffelFiles
-                                           inputFiles <- getInputFiles ".e" defaultEiffelFiles files
-                                           outputDir  <- getOutputDir flags defaultOutputDirWxh
-                                           return (ModeDefs outputDir inputFiles (any isVerbose flags))
                    [Target TClassInfo]
                                      -> do outputDir  <- getOutputDir flags defaultOutputDirWxh
                                            return (ModeClassInfo outputDir (any isVerbose flags))
@@ -236,4 +216,4 @@ helpMessage
        return  (usageInfo header options ++
                 "\ndefault input files:\n" ++
                 unlines (map ("  "++) defaultFiles))
-  where header = "usage: wxDirect -[dcti] [other options] [header-files..] [eiffel-files..]"
+  where header = "usage: wxDirect -[dcti] [other options] [header-files..]"

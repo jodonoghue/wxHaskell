@@ -66,9 +66,9 @@ compileClasses showIgnore moduleRoot moduleClassTypesName moduleName outputFile 
        let methodCount = m1 + m2
            classCount  = c1 + c2
 
-       prologue <- getPrologue moduleName "class"
-                               (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
-                               inputFiles
+           prologue = getPrologue moduleName "class"
+                                   (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
+                                   inputFiles
        
        let output  = unlines (prologue ++ export)
        putStrLn ("generating: " ++ outputFile ++ ".hs")
@@ -107,10 +107,10 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
                                 ]
                               ]
 
-       prologue <- getPrologue moduleName "class"
-                               (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
-                               inputFiles
-       let output  = unlines (ghcoptions ++ prologue ++ export ++ marshalDecls)
+           prologue = getPrologue moduleName "class"
+                                   (show methodCount ++ " methods for " ++ show classCount ++ " classes.")
+                                   inputFiles
+           output  = unlines (ghcoptions ++ prologue ++ export ++ marshalDecls)
 
        putStrLn ("generating: " ++ outputFile ++ ".hs")
        writeFileLazy (outputFile ++ ".hs") output
