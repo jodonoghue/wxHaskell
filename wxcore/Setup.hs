@@ -18,12 +18,10 @@ main = defaultMainWithHooks simpleUserHooks { confHook = myConfHook }
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 sourceDirectory  :: FilePath
-eiffelDirectory  :: FilePath
 includeDirectory :: FilePath
 wxcoreDirectory  :: FilePath
 
 sourceDirectory  = "src"
-eiffelDirectory  = sourceDirectory </> "eiffel"
 includeDirectory = sourceDirectory </> "include"
 wxcoreDirectory  = sourceDirectory </> "haskell/Graphics/UI/WXCore"
 
@@ -32,11 +30,6 @@ wxcoreDirectory  = sourceDirectory </> "haskell/Graphics/UI/WXCore"
 wxcoreIncludeFile :: FilePath
 wxcoreIncludeFile = includeDirectory </> "wxc.h"
 
-eiffelFiles :: [FilePath]
-eiffelFiles =
-    map ((<.> "e") . (eiffelDirectory </>)) names
-  where
-    names = ["wxc_defs", "wx_defs", "stc"]
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -46,7 +39,6 @@ myConfHook (pkg0, pbi) flags = do
     system $ "wxdirect -t --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
     system $ "wxdirect -i --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
     system $ "wxdirect -c --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
-    system $ "wxdirect -d --wxc " ++ sourceDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ intercalate " " eiffelFiles
 
     -- ver <- fmap (head . drop 1 . splitBy (== '.')) (readProcess "wx-config" ["--version"] "")
     let extra_wx_libs = if os == "mingw32"

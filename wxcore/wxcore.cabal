@@ -31,9 +31,6 @@ extra-tmp-files:
 
 extra-source-files:
   src/cpp/stc_gen.cpp
-  src/eiffel/wx_defs.e
-  src/eiffel/wxc_defs.e
-  src/eiffel/stc.e
   src/include/dragimage.h
   src/include/eljgrid.h
   src/include/ewxw_def.h
