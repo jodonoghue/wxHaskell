@@ -168,7 +168,7 @@ linkCxxOpts ver out_dir basename =
                   "-Wl,--export-all-symbols", "-Wl,--enable-auto-import"]
       OSX -> ["-dynamiclib",
                   "-o " ++ out_dir </> sharedLibName ver basename,
-                  "-Wl,undefined,dynamic_lookup"]
+                  "-Wl,-undefined,dynamic_lookup"]
       _ -> ["-shared",
                   "-Wl,-soname,lib" ++ basename ++ ".so",
                   "-o " ++ out_dir </> sharedLibName ver basename]
