@@ -40,7 +40,7 @@ wxcInstallDir lbi =
         Unambiguous wxc_pkgs -> case find (isInfixOf "wxc") . includeDirs . head $ wxc_pkgs of
             Just wxcIncludeDir -> takeDirectory wxcIncludeDir
             Nothing -> error "wxcInstallDir: Couldn't find wxc include dir"
-        _ -> error $ "wxcInstallDir: Couldn't find wxc package in installed packages."
+        _ -> error "wxcInstallDir: Couldn't find wxc package in installed packages"
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 

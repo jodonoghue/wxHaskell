@@ -125,12 +125,13 @@ myBuildHook pkg_descr local_bld_info user_hooks bld_flags =
         progs = withPrograms local_bld_info
         gcc = fromJust (lookupProgram (simpleProgram "gcc") progs)
         ver = (pkgVersion . package) pkg_descr
+        inst_lib_dir = libdir $ absoluteInstallDirs pkg_descr local_bld_info NoCopyDest
     -- Compile C/C++ sources - output directory is dist/build/src/cpp
     putStrLn "Building wxc"
     objs <- mapM (compileCxx gcc cc_opts inc_dirs bld_dir) dll_srcs
     -- Link C/C++ sources as a DLL - output directory is dist/build
     putStrLn "Linking wxc"
-    linkSharedLib gcc ld_opts lib_dirs (libs ++ dll_libs) objs ver bld_dir dll_name
+    linkSharedLib gcc ld_opts lib_dirs (libs ++ dll_libs) objs ver bld_dir dll_name inst_lib_dir
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
@@ -148,7 +149,7 @@ sharedLibName :: Version -- ^ Version information to be used for Unix shared lib
 sharedLibName ver basename =
     case buildOS of
       Windows -> addExtension basename ".dll"
-      OSX -> addExtension basename ".so"
+      OSX -> "lib" ++ addExtension basename ".dylib"
       _ -> "lib" ++ basename ++ ".so." ++ full_ver
         where
           full_ver = (concat . intersperse "." . map show . versionBranch) ver
@@ -157,8 +158,9 @@ sharedLibName ver basename =
 linkCxxOpts :: Version -- ^ Version information to be used for Unix shared libraries
             -> FilePath -- ^ Directory in which library will be built
             -> String -- ^ Name of the shared library
+            -> String -- ^ Absolute path of the shared library
             -> [String] -- ^ List of options which can be applied to 'runProgram'
-linkCxxOpts ver out_dir basename =
+linkCxxOpts ver out_dir basename basepath =
     let dll_pathname = normalisePath (out_dir </> addExtension basename ".dll")
         implib_pathname = normalisePath (out_dir </> "lib" ++ addExtension basename ".a") in
     case buildOS of
@@ -168,6 +170,7 @@ linkCxxOpts ver out_dir basename =
                   "-Wl,--export-all-symbols", "-Wl,--enable-auto-import"]
       OSX -> ["-dynamiclib",
                   "-o " ++ out_dir </> sharedLibName ver basename,
+                  "-install_name " ++ basepath </> sharedLibName ver basename,
                   "-Wl,-undefined,dynamic_lookup"]
       _ -> ["-shared",
                   "-Wl,-soname,lib" ++ basename ++ ".so",
@@ -220,16 +223,16 @@ linkSharedLib :: ConfiguredProgram -- ^ Program used to perform linking
               -> Version -- ^ wxCore version (wxC has same version number)
               -> FilePath -- ^ Directory in which library will be generated
               -> String -- ^ Name of the shared library
+              -> String -- ^ Absolute path of the shared library
               -> IO ()
-linkSharedLib gcc opts lib_dirs libs objs ver out_dir dll_name =
+linkSharedLib gcc opts lib_dirs libs objs ver out_dir dll_name dll_path =
     do
     let lib_dirs' = map (\d -> "-L" ++ normalisePath d) lib_dirs
         out_dir' = normalisePath out_dir
-        opts' = opts ++ linkCxxOpts ver (out_dir') dll_name
+        opts' = opts ++ linkCxxOpts ver (out_dir') dll_name dll_path
         objs' = map normalisePath objs
         libs' = ["-lstdc++"] ++ map ("-l" ++) libs
     --runProgram verbose gcc (opts' ++ objs' ++ lib_dirs' ++ libs')
-    let cmd_line = unwords ([show . locationPath . programLocation $ gcc] ++ opts' ++ objs' ++ lib_dirs' ++ libs')
     system $ (unwords ([show . locationPath . programLocation $ gcc] ++ opts' ++ objs' ++ lib_dirs' ++ libs'))
     return ()
 
@@ -262,7 +265,11 @@ ldconfig :: FilePath -> IO ()
 ldconfig path = case buildOS of
     Windows -> return ()
     OSX -> return ()
-    _ -> system ("ldconfig -n " ++ path) >> return ()
+    _ -> do
+            ld_exit_code <- system ("/sbin/ldconfig -n " ++ path) 
+            case ld_exit_code of
+                ExitSuccess -> return ()
+                otherwise -> error "Couldn't execute ldconfig, ensure it is on your path"
 
 myInstHook :: PackageDescription -> LocalBuildInfo -> UserHooks -> InstallFlags -> IO ()
 myInstHook pkg_descr local_bld_info user_hooks inst_flags = 
