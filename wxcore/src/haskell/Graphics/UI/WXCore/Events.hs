@@ -33,6 +33,7 @@ module Graphics.UI.WXCore.Events
         , listCtrlOnListEvent
         , treeCtrlOnTreeEvent
         , gridOnGridEvent
+        , propertyGridOnPropertyGridEvent
 
         -- ** Windows
         , windowOnMouse
@@ -89,6 +90,7 @@ module Graphics.UI.WXCore.Events
         , listCtrlGetOnListEvent
         , treeCtrlGetOnTreeEvent
         , gridGetOnGridEvent
+        , propertyGridGetOnPropertyGridEvent
 
         -- ** Windows
         , windowGetOnMouse
@@ -189,6 +191,9 @@ module Graphics.UI.WXCore.Events
         
         -- * TaskBar icon events
         , EventTaskBarIcon(..)
+
+        -- ** PropertyGrid events
+        , EventPropertyGrid(..)
 
 
         -- * Current event
@@ -2370,6 +2375,52 @@ evtHandlerGetOnTaskBarIconEvent window id evt
       (fromMaybe wxEVT_TASKBAR_MOVE
           $ lookup evt $ uncurry (flip zip) . unzip $ taskBarIconEvents)
       skipCurrentEvent
+
+
+{-----------------------------------------------------------------------------------------
+  PropertyGrid events
+-----------------------------------------------------------------------------------------}
+-- | PropertyGrid control events.
+data EventPropertyGrid  
+                = PropertyGridHighlighted (Maybe (PGProperty ()))
+                | PropertyGridChanged (PGProperty ())
+                | PropertyGridUnknown
+
+fromPropertyGridEvent :: PropertyGridEvent a -> IO EventPropertyGrid
+fromPropertyGridEvent propertyGridEvent
+  = do tp <- eventGetEventType propertyGridEvent
+       case lookup tp propertyGridEvents of
+         Just f  -> f propertyGridEvent 
+         Nothing -> return PropertyGridUnknown
+
+propertyGridEvents :: [(Int, PropertyGridEvent a -> IO EventPropertyGrid)]
+propertyGridEvents
+  = [(wxEVT_PG_HIGHLIGHTED, withPGProperty PropertyGridHighlighted),
+     (wxEVT_PG_CHANGED, withPGProperty (PropertyGridChanged . fromJust))
+    ]
+  where
+    withPGProperty :: (Maybe((PGProperty ())) -> b) -> PropertyGridEvent a -> IO b
+    withPGProperty make propertyGridEvent = do
+        hasProp <- propertyGridEventHasProperty propertyGridEvent
+        if not hasProp then return (make Nothing) else do
+            prop <- propertyGridEventGetProperty propertyGridEvent
+            return (make (Just prop))
+
+-- | Set a PropertyGrid event handler.
+propertyGridOnPropertyGridEvent :: PropertyGrid a -> (EventPropertyGrid -> IO ()) -> IO ()
+propertyGridOnPropertyGridEvent propertyGrid eventHandler
+  = windowOnEvent propertyGrid (map fst propertyGridEvents) eventHandler listHandler
+  where
+    listHandler event
+      = do eventPropertyGrid <- fromPropertyGridEvent (objectCast event)
+           eventHandler eventPropertyGrid
+
+-- | Get the current PropertyGrid event handler of a window.
+propertyGridGetOnPropertyGridEvent :: PropertyGrid a -> IO (EventPropertyGrid -> IO ())
+propertyGridGetOnPropertyGridEvent propertyGrid
+  -- I'm not sure what expEVT_PG_HIGHLIGHTED needs to be here for, just followed pattern with `listCtrlGetOnListEvent'
+  = unsafeWindowGetHandlerState propertyGrid wxEVT_PG_HIGHLIGHTED (\event -> skipCurrentEvent)
+
 
 
 ------------------------------------------------------------------------------------------
