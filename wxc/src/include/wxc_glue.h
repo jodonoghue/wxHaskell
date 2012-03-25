@@ -5132,5 +5132,52 @@ TClassDefExtend(wxZlibInputStream,wxFilterInputStream)
 /* wxZlibOutputStream */
 TClassDefExtend(wxZlibOutputStream,wxFilterOutputStream)
 
+/* wxPropertyGrid */
+TClassDefExtend(wxPropertyGrid,wxControl)
+TClass(wxPGProperty)    wxPropertyGrid_Append( TSelf(wxPropertyGrid) _obj, TClass(wxPGProperty) prop );
+TClass(wxPropertyGrid)  wxPropertyGrid_Create( TClass(wxWindow) _prt, int _id, TRect(_lft,_top,_wdt,_hgt), int _stl );
+TBool                   wxPropertyGrid_DisableProperty( TSelf(wxPropertyGrid) _obj, TClass(wxString) propName );
+
+/* wxPropertyGridEvent */
+TClassDefExtend(wxPropertyGridEvent,wxNotifyEvent)
+TBool                   wxPropertyGridEvent_HasProperty( TSelf(wxPropertyGridEvent) _obj );
+TClass(wxPGProperty)    wxPropertyGridEvent_GetProperty( TSelf(wxPropertyGridEvent) _obj );
+
+/* wxPGProperty */
+TClassDefExtend(wxPGProperty,wxObject)
+TClass(wxString) wxPGProperty_GetLabel( TSelf(wxPGProperty) _obj );
+TClass(wxString) wxPGProperty_GetName( TSelf(wxPGProperty) _obj );
+TClass(wxString) wxPGProperty_GetValueAsString( TSelf(wxPGProperty) _obj );
+TClass(wxString) wxPGProperty_GetValueType( TSelf(wxPGProperty) _obj );
+void wxPGProperty_SetHelpString( TSelf(wxPGProperty) _obj, TClass(wxString) helpString );
+
+/* wxStringProperty */
+TClassDefExtend(wxStringProperty,wxPGProperty)
+TClass(wxStringProperty) wxStringProperty_Create( TClass(wxString) label, TClass(wxString) name, TClass(wxString) value );
+
+/* wxIntProperty */
+TClassDefExtend(wxIntProperty,wxPGProperty)
+TClass(wxIntProperty) wxIntProperty_Create( TClass(wxString) label, TClass(wxString) name, int value );
+
+/* wxBoolProperty */
+TClassDefExtend(wxBoolProperty,wxPGProperty)
+TClass(wxBoolProperty) wxBoolProperty_Create( TClass(wxString) label, TClass(wxString) name, TBool value );
+
+/* wxFloatProperty */
+TClassDefExtend(wxFloatProperty,wxPGProperty)
+TClass(wxFloatProperty) wxFloatProperty_Create( TClass(wxString) label, TClass(wxString) name, float value );
+
+/* wxDateProperty */
+TClassDefExtend(wxDateProperty,wxPGProperty)
+TClass(wxDateProperty) wxDateProperty_Create( TClass(wxString) label, TClass(wxString) name, TClass(wxDateTime) value );
+
+/* wxFileProperty */
+TClassDefExtend(wxFileProperty,wxPGProperty)
+TClass(wxFileProperty) wxFileProperty_Create( TClass(wxString) label, TClass(wxString) name, TClass(wxString) value);
+
+/* wxPropertyCategory */
+TClassDefExtend(wxPropertyCategory,wxPGProperty)
+TClass(wxPropertyCategory) wxPropertyCategory_Create( TClass(wxString) label);
+
 #endif /* WXC_GLUE_H */
 
