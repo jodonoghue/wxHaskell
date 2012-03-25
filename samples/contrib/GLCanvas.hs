@@ -23,7 +23,6 @@ import Graphics.UI.WX
 import Graphics.UI.WXCore
 import Graphics.Rendering.OpenGL
 -- Many code and Type are ambiguous, so we must qualify names.
-
 import qualified Graphics.UI.WX as WX
 import qualified Graphics.Rendering.OpenGL as GL
 
@@ -36,18 +35,14 @@ defaultHeight = 200
 
 gui = do
    f <- frame [ text := "Simple OpenGL" ]
-   p <- panel f []
-   glCanvas <- glCanvasCreateEx p 0 (Rect 0 0 defaultWidth defaultHeight) 0 "GLCanvas" [GL_RGBA] nullPalette
+   glCanvas <- glCanvasCreateEx f 0 (Rect 0 0 defaultWidth defaultHeight) 0 "GLCanvas" [GL_RGBA] nullPalette
    glContext <- glContextCreateFromNull glCanvas
-   WX.set f [ layout := container p $
-                        fill $
-                        column 5 $
-                        [label "Single OpenGL canvas",
-                         widget glCanvas
-                        ]
-              -- you have to use the paintRaw event. Otherwise the OpenGL window won't
-              -- show anything!
-            , on paintRaw := paintGL glCanvas glContext
+   glCanvasSetCurrent glCanvas glContext
+   let glWidgetLayout = fill $ widget glCanvas
+   WX.set f [ layout := glWidgetLayout
+-- you have to use the paintRaw event. Otherwise the OpenGL window won't
+-- show anything!
+            , on paintRaw := paintGL glCanvas
             ]
 
 convWG (WX.Size w h) = (GL.Size (convInt32  w) (convInt32  h))
@@ -55,15 +50,14 @@ convInt32 = fromInteger . toInteger
 
 -- This paint function gets the current glCanvas for knowing where to draw in.
 -- It is possible to have multiple GL windows in your application.
-paintGL :: GLCanvas a -> GLContext b -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
-paintGL glWindow glContext dc myrect _ = do
-   glCanvasSetCurrent glWindow glContext
+paintGL :: GLCanvas a -> DC() -> WX.Rect -> [WX.Rect]-> IO ()
+paintGL glWindow dc myrect _ = do
    myInit
    reshape $ convWG $ rectSize myrect
-   GL.clearColor GL.$= GL.Color4 1 0 0 0
    display
    glCanvasSwapBuffers glWindow
    return ()
+
 
 ctrlPoints :: [[GL.Vertex3 GL.GLfloat]]
 ctrlPoints = [
@@ -90,7 +84,7 @@ initlights = do
 
 myInit :: IO ()
 myInit = do
-   --GL.clearColor GL.$= GL.Color4 0.1 0.1 0.6 0
+   GL.clearColor GL.$= GL.Color4 0.1 0.1 0.6 0
    GL.depthFunc GL.$= Just GL.Less
    m <- GL.newMap2 (0, 1) (0, 1) (transpose ctrlPoints)
    GL.map2 GL.$= Just (m :: GLmap2 GL.Vertex3 GL.GLfloat)
