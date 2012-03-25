@@ -2290,6 +2290,9 @@ void       wxFrameLayout_SetUpdatesManager( TSelf(wxFrameLayout) _obj, void* pUM
 /* wxGDIObject */
 TClassDefExtend(wxGDIObject,wxObject)
 
+/* wxGLCanvas */
+TClassDefExtend(wxGLCanvas,wxScrolledWindow)
+
 /* wxGauge */
 TClassDefExtend(wxGauge,wxControl)
 TClass(wxGauge) wxGauge_Create( TClass(wxWindow) _prt, int _id, int _rng, TRect(_lft,_top,_wdt,_hgt), int _stl );

@@ -13,14 +13,10 @@ Convenience wrappers for the openGL canvas window ('GLCanvas').
 module Graphics.UI.WXCore.OpenGL
    ( 
    -- * Types
-     GLCanvas, GLAttribute(..)
+     GLAttribute(..)
    -- * Creation
    , glCanvasCreateDefault
    , glCanvasCreateEx
-   -- * Usage
-   , glCanvasSetCurrent
-   , glCanvasSwapBuffers
-   , glCanvasSetColour
    ) where
 
 

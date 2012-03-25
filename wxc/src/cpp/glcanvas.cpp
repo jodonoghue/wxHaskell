@@ -15,9 +15,7 @@
 #endif
 
 #ifndef wxUSE_GLCANVAS
-# pragma message "No GLCanvas"
 # define wxGLCanvas      void
-# define wxGLContext     void
 #endif
 
 extern "C" {
@@ -42,29 +40,62 @@ EWXWEXPORT(wxGLCanvas*,wxGLCanvas_Create)(wxWindow* parent,
 #endif
 }
 
-EWXWEXPORT(void,wxGLCanvas_SetCurrent)(wxGLCanvas* self, wxGLContext* ctxt)  
+  EWXWEXPORT(bool,wxGLCanvas_SetCurrent)(wxGLCanvas* self, wxGLContext* ctxt)  
 {
 #ifdef wxUSE_GLCANVAS 
-  if (ctxt != NULL)
-    self->SetCurrent(*ctxt);
+  if (ctxt == NULL)
+    return false;
+  else
+    return self->SetCurrent(*ctxt);
+#else
+  return false; 
 #endif
 }
 
-EWXWEXPORT(void,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)  
+EWXWEXPORT(bool,wxGLCanvas_SetColour)(wxGLCanvas* self, wxColour* colour)  
 {
 #ifdef wxUSE_GLCANVAS 
   wxString name = wxTheColourDatabase->FindName( *colour );
   if (name.IsEmpty()) 
-    self->SetColour(wxString(wxT("WHITE")));
+    return self->SetColour(wxString(wxT("WHITE")));
   else
-    self->SetColour(name);
+    return self->SetColour(name);
+#else
+  return false;
 #endif
 }
 
-EWXWEXPORT(void,wxGLCanvas_SwapBuffers)(wxGLCanvas* self)  
+EWXWEXPORT(bool,wxGLCanvas_SwapBuffers)(wxGLCanvas* self)  
 {
 #ifdef wxUSE_GLCANVAS 
-  self->SwapBuffers();
+  return self->SwapBuffers();
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(bool,wxGLCanvas_IsDisplaySupported)(int* attributes)
+{
+#ifdef wxUSE_GLCANVAS
+  return wxGLCanvas::IsDisplaySupported(attributes);
+#else
+  return false;
+#endif
+}
+
+EWXWEXPORT(bool,wxGLCanvas_IsExtensionSupported(wxString* extension))
+{
+#ifdef wxUSE_GLCANVAS
+  const char* str = (const char*) extension->c_str();
+  if (str != NULL) {
+    bool retval = wxGLCanvas::IsExtensionSupported(str);
+    delete str;
+    return retval;
+  }
+  else
+    return false;
+#else
+  return false;
 #endif
 }
 
@@ -85,9 +116,15 @@ EWXWEXPORT(wxGLContext*,wxGLContext_CreateFromNull(wxGLCanvas* win))
 EWXWEXPORT(bool,wxGLContext_SetCurrent(wxGLContext* self, wxGLCanvas* win))
 {
 #ifdef wxUSE_GLCANVAS
-  if (win != NULL)
-    self->SetCurrent(*win);
+  if (win == NULL)
+    return false;
+  else
+    return self->SetCurrent(*win);
+#else
+  return false;
 #endif
 }
 
 }
+
+
