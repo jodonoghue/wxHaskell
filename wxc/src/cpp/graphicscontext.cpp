@@ -215,7 +215,7 @@ EWXWEXPORT(void,wxGraphicsContext_DrawIcon)( wxGraphicsContext* self, const wxIc
 }
 
 EWXWEXPORT(void,wxGraphicsContext_DrawLines)( wxGraphicsContext* self, size_t n,
-                                              wxDouble* x, wxDouble* y, int fillStyle )
+                                              wxDouble* x, wxDouble* y, wxPolygonFillMode fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
   wxPoint2DDouble* points = (wxPoint2DDouble*)malloc (n * sizeof(wxPoint2DDouble));
@@ -236,7 +236,7 @@ EWXWEXPORT(void,wxGraphicsContext_DrawLines)( wxGraphicsContext* self, size_t n,
 }
 
 EWXWEXPORT(void,wxGraphicsContext_DrawPath)( wxGraphicsContext* self,
-                                             const wxGraphicsPath* path, int fillStyle )
+                                             const wxGraphicsPath* path, wxPolygonFillMode fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
   #if (wxVERSION_NUMBER >= 2900)
@@ -283,7 +283,7 @@ EWXWEXPORT(void,wxGraphicsContext_DrawTextWithAngle)( wxGraphicsContext* self,
 }
 
 EWXWEXPORT(void,wxGraphicsContext_FillPath)( wxGraphicsContext* self,
-                                             const wxGraphicsPath* path, int fillStyle )
+                                             const wxGraphicsPath* path, wxPolygonFillMode fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
   #if (wxVERSION_NUMBER >= 2900)
@@ -421,7 +421,7 @@ EWXWEXPORT(void,wxGraphicsContext_StrokeLine)( wxGraphicsContext* self, wxDouble
 }
 
 EWXWEXPORT(void,wxGraphicsContext_StrokeLines)( wxGraphicsContext* self, size_t n,
-                                                wxDouble* x, wxDouble* y, int fillStyle )
+                                                wxDouble* x, wxDouble* y, wxPolygonFillMode fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
   wxPoint2DDouble* points = (wxPoint2DDouble*)malloc (n * sizeof(wxPoint2DDouble));
@@ -737,7 +737,7 @@ EWXWEXPORT(void,wxGraphicsPath_CloseSubpath)( wxGraphicsPath* self )
 #endif
 }
 
-EWXWEXPORT(void,wxGraphicsPath_Contains)( wxGraphicsPath* self, wxDouble x, wxDouble y, int fillStyle )
+EWXWEXPORT(void,wxGraphicsPath_Contains)( wxGraphicsPath* self, wxDouble x, wxDouble y, wxPolygonFillMode fillStyle )
 {
 #ifdef wxUSE_GRAPHICS_CONTEXT
   #if (wxVERSION_NUMBER >= 2900)

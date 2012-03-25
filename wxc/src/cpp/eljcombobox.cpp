@@ -168,12 +168,12 @@ EWXWEXPORT(void,wxComboBox_SetString)(wxComboBox* self,int n,wxString* s)
 	
 EWXWEXPORT(void,wxComboBox_SetClientData)(wxComboBox* self,int n,void* clientData)
 {
-	self->SetClientData( n, clientData );
+	((wxItemContainer*) self)->SetClientData( n, clientData );
 }
 	
 EWXWEXPORT(void*,wxComboBox_GetClientData)(wxComboBox* self,int n)
 {
-	return self->GetClientData(n);
+	return ((wxItemContainer*) self)->GetClientData(n);
 }
 
 }

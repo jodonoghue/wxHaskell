@@ -7,10 +7,8 @@
 #include "wx/fileconf.h"
 #include "wx/spinctrl.h"
 
-#if (wxVERSION_NUMBER >= 2800)
 #include <wx/numdlg.h>
 #include <wx/power.h>
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // wxc specific events
@@ -1210,11 +1208,7 @@ EWXWEXPORT(void,wxString_Delete)(wxString* s)
 
 EWXWEXPORT(int,wxString_GetString)(wxString* s,wxChar* buffer)
 {
-#if wxVERSION_NUMBER >= 2900
   if (buffer) memcpy (buffer, s->wc_str(), s->Length() * sizeof(wxChar));
-#else
-  if (buffer) memcpy (buffer, s->c_str(), s->Length() * sizeof(wxChar));
-#endif
   return s->Length();
 }
 

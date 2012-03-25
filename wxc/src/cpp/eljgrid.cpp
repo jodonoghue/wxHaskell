@@ -407,13 +407,7 @@ EWXWEXPORT(int,wxGrid_StringToLines)(wxGrid* self,wxString* value,void* lines)
 	if (lines)
 	{
 		for (int i = 0; i < result; i++)
-        {
-#if wxVERSION_NUMBER >= 2900
 			((const wxChar**)lines)[i] = wxStrdup (arr[i].wchar_str());
-#else
-            ((const wxChar**)lines)[i] = wxStrdup (arr[i].c_str());
-#endif
-        }
 	}
 	return result;
 }

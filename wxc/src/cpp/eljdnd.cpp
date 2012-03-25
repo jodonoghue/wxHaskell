@@ -218,14 +218,8 @@ EWXWEXPORT(int,FileDataObject_GetFilenames)(void* self,void* _lst)
 	wxArrayString arr = ((wxFileDataObject*)self)->GetFilenames();
 	if (_lst)
 	{
-      for (unsigned int i = 0; i < arr.GetCount(); i++)
-      {
-#if wxVERSION_NUMBER >= 2900
-          ((const wxChar**)_lst)[i] = wxStrdup ((arr.Item(i).wchar_str()));
-#else
-          ((const wxChar**)_lst)[i] = wxStrdup ((arr.Item(i).c_str()));
-#endif
-      }
+		for (unsigned int i = 0; i < arr.GetCount(); i++)
+			((const wxChar**)_lst)[i] = wxStrdup (arr.Item(i).wchar_str());
 	}
 	return arr.GetCount();
 }

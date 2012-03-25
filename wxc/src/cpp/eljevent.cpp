@@ -45,7 +45,6 @@
 #include "wx/toolbook.h"
 #include "wx/treebook.h"
 
-
 extern "C"
 {
 
@@ -1705,11 +1704,7 @@ MAKE_EVENT_WRAPPER(EVT_WIZARD_PAGE_CHANGING)
 MAKE_EVENT_WRAPPER(EVT_WIZARD_CANCEL)
 MAKE_EVENT_WRAPPER(EVT_WIZARD_HELP)
 MAKE_EVENT_WRAPPER(EVT_WIZARD_FINISHED)
-#if wxCHECK_VERSION(2,8,12)
 MAKE_EVENT_WRAPPER(EVT_WIZARD_PAGE_SHOWN)
-#else
-MAKE_UNDEFEVENT_WRAPPER(EVT_WIZARD_PAGE_SHOWN)
-#endif
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

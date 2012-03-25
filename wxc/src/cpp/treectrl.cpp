@@ -532,20 +532,9 @@ EWXWEXPORT(void,wxTreeCtrl_HitTest)(wxTreeCtrl* self,int _x,int _y,void* flags,w
 	
 EWXWEXPORT(wxRect*,wxTreeCtrl_GetBoundingRect)(wxTreeCtrl* self,wxTreeItemId* item,bool textOnly)
 {
-#ifdef __WIN32__
-	wxRect rct;
-	int result = self->GetBoundingRect(*item, rct, textOnly);
-	if (result)
-	{
-		wxRect* rt = new wxRect();
-		*rt = self->GetRect();
-		return rt;
-	}
-		wxRect* rt = new wxRect(-1,-1,-1,-1);
-		return rt;
-#else
-	return 0;
-#endif
+	wxRect * const rct = new wxRect(-1,-1,-1,-1);
+	self->GetBoundingRect(*item, *rct, textOnly);
+	return rct;
 }
 	
 }

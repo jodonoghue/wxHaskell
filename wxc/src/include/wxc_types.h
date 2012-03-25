@@ -100,12 +100,12 @@
 #define TStringOut        TChar*
 #define TStringLen        int
 
-#define TByteData           char*
-#define TByteString         TByteData* d, int n
-#define TByteStringLazy     TByteData* d, int n
-#define TByteStringOut      TByteData
-#define TByteStringLazyOut  TByteData
-#define TByteStringLen      int
+#define TByteData            char*
+#define TByteString(d,n)     TByteData* d, int n
+#define TByteStringLazy(d,n) TByteData* d, int n
+#define TByteStringOut       TByteData
+#define TByteStringLazyOut   TByteData
+#define TByteStringLen       int
 
 /* structures */
 #define TPoint(x,y)       int x,  int y

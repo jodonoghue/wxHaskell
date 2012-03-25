@@ -66,13 +66,7 @@ EWXWEXPORT(int,wxFileDialog_GetPaths)(void* _obj,void* paths)
 	if (paths)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-        {
-#if wxVERSION_NUMBER >= 2900
 		    ((const wxChar**)paths)[i] = wxStrdup (arr.Item(i).wchar_str());
-#else
-            ((const wxChar**)paths)[i] = wxStrdup ((arr.Item(i).c_str()));
-#endif
-        }
 	}
 	return arr.GetCount();
 }
@@ -98,13 +92,7 @@ EWXWEXPORT(int,wxFileDialog_GetFilenames)(void* _obj,void* paths)
 	if (paths)
 	{
 		for (unsigned int i = 0; i < arr.GetCount(); i++)
-        {
-#if wxVERSION_NUMBER >= 2900
 			((const wxChar**)paths)[i] = wxStrdup (arr.Item(i).wchar_str());
-#else
-            ((const wxChar**)paths)[i] = wxStrdup ((arr.Item(i).c_str()));
-#endif
-        }
 	}
 	return arr.GetCount();
 }
