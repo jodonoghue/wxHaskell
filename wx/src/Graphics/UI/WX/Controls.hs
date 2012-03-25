@@ -1,4 +1,3 @@
-
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 --------------------------------------------------------------------------------
 {-|	Module      :  Controls
@@ -61,6 +60,8 @@ module Graphics.UI.WX.Controls
       , MediaCtrlBackend(..), MediaCtrl, mediaCtrl, mediaCtrlWithBackend, mediaCtrlEx
       -- ** StyledTextCtrl
       , StyledTextCtrl, stcEvent, styledTextCtrl, styledTextCtrlEx
+      -- ** PropertyGrid
+      , PropertyGrid, propertyGrid, propertyGridEvent
     ) where
 
 import Graphics.UI.WXCore hiding (Event)
@@ -1284,3 +1285,28 @@ styledTextCtrlEx parent style props
     do s <- styledTextCtrlCreate parent id "" rect style
        set s props
        return s
+
+{--------------------------------------------------------------------------------
+  PropertyGrid
+--------------------------------------------------------------------------------}
+
+-- | PropertyGrid control events.
+propertyGridEvent :: Event (PropertyGrid a) (EventPropertyGrid -> IO ())
+propertyGridEvent
+  = newEvent "propertyGridEvent" propertyGridGetOnPropertyGridEvent propertyGridOnPropertyGridEvent
+
+-- | Create a property grid.
+--
+-- * Attributes: 'propertyGridEvent',
+--
+-- * Instances: 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
+--             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
+--
+propertyGrid :: Window a -> [Prop (PropertyGrid ())] -> IO (PropertyGrid ())
+propertyGrid parent props
+  = feed2 props wxPG_DEFAULT_STYLE $
+    initialContainer $ \id rect -> \props flags ->
+    do l <- propertyGridCreate parent id rect flags
+       set l props
+       return l
+
