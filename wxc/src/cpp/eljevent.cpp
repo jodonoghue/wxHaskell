@@ -1059,6 +1059,17 @@ EWXWEXPORT(void,wxHelpEvent_SetTarget)(wxHelpEvent* self,wxString* target)
         self->SetTarget(*target);
 }
 
+EWXWEXPORT(bool,wxPropertyGridEvent_HasProperty)(wxPropertyGridEvent* self)
+{
+        return self->GetProperty() != 0;
+}
+
+EWXWEXPORT(wxPGProperty*,wxPropertyGridEvent_GetProperty)(wxPropertyGridEvent* self)
+{
+        wxPGProperty* const prop = self->GetProperty();
+        return prop == 0 ? new wxPGProperty() : prop;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Event wrappers
 ////////////////////////////////////////////////////////////////////////////////

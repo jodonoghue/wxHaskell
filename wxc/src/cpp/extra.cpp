@@ -6,6 +6,8 @@
 #include "wx/grid.h"
 #include "wx/fileconf.h"
 #include "wx/spinctrl.h"
+#include "wx/propgrid/propgrid.h"
+#include "wx/propgrid/advprops.h"
 
 #include <wx/numdlg.h>
 #include <wx/power.h>
@@ -2427,5 +2429,119 @@ EWXWEXPORT(wxFileConfig*,wxFileConfig_Create)(wxInputStream* inp)
 	return new wxFileConfig( *inp );
 }
 
+/*-----------------------------------------------------------------------------
+  PropertyGrid
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(void*,wxPropertyGrid_Append)(wxPropertyGrid* self, wxPGProperty * property)
+{
+        return (void*) self->Append(property);
+}
+
+EWXWEXPORT(void*,wxPropertyGrid_Create)(wxWindow* _prt,int _id, int _lft,int _top,int _wdt,int _hgt,int _stl)
+{
+        return (void*) new wxPropertyGrid (_prt, _id,wxPoint(_lft, _top),wxSize(_wdt, _hgt), _stl);
+}
+
+EWXWEXPORT(bool,wxPropertyGrid_DisableProperty)(wxPropertyGrid* self, wxString const * propName)
+{
+        return self->DisableProperty(*propName);
+}
+
+/*-----------------------------------------------------------------------------
+  wxPropertyGridEvent 
+  Defined within eljevent.cpp
+-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------
+  PGProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxString*,wxPGProperty_GetLabel)(wxPGProperty* self)
+{
+        wxString *result = new wxString();
+        *result = self->GetLabel();
+        return result;
+}
+
+EWXWEXPORT(wxString*,wxPGProperty_GetName)(wxPGProperty* self)
+{
+        wxString *result = new wxString();
+        *result = self->GetName();
+        return result;
+}
+
+EWXWEXPORT(wxString*,wxPGProperty_GetValueAsString)(wxPGProperty* self)
+{
+        wxString *result = new wxString();
+        *result = self->GetValueAsString();
+        return result;
+}
+
+EWXWEXPORT(wxString*,wxPGProperty_GetValueType)(wxPGProperty* self)
+{
+        wxString *result = new wxString();
+        *result = self->GetValueType();
+        return result;
+}
+
+EWXWEXPORT(void,wxPGProperty_SetHelpString)(wxPGProperty* self, wxString const* helpString)
+{
+        self->SetHelpString(*helpString);
+}
+
+/*-----------------------------------------------------------------------------
+  wxStringProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxStringProperty*,wxStringProperty_Create)(wxString const* label, wxString const* name, wxString const* value)
+{
+        return new wxStringProperty(*label, *name, *value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxIntProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxIntProperty*,wxIntProperty_Create)(wxString const* label, wxString const* name, int value)
+{
+        return new wxIntProperty(*label, *name, value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxBoolProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxBoolProperty*,wxBoolProperty_Create)(wxString const* label, wxString const* name, bool value)
+{
+        return new wxBoolProperty(*label, *name, value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxFloatProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxFloatProperty*,wxFloatProperty_Create)(wxString const* label, wxString const* name, float value)
+{
+        return new wxFloatProperty(*label, *name, value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxDateProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxDateProperty*,wxDateProperty_Create)(wxString const* label, wxString const* name, wxDateTime const* value)
+{
+        return new wxDateProperty(*label, *name, *value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxFileProperty
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxFileProperty*,wxFileProperty_Create)(wxString const* label, wxString const* name, wxString const* value)
+{
+        return new wxFileProperty(*label, *name, *value);
+}
+
+/*-----------------------------------------------------------------------------
+  wxPropertyCategory
+-----------------------------------------------------------------------------*/
+EWXWEXPORT(wxPropertyCategory*,wxPropertyCategory_Create)(wxString const* label)
+{
+        return new wxPropertyCategory(*label);
+}
 
 } /* extern "C" */
