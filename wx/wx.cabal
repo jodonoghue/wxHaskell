@@ -24,7 +24,7 @@ Flag newBase
 
 Library
     if flag(splitBase)
-        build-depends: wxcore >= 0.13.1,
+        build-depends: wxcore >= 0.15,
                        stm
         if flag(newBase)
             build-depends:
@@ -34,7 +34,7 @@ Library
                 base >= 3 && < 4
     else
         build-depends: base <  3, 
-                       wxcore >= 0.12.1.6,
+                       wxcore >= 0.15,
                        stm
 
  Exposed-Modules:
@@ -54,4 +54,5 @@ Library
   Graphics.UI.WX.Timer
   Graphics.UI.WX.Menu
   Graphics.UI.WX
+
  Hs-Source-Dirs: src
