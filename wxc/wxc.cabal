@@ -1,5 +1,5 @@
 name:         wxc
-version:      0.15
+version:      0.90
 license:      OtherLicense
 license-file: LICENSE
 maintainer:   wxhaskell-devel@lists.sourceforge.net
@@ -9,7 +9,7 @@ description:
   wxHaskell is a portable and native GUI library for Haskell. It is
   built on top of wxWidgets, a comprehensive C++ library that is
   portable across all major GUI platforms, including GTK, Windows,
-  X11, and MacOS X. This version works with wxWidgets 2.8 only.
+  X11, and MacOS X. This version works with wxWidgets 2.9 only.
 
   Distributed under the WXWINDOWS LIBRARY LICENSE. Please see
   LICENSE file, but note that this is essentially LGPL with an
@@ -157,7 +157,8 @@ library
     wxc_types.h
 
   build-depends:
-    base
+    base,
+    wxdirect >= 0.90
 
   x-dll-sources:
     src/cpp/apppath.cpp

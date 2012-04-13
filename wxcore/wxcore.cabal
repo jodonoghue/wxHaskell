@@ -1,5 +1,5 @@
 name:         wxcore
-version:      0.15
+version:      0.90
 license:      OtherLicense
 license-file: LICENSE
 author:       Daan Leijen
@@ -10,7 +10,7 @@ description:
   wxHaskell is a portable and native GUI library for Haskell. It is
   built on top of wxWidgets, a comprehensive C++ library that is
   portable across all major GUI platforms, including GTK, Windows,
-  X11, and MacOS X. This version works with wxWidgets 2.8 only.
+  X11, and MacOS X. This version works with wxWidgets 2.9 only.
 
   Distributed under the WXWINDOWS LIBRARY LICENSE. Please see
   LICENSE file, but note that this is essentially LGPL with an
@@ -65,8 +65,8 @@ library
     filepath,
     parsec,
     stm,
-    wxc,
-    wxdirect > 0.12.1.2,
+    wxc >= 0.90,
+    wxdirect >= 0.90,
     directory,
     time
 
