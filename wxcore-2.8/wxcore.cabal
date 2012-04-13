@@ -201,7 +201,7 @@ library
     filepath,
     parsec,
     stm,
-    wxdirect > 0.12.1.2,
+    wxdirect > 0.12.1.2 && < 0.90,
     directory,
     time
 
