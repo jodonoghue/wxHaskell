@@ -1,5 +1,5 @@
 name:         wxc
-version:      0.90
+version:      0.90.0.2
 license:      OtherLicense
 license-file: LICENSE
 maintainer:   wxhaskell-devel@lists.sourceforge.net
@@ -157,7 +157,7 @@ library
     wxc_types.h
 
   build-depends:
-    base,
+    base >= 4 && < 5,
     wxdirect >= 0.90
 
   x-dll-sources:

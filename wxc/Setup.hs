@@ -165,16 +165,16 @@ linkCxxOpts ver out_dir basename basepath =
         implib_pathname = normalisePath (out_dir </> "lib" ++ addExtension basename ".a") in
     case buildOS of
       Windows -> ["--dll", "-shared", 
-                  "-o " ++ out_dir </> sharedLibName ver basename,
+                  "-o", out_dir </> sharedLibName ver basename,
                   "-Wl,--out-implib," ++ "lib" ++ addExtension basename ".a",
                   "-Wl,--export-all-symbols", "-Wl,--enable-auto-import"]
       OSX -> ["-dynamiclib",
-                  "-o " ++ out_dir </> sharedLibName ver basename,
-                  "-install_name " ++ basepath </> sharedLibName ver basename,
+                  "-o", out_dir </> sharedLibName ver basename,
+                  "-install_name", basepath </> sharedLibName ver basename,
                   "-Wl,-undefined,dynamic_lookup"]
       _ -> ["-shared",
                   "-Wl,-soname,lib" ++ basename ++ ".so",
-                  "-o " ++ out_dir </> sharedLibName ver basename]
+                  "-o", out_dir </> sharedLibName ver basename]
 
 -- | Compile a single source file using the configured gcc, if the object file does not yet
 -- exist, or is older than the source file.
@@ -232,8 +232,8 @@ linkSharedLib gcc opts lib_dirs libs objs ver out_dir dll_name dll_path =
         opts' = opts ++ linkCxxOpts ver (out_dir') dll_name dll_path
         objs' = map normalisePath objs
         libs' = ["-lstdc++"] ++ map ("-l" ++) libs
-    --runProgram verbose gcc (opts' ++ objs' ++ lib_dirs' ++ libs')
-    system $ (unwords ([show . locationPath . programLocation $ gcc] ++ opts' ++ objs' ++ lib_dirs' ++ libs'))
+    runProgram verbose gcc (opts' ++ objs' ++ lib_dirs' ++ libs')
+    --system $ (unwords ([show . locationPath . programLocation $ gcc] ++ opts' ++ objs' ++ lib_dirs' ++ libs'))
     return ()
 
 -- | The 'normalise' implementation in System.FilePath does not meet the requirements of
