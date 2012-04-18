@@ -1,4 +1,4 @@
-import Control.Monad (when)
+import Control.Monad (when, filterM)
 import Data.List (foldl', intersperse, intercalate, nub, lookup, isPrefixOf, isInfixOf, find)
 import Data.Maybe (fromJust)
 import Distribution.PackageDescription hiding (includeDirs)
@@ -34,12 +34,16 @@ wxcoreDirectory  = "src/haskell/Graphics/UI/WXCore"
 -- It works by finding the wxc package's installation info, then finding the include directory 
 -- which contains wxc's headers (amongst the wxWidgets include dirs) and then going up a level.
 -- It would be nice the path was park of InstalledPackageInfo, but it isn't.
-wxcInstallDir :: LocalBuildInfo -> FilePath
+wxcInstallDir :: LocalBuildInfo -> IO FilePath
 wxcInstallDir lbi = 
     case searchByName (installedPkgs lbi) "wxc" of
-        Unambiguous wxc_pkgs -> case find (isInfixOf "wxc") . includeDirs . head $ wxc_pkgs of
-            Just wxcIncludeDir -> takeDirectory wxcIncludeDir
-            Nothing -> error "wxcInstallDir: Couldn't find wxc include dir"
+        Unambiguous (wxc_pkg:_) -> do
+            wxc <- filterM (doesFileExist . (</> "wxc.h")) (includeDirs wxc_pkg)
+            case wxc of
+                [wxcIncludeDir] -> return (takeDirectory wxcIncludeDir)
+                [] -> error "wxcInstallDir: couldn't find wxc include dir"
+                _  -> error "wxcInstallDir: I'm confused. I see more than one wxc include directory from the same package"
+        Unambiguous [] -> error "wxcInstallDir: Cabal says wxc is installed but gives no package info for it"
         _ -> error "wxcInstallDir: Couldn't find wxc package in installed packages"
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -49,8 +53,8 @@ myConfHook (pkg0, pbi) flags = do
     createDirectoryIfMissing True wxcoreDirectory
 
     lbi <- confHook simpleUserHooks (pkg0, pbi) flags
-    let wxcDirectory = wxcInstallDir lbi
-        wxcoreIncludeFile = wxcDirectory </> "include/wxc.h"
+    wxcDirectory <- wxcInstallDir lbi
+    let wxcoreIncludeFile = wxcDirectory </> "include/wxc.h"
 
     putStrLn "Generating class type definitions from .h files"
     system $ "wxdirect -t --wxc " ++ wxcDirectory ++ " -o " ++ wxcoreDirectory ++ " " ++ wxcoreIncludeFile
