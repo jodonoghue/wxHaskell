@@ -74,8 +74,8 @@ readWxConfig = do
       _       -> readProcess "wx-config" ["--version=" ++ wxRequiredVersion, "--version-full"] ""
 
     if wxRequiredVersion `isPrefixOf` wxVersion 
-      then putStrLn ("Configuring wxc to build against wx " ++ wxVersion)
-      else error ("This version of wxcore requires wx " ++ wxRequiredVersion ++ " to be available")
+      then putStrLn ("Configuring wxc to build against wxWidgets " ++ wxVersion)
+      else error ("This version of wxc requires wxWidgets " ++ wxRequiredVersion ++ " to be available")
 
     -- The Windows port of wx-config doesn't let you specify a version (yet)
     output <- case buildOS of
