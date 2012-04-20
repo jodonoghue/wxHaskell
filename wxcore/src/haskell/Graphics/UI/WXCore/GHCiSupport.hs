@@ -1,7 +1,9 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE ForeignFunctionInterface, CPP #-}
 module Graphics.UI.WXCore.GHCiSupport(enableGUI) where
 -- GHCi support on MacOS X
 -- TODO: preprocessor to make it conditional on the platform
+
+#if darwin_HOST_OS
 
 import Data.Int
 import Foreign
@@ -14,9 +16,17 @@ foreign import ccall "CPSEnableForegroundOperation" cpsEnableForegroundOperation
 foreign import ccall "CPSSignalAppReady" cpsSignalAppReady :: Ptr ProcessSerialNumber -> IO ()
 foreign import ccall "CPSSetFrontProcess" cpsSetFrontProcess :: Ptr ProcessSerialNumber -> IO ()
 
+enableGUI :: IO ()
 enableGUI = alloca $ \psn -> do
     getCurrentProcess psn
     cgsDefaultConnection
     cpsEnableForegroundOperation psn
     cpsSignalAppReady psn
     cpsSetFrontProcess psn
+
+#else
+
+enableGUI :: IO ()
+enableGUI = return ()
+
+#endif
