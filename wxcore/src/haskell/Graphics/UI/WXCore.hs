@@ -62,14 +62,21 @@ import Graphics.UI.WXCore.Layout
 import Graphics.UI.WXCore.Image
 import Graphics.UI.WXCore.OpenGL
 
+import Graphics.UI.WXCore.GHCiSupport
+
 -- | Start the event loop. Takes an initialisation action as argument.
 -- Except for 'run', the functions in the WXH library can only be called
 -- from this intialisation action or from event handlers, or otherwise bad
 -- things will happen :-)
 run :: IO a -> IO ()
 run init
-  = do appOnInit (do wxcAppInitAllImageHandlers
+  = do enableGUI
+       appOnInit (do wxcAppInitAllImageHandlers
                      init
                      return ())
        performGC
        performGC
+
+
+
+

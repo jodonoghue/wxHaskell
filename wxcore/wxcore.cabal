@@ -60,6 +60,12 @@ library
     Graphics.UI.WXCore.WxcObject
     Graphics.UI.WXCore.WxcTypes
 
+  other-modules:
+    Graphics.UI.WXCore.GHCiSupport
+
+  frameworks:
+    Carbon
+
   build-depends:
     bytestring,
     filepath,
