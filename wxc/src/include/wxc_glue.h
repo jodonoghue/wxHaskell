@@ -4541,6 +4541,7 @@ TBool      wxTextCtrl_CanCut( TSelf(wxTextCtrl) _obj );
 TBool      wxTextCtrl_CanPaste( TSelf(wxTextCtrl) _obj );
 TBool      wxTextCtrl_CanRedo( TSelf(wxTextCtrl) _obj );
 TBool      wxTextCtrl_CanUndo( TSelf(wxTextCtrl) _obj );
+void       wxTextCtrl_ChangeValue( TSelf(wxTextCtrl) _obj, TClass(wxString) text );
 void       wxTextCtrl_Clear( TSelf(wxTextCtrl) _obj );
 void       wxTextCtrl_Copy( TSelf(wxTextCtrl) _obj );
 TClass(wxTextCtrl) wxTextCtrl_Create( TClass(wxWindow) _prt, int _id, TClass(wxString) _txt, TRect(_lft,_top,_wdt,_hgt), long _stl );
