@@ -25,6 +25,7 @@ EWXWEXPORT(void,wxListItem_Delete)(wxListItem* self)
 {
 	delete self;
 }
+
 EWXWEXPORT(void,wxListItem_Clear)(wxListItem* self)
 {
 	self->Clear();
@@ -483,5 +484,27 @@ EWXWEXPORT(void,wxListCtrl_UpdateStyle)(wxListCtrl* self)
 	self->UpdateStyle();
 #endif
 }
-	
+
+EWXWEXPORT(wxFont*,wxListCtrl_GetItemFont)(wxListCtrl* self, long item)
+{
+  wxFont* fnt = new wxFont;
+  *fnt = self->GetItemFont(item);
+  return fnt;
+}
+
+EWXWEXPORT(bool,wxListCtrl_IsVirtual)(wxListCtrl* self)
+{
+  return self->IsVirtual();
+}
+
+EWXWEXPORT(void,wxListCtrl_RefreshItem)(wxListCtrl* self, long item)
+{
+  self->RefreshItem(item);
+}
+
+EWXWEXPORT(void,wxListCtrl_RefreshItems)(wxListCtrl* self, long from, long to)
+{
+  self->RefreshItems(from, to);
+}
+
 }

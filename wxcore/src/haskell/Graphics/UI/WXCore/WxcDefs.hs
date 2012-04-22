@@ -91,8 +91,6 @@ module Graphics.UI.WXCore.WxcDefs
      ,wxSTREAM_WRITE_ERROR
      ,wxSTREAM_READ_ERROR
      ,wxNB_MULTILINE
-     ,wxLC_VRULES
-     ,wxLC_HRULES
      ,wxIMAGE_LIST_NORMAL
      ,wxIMAGE_LIST_SMALL
      ,wxIMAGE_LIST_STATE
@@ -337,6 +335,8 @@ module Graphics.UI.WXCore.WxcDefs
      ,wxBU_TOP
      ,wxBU_RIGHT
      ,wxBU_BOTTOM
+     ,wxLC_VRULES
+     ,wxLC_HRULES
      ,wxLC_ICON
      ,wxLC_SMALL_ICON
      ,wxLC_LIST
@@ -344,13 +344,16 @@ module Graphics.UI.WXCore.WxcDefs
      ,wxLC_ALIGN_TOP
      ,wxLC_ALIGN_LEFT
      ,wxLC_AUTOARRANGE
-     ,wxLC_USER_TEXT
+     ,wxLC_VIRTUAL
      ,wxLC_EDIT_LABELS
      ,wxLC_NO_HEADER
      ,wxLC_NO_SORT_HEADER
      ,wxLC_SINGLE_SEL
      ,wxLC_SORT_ASCENDING
      ,wxLC_SORT_DESCENDING
+     ,wxLC_MASK_TYPE
+     ,wxLC_MASK_ALIGN
+     ,wxLC_MASK_SORT
      ,wxSP_ARROW_KEYS
      ,wxSP_WRAP
      ,wxSP_NOBORDER
@@ -2484,6 +2487,8 @@ module Graphics.UI.WXCore.WxcDefs
      ,wxSTC_CMD_WORDRIGHTENDEXTEND
     ) where
 
+import Data.Bits
+
 -- | A flag can be combined with other flags to a bit mask.
 type BitFlag = Int
 
@@ -2678,12 +2683,6 @@ wxSTREAM_READ_ERROR = 3
 
 wxNB_MULTILINE :: Int
 wxNB_MULTILINE = 256
-
-wxLC_VRULES :: Int
-wxLC_VRULES = 1
-
-wxLC_HRULES :: Int
-wxLC_HRULES = 2
 
 wxIMAGE_LIST_NORMAL :: Int
 wxIMAGE_LIST_NORMAL = 0
@@ -3417,6 +3416,12 @@ wxBU_RIGHT = 256
 wxBU_BOTTOM :: Int
 wxBU_BOTTOM = 512
 
+wxLC_VRULES :: Int
+wxLC_VRULES = 1
+
+wxLC_HRULES :: Int
+wxLC_HRULES = 2
+
 wxLC_ICON :: Int
 wxLC_ICON = 4
 
@@ -3438,8 +3443,8 @@ wxLC_ALIGN_LEFT = 128
 wxLC_AUTOARRANGE :: Int
 wxLC_AUTOARRANGE = 256
 
-wxLC_USER_TEXT :: Int
-wxLC_USER_TEXT = 512
+wxLC_VIRTUAL :: Int
+wxLC_VIRTUAL = 512
 
 wxLC_EDIT_LABELS :: Int
 wxLC_EDIT_LABELS = 1024
@@ -3458,6 +3463,10 @@ wxLC_SORT_ASCENDING = 16384
 
 wxLC_SORT_DESCENDING :: Int
 wxLC_SORT_DESCENDING = 32768
+
+wxLC_MASK_TYPE  = wxLC_ICON .|. wxLC_SMALL_ICON .|. wxLC_LIST .|. wxLC_REPORT
+wxLC_MASK_ALIGN = wxLC_ALIGN_TOP .|. wxLC_ALIGN_LEFT
+wxLC_MASK_SORT  = wxLC_SORT_ASCENDING .|. wxLC_SORT_DESCENDING
 
 wxSP_ARROW_KEYS :: Int
 wxSP_ARROW_KEYS = 4096

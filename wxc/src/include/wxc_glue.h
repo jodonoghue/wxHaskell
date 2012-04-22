@@ -3067,6 +3067,7 @@ TClass(wxImageList) wxListCtrl_GetImageList( TSelf(wxListCtrl) _obj, int which )
 TBool      wxListCtrl_GetItem( TSelf(wxListCtrl) _obj, TClass(wxListItem) info );
 int        wxListCtrl_GetItemCount( TSelf(wxListCtrl) _obj );
 int        wxListCtrl_GetItemData( TSelf(wxListCtrl) _obj, int item );
+TClass(wxFont) wxListCtrl_GetItemFont( TSelf(wxListCtrl) _obj, long item);
 TClass(wxPoint) wxListCtrl_GetItemPosition( TSelf(wxListCtrl) _obj, int item );
 TClass(wxRect) wxListCtrl_GetItemRect( TSelf(wxListCtrl) _obj, int item, int code );
 TClass(wxSize) wxListCtrl_GetItemSpacing( TSelf(wxListCtrl) _obj, TBool isSmall );
@@ -3083,6 +3084,8 @@ int        wxListCtrl_InsertItem( TSelf(wxListCtrl) _obj, TClass(wxListItem) inf
 int        wxListCtrl_InsertItemWithData( TSelf(wxListCtrl) _obj, int index, TClass(wxString) label );
 int        wxListCtrl_InsertItemWithImage( TSelf(wxListCtrl) _obj, int index, int imageIndex );
 int        wxListCtrl_InsertItemWithLabel( TSelf(wxListCtrl) _obj, int index, TClass(wxString) label, int imageIndex );
+TBool      wxListCtrl_IsVirtual( TSelf(wxListCtrl) _obj );
+void       wxListCtrl_RefreshItem( TSelf(wxListCtrl) _obj, long item );
 TBool      wxListCtrl_ScrollList( TSelf(wxListCtrl) _obj, TVector(dx,dy) );
 void       wxListCtrl_SetBackgroundColour( TSelf(wxListCtrl) _obj, TClass(wxColour) col );
 TBool      wxListCtrl_SetColumn( TSelf(wxListCtrl) _obj, int col, TClass(wxListItem) item );
