@@ -20,6 +20,11 @@ EWXWEXPORT(void,wxTextCtrl_SetValue)(wxTextCtrl* self,wxString* value)
 	self->SetValue(*value);
 }
 	
+EWXWEXPORT(void,wxTextCtrl_ChangeValue)(wxTextCtrl* self, wxString* value)
+{
+        self->ChangeValue(*value);
+}
+
 EWXWEXPORT(int,wxTextCtrl_GetLineLength)(wxTextCtrl* self,long lineNo)
 {
 	return self->GetLineLength(lineNo);

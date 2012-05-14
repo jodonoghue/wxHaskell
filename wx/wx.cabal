@@ -1,5 +1,5 @@
 Name:           wx
-Version:        0.13.2.2
+Version:        0.13.2.3
 License:        OtherLicense
 License-file:   license.txt
 Homepage:       http://haskell.org/haskellwiki/WxHaskell
@@ -24,7 +24,7 @@ Flag newBase
 
 Library
     if flag(splitBase)
-        build-depends: wxcore >= 0.13.1 && < 0.90,
+        build-depends: wxcore >= 0.13.2.3 && < 0.90,
                        stm
         if flag(newBase)
             build-depends:

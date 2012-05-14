@@ -76,6 +76,7 @@ import Graphics.UI.WX.Window
 
 import Control.Monad (forM_)
 import Data.Dynamic  -- for "alignment"
+import System.Info (os)
 
 
 defaultStyle
@@ -314,15 +315,27 @@ instance Able (TextCtrl a) where
     = newAttr "enabled" textCtrlIsEditable textCtrlSetEditable
 -}
 
+-- Workaround for Unexpected TextCtrl behaviour (https://github.com/jodonoghue/wxHaskell/issues/1#issuecomment-5202439)
+-- Problem arises from the fact that wxTE_RICH is needed only on Windows platforms, but is essential there. However, on
+-- wxMac > 2.9, wxTE_RICH seems not to be ignored as the documentation claims.
+getRichTE =  if (os == "mingw32") || (os == "win32")
+             then wxTE_RICH
+             else 0
+
+getRichTE2 = if (os == "mingw32") || (os == "win32")
+             then wxTE_RICH2
+             else 0
+
 -- | Create a single-line text entry control. Note: 'alignment' has to
 -- be set at creation time (or the entry has default alignment (=left) ).
+-- This is an alias for textEntry
 --
 -- * Instances: 'Wrap', 'Aligned', 'Commanding' -- 'Textual', 'Literate', 'Dimensions', 'Colored', 'Visible', 'Child',
 --             'Able', 'Tipped', 'Identity', 'Styled', 'Reactive', 'Paint'.
 --
 entry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 entry parent props
-  = textCtrlEx parent wxTE_RICH props
+  = textCtrlEx parent getRichTE props
 
 -- | Create a single-line text entry control. Note: 'alignment' has to
 -- be set at creation time (or the entry has default alignment (=left) ).
@@ -332,7 +345,7 @@ entry parent props
 --
 textEntry :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textEntry parent props
-  = textCtrlEx parent wxTE_RICH props
+  = textCtrlEx parent getRichTE props
 
 -- | Create a multi-line text control. Note: the 'wrap' and 'alignment'
 -- have to be set at creation time or the default to 'WrapNone' and 'AlignLeft' respectively.
@@ -342,7 +355,7 @@ textEntry parent props
 --
 textCtrl :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrl parent props
-  = textCtrlEx parent (wxTE_MULTILINE .+. wxTE_RICH) props
+  = textCtrlEx parent (wxTE_MULTILINE .+. getRichTE) props
 
 
 -- | Create a multi-line text rich-text control with a certain wrap mode
@@ -355,7 +368,7 @@ textCtrl parent props
 --
 textCtrlRich :: Window a -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlRich parent props
-  = textCtrlEx parent (wxTE_MULTILINE .+. wxTE_RICH2) props
+  = textCtrlEx parent (wxTE_MULTILINE .+. getRichTE2) props
 
 -- | Create a generic text control given a certain style.
 --
@@ -366,9 +379,10 @@ textCtrlEx :: Window a -> Style -> [Prop (TextCtrl ())] -> IO (TextCtrl ())
 textCtrlEx parent stl props
   = feed2 props stl $
     initialWindow    $ \id rect ->
+    initialText      $ \txt ->
     initialWrap      $
     initialAlignment $ \props flags ->
-    do e <- textCtrlCreate parent id "" rect flags
+    do e <- textCtrlCreate parent id txt rect flags
        set e props
        return e
 
