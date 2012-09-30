@@ -100,6 +100,7 @@ compileClassesFile showIgnore moduleRoot moduleClassTypesName moduleName outputF
                                 , ""
                                 , "import qualified Data.ByteString as B (ByteString, useAsCStringLen)"
                                 , "import qualified Data.ByteString.Lazy as LB (ByteString, length, unpack)"
+                                , "import Foreign.C.Types"
                                 , "import System.IO.Unsafe( unsafePerformIO )"
                                 , "import " ++ moduleRoot ++ "WxcTypes"
                                 , "import " ++ moduleRoot ++ moduleClassTypesName

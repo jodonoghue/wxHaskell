@@ -237,6 +237,7 @@ import System.Environment( getProgName, getArgs )
 import Foreign.StablePtr
 import Foreign.Ptr
 import Foreign.C.String
+import Foreign.C.Types
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 import Foreign.Marshal.Utils
