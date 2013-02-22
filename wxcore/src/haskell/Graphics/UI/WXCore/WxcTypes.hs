@@ -91,12 +91,12 @@ module Graphics.UI.WXCore.WxcTypes(
 
             -- ** Primitive types
             -- *** CString
-            , CString, withCString, withStringResult
-            , CWString, withCWString, withWStringResult
+            , CString(..), withCString, withStringResult
+            , CWString(..), withCWString, withWStringResult
             -- *** ByteString
             , withByteStringResult, withLazyByteStringResult
             -- *** CInt
-            , CInt, toCInt, fromCInt, withIntResult
+            , CInt(..), toCInt, fromCInt, withIntResult
             -- *** Word
             , Word
             -- *** 8 bit Word
@@ -104,12 +104,12 @@ module Graphics.UI.WXCore.WxcTypes(
             -- *** 64 bit Integer
             , Int64
             -- *** CDouble
-            , CDouble, toCDouble, fromCDouble, withDoubleResult
+            , CDouble(..), toCDouble, fromCDouble, withDoubleResult
             -- *** CChar
-            , CChar, toCChar, fromCChar, withCharResult
-            , CWchar, toCWchar
+            , CChar(..), toCChar, fromCChar, withCharResult
+            , CWchar(..), toCWchar
             -- *** CBool
-            , CBool, toCBool, fromCBool, withBoolResult
+            , CBool(..), toCBool, fromCBool, withBoolResult
             -- ** Pointers
             , Ptr, ptrNull, ptrIsNull, ptrCast, ForeignPtr, FunPtr, toCFunPtr
             ) where
